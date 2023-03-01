@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html dir="{template_textdirection}" lang="{template_languagecode}">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset={template_charset}">
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+	<meta name="csrf-token" content="{csrf}">
+	<title>{page_title}</title>
+	<if condition="isset($sheel->template->meta['area']) AND $sheel->template->meta['area'] == 'merch_viewitem'"><meta property="og:title" content="{project_title_plain}"><else /><meta property="og:title" content="{page_title}"></if>
+	<if condition="!empty($sheel->template->meta['description'])"><meta property="og:description" content="{template_metadescription}"></if>
+	<meta property="og:url" content="{pageurl}">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="{site_name}">
+	<if condition="isset($sheel->template->meta['area']) AND $sheel->template->meta['area'] == 'merch_viewitem' AND isset($sheel->show['productimage']) AND $sheel->show['productimage']"><meta property="og:image" content="{productimage}"><meta property="og:image:secure_url" content="{productimage}"><else /><meta property="og:image" content="{imguploadscdn}meta/logo.png"><meta property="og:image:secure_url" content="{imguploadscdn}meta/logo.png"></if>
+	<if condition="!empty($sheel->template->meta['description'])"><meta name="description" content="{template_metadescription}"></if>
+	<if condition="!empty($sheel->template->meta['keywords'])"><meta name="keywords" content="{template_metakeywords}"></if>
+	<meta name="robots" content="NOODP">
+	<if condition="PROTOCOL_REQUEST == 'https'"><base href="{https_server}"><else /><base href="{http_server}"></if>
+	<link rel="icon" type="image/png" href="{imguploadscdn}meta/favicon.png">
+	<link rel="icon" type="image/png" sizes="144x144" href="{imguploadscdn}meta/icon-144x144.png">
+	<link rel="apple-touch-icon" type="image/png" href="{imguploadscdn}meta/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" type="image/png" sizes="57x57" href="{imguploadscdn}meta/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon" type="image/png" sizes="114x114" href="{imguploadscdn}meta/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" type="image/png" sizes="72x72" href="{imguploadscdn}meta/apple-touch-icon-72x72.png">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700|Oswald:300,400,500,600,700" rel="stylesheet">
+	<link rel="canonical" href="{pageurl}">
+	{js_phrases_content}
+	{headinclude}
+	<if condition="!empty($sheel->config['froalakey'])"><script id="fr-fek">try{(function (k){localStorage.FEK=k;t=document.getElementById('fr-fek');t.parentNode.removeChild(t);})('{config[froalakey]}')}catch(e){}</script></if>
+</head>
+<body{onload} class="{pageslug}">
+	<section id="application" class="body-bg">
+	{headerbit}
+	<!-- START template content -->
+	<section class="box-fluid" id="sheel-app">
+		<if condition="(!isset($sheel->show['nobreadcrumb'])) OR (isset($sheel->show['nobreadcrumb']) AND !$sheel->show['nobreadcrumb'])">{breadcrumbbit}</if>
+		{infobar}
+		<div class="<if condition="(!isset($sheel->show['widescreen'])) OR (isset($sheel->show['widescreen']) AND !$sheel->show['widescreen'])">box<else />box2</if><if condition="(isset($sheel->show['fluidscreen']) AND $sheel->show['fluidscreen'])"> box-fluid</if>" id="topadcontainer"></div>
+		<div class="<if condition="(!isset($sheel->show['widescreen'])) OR (isset($sheel->show['widescreen']) AND !$sheel->show['widescreen'])">box<else />box2</if><if condition="(isset($sheel->show['fluidscreen']) AND $sheel->show['fluidscreen'])"> box-fluid</if>" id="htmlcontainer">
+			{maincontent}
+		</div>
+	</section>
+	<!-- END template content -->
+	{footerbit}
+	{footinclude}
+	{footerdebug}
+	</section>
+</body>
+</html>

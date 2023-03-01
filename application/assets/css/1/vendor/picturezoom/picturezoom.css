@@ -1,0 +1,37 @@
+.picturezoom_thumb {
+	background: white url({imgcdn}v5/ico_working.gif) center no-repeat;
+	padding: 0;
+}
+.picturezoom_zoom_area, .picturezoom_zoom_area {
+	background: white url({imgcdn}v5/ico_working.gif) center no-repeat;
+	padding: 0;
+}
+.picturezoom_magnifier {
+	background: #666;
+	border: 1px solid #333;
+}
+.picturezoom_icon {
+	background: url({imgcdn}v5/ico_picturezoom.gif) no-repeat;
+	width: 24px;
+	height: 24px;
+}
+.picturezoom, .picturezoom_thumb, .picturezoom_thumb_image, .picturezoom_source_image, .picturezoom_zoom_preview, .picturezoom_icon, .picturezoom_hint{ display:none }
+.picturezoom, .picturezoom ul, .picturezoom li, .picturezoom img, .picturezoom_hint, .picturezoom_icon, .picturezoom_description{ margin:0; padding:0; border:0; list-style:none }
+.picturezoom, .picturezoom_magnifier div, .picturezoom_magnifier div img, .picturezoom_small_thumbs ul, ul .picturezoom_small_thumbs li, .picturezoom_zoom_area div, .picturezoom_zoom_img{ position:relative }
+.picturezoom img, .picturezoom li{ -webkit-user-select:none; -khtml-user-select:none; -moz-user-select:none; -o-user-select:none; user-select:none; -webkit-user-drag:none; -moz-user-drag:none; user-drag:none }
+.picturezoom, .picturezoom_small_thumbs li{ float:{template_textalignment} }
+.picturezoom_right{ float:right }
+.picturezoom li{ position:absolute }
+.picturezoom img{ vertical-align:bottom; max-width:none }
+.picturezoom_magnifier{ cursor:default }
+.picturezoom_magnifier div, .picturezoom_small_thumbs{ overflow:hidden }
+.picturezoom_magnifier div img{ display:none }
+.picturezoom_icon, .picturezoom_hint{ cursor:default; width:0; height:0; overflow:hidden }
+.picturezoom_small_thumbs li.vertical{ float:none }
+.picturezoom_zoom_area{ z-index:996 }
+.picturezoom_zoom_area div{ overflow:hidden; z-index:997 }
+.picturezoom_zoom_preview{ position:absolute; z-index:998 }
+.picturezoom_zoom_img, .picturezoom_hint{ z-index:999 }
+.picturezoom{ direction:{template_textdirection} }
+div.picturezoom_description{ position:absolute; bottom:0; left:0; z-index:999 }
+div.picturezoom_description.rtl{ direction:rtl; text-align:right }

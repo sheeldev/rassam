@@ -1,0 +1,633 @@
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+<if condition="isset($sheel->GPC['view'])">
+    <div id="companies-index" class="page has-contextual-help companies-page">
+        <div class="header-row">
+            <header id="companies-index-header" class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-credit-card draw-icon" aria-hidden="true"></span>
+                    {_companies}
+              	</h1>
+              	<div class="header__primary-actions"> 
+                   <a class="btn btn-primary" href="{https_server_admin}companies/add/">{_add_company}</a>    
+                </div>
+                <div class="header__primary-actions"> 
+                    {prevnext}
+                </div>
+                
+                
+                <div class="header__secondary-actions">
+                    <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
+                    <ul class="segmented"> </ul>
+                </div>
+            </header>
+    </div>
+    
+    <div class="draw-grid draw-grid--outer-grid">
+        <div class="draw-grid__cell">
+            <div class="draw-card">
+                <div class="has-bulk-actions">
+                    <div context="filterer">
+                        <div>
+                            <ul class="draw-tab__list" role="tablist">
+                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="companies/">{_active}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'banned'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="companies/?view=banned<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_banned} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'banned'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cancelled'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel4" aria-selected="false" href="companies/?view=cancelled<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_cancelled}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cancelled'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'suspended'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel4" aria-selected="false" href="companies/?view=suspended<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_suspended}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'suspended'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel2" aria-selected="false" href="companies/?view=moderated<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_moderated}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleted'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel6" aria-selected="false" href="companies/?view=deleted<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_deleted}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleted'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                   <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
+                                    <div class="dropdown">
+                                        <ul class="draw-tab__list--vertical" role="tablist"></ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                            <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                <div class="draw-input-wrapper">
+                                   
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}companies/" id="formsearch" accept-charset="UTF-8" method="get">
+                                    <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}"></if>
+                                    <div class="draw-field__connected-wrapper">
+                                        
+                                        <div class="draw-field--connected--no-flex">
+											<div class="draw-select__wrapper">
+                                            	{form[filter_pulldown]}
+											</div>
+											
+										</div>
+                                        
+                                            <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
+                                            <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                                <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
+                                            </div>
+                                        
+                                        <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                    </div>
+                                    </form>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="companies-results">
+                        <div class="draw-card__section">
+                            <div class="table-wrapper">
+                            	<form class="draw-form draw-form--full-width" action="{https_server_admin}companies/" id="formcompanies" accept-charset="UTF-8" method="get">
+                                <table class="table-hover expanded">
+                                    <thead>
+                                        <tr>
+                                            <th class="select"><span id="bulkOperations">
+                                            
+                                                <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                    <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                    <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="bulk-actions">
+                                                    <ul class="segmented">
+                                                    
+                                                        <li>
+                                                            <a class="btn btn-slim btn-disabled btn--selection">
+                                                                <span class="selection-count">
+                                                                  <span id="selectedcount"></span> {_selected_companies}
+                                                                </span> 
+                                                            </a>
+                                                        </li>
+                                                
+                                                        <li>
+                                                        	<a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                            <div class="draw-popover__container">
+                                                            	
+                                                                <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                                <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                    <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                    <div class="draw-popover__content-wrapper">
+                                                                        <div class="draw-popover__content" style="max-height: 637px;">
+                                                                            <div class="draw-popover__pane">
+                                                                                <ul class="draw-list draw-list--compact">
+                                                                                 	<li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markactive', 'Mark [x] selected companies as ready?', 'Are you sure you want to mark selected companies as active?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies active</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markbanned', 'Mark [x] selected companies as banned?', 'Are you sure you want to mark selected companies as banned?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies banned</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markcancelled', 'Mark [x] selected companies as cancelled?', 'Are you sure you want to mark selected companies cancelled?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies cancelled</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('marksuspended', 'Mark [x] selected companies as suspended?', 'Are you sure you want to mark selected companies as suspended?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies suspended</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markmoderated', 'Mark [x] selected companies as moderated?', 'Are you sure you want to mark selected companies as moderated?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies moderated</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markdeleted', 'Mark [x] selected companies as not deleted?', 'Are you sure you want to mark selected companies as not deleted?', 'reqssss', 'selectedcount', '1', '1', '')">Mark selected companies deleted</a></li>
+                                                                                </ul> 
+                                                
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                 
+                                                    <span class="bulk-select-all">
+                                                            <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
+                                                            
+                                                            
+                                                    </span>
+                                                </div>
+                                                </span></th>
+                                                <th class="is-sortable " > <span>{_id}</span> </th>
+                                                <th class="is-sortable "> <span>{_account}</span> </th>
+                                                <th class="customer is-sortable "> <span>{_name}</span> </th>
+                                                <th class="customer"> <span>{_description}</span> </th>
+                                                <th><span>{_city}</span> </th>
+                                                <th class="customer is-sortable "> <span>{_country}</span> </th>
+                                                <th> <span>{_email}</span> </th>
+                                                <th> <span>{_phone}</span> </th>
+                                                <th> <span>{_available_balance}</span> </th>
+                                                <th> <span>{_total_balance}</span> </th>
+                                                <th class="is-sortable"> <span>{_subscription}</span> </th>
+                                                <th>{_items}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        	<loop name="companies">
+                            <tr id="tr_selected_{company_id}" valign="top">
+                                <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="companyid[]" id="reqssss_{company_id}" value="{company_id}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                <td class="no-wrap"><a href="companies/view/{request_id}/?view={fview}">{company_id}</a></td>
+                                <td class="no-wrap">{account_number}</td>
+                                <td class="date draw-table__cell--full-width-when-condensed type--subdued"> <span>{companyname}</span></td>
+                                <td class="status type--subdued">{companydescription}</td>
+                                <td class="status no-wrap">{city}</td>
+                                <td class="status no-wrap type--subdued">{countrycode}</td>
+                                <td class="status no-wrap">{email}</td>
+                                <td class="status no-wrap">{phone}</td>
+                                <td class="status no-wrap">{available_balance}</td>
+                                <td class="status no-wrap">{total_balance}</td>
+                                <td class="status no-wrap">{title_eng}</td>
+                                <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
+                                <else />
+                                <td class="last_order type--subdued">{switchview}</td>
+                                </if>
+                            </tr>
+                            </loop name="companies">
+                        </tbody>
+                        </table>
+                        <script type="text/javascript">
+						inlineCB = new iL_Inline('inlineCB', 'reqssss', 'formcompanies', '{_go}'); 
+						</script>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    </div>
+
+<if condition="isset($sheel->GPC['action']) AND ($sheel->GPC['action'] == 'additem')">
+<div define="iLNav.setPage(['companies','companies_item']), iLPage.close()"></div>
+<else />
+<div define="iLNav.setPage(['companies','companies_companies']), iLPage.close()"></div>
+</if>
+
+<else />
+<if condition="isset($sheel->GPC['cmd']) AND ($sheel->GPC['cmd'] == 'add')">
+
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'wan'"><script>jQuery.growl.error({ title: '{_wrong_account}', message: '{_wrong_account_number}' })</script></if>
+
+<div id="companies-new" class="page">
+        <form autocomplete="off" id="new_company" action="{https_server_admin}companies/<if condition="$sheel->GPC['cmd'] == 'add'">add</if>/" accept-charset="UTF-8" onsubmit="return verify_acp_company('<if condition="$sheel->GPC['cmd'] == 'add'">add<else />update</if>')" method="post">
+    	<input type="hidden" name="do" value="save" />
+    	<input type="hidden" name="form[pid]" id="pid" value="{form[pid]}">
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-bank draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}companies/">{_companies}</a> / </span>
+                        <if condition="$sheel->GPC['cmd'] == 'add'">{_add_company}<else />{_update}</if>
+                </h1>
+                <div class="header__primary-actions">
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                </div>
+                
+                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}companies/add/">{_add_company}</a> <a class="btn" href="{https_server_admin}companies/">{_cancel}</a> </div>
+            </header>
+        </div>
+            
+        <div class="section overview">
+            <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Company Details</h1>
+                            <p>Some details about this Company.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+                            	
+                            	<div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="company_subscription">{_subscription}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="subscription-wrapper">
+                                            	{form[subscriptions]}
+                                        	</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            	<div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyaccount">{_account_number}</label>
+                                            <input class="draw-input" size="30" type="text" name="form[companyaccount]" id="companyaccount" value="{form[companyaccount]}">
+                                            <if condition="$sheel->GPC['cmd'] == 'update'"><input type="hidden" name="form[oldcompanyaccount]" value="{form[companyaccount]}" id="oldcompanyaccount" /></if>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyname">{_name}</label>
+                                            <input class="draw-input" size="30" type="text" name="form[companyname]" id="companyname" value="{form[companyname]}">
+                                            <if condition="$sheel->GPC['cmd'] == 'update'"><input type="hidden" name="form[oldcompanyname]" value="{form[companyname]}" id="oldcompanyname" /></if>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyphone">{_phone}</label>
+                                            <input class="draw-input" size="30" type="text" name="form[companyphone]" id="companyphone" value="{form[companyphone]}">
+                                            <if condition="$sheel->GPC['cmd'] == 'update'"><input type="hidden" name="form[oldcompanyphone]" value="{form[companyphone]}" id="oldcompanyphone" /></if>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyemail">{_email}</label>
+                                            <input class="draw-input" size="30" type="text" name="form[companyemail]" id="companyemail" value="{form[companyemail]}">
+                                            <if condition="$sheel->GPC['cmd'] == 'update'"><input type="hidden" name="form[oldcompanyemail]" value="{form[companyemail]}" id="oldcompanyemail" /></if>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    
+
+                                    
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyreg">{_company_registration_number}</label>
+                                            <input class="draw-input" size="30" type="text" name="form[companyreg]" id="companyreg" value="{form[companyreg]}">
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyvat">{_vat_registration_number}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companyreg]" id="companyreg" value="{form[companyreg]}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyabout">{_about}</label>
+                                            <input class="draw-input" size="30" type="text" name="form[companyabout]" id="companyabout" value="{form[companyabout]}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companydescription">{_description}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companydescription]" id="companydescription" value="{form[companydescription]}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                </div>
+
+                    
+  
+                                 <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companystatus">{_status}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            	{form[companystatus]}
+                                        	</div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="currency">{_currency}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            	{form[currency]}
+                                        	</div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="tz">{_timezone}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            	{form[tz]}
+                                        	</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="section address">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Company Address</h1>
+                            <p>The Address For The Company.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+  
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyaddress1">{_address_one}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companyaddress1]" id="companyaddress1" value="{form[companyaddress1]}">
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyaddress2">{_address_2}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companyaddress2]" id="companyaddress2" value="{form[companyaddress2]}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companycity">{_city}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companycity]" id="companycity" value="{form[companycity]}">
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companystate">{_state}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companystate]" id="companystate" value="{form[companystate]}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companyzip">{_zip}</label>
+                                            <input class="draw-input" size="100" type="text" name="form[companyzip]" id="companyzip" value="{form[companyzip]}">
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="companycountry">{_country}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[companycountry]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+         
+                                
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="section address">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Logo</h1>
+                            <p>The Logo For The Company.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+
+                                            <label class="draw-label" for="form_imagename">Upload Image <span class="type--subdued"></span></label>
+
+                                            <if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'update'">
+                                                <div class="ssb"><img src="{config[imguploadscdn]}announcements/{form[imagename]}" width="100"></div>
+                                                <input type="hidden" name="form[imagename_old]" id="imagename_old" value="{form[imagename_old]}"> 
+                                            </if>
+                                            <div class="styled-file-input">
+                                                <div class="btn"> <span>{_browse}</span>
+                                                    <input type="file" name="form[imagename]"  id="uploadimage" class="js-no-dirty"> </div>
+                                            </div>
+                                            <div class="st">{_accepted}: <span class="type--subdued">.gif, .jpg, .jpeg, .png</span></div>
+                                            <div>Dimension: <span class="type--subdued">150 x 150</span></div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>      
+    </form>
+    </div>
+<div define="iLNav.setPage(['companies','companies_companies']), iLPage.close()"></div>
+<else />
+    <div id="companies-index" class="page has-contextual-help companies-page">
+        <div class="header-row">
+            <header id="companies-index-header" class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-bank draw-icon" aria-hidden="true"></span>
+                    {_companies}
+              	</h1>
+              	<div class="header__primary-actions"> 
+                   <a class="btn btn-primary" href="{https_server_admin}companies/add/">{_add_company}</a>    
+                </div>
+                <div class="header__primary-actions"> 
+                    {prevnext}
+                </div>
+                
+                
+                <div class="header__secondary-actions">
+                    <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
+                    <ul class="segmented"> </ul>
+                </div>
+            </header>
+    </div>
+    
+    <div class="draw-grid draw-grid--outer-grid">
+        <div class="draw-grid__cell">
+            <div class="draw-card">
+                <div class="has-bulk-actions">
+                    <div context="filterer">
+                        <div>
+                            <ul class="draw-tab__list" role="tablist">
+                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="companies/">{_active}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'banned'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="companies/?view=banned<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_banned} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'dispatched'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cancelled'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel4" aria-selected="false" href="companies/?view=cancelled<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_cancelled}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'picked'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'suspended'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel4" aria-selected="false" href="companies/?view=suspended<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_suspended}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'pending'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel2" aria-selected="false" href="companies/?view=moderated<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_moderated}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'accepted'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleted'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel6" aria-selected="false" href="companies/?view=deleted<if condition="isset($sheel->GPC['filter']) AND !empty($sheel->GPC['filter']) AND isset($sheel->GPC['q']) AND !empty($sheel->GPC['q'])">&amp;filter={form[filter]}&amp;q={form[q]}</if>">{_deleted}<if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleted'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
+                                    <div class="dropdown">
+                                        <ul class="draw-tab__list--vertical" role="tablist"></ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div> 
+                        <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                            <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                <div class="draw-input-wrapper">
+                                   
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}companies/" id="formsearch" accept-charset="UTF-8" method="get">
+                                    <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}"></if>
+                                    <div class="draw-field__connected-wrapper">
+                                        
+                                        <div class="draw-field--connected--no-flex">
+											<div class="draw-select__wrapper">
+                                            	{form[filter_pulldown]}
+											</div>
+											
+										</div>
+                                        
+                                            <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
+                                            <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                                <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
+                                            </div>
+                                        
+                                        <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                    </div>
+                                    </form>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="companies-results">
+                        <div class="draw-card__section">
+                            <div class="table-wrapper">
+                            	<form class="draw-form draw-form--full-width" action="{https_server_admin}companies/" id="formcompanies" accept-charset="UTF-8" method="get">
+                                <table class="table-hover expanded">
+                                    <thead>
+                                        <tr>
+                                            <th class="select"><span id="bulkOperations">
+                                            
+                                                <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                    <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                    <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="bulk-actions">
+                                                    <ul class="segmented">
+                                                    
+                                                        <li>
+                                                            <a class="btn btn-slim btn-disabled btn--selection">
+                                                                <span class="selection-count">
+                                                                  <span id="selectedcount"></span> {_selected_companies}
+                                                                </span> 
+                                                            </a>
+                                                        </li>
+                                                
+                                                        <li>
+                                                        	<a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                            <div class="draw-popover__container">
+                                                            	
+                                                                <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                                <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                    <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                    <div class="draw-popover__content-wrapper">
+                                                                        <div class="draw-popover__content" style="max-height: 637px;">
+                                                                            <div class="draw-popover__pane">
+                                                                                <ul class="draw-list draw-list--compact">
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markactive', 'Mark [x] selected companies as ready?', 'Are you sure you want to mark selected companies as active?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies active</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markbanned', 'Mark [x] selected companies as banned?', 'Are you sure you want to mark selected companies as banned?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies banned</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markcancelled', 'Mark [x] selected companies as cancelled?', 'Are you sure you want to mark selected companies cancelled?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies cancelled</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('marksuspended', 'Mark [x] selected companies as suspended?', 'Are you sure you want to mark selected companies as suspended?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies suspended</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markmoderated', 'Mark [x] selected companies as moderated?', 'Are you sure you want to mark selected companies as moderated?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected companies moderated</a></li>
+                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markdeleted', 'Mark [x] selected companies as not deleted?', 'Are you sure you want to mark selected companies as not deleted?', 'reqssss', 'selectedcount', '1', '1', '')">Mark selected companies deleted</a></li>
+                                                                                </ul> 
+                                                
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                
+                                                    <span class="bulk-select-all">
+                                                            <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
+                                                            
+                                                            
+                                                    </span>
+                                                </div>
+                                                </span></th>
+                                          <th class="is-sortable " > <span>{_id}</span> </th>
+                                          <th class="is-sortable "> <span>{_account}</span> </th>
+                                          <th class="customer is-sortable "> <span>{_name}</span> </th>
+                                          <th class="customer"> <span>{_description}</span> </th>
+                                          <th> <span>{_available_balance}</span> </th>
+                                          <th> <span>{_total_balance}</span> </th>
+                                          <th class="is-sortable"> <span>{_subscription}</span> </th>
+                                          <th>{_items}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        	<loop name="companies">
+                            <tr id="tr_selected_{company_id}" valign="top">
+                                <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="companyid[]" id="reqssss_{company_id}" value="{company_id}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                <td class="no-wrap"><a href="companies/view/{request_id}/?view={fview}">{company_id}</a></td>
+                                <td class="no-wrap">{account_number}</td>
+                                <td class="date draw-table__cell--full-width-when-condensed type--subdued"> <span>{companyname}</span></td>
+                                <td class="status type--subdued">{companydescription}</td>
+                                <td class="status no-wrap">{available_balance}</td>
+                                <td class="status no-wrap">{total_balance}</td>
+                                <td class="status no-wrap">{title_eng}</td>
+                                <td class="last_order type--subdued">{switchadd}{switchview}</td>
+                                
+                            </tr>
+                            </loop name="companies">
+                        </tbody>
+                        </table>
+                        <script type="text/javascript">
+						inlineCB = new iL_Inline('inlineCB', 'reqssss', 'formcompanies', '{_go}'); 
+						</script>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    </div>
+
+<div define="iLNav.setPage(['companies','companies_companies']), iLPage.close()"></div>
+</if>
+</if>
+</section>

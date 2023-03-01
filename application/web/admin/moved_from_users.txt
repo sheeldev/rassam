@@ -1,0 +1,261 @@
+// add initial shipping & billing profiles
+                                $this->sheel->db->query("
+                                        INSERT INTO " . DB_PREFIX . "shipping_profiles
+                                        (id, user_id, first_name, last_name, address, address2, phone, city, state, zipcode, country, dateadded, type, status, isdefault, ipaddress, browsertoken, sessionid)
+                                        VALUES(
+                                        NULL,
+                                        '" . $member['userid'] . "',
+                                        '" . $this->sheel->db->escape_string($user['firstname']) . "',
+                                        '" . $this->sheel->db->escape_string($user['lastname']) . "',
+                                        '" . $this->sheel->db->escape_string($user['address']) . "',
+                                        '" . $this->sheel->db->escape_string($user['address2']) . "',
+                                        '" . $this->sheel->db->escape_string($user['phone']) . "',
+                                        '" . $this->sheel->db->escape_string($user['city']) . "',
+                                        '" . $this->sheel->db->escape_string($user['state']) . "',
+                                        '" . $this->sheel->db->escape_string($user['zipcode']) . "',
+                                        '" . $this->sheel->db->escape_string($this->sheel->common_location->print_country_name($user['countryid'], $_SESSION['sheeldata']['user']['slng'], false, '')) . "',
+                                        '" . DATETIME24H . "',
+                                        'shipping',
+                                        '1',
+                                        '1',
+                                        '" . $this->sheel->db->escape_string(IPADDRESS) . "',
+                                        '" . $this->sheel->db->escape_string(((!empty($_COOKIE[COOKIE_PREFIX . 'token'])) ? $_COOKIE[COOKIE_PREFIX . 'token'] : TOKEN)) . "',
+                                        '" . $this->sheel->db->escape_string(session_id()) . "')
+                                ", 0, null, __FILE__, __LINE__);
+                                $user['shipprofileid'] = $this->sheel->db->insert_id();
+
+
+
+                                $this->sheel->db->query("
+                                        INSERT INTO " . DB_PREFIX . "shipping_profiles
+                                        (id, user_id, first_name, last_name, address, address2, phone, city, state, zipcode, country, dateadded, type, status, isdefault, ipaddress, browsertoken, sessionid)
+                                        VALUES(
+                                        NULL,
+                                        '" . $member['userid'] . "',
+                                        '" . $this->sheel->db->escape_string($user['firstname']) . "',
+                                        '" . $this->sheel->db->escape_string($user['lastname']) . "',
+                                        '" . $this->sheel->db->escape_string($user['address']) . "',
+                                        '" . $this->sheel->db->escape_string($user['address2']) . "',
+                                        '" . $this->sheel->db->escape_string($user['phone']) . "',
+                                        '" . $this->sheel->db->escape_string($user['city']) . "',
+                                        '" . $this->sheel->db->escape_string($user['state']) . "',
+                                        '" . $this->sheel->db->escape_string($user['zipcode']) . "',
+                                        '" . $this->sheel->db->escape_string($this->sheel->common_location->print_country_name($user['countryid'], $_SESSION['sheeldata']['user']['slng'], false, '')) . "',
+                                        '" . DATETIME24H . "',
+                                        'billing',
+                                        '1',
+                                        '1',
+                                        '" . $this->sheel->db->escape_string(IPADDRESS) . "',
+                                        '" . $this->sheel->db->escape_string(((!empty($_COOKIE[COOKIE_PREFIX . 'token'])) ? $_COOKIE[COOKIE_PREFIX . 'token'] : TOKEN)) . "',
+                                        '" . $this->sheel->db->escape_string(session_id()) . "')
+                                ", 0, null, __FILE__, __LINE__);
+                                $user['billprofileid'] = $this->sheel->db->insert_id();
+
+                                 if (isset($_COOKIE[COOKIE_PREFIX . 'eventid']) and $_COOKIE[COOKIE_PREFIX . 'eventid'] > 0) { // auction event registration (sends email 1 hour before auction event starts)
+                                        $this->sheel->watchlist->insert_item($member['userid'], $_COOKIE[COOKIE_PREFIX . 'eventid'], 'event', 'Event Registration', 0, 0, 1, 1);
+                                }
+
+                                 if (empty($subscription['subscriptionid'])) {
+                                $subscription['subscriptionid'] = $this->sheel->config['subscriptions_defaultplanid_product'];
+                        }
+                        if (empty($subscription['subscriptionpaymethod'])) {
+                                $subscription['subscriptionpaymethod'] = 'account';
+                        }
+                        if (empty($subscription['promocode'])) {
+                                $subscription['promocode'] = '';
+                        }
+
+                        
+                        // does admin permit new account registration bonuses? now handles points sign up credit also
+                        $preferences['registerbonus'] = $this->sheel->accounting->construct_account_bonus($member['userid'], $user['status']);
+
+                        // create account balance data
+                        $this->sheel->db->query("
+                                UPDATE " . DB_PREFIX . "users
+                                SET account_number = '" . $this->sheel->db->escape_string($this->sheel->config['globalserversettings_accountsabbrev']) . $this->construct_account_number() . "',
+                                income_reported = '" . $this->sheel->db->escape_string($preferences['registerbonus']) . "',
+                                income_spent = '0.00'
+                                WHERE user_id = '" . intval($member['userid']) . "'
+                        ");
+
+
+                                /**
+         * Function for returning the subscription id of a free subscription plan that is active and visible
+         * for the permission of 'servicebid' with a value of 'true'
+         *
+         * @param       integer       user id
+         * @param       string        email address
+         */
+        private function build_invitation_datastore($userid = 0, $email)
+        {
+                // transform this once external provider into a registered member invited to bid
+                // for service buyers that invite providers to their projects
+                $sql = $this->sheel->db->query("
+                        SELECT *
+                        FROM " . DB_PREFIX . "project_invitations
+                        WHERE email = '" . $this->sheel->db->escape_string($email) . "'
+                                AND seller_user_id = '-1'
+                ", 0, null, __FILE__, __LINE__);
+                if ($this->sheel->db->num_rows($sql) > 0) {
+                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+                                $this->sheel->db->query("
+                                        UPDATE " . DB_PREFIX . "project_invitations
+                                        SET seller_user_id = '" . intval($userid) . "'
+                                        WHERE email = '" . $this->sheel->db->escape_string($email) . "'
+                                                AND seller_user_id = '-1'
+                                        LIMIT 1
+                                ", 0, null, __FILE__, __LINE__);
+                        }
+                }
+                // transfer this once external buyer into a registered member invited to bid
+                // for merchants that invite buyers to their products
+                $sql = $this->sheel->db->query("
+                        SELECT *
+                        FROM " . DB_PREFIX . "project_invitations
+                        WHERE email = '" . $this->sheel->db->escape_string($email) . "'
+                                AND buyer_user_id = '-1'
+                ", 0, null, __FILE__, __LINE__);
+                if ($this->sheel->db->num_rows($sql) > 0) {
+                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+                                $this->sheel->db->query("
+                                        UPDATE " . DB_PREFIX . "project_invitations
+                                        SET buyer_user_id = '" . intval($userid) . "'
+                                        WHERE email = '" . $this->sheel->db->escape_string($email) . "'
+                                                AND buyer_user_id = '-1'
+                                        LIMIT 1
+                                ", 0, null, __FILE__, __LINE__);
+                        }
+                }
+        }
+
+
+                /**
+         * Function for creating a new user subscription plan.
+         *
+         * @param       integer      user id
+         * @param       integer      subscription id
+         * @param       string       payment method (account, creditcard, ipn, bank, check)
+         * @param       string       promotional code
+         * @param       integer      subscription role id
+         * @param       boolean      skip session functionality (maybe calling from external script)
+         * @param       boolean      is guest checkout (default false)
+         *
+         */
+        private function build_user_membership($userid = 0, $subscriptionid = 0, $paymethod = 'account', $promocode = '', $roleid = '-1', $skipsession = 0, $isguestcheckout = 0)
+        {
+                if (empty($roleid)) {
+                        $roleid = ((!empty($this->sheel->GPC['roleid']) and $this->sheel->GPC['roleid'] > 0) ? intval($this->sheel->GPC['roleid']) : $this->sheel->config['subscriptions_defaultroleid_product']);
+                }
+                $subscription_plan_result = array();
+                $sql = $this->sheel->db->query("
+                        SELECT subscriptionid, title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title, description_" . $_SESSION['sheeldata']['user']['slng'] . " AS description, cost, length, units, subscriptiongroupid, roleid, active, canremove, visible_registration, visible_upgrade, icon, migrateto, migratelogic
+                        FROM " . DB_PREFIX . "subscription
+                        WHERE subscriptionid = '" . intval($subscriptionid) . "'
+                                AND type = 'product'
+                ", 0, null, __FILE__, __LINE__);
+                if ($this->sheel->db->num_rows($sql) > 0) {
+                        $subscription_plan_result = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+
+                        ($apihook = $this->sheel->api('registration_build_user_subscription_start')) ? eval($apihook) : false;
+
+                        $subscription_plan_cost = sprintf('%01.2f', $subscription_plan_result['cost']);
+                        $subscription_length = $this->sheel->subscription->subscription_length($subscription_plan_result['units'], $subscription_plan_result['length']);
+                        $subscription_renew_date = $this->sheel->subscription->print_subscription_renewal_datetime($subscription_length);
+                        $sql_check = $this->sheel->db->query("
+                                SELECT u.id
+                                FROM " . DB_PREFIX . "subscription_user u
+                                LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
+                                WHERE u.user_id = '" . intval($userid) . "'
+                                        AND s.type = 'product'
+                                LIMIT 1
+                        ", 0, null, __FILE__, __LINE__);
+                        if ($this->sheel->db->num_rows($sql_check) == 0) {
+                                if (empty($paymethod)) {
+                                        $paymethod = 'account';
+                                }
+                                // build membership for user and set to unpaid / not active
+                                $this->sheel->db->query("
+                                        INSERT INTO " . DB_PREFIX . "subscription_user
+                                        (id, subscriptionid, user_id, paymethod, startdate, renewdate, autopayment, active, migrateto, migratelogic, roleid)
+                                        VALUES(
+                                        NULL,
+                                        '" . intval($subscriptionid) . "',
+                                        '" . intval($userid) . "',
+                                        '" . $this->sheel->db->escape_string($paymethod) . "',
+                                        '" . DATETIME24H . "',
+                                        '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
+                                        '1',
+                                        'no',
+                                        '" . $this->sheel->db->escape_string($subscription_plan_result['migrateto']) . "',
+                                        '" . $this->sheel->db->escape_string($subscription_plan_result['migratelogic']) . "',
+                                        '" . intval($roleid) . "')
+                                ", 0, null, __FILE__, __LINE__);
+                                if ($subscription_plan_result['cost'] <= 0 or $isguestcheckout) {
+                                        $this->sheel->db->query("
+                                                UPDATE " . DB_PREFIX . "subscription_user
+                                                SET active = 'yes',
+                                                autopayment = '1'
+                                                WHERE user_id = '" . intval($userid) . "'
+                                                        AND subscriptionid = '" . intval($subscriptionid) . "'
+                                                LIMIT 1
+                                        ", 0, null, __FILE__, __LINE__);
+                                        // set subscription session to active
+                                        // this will also prevent an admin subscription sessions from changing
+                                        if ((defined('LOCATION') and LOCATION != 'admin') or $skipsession == 0) {
+                                                $_SESSION['sheeldata']['user']['active'] = 'yes';
+                                        }
+                                }
+                                $subscription_length = $this->sheel->subscription->subscription_length($subscription_plan_result['units'], $subscription_plan_result['length']);
+                                $invoice_due_date = $this->sheel->subscription->print_subscription_renewal_datetime($subscription_length);
+                                $sql_check = $this->sheel->db->query("
+                                        SELECT *
+                                        FROM " . DB_PREFIX . "invoices
+                                        WHERE user_id = '" . intval($userid) . "'
+                                                AND subscriptionid = '" . intval($subscriptionid) . "'
+                                        LIMIT 1
+                                ", 0, null, __FILE__, __LINE__);
+                                if ($this->sheel->db->num_rows($sql_check) == 0) {
+                                        $ispurchaseorder = '0';
+                                        $subscriptionordernumber = $this->sheel->accounting_payment->construct_transaction_id();
+                                        $subscription_invoice_id = $this->sheel->accounting->insert_transaction(
+                                                array(
+                                                        'subscriptionid' => intval($subscriptionid),
+                                                        'user_id' => intval($userid),
+                                                        'description' => '{_subscription_payment_for} ' . $subscription_plan_result['title'] . ' (' . $subscription_plan_result['length'] . ' ' . $this->sheel->subscription->print_unit($subscription_plan_result['units']) . ')',
+                                                        'amount' => sprintf("%01.2f", $subscription_plan_cost),
+                                                        'status' => 'scheduled',
+                                                        'invoicetype' => 'subscription',
+                                                        'paymethod' => 'account',
+                                                        'createdate' => DATETIME24H,
+                                                        'duedate' => $invoice_due_date,
+                                                        'custommessage' => '{_thank_you_for_your_business}',
+                                                        'ispurchaseorder' => $ispurchaseorder,
+                                                        'returnid' => 1,
+                                                        'transactionidx' => $subscriptionordernumber
+                                                )
+                                        );
+                                        if ($subscription_plan_result['cost'] <= 0) { // if free plan, update invoice
+                                                $this->sheel->db->query("
+                                                        UPDATE " . DB_PREFIX . "invoices
+                                                        SET status = 'paid',
+                                                        paiddate = '" . DATETIME24H . "',
+                                                        paid = '0.00'
+                                                        WHERE invoiceid = '" . intval($subscription_invoice_id) . "'
+                                                                AND user_id = '" . intval($userid) . "'
+                                                        LIMIT 1
+                                                ", 0, null, __FILE__, __LINE__);
+                                        }
+
+                                        ($apihook = $this->sheel->api('registration_build_user_subscription_end')) ? eval($apihook) : false;
+
+                                        $this->sheel->db->query("
+                                                UPDATE " . DB_PREFIX . "subscription_user
+                                                SET invoiceid = '" . intval($subscription_invoice_id) . "'
+                                                WHERE user_id = '" . intval($userid) . "'
+                                                        AND subscriptionid = '" . intval($subscriptionid) . "'
+                                                LIMIT 1
+                                        ", 0, null, __FILE__, __LINE__);
+                                }
+                        }
+                }
+        }

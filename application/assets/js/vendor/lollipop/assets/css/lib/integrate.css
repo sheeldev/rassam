@@ -1,0 +1,254 @@
+#lollipop-editor-container {
+    font-family: Helvetica !important;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999999;
+}
+
+#lollipop-editor-container #lollipop-frame-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0%;
+    left: 0%;
+    box-shadow: inset 0 -2px 5px rgba(61, 61, 61, 0.5), 0 6px 44px rgba(0, 0, 0, 0.7);
+}
+
+/*Extra Small Devices*/
+@media screen and (max-width: 575px) {
+  #lollipop-editor-container #lollipop-frame-container {
+    width: 100%;
+    left: 0;
+  }
+}
+
+#lollipop-editor-container .lollipop-close {
+    line-height: 1.2;
+    position: absolute;
+    right: 5px;
+    top: -4px;
+    cursor: pointer;
+    font-size: 30px;
+    font-weight: bold;
+    color: #666;
+    transition: font-size 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#lollipop-editor-container .lollipop-close:hover {
+    color: #eee;
+    font-size: 35px;
+}
+
+#lollipop-editor-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.noscroll {
+    overflow: hidden !important;
+}
+
+.uil-ripple-css {
+  background: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 200px;
+  margin-left: -100px;
+  margin-top: -100px;
+}
+.uil-ripple-css div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border-radius: 50%;
+  border-width: 12px;
+  border-style: solid;
+  -ms-animation: uil-ripple 2s ease-out infinite;
+  -moz-animation: uil-ripple 2s ease-out infinite;
+  -webkit-animation: uil-ripple 2s ease-out infinite;
+  -o-animation: uil-ripple 2s ease-out infinite;
+  animation: uil-ripple 2s ease-out infinite;
+}
+.uil-ripple-css div:nth-of-type(1) {
+  border-color: #afafb7;
+}
+.uil-ripple-css div:nth-of-type(2) {
+  border-color: #5cffd6;
+  -ms-animation-delay: 1s;
+  -moz-animation-delay: 1s;
+  -webkit-animation-delay: 1s;
+  -o-animation-delay: 1s;
+  animation-delay: 1s;
+}
+
+@-webkit-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@-webkit-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@-moz-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@-ms-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@-moz-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@-webkit-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@-o-keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}
+@keyframes uil-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0 0 0 0;
+  }
+  33% {
+    width: 44%;
+    height: 44%;
+    margin: -22% 0 0 -22%;
+    opacity: 1;
+  }
+  100% {
+    width: 88%;
+    height: 88%;
+    margin: -44% 0 0 -44%;
+    opacity: 0;
+  }
+}

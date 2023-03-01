@@ -1,0 +1,65 @@
+<div class="clear"></div>
+<!-- start rv widget --> 
+<!--<section class="rv-footer" id="footer-recentlyviewed"></section> --> 
+<!-- <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'rv-footer', cid:{cid}, limit:24, minlimit:1, sortby:'viewdesc', viewmode:'horizontal', thumbwidth:50, thumbheight:50, userid:'{user[userid]}', container:'footer-recentlyviewed'});}</script> --> 
+
+<section class="footer-container-content" id="footer-content">
+	<div class="<if condition="(!isset($sheel->show['widescreen'])) OR (isset($sheel->show['widescreen']) AND $sheel->show['widescreen'] == false)">box<else />box2</if>">
+		<div class=content-box>		
+				<ul class="content-links">
+					{footerpagelinks}
+				</ul>
+		</div>
+
+		
+	</div>
+</section>
+<section class="footer-container" id="footer">
+	<div class="<if condition="(!isset($sheel->show['widescreen'])) OR (isset($sheel->show['widescreen']) AND $sheel->show['widescreen'] == false)">box<else />box2</if>">
+		<div class="copyright">{_copyright} &copy; {year} <a href="{http_server}">{config[globalserversettings_sitename]}</a> - All rights reserved.</div>
+		<div class="box-fluid">
+			<div class="pull-right social-box2">
+				<span class="social-follow">{_follow} {config[globalserversettings_sitename]} {_on} :&nbsp;&nbsp;</span>
+				<a class="font_footer" href="{config[globalserversettings_twitterurl]}"><i class="fa fa fa-twitter white" style="font-size:24px"></i></a>
+				<a class="font_footer" href="{config[globalserversettings_facebookurl]}"><i class="fa fa fa-facebook" style="font-size:24px"></i></a>
+				<a class="font_footer" href="{config[globalserversettings_instaurl]}"><i class="fa fa fa-instagram" style="font-size:24px"></i></a>
+				<a class="font_footer" href="{config[globalserversettings_youtubeurl]}"><i class="fa fa fa-youtube-play" style="font-size:24px"></i></a>
+				<a class="font_footer" href="{config[globalserversettings_linkedin]}"><i class="fa fa fa-linkedin" style="font-size:24px"></i></a> 
+			</div>
+		</div>
+    </div>
+</section>
+
+<section id="footermobileapp"></section>
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'footermobileapp', cid:'{cid}', userid:'{user[userid]}', container:'footermobileapp'});}</script>
+
+<if condition="isset($sheel->GPC['cid']) AND $sheel->GPC['cid'] > 0 AND isset($categoryname) AND !empty($categoryname)"><script>jQuery('#cidfield').val({cid});jQuery('#search-menu-selected').html('{categoryname_escaped}');</script></if>
+
+<!-- start pm widget --> 
+<!-- <section id="msg-overlay" class="msg-overlay-container"></section> -->
+<!-- <script>var pmpollingdata = JSON.parse(iL['GROWL']);if (true && typeof sheel_widget === 'function' && typeof pmpollingdata['pmpolling'] != 'undefined' && pmpollingdata['pmpolling'] > 0) {sheel_widget("block", {mode:'privatemessagepopup', refreshrate:pmpollingdata['pmpolling'], refreshmode:'pull', userid:'{user[userid]}', container:'msg-overlay'});}</script> -->
+<!-- <!-- end pm widget --> 
+
+<if condition="isset($sheel->show['cookiesconsent']) AND $sheel->show['cookiesconsent']">
+<section class="bottom-fixed" id="bottom-fixed">
+	<ul class="notices">
+		<li class="notice--primary" id="cookie-consent">
+			<div class="notice-content">
+				<div class="tac lh-14 fs-13 pb-9">
+                    {_cookie_usage_consent}
+				</div>
+                <div class="tac">
+                    <a href="javascript:;" class="btn btn-prim large" id="accept-cookie-usage">{_accept}</a>
+                    <a href="{https_server}content/go/cookies" class="btn">{_learn_more}</a>
+                </div>
+			</div>
+		</li>
+	</ul>
+</section>
+</if>
+
+<!-- start analytics -->
+<div id="google-analytics"></div>
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'googleanalytics', zone:'footer', pubid:'{config[globalserversettings_ga]}', container:'google-analytics'});}</script>
+<!-- end analytics -->
+

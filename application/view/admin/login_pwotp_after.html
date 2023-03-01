@@ -1,0 +1,61 @@
+<div id="container">
+
+  <if condition="isset($sheel->show['error_password']) AND $sheel->show['error_password']">
+    <div id="system_error" class="status system-error dialog-status">
+      <p>{_passwords_are_empty_or_do_not_match}</p>
+    </div>
+  </if>
+  <if condition="isset($sheel->show['error_email']) AND $sheel->show['error_email']">
+    <div id="system_error" class="status system-error dialog-status">
+      <p>{_you_have_provided_incorrect_login_credentials}</p>
+    </div>
+  </if>
+
+  <noscript class="no-js">In order to use this page you need to enable Javascript. <a
+      href="http://www.enable-javascript.com/" target="_blank">Learn how to enable Javascript</a></noscript>
+  <div id="dialog-alternate">
+    <div class="login-form">
+      <h1 class="dialog-heading">{site_name}</h1>
+      <h2 class="dialog-subheading">{_password_recovery}</h2>
+
+      <form name="login" action="{https_server_admin}signin/renew-password-change/" method="post" accept-charset="UTF-8"
+        novalidate>
+        <input type="hidden" name="cmd" value="renew-password-change" />
+        <input type="hidden" name="email" value="{email}" />
+        <input type="hidden" name="otp" value="{otp}" />
+        <div class="clearfix">
+          <div class="login-container">
+
+            <div class="lform dialog-form">
+              <div class="require-cookies status dialog-status">
+                <p>Please enable cookies in your browser preferences to continue.</p>
+              </div>
+            </div>
+
+            <div id="sign-in-form" class="lform dialog-form">
+              <div id="login">
+
+                <div class="dialog-input-container clearfix">
+									<input type="password" name="password" size="30" id="password" class="dialog-input "
+										spellcheck="false" placeholder="{_password}" />
+									<label for="password" class="visuallyhidden">{_password}</label>
+									<i class="ico dialog-ico ico-password"></i>
+								</div>
+								<div class="dialog-input-container clearfix">
+									<input type="password" name="password2" size="16" id="password2" class="dialog-input "
+										spellcheck="false" placeholder="{_verify_password}" />
+									<label for="password2" class="visuallyhidden">{_verify_password}</label>
+									<i class="ico dialog-ico ico-password"></i>
+								</div>
+              </div>
+              <input type="submit" name="commit" value="{_change_password}" class="dialog-btn" />
+            </div>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <a href="{https_server_admin}signin/">{_cancel}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

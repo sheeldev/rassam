@@ -1,0 +1,57 @@
+<div id="footer" class="footer-page">
+    <div class="main-footer footer-bg-color-sheel">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-xs-12 col-md-push-1">
+                    <div class="box-link-footer">
+                        <ul class="list-none">
+                            <span class="onlydesktop">{footerpagelinks}</span>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="copy-right-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-8 col-md-8 col-ss-8 col-xs-12 <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <div class="copyright">{_copyright} &copy; {year} <a class="color" >{config[globalserversettings_sitename]}</a> - All rights reserved.</div>
+                </div>
+                <div class="col-sm-6 col-lg-4 col-md-4 col-ss-4 col-xs-12">
+                    <div class="social-box2 pull-right">
+                        <span class="">Follow {config[globalserversettings_sitename]} On:&nbsp;&nbsp;&nbsp;</span>
+                        <a href="{config[globalserversettings_twitterurl]}"><i class="fa fa fa-twitter"></i></a>
+                        <a href="{config[globalserversettings_facebookurl]}"><i class="fa fa fa-facebook"></i></a>
+                        <a href="{config[globalserversettings_instaurl]}"><i class="fa fa fa-instagram"></i></a>
+                        <a href="{config[globalserversettings_youtubeurl]}"><i class="fa fa fa-youtube-play"></i></a>
+                        <a href="{config[globalserversettings_linkedin]}"><i class="fa fa fa-linkedin"></i></a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--.footer-page-->
+<!-- Scroll to top start  -->
+<a class="back2Top" title="Back to top" href="#">&#10148;</a>
+<!-- Scroll to top end  -->
+<!-- Modal -->
+<div id="signup" class="modal fade text-center">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div id="signin" class="modal fade text-center">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<!-- start analytics -->
+<div id="google-analytics"></div>
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'googleanalytics', zone:'footer', pubid:'{config[globalserversettings_ga]}', container:'google-analytics'});}</script>
+<!-- end analytics -->
+

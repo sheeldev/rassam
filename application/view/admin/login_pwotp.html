@@ -1,0 +1,69 @@
+<div id="container">
+  <if condition="isset($sheel->show['error_otp']) AND $sheel->show['error_otp']">
+    <div id="system_error" class="status system-error dialog-status">
+      <p>{_wrong_otp_code}</p>
+    </div>
+  </if>
+  <noscript class="no-js">In order to use this page you need to enable Javascript. <a
+      href="http://www.enable-javascript.com/" target="_blank">Learn how to enable Javascript</a></noscript>
+  <div id="dialog-alternate">
+    <div class="login-form">
+      <h1 class="dialog-heading">{site_name}</h1>
+      <h2 class="dialog-subheading">{_password_recovery}</h2>
+
+      <form name="login" action="{https_server_admin}signin/renew-password-after-otp/" method="post" accept-charset="UTF-8"
+        novalidate>
+        <input type="hidden" name="email" value="{email}" />
+        <div class="clearfix">
+          <div class="login-container">
+
+            <div class="lform dialog-form">
+              <div class="require-cookies status dialog-status">
+                <p>Please enable cookies in your browser preferences to continue.</p>
+              </div>
+            </div>
+
+            <div id="sign-in-form" class="lform dialog-form">
+              <div id="login">
+                <div class="dialog-input-container clearfix">
+                  <input type="otp" name="otp" maxlength="6" id="otp" class="dialog-input" spellcheck="false" placeholder="{_otp_verification}" />
+                  <label for="login-input" class="visuallyhidden">{_otp_verification}</label>
+                  <i class="ico dialog-ico ico-password"></i>
+                </div>
+              </div>
+              <input type="submit" name="commit" value="{_otp_verify}" class="dialog-btn" />
+
+              <input id="expirybutton"
+                onclick="location.href='{https_server_admin}signin/renew-password-otp/?email={email}'" type="button"
+                class="dialog-btn-otp" value="00:00" disabled>
+
+            </div>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <a href="{https_server_admin}signin/">{_cancel}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  var countDownDate = '{expiry}' * 1000;
+  var x = setInterval(function () {
+    var now = new Date().getTime();
+    var distance = countDownDate - now;
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("expirybutton").value = (minutes < 10 ? '0' + minutes : minutes) + ":" + (seconds < 10 ? '0' + seconds : seconds);
+
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("expirybutton").value = "{_otp_resend}";
+      document.getElementById("expirybutton").disabled = false;
+    }
+  }, 1000);
+</script>

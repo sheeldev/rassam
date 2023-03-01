@@ -1,0 +1,107 @@
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 100;
+    src: local('Roboto Thin'), local('Roboto-Thin'), url(../fonts/Roboto/Roboto-Thin.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 100;
+    src: local('Roboto Thin Italic'), local('Roboto-ThinItalic'), url(../fonts/Roboto/Roboto-ThinItalic.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Roboto Light'), local('Roboto-Light'), url(../fonts/Roboto/Roboto-Light.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Roboto Light Italic'), local('Roboto-LightItalic'), url(../fonts/Roboto/Roboto-LightItalic.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto'), local('Roboto-Regular'), url(../fonts/Roboto/Roboto-Regular.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Roboto Medium'), local('Roboto-Medium'), url(../fonts/Roboto/Roboto-Medium.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 500;
+    src: local('Roboto Medium Italic'), local('Roboto-MediumItalic'), url(../fonts/Roboto/Roboto-MediumItalic.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Roboto Bold'), local('Roboto-Bold'), url(../fonts/Roboto/Roboto-Bold.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Roboto Bold Italic'), local('Roboto-BoldItalic'), url(../fonts/Roboto/Roboto-BoldItalic.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    src: local('Roboto Black'), local('Roboto-Black'), url(../fonts/Roboto/Roboto-Black.ttf);
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 900;
+    src: local('Roboto Black Italic'), local('Roboto-BlackItalic'), url(../fonts/Roboto/Roboto-BlackItalic.ttf);
+}
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 200;
+    src: local('Oswald ExtraLight'), local('Oswald-ExtraLight'), url(../fonts/Oswald/Oswald-ExtraLight.ttf);
+}
+/* cyrillic */
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Oswald Light'), local('Oswald-Light'), url(../fonts/Oswald/Oswald-Light.ttf);
+}
+/* cyrillic */
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Oswald Regular'), local('Oswald-Regular'), url(../fonts/Oswald/Oswald-Regular.ttf);
+}
+/* cyrillic */
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Oswald Medium'), local('Oswald-Medium'), url(../fonts/Oswald/Oswald-Medium.ttf);
+}
+/* cyrillic */
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Oswald SemiBold'), local('Oswald-SemiBold'), url(../fonts/Oswald/Oswald-SemiBold.ttf);
+}
+/* cyrillic */
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Oswald Bold'), local('Oswald-Bold'), url(../fonts/Oswald/Oswald-Bold.ttf);
+}

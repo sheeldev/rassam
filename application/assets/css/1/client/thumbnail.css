@@ -1,0 +1,330 @@
+/* 2.3.3 Thumbnails */
+.product {
+	width:100%;
+	padding:0 0 10px 0;
+	margin-bottom:20px;
+	margin-left:10px;
+	position:relative;
+	z-index:1;
+	overflow:hidden
+}
+.product .side-corner-tag p {
+	line-height: 17px;
+	font-size: 12px
+}
+.product h3 {
+	font-size: 21px;
+	font-weight: normal;
+	color:#666;
+	padding-bottom:14px;
+	border-bottom:1px solid #ececec;
+	margin-bottom:20px
+}
+@media only screen and (min-width : 150px) and (max-width : 500px) {
+	.product h3 {
+		font-size:18px;
+	}
+}
+.product li {
+	width:130px;
+	height:216px;
+	float:{template_textalignment}
+}
+.product li .imgb {
+	vertical-align: middle;
+	padding: 1px;
+	display: table-cell;
+	text-align: center;
+	font-size: 1px;
+	background-color: #fff;
+	/*box-shadow: 0 2px 3px -1px rgba(186, 186, 186, 0.7);
+	border: 1px solid #e2e2e2;*/
+}
+.product li .drop-area.imgb {
+	border: 1px dashed #e2e2e2
+}
+.product li img {
+	border: 0 solid
+}
+.product li a {
+	color:#000000;
+	display: block
+}
+.product li span a {
+	padding-top:10px;
+	height:35px;
+	display:block;
+	overflow:hidden;
+	line-height:18px;
+	text-decoration:none;
+	font-size:13px
+}
+.product li a:hover {
+	color:#fdb819;
+}
+.product li strong {
+	display:block;
+	padding-top:11px;
+	font-size:13px;
+}
+.product li .timeleft {
+	font-size: 10px;
+	color: #777;
+}
+/*slider widget next/prev controls*/
+.product a.prev-wrapper, .product a.next-wrapper {
+	position: absolute;
+	top: 105px;
+	background-color: #fff;
+	height: 100px;
+	line-height: 100px;
+	width: 45px;
+	text-align: center;
+	box-shadow: 0 1px 3px #888;
+}
+.product a span.prev, .product a span.next {
+	background:url({imgcdn}v5/sprite_nav_slider.png) no-repeat;
+	width:9px;
+	height:20px;
+	float:{template_textalignment};
+	text-indent:-9999px;
+	position:absolute;
+	top:140px;
+	z-index:3;
+}
+.product a.prev-wrapper {
+	{template_textalignment}: -1px;
+	z-index:2;
+	box-shadow: 0 1px 3px #888;
+}
+.product a.next-wrapper {
+	{template_textalignment_alt}: 0;
+	z-index:2;
+	box-shadow: 0 1px 3px #888;
+}
+.product a span.prev {
+	background-position:{template_textalignment} top;
+	{template_textalignment}:15px;
+	top: 40px;
+}
+.product a span.prev:hover {
+	background-position:{template_textalignment} bottom;
+}
+.product a span.next {
+	background-position:{template_textalignment_alt} top;
+	{template_textalignment_alt}:15px;
+	top: 40px;
+}
+.product a span.next:hover {
+	background-position:{template_textalignment_alt} bottom;
+}
+.product a.next-wrapper.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+.product a span.next.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+.product a.prev-wrapper.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+.product a span.prev.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+
+
+/* Salvages Thumbnails */
+.salvage {
+	width:100%;
+	height:430px!important;
+	padding:0 0 10px 0;
+	margin-left:10px;
+	margin-bottom:20px;
+	position:relative;
+	z-index:1;
+	overflow:hidden;
+	margin-top:5px;
+	background-color:#ffffff;
+}
+.salvage .side-corner-tag p {
+	line-height: 17px;
+	font-size: 12px
+}
+.salvage h3 {
+	font-size: 21px;
+	font-weight: normal;
+	color:#666;
+	padding-bottom:10px;
+	border-bottom:1px solid #ececec;
+	float:{template_textalignment}
+	margin-bottom:5px;
+}
+@media only screen and (min-width : 150px) and (max-width : 500px) {
+	.salvage h3 {
+		font-size:18px;
+	}
+}
+.salvage li {
+	height:410px;
+	text-align: center;
+	float:{template_textalignment}
+	border: 1px solid #e2e2e2;
+}
+.salvage li img {
+	height:240px;
+	border: 0 solid
+}
+.salvage li a {
+	color:#000000;
+	display: block
+}
+.salvage h1{
+	margin-top:-20px;
+	position: relative;
+	font-size:10px;
+	color: #777;
+}
+.salvage h4{
+	position: relative;
+	font-size:25px;
+}
+.salvage h4:after{
+	position: relative;
+	display: table;
+    margin: auto;
+    content: '\0020';
+    overflow: hidden;
+    border-bottom: #fdb819 solid 3px;
+	margin-top: 5px;
+	height: 3px;
+	width:35px;
+	font-size:25px;
+}
+.salvage li .btn {
+	margin-top: 10px;
+}
+.salvage li span a {
+	padding-top:10px;
+	height:35px;
+	display:block;
+	overflow:hidden;
+	line-height:18px;
+	text-decoration:none;
+	font-size:13px;
+}
+.salvage li a:hover {
+	color:#FDB819;
+}
+.salvage li strong {
+	display:block;
+	margin-top:40px;
+	font-size:13px;
+}
+.salvage li .timeleft {
+	font-size: 10px;
+	color: #777;
+}
+/*salvage slider widget next/prev controls*/
+.salvage a.prev-wrapper, .salvage a.next-wrapper {
+	position: absolute;
+	top: 155px;
+	background-color: #fff;
+	height: 100px;
+	line-height: 100px;
+	width: 45px;
+	text-align: center;
+	box-shadow: 0 1px 3px #888;
+}
+.salvage a span.prev, .salvage a span.next {
+	background:url({imgcdn}v5/sprite_nav_slider.png) no-repeat;
+	width:9px;
+	height:20px;
+	float:{template_textalignment};
+	text-indent:-9999px;
+	position:absolute;
+	top:140px;
+	z-index:3;
+}
+.salvage a.prev-wrapper {
+	{template_textalignment}: -1px;
+	z-index:2;
+	box-shadow: 0 1px 3px #888;
+}
+.salvage a.next-wrapper {
+	{template_textalignment_alt}: 0;
+	z-index:2;
+	box-shadow: 0 1px 3px #888;
+}
+.salvage a span.prev {
+	background-position:{template_textalignment} top;
+	{template_textalignment}:15px;
+	top: 40px;
+}
+.salvage a span.prev:hover {
+	background-position:{template_textalignment} bottom;
+}
+.salvage a span.next {
+	background-position:{template_textalignment_alt} top;
+	{template_textalignment_alt}:15px;
+	top: 40px;
+}
+.salvage a span.next:hover {
+	background-position:{template_textalignment_alt} bottom;
+}
+.salvage a.next-wrapper.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+.salvage a span.next.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+.salvage a.prev-wrapper.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+.salvage a span.prev.disabled {
+	cursor: not-allowed;
+	opacity:0.6
+}
+
+.wrap-rating {
+    text-align: left;
+    margin-bottom: 8px;
+    line-height: normal;
+    height: auto;
+}
+.product-rate{
+    background-image: url(/application/assets/images/sheel-theme-images/rate-star2.png);
+    background-position: 0 -10px;
+    height: 10px;
+    width: 60px;
+}
+.product-rating {
+    background-image: url(/application/assets/images/sheel-theme-images/rate-star2.png);
+    background-position: 0px 0px;
+    background-repeat: repeat-x;
+    height: 10px;
+    width: 20%;
+}
+.wp-00 {
+	width:0%;
+}
+.wp-20 {
+	width:20%;
+}
+.wp-40 {
+	width:40%;
+}
+.wp-60 {
+	width:60%;
+}
+.wp-80 {
+	width:80%;
+}
+.wp-100 {
+	width:100%;
+}

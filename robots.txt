@@ -1,0 +1,4 @@
+# Basic robots.txt for Sheel
+
+User-agent: *
+Disallow: /

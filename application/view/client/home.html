@@ -1,0 +1,228 @@
+<div class="slider">
+    <div class="slides_container">
+       	<img src="{img}v5/ico_spacer.gif" alt="" id="hero_spacer" class="img-responsive" />
+        <loop name="homepageheros">
+        <img src="{imguploadscdn}heros/{filename}" alt="" id="hero_{id}" class="img-responsive" usemap="#hero_{id}" />
+        </loop name="homepageheros">
+    </div>
+</div>
+<div class="clear"></div>
+{heroimagemaps}
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("slider", {mode:'homepage', cid:0, width:{herowidth}, height:{heroheight}, method:'slide'});}</script>
+
+<div id="content-grid" class="fixed-grid-right">
+    <div class="fixed-grid-right-inner">
+        <div class="fixed-grid-right-col grid-col-left">
+        	<div class="grid-content">
+            	<if condition="isset($sheel->config['requests']) AND $sheel->config['requests'] AND isset($sheel->show['requests']) AND $sheel->show['requests']">
+                <div class="salvage <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <h3>
+                    	<span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-6"><i class="fa fa-arrow-circle-right"></i></span>{_salvage}
+                    </h3>
+                    <span id="c4l"></span>
+                    <span id="c4r"></span>
+                    <div class="carousel_home_requests_product no-overflow">
+                        <ul class="slides">
+                            <loop name="requests">
+                            <li class="slide">
+                                <h4>{title}</h4>
+                                {picture}
+                                <h1>{_salvaged_by_x::{seller}}</h1>
+                                <strong>{day}-{month}-{year}</strong>
+                                <a href="{https_server}stores/{storeurl}/" class="btn large">{_visit} {location}</a>
+                            </li>
+                            </loop name="requests">
+                        </ul>
+                    </div>
+                
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+                </if>
+            	<if condition="isset($staffpicks) AND count($staffpicks) > 0"><!-- start staff picks -->
+                <div class="product <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <h3>
+						<div class="setting-box hide">
+							<a href="javascript:;" data-id="setting-block-staffpicks" class="setting-block setting-left"><span>{_settings}</span></a>
+							<div id="setting-block-staffpicks" class="setting-panel bs-5-5-5-0">
+                  				<div class="title">
+                  					<h3></h3>
+                  				</div>
+                  				<div class="setting-form">
+									<div class="row"></div>
+								</div>
+							</div>
+                   		</div>
+                    	<span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-6"><i class="fa fa-star"></i></span>{_staff_picks}
+                    </h3>
+                    <span id="c5l"></span>
+                    <span id="c5r"></span>
+                    <div class="carousel_home_staffpicks_product no-overflow">
+                        <ul class="slides">
+                            <loop name="staffpicks"><li class="slide">
+                                {photoplain}
+                                <span>{title}</span>
+                                <if condition="$sheel->config['lowestpricecombined']"><strong>{lowestprice}</strong><else /><strong>{price}</strong></if>
+                                <if condition="$sheel->config['timeleftblocks']"><span class="timeleft">{timeleft}</span></if>
+                            </li></loop name="staffpicks">
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!-- end staff picks --><div class="clear"></div>
+                </if>
+                <script>if (true && typeof sheel_widget === 'function') {sheel_widget("carousel", {mode:'staffpicks', cid:0, limit:30, minlimit:7, perpage:10, thumbwidth:150, thumbheight:150, sortby:'random', method:'slide'});}</script>
+
+               
+                <if condition="isset($relatedproducts) AND count($relatedproducts) > 0"><!-- start related items viewed -->
+                <div class="product <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <h3>
+                    	<div class="setting-box hide">
+							<a href="javascript:;" class="setting-block setting-left"><span>{_settings}</span></a>
+							<div class="setting-panel bs-5-5-5-0">
+                  				<div class="title">
+                  					<h3></h3>
+                  				</div>
+                  				<div class="setting-form">
+									<div class="row"></div>
+								</div>
+							</div>
+                   		</div>
+                    	<span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-6"><img src="{imgcdn}v5/ico_related.png" alt="" /></span>{_related_to_items_viewed}
+                    </h3>
+                    <span id="c1ld"></span>
+                    <span id="c1rd"></span>
+                    <div class="carousel_home_related_product no-overflow">
+                        <ul class="slides">
+                            <loop name="relatedproducts"><li class="slide">
+                                {photoplain}
+                                <span>{title}</span>
+                                <if condition="$sheel->config['lowestpricecombined']"><strong>{lowestprice}</strong><else /><strong>{price}</strong></if>
+                                <if condition="$sheel->config['timeleftblocks']"><span class="timeleft">{timeleft}</span></if>
+                            </li></loop name="relatedproducts">
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!-- end related items viewed --><div class="clear"></div>
+                </if>
+                <script>if (true && typeof sheel_widget === 'function') {sheel_widget("carousel", {mode:'relatedtoviewed', cid:0, limit:30, minlimit:7, perpage:10, thumbwidth:150, thumbheight:150, sortby:'random', userid:'{user[userid]}', method:'slide'});}</script>
+
+
+                <if condition="!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND isset($itemsfromsellerwatchlist) AND count($itemsfromsellerwatchlist) > 0"><!-- start seller watchlist product -->
+                <div class="product <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <h3>
+                    	<div class="setting-box hide">
+							<a href="javascript:;" class="setting-block setting-left"><span>{_settings}</span></a>
+							<div class="setting-panel bs-5-5-5-0">
+                  				<div class="title">
+                  					<h3></h3>
+                  				</div>
+                  				<div class="setting-form">
+									<div class="row"></div>
+								</div>
+							</div>
+                   		</div>
+                    	<span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-6"><img src="{imgcdn}v5/ico_watchlist.png" alt="" /></span>{_items_from_seller_watchlist}
+                    </h3>
+                    <span id="c2l"></span>
+                    <span id="c2r"></span>
+                    <div class="carousel_home_seller_watchlist no-overflow">
+                        <ul class="slides">
+                            <loop name="itemsfromsellerwatchlist"><li class="slide">
+                                {photoplain}
+                                <span>{title}</span>
+                                <if condition="$sheel->config['lowestpricecombined']"><strong>{lowestprice}</strong><else /><strong>{price}</strong></if>
+                                <if condition="$sheel->config['timeleftblocks']"><span class="timeleft">{timeleft}</span></if>
+                            </li></loop name="itemsfromsellerwatchlist">
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!-- end seller watchlist product --><div class="clear"></div>
+                </if>
+                <script>if (true && typeof sheel_widget === 'function') {sheel_widget("carousel", {mode:'itemwatchlists', cid:0, limit:30, minlimit:7, perpage:10, thumbwidth:150, thumbheight:150, sortby:'random', userid:'{user[userid]}', method:'slide'});}</script>
+
+                <if condition="$sheel->config['showlatestlistings'] AND isset($latestproducts) AND count($latestproducts) > 0"><!-- start latest product -->
+                <div class="product <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <h3>
+                    	<div class="setting-box hide">
+							<a href="javascript:;" class="setting-block setting-left"><span>{_settings}</span></a>
+							<div class="setting-panel bs-5-5-5-0">
+                  				<div class="title">
+                  					<h3></h3>
+                  				</div>
+                  				<div class="setting-form">
+									<div class="row"></div>
+								</div>
+							</div>
+                   		</div>
+                    	<span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-6"><img src="{imgcdn}v5/ico_new.png" alt="" /></span>{_bid_on_new_items_for_sale}
+                    </h3>
+                    <span id="c3l"></span>
+                    <span id="c3r"></span>
+                    <div class="carousel_home_latest_product no-overflow">
+                        <ul class="slides">
+                            <loop name="latestproducts"><li class="slide">
+                                {photoplain}
+                                <span>{title}</span>
+                                <if condition="$sheel->config['lowestpricecombined']"><strong>{lowestprice}</strong><else /><strong>{price}</strong></if>
+                                <if condition="$sheel->config['timeleftblocks']"><span class="timeleft">{timeleft}</span></if>
+                            </li></loop name="latestproducts">
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!-- end latest product --><div class="clear"></div>
+                </if>
+                <script>if (true && typeof sheel_widget === 'function') {sheel_widget("carousel", {mode:'latest', cid:0, limit:30, minlimit:1, perpage:10, thumbwidth:150, thumbheight:150, sortby:'random', method:'slide'});}</script>
+
+
+               	<if condition="isset($sheel->config['newarrivals']) AND $sheel->config['newarrivals']">
+                <div class="product noborder onlydesktop <if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if>">
+                    <h3 class="mb-20"><span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-6"><img src="{imgcdn}v5/ico_elevator.png" alt="" /></span>{_new_arrivals}</h3>
+                    <div class="newArrivals clearfix">
+                        <!-- ax spot 2 -->
+                        <!-- <div class="newArrival-left" id="billboard-2"></div> -->
+                        <!-- ax spot 2 -->
+                        <div class="newArrival-right" id="billboard-newarrivals"></div>
+
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'newarrivals', cid:0, limit:8, minlimit:1, sortby:'postdesc', container:'billboard-newarrivals'});}</script>
+                <!-- <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpa', id:2, cid:0, limit:1, minlimit:1, sortby:'', viewmode:'billboard', userid:'{user[userid]}', mime:'.jpg', width:280, height:390, container:'billboard-2'});}</script> -->
+				</if>
+           
+            </div>
+       	</div>
+           <div id="sidebar-grid" class="fixed-grid-right-col sidebar-right grid-col-right onlydesktop">
+        	<div class="ads-container" id="billboard-1"></div>
+            <div class="ads-container" id="billboard-10"></div>
+            <div class="ads-container" id="billboard-11"></div>
+            <!--  
+         	<div class="ads-container" id="billboard-googleadsense"></div>
+			<div class="ads-container" id="billboard-bestsellers"></div>
+			<div class="ads-container" id="billboard-bestnewsellers"></div>
+			<div class="ads-container" id="billboard-custom"></div> 
+            -->
+            <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpa', id:1, cid:0, limit:1, minlimit:1, sortby:'', viewmode:'', userid:'{user[userid]}', divider:true, dividersize:12, mime:'.jpg', width:300, height:400, container:'billboard-1'});}</script>
+            <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpa', id:10, cid:0, limit:1, minlimit:1, sortby:'', viewmode:'', userid:'{user[userid]}', divider:true, dividersize:12, mime:'.jpg', width:300, height:400, container:'billboard-10'});}</script>
+            <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpa', id:11, cid:0, limit:1, minlimit:1, sortby:'', viewmode:'', userid:'{user[userid]}', divider:true, dividersize:12, mime:'.jpg', width:300, height:400, container:'billboard-11'});}</script>
+            <!--  
+			<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'bestsellers', cid:0, limit:5, minlimit:5, sortby:'orders', viewmode:'vertical', divider:true, dividersize:12, container:'billboard-bestsellers'});}</script>
+			<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'bestnewsellers', cid:0, limit:5, minlimit:5, sortby:'orders', viewmode:'vertical', divider:true, dividersize:12, container:'billboard-bestnewsellers'});}</script>
+			<if condition="isset($sheel->config['globalserversettings_gad']) AND !empty($sheel->config['globalserversettings_gad'])"><script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'googleadsense', zone:'sidebar', maxwidth:300, maxheight:600, pubid:'{config[globalserversettings_gad]}', slotid:'{config[globalserversettings_gadsid]}', divider:true, dividersize:12, container:'billboard-googleadsense'});}</script></if>
+			<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'custom', cid:0, limit:1, minlimit:1, sortby:'', viewmode:'', divider:false, dividersize:12, html:'', js:'', container:'billboard-custom'});}</script>
+            -->
+        </div> 
+    </div>
+</div>
+
+<div id="anchor-stores"></div>
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'anchorstores', cid:0, limit:4, minlimit:1, perpage:4, thumbwidth:200, thumbheight:200, sortby:'random', title:escape('{_premium_anchor_stores}'), container:'anchor-stores'});}</script>
+
+
+<script>
+this.top.location !== this.location && (this.top.location = this.location);
+</script>

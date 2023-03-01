@@ -1,0 +1,28 @@
+<div class="spacing-top-small padding-right-small">
+	<div class="fixed-left-grid-inner" id="column-fill">
+    	<div class="fixed-left-grid-col col-right" id="column-right">
+        
+        	<div id="container" class="padding-left-small" documentrole="main">
+            	
+                <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'consent'">
+                <div class="msg msg-warning">
+                	<h1>{_important_message}</h1>
+                    <p class="pt-6 fs-13">Please read and accept our {custom_page_title} before continuing.</p>
+                    <p class="fs-13">
+                    <label for="agreecheck">
+                    	<input type="checkbox" name="agreecheck" id="agreecheck" value="1" /> I have read and accept your {custom_page_title}.
+                    </label>
+					<div class="clear"></div>
+					<input type="button" class="btn btn-prim" value="{_accept}" accesskey="s" id="accept-button" />
+						
+                    </p>
+                </div>
+                </if> 				
+                <div class="rte lh-14 mb-20">{content}</div>
+                <div class="spacing-large"></div>
+                
+            </div>
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div id="container">
+
+  <if condition="isset($sheel->show['error_login']) AND $sheel->show['error_login']">
+    <div id="system_error" class="status system-error dialog-status">
+      <p>{_please_enter_a_valid_email_address}</p>
+    </div>
+  </if>
+
+  <noscript class="no-js">In order to use this page you need to enable Javascript. <a
+      href="http://www.enable-javascript.com/" target="_blank">Learn how to enable Javascript</a></noscript>
+  <div id="dialog-alternate">
+    <div class="login-form">
+      <h1 class="dialog-heading">{site_name}</h1>
+      <h2 class="dialog-subheading">{_password_recovery}</h2>
+
+      <form name="login" action="{https_server_admin}signin/renew-password-otp/" method="post" accept-charset="UTF-8"
+        novalidate>
+        <input type="hidden" name="cmd" value="renew-password-otp" />
+        <div class="clearfix">
+          <div class="login-container">
+
+            <div class="lform dialog-form">
+              <div class="require-cookies status dialog-status">
+                <p>Please enable cookies in your browser preferences to continue.</p>
+              </div>
+            </div>
+
+            <div id="sign-in-form" class="lform dialog-form">
+              <div id="login">
+                <div class="dialog-input-container clearfix">
+                  <input type="email" name="email" size="30" id="email" class="dialog-input " value="{admin_cookie}"
+                    spellcheck="false" placeholder="{_email}" />
+                  <label for="login-input" class="visuallyhidden">{_email}</label>
+                  <i class="ico dialog-ico ico-email"></i>
+                </div>
+              </div>
+              <input type="submit" name="commit" value="{_recover_password}" class="dialog-btn" />
+            </div>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <a href="{https_server_admin}signin/">{_cancel}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

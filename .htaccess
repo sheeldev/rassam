@@ -1,0 +1,77 @@
+<FilesMatch "\.(ttf|otf|svg|eot|woff)$">
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+    </IfModule>
+</FilesMatch>
+
+# Deny access to .htaccess
+<Files .htaccess>
+    # 2.4
+    Require all denied
+    # 2.2
+    #order allow,deny
+    #deny from all
+</Files>
+
+# Deny access to /cron/ unless it's us (prevent DoS)
+<Files cron>
+    # 2.4
+    #Require all denied
+    #Require ip xx.xx.xx.xx
+</Files>
+
+# Set basic headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options: SAMEORIGIN
+    Header set X-XSS-Protection "1; mode=block"
+    # prevent some browsers from mime-sniffing the response
+    #Header set X-Content-Type-Options: nosniff
+    # content security policy
+    #Header set Content-Security-Policy:
+    # strict transport security (hsts)
+    #Header always set Strict-Transport-Security "max-age=16070400; includeSubDomains"
+</IfModule>
+
+# Set basic compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript
+</IfModule>
+
+# Enable basic asset caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access 2 weeks"
+    ExpiresByType image/jpeg "access 2 weeks"
+    ExpiresByType image/gif "access 2 weeks"
+    ExpiresByType image/png "access 2 weeks"
+    ExpiresByType image/x-icon "access 1 year"
+    ExpiresByType text/css "access 1 week"
+    ExpiresByType text/x-javascript "access 2 weeks"
+    ExpiresByType application/pdf "access 1 month"
+    ExpiresByType application/x-shockwave-flash "access 1 month"
+    ExpiresDefault "access 1 week"
+</IfModule>
+
+# Rewrite everything to v6 router
+<IfModule mod_rewrite.c>
+    Options -Indexes
+    Options +FollowSymLinks
+    #RewriteBase /
+    DirectoryIndex router.php
+
+    # Fire up our engine
+    RewriteEngine On
+
+    # Prevent duplicate content
+    #RewriteCond %{HTTP_HOST} ^domain.com
+    #RewriteRule ^(.*)$ http://www.domain.com/$1 [R=301,L]
+
+    # Force ssl only
+    #RewriteCond %{HTTPS} =off
+    #RewriteRule ^ https://www.domain.com%{REQUEST_URI} [QSA,L,R=301]
+
+    # Finish up
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . router.php [L]
+</IfModule>

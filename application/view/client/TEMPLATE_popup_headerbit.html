@@ -1,0 +1,50 @@
+<div id="header" class="header-page1">
+	<div class="bg-color2 top-header1">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-xs-5">
+					<ul class="list-inline-block lang-currency-box">
+						<if condition="$sheel->language->lang_count_canselect()">
+							<li class="lang-box dropdown-box"><a class="color-ccc title11" href="javascript:;">{user[languageiso]}</a>
+								<ul class="dropdown-list list-none 
+									<if condition=" $sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>"> {languagelinks}
+								</ul>
+							</li>
+						</if>
+					</ul>
+				</div>
+				<div class="col-sm-6 col-xs-7">
+					<ul class="social-box list-inline-block pull-right">
+						<li><a class="title11 text-uppercase color-ccc" href="#"><i
+								class="title12 fa fa-question" aria-hidden="true"></i>{_help}</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--.top-header1-->
+	<div class="bg-white">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2 col-sm-3 col-xs-10">
+					<div class="sheel-logo logo-text">
+						<h1 class="">
+							<a href="{https_server}" title="{site_name}" class="flex-wrap">
+								<img src="{imguploadscdn}meta/logo.png" alt="Sheel Logo" />
+							</a>
+						</h1>
+					</div>
+				</div>
+				<div class="col-md-10 col-sm-10 col-xs-6">
+					<nav class="main-nav main-nav1 menu-sticky-on text-center">
+						<ul id="menu-main-menu"
+							class="list-none menu-main-menu pull-right">
+							<li><a><span class="header-sign-in">{header_text}</span></a></li> 
+						</ul>
+					</nav>
+				</div> 
+			</div>
+		</div>		
+	</div>
+	<div class="bg-color box-cate-search"></div>
+</div>

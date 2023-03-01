@@ -1,0 +1,220 @@
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'complete'"><script>jQuery.growl.notice({ title: '{_registration_complete}', message: '{_thank_you_for_registering_we_are_glad_you_have_chosen}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'active'"><script>jQuery.growl.notice({ title: '{_notice}', message: '{_it_appears_account_active}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'suspended'"><script>jQuery.growl.error({ title: '{_suspended}', message: '{_your_account_is_suspended_login_disabled}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'cancelled'"><script>jQuery.growl.error({ title: '{_failed}', message: '{_your_account_is_cancelled}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'unverified'"><script>jQuery.growl.warning({ title: '{_notice}', message: '{_you_have_not_activated_your_account_via_email}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'moderated'"><script>jQuery.growl.warning({ title: '{_notice}', message: '{_your_account_is_in_moderation_mode_login_temporarily_disabled_until_further_notice}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'banned'"><script>jQuery.growl.error({ title: '{_failed}', message: '{_this_account_has_been_banned}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == '1'"><script>jQuery.growl.error({ title: '{_failed}', message: '{_you_have_provided_incorrect_login_credentials}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'crypt'"><script>jQuery.growl.error({ title: '{_failed}', message: '{_problem_verification_url_code}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'iprestrict'"><script>jQuery.growl.error({ title: '{_failed}', message: '{_your_ip_address_does_not_match_for_this_account}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'checkemail'"><script>jQuery.growl.notice({ title: '{_notice}', message: '{_please_check_your_email_for_the_link_to_activate_your_account}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'checkemailpassword'"><script>jQuery.growl.notice({ title: '{_notice}', message: '{_please_check_your_email_for_the_auto_generated_password_we_sent}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'agentchange'"><script>jQuery.growl.warning({ title: '{_notice}', message: '{_while_your_session_is_still_active_your_connection_details_have_changed}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'specialcharacters'"><script>jQuery.growl.error({ title: '{_failed}', message: '{_it_appears_username_special_characters}' })</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'byb'"><script>jQuery.growl.notice({ title: '{_your_shopping_cart}', message: '{_signin_before_checking_out}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'ldap'"><script>jQuery.growl.error({ title: '{_failed}', message: '{note}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'asi'"><script>jQuery.growl.error({ title: '{_already_signed_in}', message: '{_already_signed_in_x::{note}}' })</script></if>
+
+
+<div class="wrap-bread-crumb text-center" style="min-height:calc(100vh - 232px); background-image: url(/application/assets/images/sheel-theme-images/home/a8.png); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+    <div class="container" style="margin:25px 10px;">
+        <div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+
+                    <div class="login-wrap">
+                    <if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'unverified'"><form name="activation" action="{https_server}register/" method="post" accept-charset="UTF-8"><else /><if condition="$sheel->config['ldap_only']"><form name="ldaplogin" action="{https_server}signin/ldap/" method="post" accept-charset="UTF-8" onsubmit="return validate_signin();"><else /><form name="login" action="{https_server}signin/" method="post" accept-charset="UTF-8" onsubmit="return validate_signin();md5(password, md5pass, md5pass_utf)"></if></if>
+                       	
+                        <div class="login-html">
+                        	<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab" style="margin-left: 20px;"><if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'unverified'">{_resend_email_activiation_code}<else /><if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'iprestrict'">{_click_here_to_reset_your_ip_address_preference}<else /><if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'asi'">{_sign_out_all_devices}<else />{_sign_in}</if></if></if></label>
+                            <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"><if condition="$sheel->config['registrationdisplay_quickregistration'] AND !$sheel->config['ldap_only'] AND (empty($_SESSION['sheeldata']['user']['userid']))">{_signup}</if></label>
+                            <div class="login-form"> 
+                            	<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'unverified'">
+                            	<div class="sign-in-htm">
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                            	    	<label for="user" class="label">{_email_address}</label>
+	                            	    	<input type="text" id="email" name="email" placeholder="Enter Your Email"  class="input w-100pct requiredfield" autocomplete="off" autofocus />	    	
+	                            	    </div>
+	                                </div>
+	                                <div class="col-md-6">
+				                        <div class="group">
+	                                        <input type="submit" class="button" value="{_resend}">
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-6">
+				                        <div class="group">
+	                                        <input type="button" value="{_cancel}" class="button" onclick="location.href='{https_server}signin/'">
+	                                    </div>
+	                                </div>
+	                            </div>
+                            	<div class="clear"></div>
+                                <input type="hidden" name="view" value="activate" />
+                                <input type="hidden" name="subcmd" value="resend" />
+                            	<else />
+                            	<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'iprestrict'">
+                            	<div class="sign-in-htm">
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                            	    	<input type="button" value="{_click_here_to_reset_your_ip_address_preference}" class="button" onclick="location.href='{https_server}signin/?cmd=_ip-reset'" />	    	
+	                            	    </div>
+	                                </div>
+	                            </div>
+                            	<div class="clear"></div>
+                            	<else />
+                            	<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'asi'">
+                            	<div class="sign-in-htm">
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                            	    	<input type="button" value="{_sign_out_all_devices}" class="button" onclick="location.href='{https_server}signout/?cmd=all-devices&uid={uid}'" /> 	
+	                            	    </div>
+	                                </div>
+	                            </div>
+                            	<div class="clear"></div>
+                            	<else />
+                                <div class="sign-in-htm">
+	                                <div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_username} <if condition="isset($sheel->config['ldap_only']) AND !$sheel->config['ldap_only']"><span class="normal">{_or}</span> {_email_address}</if></label>
+	                                        <input type="text" id="username" name="username" value="{username}"  class="input-orig w-214 requiredfield" autocomplete="off" autofocus />
+	                                    </div>
+	                                </div>
+	                            	<div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="pass" class="label">{_password}</label>
+	                                        <input type="password" id="password" name="password" value="{password}" class="input-orig w-214 requiredfield" autocomplete="off" />
+	                                    </div>
+	                                </div>
+                                    <div class="col-md-12">
+		                            	<div class="group">
+		                            		<label class="sheel-checkbox sheel-checkbox-1">{_keep_me_signed_in_24_hours}
+											  <input type="checkbox" name="remember" id="remember" checked="checked">
+											  <div class="checkmark"></div>
+											</label>
+	                                    </div>
+	                                </div>
+                                    <div class="col-md-12">
+			                            <div class="group">
+	                                    	<label for="pass" class="label" style="white-space: normal;">{_we_can_remmeber_you_for_24_hours}</label>
+	                                    </div>
+                                    </div>
+                                    <div class="col-md-12">
+				                        <div class="group">
+	                                        <input type="submit" class="button" value="{_sign_in}">
+	                                    </div>
+	                                </div>
+                                    <div class="foot-lnk">
+                                        <a href="{https_server}signin/?cmd=_pw-renew">{_recover_my_password}</a>
+                                    </div>
+                                    
+                                    <if condition="!$sheel->config['ldap_only']">
+
+                                		<if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey']) OR isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey']) OR isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])">
+                                		<div class="hr"></div>
+                                		<div class="foot-lnk">{_sign_in_with}</div>
+                                 		</if>
+                        				<div class="foot-lnk">
+                                		<if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey'])">
+                                        	<a href="{https_server}signin/facebook/"><i class="fa fa loginsocial fa-facebook"></i></a>
+                                    	</if>
+
+                                    	<if condition="isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey'])">
+                                    		<a href="{https_server}signin/twitter/"><i class="fa fa loginsocial fa-twitter"></i></a>
+                                    	</if>
+
+                                    	<if condition="isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])">
+                                    		<a href="{https_server}signin/linkedin/"><i class="fa fa loginsocial fa-linkedin"></i></a>    	
+                                    	</if> 
+                                		<if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey']) OR isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey']) OR isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])">
+                                		<div class="foot-lnk" align="center">{_when_using_sso_you_agree} <a href="{https_server}content/go/terms" class="underlinelink">{_terms_lc}</a> {_and} <a class="underlinelink" href="{https_server}content/go/privacy">{_privacy_policy_lc}</a>.</div>
+                                    	<script>if (in_iframe()){toggle_hide('socialsso');}</script>
+                                    	</if>
+                                    	</div>
+                                	</if>
+                                </div>
+                                <input type="hidden" name="redirect" value="{redirect}" />
+                                <input type="hidden" name="login_process" value="1" />
+                                <input type="hidden" name="md5pass" />
+                                <input type="hidden" name="md5pass_utf" />
+                                </if>
+                                </if>
+                                </if>
+                                </form>
+                                <div class="sign-up-htm">
+                                	<form action="javascript:fetch_post_form_drole(fetch_js_object('quickregister'));" name="quickregister" accept-charset="UTF-8" id="quickregister" autocomplete="off">
+                                	<div class="col-md-6">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_username}</label>
+	                                        <input type="text" class="input-orig w-214 requiredfield" name="qusername" id="qusername" maxlength="49" />
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-6">
+	                                    <div class="group">
+	                                        <label for="pass" class="label">{_password}  <span class="color-grey"> - </span> <span class="color-grey" id="pwd_info">{_password_strength}</span></label> 
+	                                        <input type="password" class="input-orig w-214 requiredfield" name="qpassword" id="qpassword" maxlength="32" onkeyup="checkPassword(this.value)" /><span toggle="password-field" class="fa fa-fw fa-eye field-eye-icon toggle-password" onClick="viewPassword('qpassword')"></span>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_full_name}</label>
+	                                        <input type="text" class="input-orig w-465 requiredfield" name="qfullname" id="qfullname" maxlength="49" />
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_email}</label>
+	                                        <input type="text" class="input-orig w-465 requiredfield" name="qemail" id="qemail" maxlength="49" />
+	                                    </div>
+	                                </div>
+	                                
+                                    <if condition="isset($sheel->show['rolescount']) AND $sheel->show['rolescount']">
+										<div class="col-md-12">
+											<div class="group">
+												<label for="user" class="label">{_select_your_role}</label>
+												<div class="draw-select__wrapper" id="role-wrapper">{rolepulldown}</div>
+											</div>
+										</div>
+									<else /><input type="hidden" name="roleid" id="roleid" value="{defaultroleid}" />
+									</if>
+                                    <input type="hidden" name="qcc" id="qcc" value="{cc}" />
+                              		<div class="pb-20"></div>
+	                                <div class="col-md-12">
+	  									<div class="group">
+	  										<label class="sheel-checkbox sheel-checkbox-1">{_i_agree_to_the} <a href="{https_server}content/go/terms" target="_blank" class="underlinelink" >{_terms_lc}</a> {_and} <a href="{https_server}content/go/privacy" target="_blank" class="underlinelink" >{_privacy_policy_lc}</a>.
+											  <input type="checkbox" name="agreecheck" id="agreecheck" checked="checked">
+											  <div class="checkmark"></div>
+											</label>
+	  								    </div>
+	                                </div>
+                                    <div class="col-md-12">
+		  								<div class="group">
+	                                        <label class="sheel-checkbox sheel-checkbox-1">{_receive_news_and_updates_by_email}.
+											  <input type="checkbox" name="marketing" id="marketing" checked="checked">
+											  <div class="checkmark"></div>
+											</label>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+		  								<div class="group">
+		  									<if condition="isset($sheel->show['rolescount']) AND $sheel->show['rolescount']">
+                                    		<input type="button" name="button" value="{_register}" class="button" onclick="return verify_quick_registration();" />   
+                                    		<else />
+                                        	<input type="button" name="button" value="{_register}" class="button" onclick="return verify_quick_registration_drole();" />   
+                                    		</if>
+	   									</div>
+	   									<div class="hr"></div>	
+	                                </div>
+	                                
+   								</form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="clear"></div>

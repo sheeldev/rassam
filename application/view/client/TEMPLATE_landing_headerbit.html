@@ -1,0 +1,76 @@
+<div id="header" class="header-page1">
+	<div class="bg-color2 top-header1">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-xs-5">
+					<ul class="list-inline-block lang-currency-box">
+						<if condition="$sheel->language->lang_count_canselect()">
+							<li class="lang-box dropdown-box"><a class="color-ccc title11" href="javascript:;">{user[languageiso]}</a>
+								<ul class="dropdown-list list-none 
+									<if condition=" $sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>"> {languagelinks}
+								</ul>
+							</li>
+						</if>
+					</ul>
+				</div>
+				
+
+			</div>
+		</div>
+	</div>
+	<!--.top-header1-->
+	<div class="bg-white">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2 col-sm-3 col-xs-10">
+					<div class="sheel-logo logo-text">
+						<h1 class="">
+							<a href="{https_server}" title="{site_name}" class="flex-wrap">
+								<img src="{imguploadscdn}meta/logo.png" alt="Sheel Logo" />
+							</a>
+						</h1>
+					</div>
+				</div>
+				<div class="col-md-10 col-sm-9 col-xs-2">
+					<nav class="main-nav main-nav1 menu-sticky-on text-center">
+						<ul id="menu-main-menu"
+							class="list-none menu-main-menu pull-right">
+							<li><a href="{http_server}">{_home}</a></li>
+							<li><span class="onlydesktop">{headerpagelinks}</span></li>
+							<if condition="!empty($_SESSION['sheeldata']['user']['username']) AND !empty($_SESSION['sheeldata']['user']['userid'])">
+							<li><a href="/home/">{_hello}, {user[firstname]}</a></li> 
+							<li><a href="{https_server}signout/"><span
+									class="header-sign-in">{_signout}</span></a></li>
+							<else />
+							<li><a href="{http_server}register/"><span class="header-sign-up">{_signup}</span></a>
+							</li>
+							<li><a href="{http_server}signin/"><span class="header-sign-in">{_signin}</span></a> 
+							</li></if>
+						</ul>
+						<a href="#" class="toggle-mobile-menu"><span></span></a>
+					</nav>
+				</div>
+			</div>
+			<div class="sheel-announcement">
+				<div class="close-announcement">
+					<i class="fs14 fa fa-close"></i>
+				</div>
+				<img src="{imguploadscdn}announcements/{announcement_image}"
+					style="width: 40px; height: 70px; margin-left: 35px; margin-top: 10px; display: inline-block;">
+				<div class="announcement-image2"></div>
+				<div class="announcement-content1">{announcement}</div> 
+			</div>
+		</div>
+	</div>
+	<div class="bg-color box-cate-search"></div>
+</div>
+
+<script type="text/javascript">
+	var pathname = window.location.href;
+	var home = "https://staging.sheel.online/";
+	if (pathname == home) {
+		document.getElementsByClassName("sheel-announcement")[0].style.display = 'block';
+	} else {
+		document.getElementsByClassName("sheel-announcement")[0].style.display = 'none';
+	}
+</script>

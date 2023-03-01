@@ -1,0 +1,88 @@
+<link rel="stylesheet" href="{vars[csspath]}bootstrap{vars[min]}.css">
+<link rel="stylesheet" href="{vars[csspath]}bootstrap-responsive{vars[min]}.css">
+<link rel="stylesheet" href="{vars[csspath]}bootstrap-image-gallery{vars[min]}.css">
+<link rel="stylesheet" href="{vars[csspath]}jquery.fileupload-ui.css">
+<noscript><link rel="stylesheet" href="{vars[csspath]}jquery.fileupload-ui-noscript.css"></noscript>
+<style>
+.bgimage
+{
+	background-image: url({vars[imgcdn]}v5/bg_uploadfile.png);
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	position: absolute;
+	width: 256px;
+	height: 256px;
+	margin-left: -128px;
+	margin-top: -55px;
+	top: 50%;
+	left: 50%;
+	display:block;
+	float:left;
+}
+
+</style>
+<div class="fs-12 pb-3">{vars[newlimits]}</div>
+<div class="fs-12 litegray">{_you_have_uploaded_x_pictures_span}</div>
+<form id="fileupload" action="{vars[https_server]}ajax" method="post" enctype="multipart/form-data">
+<input type="hidden" name="attachtype" id="attachtype" value="{vars[attachtype]}">
+<input type="hidden" name="project_id" id="project_id" value="{vars[pid]}">
+<input type="hidden" name="maxfiles" id="maxfiles" value="{vars[maximum_files]}">
+<input type="hidden" name="freefiles" id="freefiles" value="{vars[freefiles]}">
+<input type="hidden" name="costperupload" id="costperupload" value="{vars[costperupload]}">
+<input type="hidden" name="ajaxurl" id="ajaxurl" value="{vars[https_server]}ajax">
+<div class="span5 fileupload-progress fade">
+	<div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+		<div class="bar w-0"></div>
+		<div class="progress-extended fl-pa"></div>
+	</div>
+</div>
+<div class="fileupload-loading"></div>
+<div class="wrapper_files">
+	<ul id="itempictures" class="files reorder_ul reorder-photos-list"></ul>
+</div>
+<div class=" fileupload-buttonbar pb-6 pt-12">
+	<span class="btn fileinput-button"><span>{_add_files}</span><input type="file" name="files[]" multiple></span>
+	<span class="btn" onclick="parent.top.jQuery('#picturesurl').toggleClass('open')"><span>{_add_files_from_url}</span></span>
+	<input type="checkbox" class="toggle hidden">
+</div>
+</form>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <li class="template-download file-item ui-sortable-handle{% if (file.error) { %} red-border{% } else { %} gray-border{% } %}">
+
+		<div class="preview" title="{_drag_left_right_photo}"><span></span><div class="ed" id="edtPnl_{%=file.hash%}"><a title="{_remove_photo}" class="aCls delete" href="javascript:;" idx="0" data-type="{%=file.delete_type%}" data-confirm="{_confirm_picture_delete_are_you_sure}" data-url="{%=file.delete_url%}"{% if (file.delete_with_credentials) { %} data-xhr-fields="{"withCredentials":true}"{% } %}><img src="{vars[imgcdn]}v5/ico_trash.png" width="18"></a></div></div>
+		{% if (file.error) { %}
+			<div class="file-error">{%=file.error%}</div>
+		{% } %}
+		{% if (o.files.valid && !i) { %}
+        <div class="file-progress-mini"><div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar w-0"></div></div></div>
+        {% } %}
+
+    </li>
+{% } %}
+</script>
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <li class="template-download file-item ui-sortable-handle{% if (file.error) { %} red-border{% } else { %} gray-border{% } %}" id="image_li_{%=file.hash%}" invoiceid="{%=file.invoiceid%}" usersort="{%=file.usersort%}">
+	<div class="preview"{% if (file.error) { %} title="{%=file.error%}"{% } else { %} title="{_drag_left_right_photo}"{% } %}>{% { %}<a href="javascript:;" class="image_link drag"><img src="{%=file.thumbnail_url%}" id="itemimg_{%=file.hash%}"></a><div class="ed" id="edtPnl_{%=file.hash%}"><a title="{_edit_photo}" class="aEdt edit" href="javascript:;" idx="0" onclick="parent.imageEditor.open({image_url: '{%=file.full_url%}?' + new Date().getTime(), thumb_container: 'itemimg_{%=file.hash%}', hash: '{%=file.hash%}', filename: '{%=file.name%}', type: '{%=file.type%}', itemid: '{vars[pid]}'});"><img src="{vars[imgcdn]}v5/ico_pencil.png" width="18"></a><a title="{_remove_photo}" class="aCls delete" href="javascript:;" idx="0" data-filehash="{%=file.hash%}" data-type="{%=file.delete_type%}" data-confirm="{_confirm_picture_delete_are_you_sure}" data-url="{%=file.delete_url%}"{% if (file.delete_with_credentials) { %} data-xhr-fields="{"withCredentials":true}"{% } %}><img src="{vars[imgcdn]}v5/ico_trash.png" width="18"></a></div>{% } %}</div>
+	{% if (file.error) { %}
+		<div class="file-error">{%=file.error%}</div>
+	{% } %}
+	<input type="checkbox" name="delete" value="1" class="toggle hidden">
+	</li>
+{% } %}
+</script>
+<script src="{vars[phrases]}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/vendor/jquery.ui.widget.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="{vars[jscdn]}functions.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/tmpl{vars[min]}.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/load-image{vars[min]}.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/jquery.iframe-transport.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/jquery.fileupload.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/jquery.fileupload-fp.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/jquery.fileupload-ui.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/jquery.canvastoblob.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/jquery.getimagedata.js"></script>
+<script src="{vars[jscdn]}vendor/fileuploader/main.js"></script>

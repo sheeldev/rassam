@@ -1,0 +1,320 @@
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    <div id="dashboard-online" class="page" context="dashboard">
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+					
+                    <span class="glyphicons glyphicons-home draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}">{_home}</a> </span>
+
+                </h1>
+                <div class="header__primary-actions">
+                    <form action method="get"><ul class="segmented">
+                        <li> 
+                        	<div class="draw-input-wrapper">
+                                <div class="draw-select__wrapper draw-input--has-content">
+                                    {periodpulldown}
+                                </div>
+                        	</div>
+                        </li>
+                    </ul></form>
+                    
+                </div>
+            </header>
+        </div>
+        <if condition="isset($sheel->show['postitems']) AND $sheel->show['postitems']">
+        <div class="row s-none box success header-notice header-inline plan-upsell">
+            <div class="fl notice-message">
+                <h3><strong>{_post_first_item_for_sale}</strong></h3>
+                <br /><p>Get started by <a href="{https_server}sell/" target="_blank">posting your first item</a> for sale or by <a href="{https_server}sell/bulk/?do=downloadsample" target="_blank">downloading</a> the sample bulk products csv file and <a href="{https_server}sell/bulk/" target="_blank">importing here</a>.  Don't worry, we'll remove this nag message once you start posting items.</p>
+            </div>
+        </div></if>
+        <if condition="isset($sheel->show['autoupdates']) AND $sheel->show['autoupdates']"><div class="row s-none box notice header-notice header-inline plan-upsell">
+            <div class="fl notice-message">
+                <h3><strong>{_enable_automatic_software_updates}</strong></h3>
+                <br /><p>Stay secure &amp; bug free by <a href="{https_server_admin}settings/updates/">enabling Automatic Updates</a> for your Marketplace.  Stay updated each time a newer version is published.</p>
+            </div>
+        </div>
+        </if>
+        <if condition="isset($sheel->show['usersmoderated']) AND $sheel->show['usersmoderated']"><div class="row s-none box notice header-notice header-inline plan-upsell">
+            <div class="fl notice-message">
+                <h3><strong>{_moderated_customers_require_approval}</strong></h3>
+                <br /><p>{_there_appears_to_be} <a href="{https_server_admin}customers/?view=moderated">{_x_pending_customers::{statistics[userspending]}}</a>.</p>
+            </div>
+        </div>
+        </if>
+        <if condition="isset($sheel->show['attachmentsmoderated']) AND $sheel->show['attachmentsmoderated']"><div class="row s-none box notice header-notice header-inline plan-upsell">
+            <div class="fl notice-message">
+                <h3><strong>{_moderated_attachments_require_approval}</strong></h3>
+                <br /><p>{_there_appears_to_be} <a href="{https_server_admin}marketplace/attachments/?view=moderated">{_x_pending_attachments::{statistics[attachmentspending]}}</a>.</p>
+            </div>
+        </div>
+        </if>        
+        <if condition="isset($sheel->show['diskspacewarning']) AND $sheel->show['diskspacewarning']"><div class="row s-none box notice header-notice header-inline plan-upsell">
+            <div class="fl notice-message">
+                <h3 class="type--danger"><strong>{_your_marketplace_using_x_total_storage::{space[percent]}}</strong></h3>
+                <br /><p>{_with_only_x_percent_left_upgrade::{space[percentfree]}} <if condition="$sheel->config['license_type'] == 'leased'"><a href="{https_server_admin}settings/license/plans/">{_click_here_add_more_space}</a>.</if></p>
+            </div>
+        </div></if>
+            <div class="draw-grid__cell">
+                <div class="draw-card dashboard-card dashboard-card--graph">
+                    <div class="dashboard__empty js-empty-message hide"> </div>
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                        	
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_visitors}</h2> </div>
+                                <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                            
+                        </div>
+                    </header>
+                    <section class="draw-card__section">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--channel-cell">
+                            <div class="draw-grid__cell draw-grid__cell--third dashboard-multi-time">
+                                <div id="DashboardOnlineKpiVisitors" class="ssb dashboard-widget">
+                                    <p class="channel-stat__heading">{_total}</p>
+                                    <h2 class="channel-stat__number channel-stat--blue channel-stat__number--large">
+                                    {visitors[visitors]}
+                                    </h2> 
+                                </div>
+                                <div id="DashboardOnlineKpiUniqueVisitors" class="dashboard-widget">
+                                    <p class="channel-stat__heading">{_unique}</p>
+                                    <h2 class="channel-stat__number channel-stat__number--large">
+                                    <span style="color:#aad1e8">{visitors[uniquevisitors]}</span>
+                                    </h2> 
+                                </div>
+								<div id="DashboardOnlineKpiPageViews" class="dashboard-widget" style="padding-top:12px">
+                                    <p class="channel-stat__heading">{_page_views}</p>
+                                    <h2 class="channel-stat__number  channel-stat__number--large">
+                                    {visitors[pageviews]}
+                                    </h2> 
+                                </div>
+
+                            </div>
+                            <div class="draw-grid__cell">
+                                <div id="DashboardVisitorsGraph" class="reports-chart interactive dashboard-widget">
+                                    <!-- 416 x 210 -->
+									<style>
+									.ct-grids line {
+ 										 color: #798c9c;
+									}
+									.ct-labels span {
+									  color: #95a7b7;
+									  font-size:11px;
+									}	
+									.ct-series-a .ct-bar {
+										stroke: #479ccf;
+										stroke-width: 30px
+									}
+									.ct-series-b .ct-bar {
+										stroke: #aad1e8;
+										stroke-width: 15px
+									}
+									</style>
+									<script type="text/javascript">
+									var options = {
+										
+										seriesBarDistance: 12,
+										  axisX: {
+											offset: 20,
+											showGrid: false,
+											labelOffset: {
+												  x: 0,
+												  y: 0
+											}
+										  },
+										  axisY: {
+											offset: 45,
+											labelInterpolationFnc: function(value) {
+												if (value < 1000)
+												{
+													var n_format = value.toFixed(0);
+												}
+												else if (value < 1000000)
+												{
+													var n_format = (value / 1000).toFixed(0) + 'k';
+												}
+												else if (value < 1000000000)
+												{
+													var n_format = (value / 1000000).toFixed(0) + 'm';
+												}
+												else
+												{
+													var n_format = (value / 1000000000).toFixed(0) + 'b';
+												}
+											  	return n_format;
+											},
+											scaleMinSpace:30
+										  },
+										  width: '100%',
+										  height: '210px',
+										  
+									};
+									var data = {
+										labels: [{visitors[label]}],
+										  series: [{visitors[series]}]
+									}
+									new Chartist.Bar('#DashboardVisitorsGraph', data, options);
+									</script>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+            <div class="draw-grid__cell draw-grid__cell--third">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_top_countries}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex"> <span class="type--subdued">{period}</span> </div>
+                        </div>
+                    </header>
+                    <div class="draw-card__section">
+                        <div id="DashboardOnlineCountryTraffic" class="dashboard-widget">
+                            <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                                <tbody>
+                                	<loop name="topcountries">
+                                    <tr>
+                                        <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
+                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span> </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number"> {count} </td>
+                                    </tr>
+                                    </loop name="topcountries">
+                                </tbody>
+                            </table>
+                            <if condition="isset($sheel->show['topcountries']) AND $sheel->show['topcountries'] == false"><h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3></if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="draw-grid__cell draw-grid__cell--third">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_top_browsers}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section channel-stats">
+                        <div id="DashboardOnlineDeviceBrowser" class="dashboard-widget">
+                            <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                                <tbody>
+                                	<loop name="topbrowsers">
+                                    <tr>
+                                    	 <td class="dashboard-source-list__icon"> <span><img src="{icon}" border="0" alt="" /></span> </td>
+                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span> </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number"> {count} </td>
+                                    </tr>
+                                    </loop name="topbrowsers">
+                                </tbody>
+                            </table>
+                            <if condition="isset($sheel->show['topbrowsers']) AND $sheel->show['topbrowsers'] == false"><h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3></if>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="draw-grid__cell draw-grid__cell--third">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_traffic_sources}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section">
+                        <div id="DashboardOnlineTrafficSources" class="dashboard-widget">
+                            <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                                <tbody>
+                                	<loop name="trafficsources">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> <span title="Direct">{title}</span> </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number"> {count} </td>
+                                    </tr>
+                                    </loop name="trafficsources">
+                                </tbody>
+                            </table>
+                            <if condition="isset($sheel->show['trafficsources']) AND $sheel->show['trafficsources'] == false"><h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3></if>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+            <div class="draw-grid__cell draw-grid__cell--third">
+                
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_top_device_types}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex"> <span class="type--subdued">{period}</span> </div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section channel-stats">
+                        <div id="DashboardOnlineDeviceFormFactors" class="dashboard-widget">
+                            <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                                <tbody>
+                                	<loop name="topdevices">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span> </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number"> {count} </td>
+                                    </tr>
+                                    </loop name="topdevices">
+                                </tbody>
+                            </table>
+                            <if condition="isset($sheel->show['topcountries']) AND $sheel->show['topcountries'] == false"><h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3></if>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="draw-grid__cell draw-grid__cell--third">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_top_landing_pages}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section channel-stats">
+                        <div id="DashboardOnlineTopLandingPagePaths" class="dashboard-widget">
+                            <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                                <tbody>
+                                	<loop name="toplandingpages">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> <a href="{url}" target="_blank" title="{title}">{title}</a> </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number"> {count} </td>
+                                    </tr>
+                                    </loop name="toplandingpages">
+                                </tbody>
+                            </table>
+                            <if condition="isset($sheel->show['toplandingpages']) AND $sheel->show['toplandingpages'] == false"><h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3></if>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<div define="iLNav.setPage(['home']), iLPage.close()"></div>
+
+
+{apihook[dashboard_template_end]}

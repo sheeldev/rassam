@@ -1,0 +1,41 @@
+<div class="wrap-bread-crumb text-center"
+	style="min-height: calc(100vh - 232px); background-image: url(/application/assets/images/sheel-theme-images/home/a8.png); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+	<div class="container" style="margin: 25px 10px;">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+					<div class="login-wrap">
+						<div class="login-html">
+							<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label
+								for="tab-1" class="tab" style="margin-left: 20px;">{header_text}</label>
+							<div class="login-form">
+							
+							<div class="col-md-12">
+	                           	    <div class="group">
+	                                       <label class="label" style="white-space: normal;">{body_text}</label>
+	                                </div>
+                            </div>
+                            <div class="col-md-12">
+				                        <div class="group">   
+	                                    </div>
+	                                    <div class="hr"></div>
+	                        </div>	
+                                
+                            <div class="col-md-12">
+	                           	    <div class="group">
+	                                       <if condition="isset($sheel->show['returnname']) AND $sheel->show['returnname']">
+												<a href="{return_url}"><input type="button" class="button" value="{return_name}" accesskey="s" /></a>
+											</if>
+	                                </div>
+                            </div>
+                           
+                            
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,108 @@
+<div class="wrap-bread-crumb text-center"
+	style="min-height: calc(100vh - 232px); background-image: url(/application/assets/images/sheel-theme-images/home/a8.png); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+	<div class="container" style="margin: 25px 10px;">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19); background-color:rgba(118, 125, 135, 0.2);">
+					<div class="login-wrap">
+						<div class="login-html">
+							<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label
+								for="tab-1" class="tab" style="margin-left: 20px;">{_registration_complete} <img src="{imgcdn}v5/img_checkmark.png" height="15" /></label>
+							<div class="login-form">
+							<if condition="$sheel->GPC['view'] == 'welcome'">
+							<div class="col-md-12">
+	                           	    <div class="group">
+	                                       <span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-10"></span><label class="label" style="white-space: normal;">{_thank_you_your_registration_is_now_complete}</label>
+	                                </div>
+                            </div>
+                            <div class="col-md-12">
+				                        <div class="group">   
+	                                    </div>
+	                                    <div class="hr"></div>
+	                        </div>	
+                            <div class="col-md-3">
+			                        <div class="group"> 
+                                    </div>
+	                        </div>    
+                            <div class="col-md-6">
+	                           	    <div class="group">
+	                                       <input type="submit" class="button" value="{_continue}" accesskey="s" onclick="{onclick}" />
+	                                </div>
+                            </div>
+                            <div class="col-md-3">
+			                        <div class="group">
+                                    </div>
+	                        </div>
+                            </if>
+                            
+                            <if condition="$sheel->GPC['view'] == 'verification'">
+							<div class="col-md-12">
+	                           	    <div class="group">
+	                                       <span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-10"></span><label class="label" style="white-space: normal;">{_registration_not_completed}</label>
+	                                </div>
+                            </div>
+                            <div class="col-md-12">
+	                           	    <div class="group">
+	                                       <span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-10"></span><label class="label" style="white-space: normal;">{_verification_email_will_be_sent}</label>
+	                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+				                        <div class="group">   
+	                                    </div>
+	                                    <div class="hr"></div>
+	                        </div>	
+                            <div class="col-md-3">
+			                        <div class="group"> 
+                                    </div>
+	                        </div>    
+                            <div class="col-md-6">
+	                           	    <div class="group">
+	                                       <input type="submit" class="button" value="{_continue}" accesskey="s" onclick="{onclick}" />
+	                                </div>
+                            </div>
+                            <div class="col-md-3">
+			                        <div class="group">
+                                    </div>
+	                        </div>
+                            </if>
+                            
+                            <if condition="$sheel->GPC['view'] == 'moderation'">
+							<div class="col-md-12">
+	                           	    <div class="group">
+	                                       <span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-10"></span><label class="label" style="white-space: normal;">{_thank_you_your_registration_is_now_complete_and_is_pending_verification}</label>
+	                                </div>
+                            </div>
+                            <div class="col-md-12">
+	                           	    <div class="group">
+	                                       <span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left<else />right</if> mlr-10"></span><label class="label" style="white-space: normal;">{_moderation_email_will_be_sent}</label> 
+	                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+				                        <div class="group">   
+	                                    </div>
+	                                    <div class="hr"></div>
+	                        </div>	
+                            <div class="col-md-3">
+			                        <div class="group"> 
+                                    </div>
+	                        </div>    
+                            <div class="col-md-6">
+	                           	    <div class="group">
+	                                       <input type="submit" class="button" value="{_continue}" accesskey="s" onclick="{onclick}" />
+	                                </div>
+                            </div>
+                            <div class="col-md-3">
+			                        <div class="group">
+                                    </div>
+	                        </div>
+                            </if> 
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="initial-scale=1, width=device-width">
+      <link rel="stylesheet" type="text/css" href="assets/css/lib/perfect-scrollbar.min.css">
+      <link rel="stylesheet" type="text/css" href="assets/css/lib/cropper.min.css">
+      <link rel="stylesheet" type="text/css" href="assets/css/build/build.min.css">
+      <script type="text/javascript" src="assets/js/lib/jquery-2.1.4.min.js"></script>
+	  <script type="text/javascript">
+        $(document).ready(function () {
+            $("#loading").css('visibility', 'visible');
+        })
+        $(window).on("load", function () {
+            $("html").css('visibility', 'visible');
+            $("#loading").css('display', 'none');
+        })
+	  </script>
+	  <script type="text/javascript" src="assets/js/lib/cropper.min.js"></script>
+	  <script type="text/javascript" src="assets/js/lib/jquery.touchSwipe.min.js"></script>
+	  <script type="text/javascript" src="assets/js/lib/perfect-scrollbar.jquery.min.js"></script>
+	  <script type="text/javascript" src="assets/js/lib/angular.min.js"></script>
+      <script type="text/javascript" src="assets/js/lib/angular-animate.min.js"></script>
+	  <script type="text/javascript" src="assets/js/init.js"></script>
+	  <script type="text/javascript" src="assets/js/filters.js"></script>
+	  <script type="text/javascript" src="assets/js/app.js"></script>
+	  <script type="text/javascript" src="assets/js/lib/StackBlur.js"></script>
+	  <script type="text/javascript" src="assets/js/lib/CompoundBlur.js"></script>
+	  <script type="text/javascript" src="assets/js/package.js"></script>
+	  <script type="text/javascript" src="assets/js/api.js"></script>
+   </head>
+   <body>
+      <header>
+         <nav>
+            <h4 id="title">Image Editor</h4>
+         </nav>
+         <div class="tab tab-header">
+            <div class="nav" id="gallery-btn" style="float: left;"><img class="size" src="assets/img/New.png" onclick="Api.upload()"><input id="imageUp" type="file" accept="image/*" style="display:none;" onchange="Api.getImage(this.files)"></div>
+            <div class="nav" id="take" style="float: left; display: none;"><img class="size" src="assets/img/Data-Import-128.png" onclick="Api.importImage();showEditor();"></div>
+            <div class="nav" id="camera-btn" style="float: left; border-left: 1px solid #333; border-right: 1px solid #333;"><img class="size" src="assets/img/Camera-01-128.png" onclick="Api.getCamera()"></div>
+            <div class="nav" id="refresh-btn" style="float: left;"><img class="size lo-spin" src="assets/img/Command-Refresh-128.png" onclick="restore()" title="Restore &amp; undo all changes"></div>
+            <div class="nav" id="save-btn" style="float: right; border-right: 1px solid #333; display: none;" title="Save"><img id="save" src="assets/img/Save-128.png"></a>
+         </div>
+      </header>
+      <div class="window" id="editor">
+         <div class="main">
+            <img id="old">
+            <canvas id="new"></canvas>
+            <video id="video"></video>
+         </div>
+         <ul class="setting setting-3" id="filters">
+            <li class="item"><img class="filter-img" onclick="applyFilter('Original')" src="assets/img/filters/Original.jpg"><small class="label label-2">Original</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Charming')" src="assets/img/filters/Charming.jpg"><small class="label label-2">Charming</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Gold Orange')" src="assets/img/filters/Gold Orange.jpg"><small class="label label-2">Gold Orange</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Hot Desert')" src="assets/img/filters/Hot Desert.jpg"><small class="label label-2">Hot Desert</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Lord Kelvin')" src="assets/img/filters/Lord Kelvin.jpg"><small class="label label-2">Lord Kelvin</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('1977 ')" src="assets/img/filters/1977.jpg"><small class="label label-2">1977</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Beautiful')" src="assets/img/filters/Beautiful.jpg"><small class="label label-2">Beautiful</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Milky')" src="assets/img/filters/Milky.jpg"><small class="label label-2">Milky</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Summertime')" src="assets/img/filters/Summertime.jpg"><small class="label label-2">Summertime</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Excited')" src="assets/img/filters/Excited.jpg"><small class="label label-2">Excited</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Cold Tibet')" src="assets/img/filters/Cold Tibet.jpg"><small class="label label-2">Cold Tibet</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Sunday')" src="assets/img/filters/Sunday.jpg"><small class="label label-2">Sunday</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('California')" src="assets/img/filters/California.jpg"><small class="label label-2">California</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Paris in October')" src="assets/img/filters/Paris in October.jpg"><small class="label label-2">Paris October</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('August March')" src="assets/img/filters/August March.jpg"><small class="label label-2">August</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Nashville')" src="assets/img/filters/Nashville.jpg"><small class="label label-2">Nashville</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Brannan')" src="assets/img/filters/Brannan.jpg"><small class="label label-2">Brannan</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Blood Orange')" src="assets/img/filters/Blood Orange.jpg"><small class="label label-2">Blood Orange</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Hefe')" src="assets/img/filters/Hefe.jpg"><small class="label label-2">Hefe</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Gotham')" src="assets/img/filters/Gotham.jpg"><small class="label label-2">Gotham</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('X-PRO II')" src="assets/img/filters/X-PRO II.jpg"><small class="label label-2">X-PRO II</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Forest')" src="assets/img/filters/Forest.jpg"><small class="label label-2">Forest</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Moonlight')" src="assets/img/filters/Moonlight.jpg"><small class="label label-2">Moonlight</small></li>
+            <li class="item"><img class="filter-img" onclick="applyFilter('Angelic')" src="assets/img/filters/Angelic.jpg"><small class="label label-2">Angelic</small></li>
+         </ul>
+         <div class="window theme" id="package">
+            <div class="main">
+               <form class="search-container" id="search-package"><input class="search-box animated-search-filter" id="search-box" type="text" name="q"><label for="search-box"><img class="search-icon" src="assets/img/Search-Find-128.png" width="30px"></label></form>
+               <ul class="list animated-search-filter" id="package-list">
+                  <li class="list-item slide-top" onclick="applyFilter('Original')">
+                     <p>Original</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('1977 ')">
+                     <p>1977 </p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Brannan')">
+                     <p>Brannan</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Gotham')">
+                     <p>Gotham</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Hefe')">
+                     <p>Hefe</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Lord Kelvin')">
+                     <p>Lord Kelvin</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Nashville')">
+                     <p>Nashville</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('X-PRO II')">
+                     <p>X-PRO II</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Afterglow')">
+                     <p>Afterglow</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Alice')">
+                     <p>Alice</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Ambers')">
+                     <p>Ambers</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('America')">
+                     <p>America</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('August March')">
+                     <p>August March</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Aurora')">
+                     <p>Aurora</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Australia')">
+                     <p>Australia</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Bahrein')">
+                     <p>Bahrein</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Bejing')">
+                     <p>Bejing</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Berlin')">
+                     <p>Berlin</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Blood Orange')">
+                     <p>Blood Orange</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Blue Poppies')">
+                     <p>Blue Poppies</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Blue Yellow')">
+                     <p>Blue Yellow</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Brighton')">
+                     <p>Brighton</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('California')">
+                     <p>California</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Carousel')">
+                     <p>Carousel</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Cold Desert')">
+                     <p>Cold Desert</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Cold Heart')">
+                     <p>Cold Heart</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Cold Tibet')">
+                     <p>Cold Tibet</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Digital Film')">
+                     <p>Digital Film</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Documentary')">
+                     <p>Documentary</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Electric')">
+                     <p>Electric</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('French Summer')">
+                     <p>French Summer</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Ghosts')">
+                     <p>Ghosts</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Glasgow')">
+                     <p>Glasgow</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Good Luck')">
+                     <p>Good Luck</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Green Envy')">
+                     <p>Green Envy</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Humming Bees')">
+                     <p>Humming Bees</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Humming Birds')">
+                     <p>Humming Birds</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Irish Red')">
+                     <p>Irish Red</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Italy')">
+                     <p>Italy</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Kiss Kiss')">
+                     <p>Kiss Kiss</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Left Hand Blues')">
+                     <p>Left Hand Blues</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Light Parades')">
+                     <p>Light Parades</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('London')">
+                     <p>London</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Lover')">
+                     <p>Lover</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Lullabye')">
+                     <p>Lullabye</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Madrid')">
+                     <p>Madrid</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Marocco')">
+                     <p>Marocco</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Marseille')">
+                     <p>Marseille</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Midnight Hour')">
+                     <p>Midnight Hour</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Milano')">
+                     <p>Milano</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Monaco')">
+                     <p>Monaco</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Montreal')">
+                     <p>Montreal</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Moth Wings')">
+                     <p>Moth Wings</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('New Norway')">
+                     <p>New Norway</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('New York')">
+                     <p>New York</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Novosibirsk')">
+                     <p>Novosibirsk</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Old India')">
+                     <p>Old India</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Old Postcards 1')">
+                     <p>Old Postcards 1</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Old Postcards 2')">
+                     <p>Old Postcards 2</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Paris in October')">
+                     <p>Paris in October</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Peacock Feathers')">
+                     <p>Peacock Feathers</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Perth')">
+                     <p>Perth</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Pistol')">
+                     <p>Pistol</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Prague')">
+                     <p>Prague</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Pretty Paris')">
+                     <p>Pretty Paris</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Ragdoll')">
+                     <p>Ragdoll</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Rivers and Rain')">
+                     <p>Rivers and Rain</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Romania')">
+                     <p>Romania</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Rose Thorns 1')">
+                     <p>Rose Thorns 1</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Rose Thorns 2')">
+                     <p>Rose Thorns 2</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Set You Free')">
+                     <p>Set You Free</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Snow White')">
+                     <p>Snow White</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('South Wales')">
+                     <p>South Wales</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Sparks')">
+                     <p>Sparks</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Spring Moscow')">
+                     <p>Spring Moscow</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Stockholm')">
+                     <p>Stockholm</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Swedish Summer')">
+                     <p>Swedish Summer</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Texas')">
+                     <p>Texas</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Toes in Ocean')">
+                     <p>Toes in Ocean</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Tromso')">
+                     <p>Tromso</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Twin Lungs')">
+                     <p>Twin Lungs</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Wild at Heart')">
+                     <p>Wild at Heart</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Window Warmth')">
+                     <p>Window Warmth</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Wroclaw')">
+                     <p>Wroclaw</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Summertime')">
+                     <p>Summertime</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Gold Orange')">
+                     <p>Gold Orange</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Excited')">
+                     <p>Excited</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Forest')">
+                     <p>Forest</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Angelic')">
+                     <p>Angelic</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Hot Desert')">
+                     <p>Hot Desert</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Milky')">
+                     <p>Milky</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Moonlight')">
+                     <p>Moonlight</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Sunday')">
+                     <p>Sunday</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Baby')">
+                     <p>Baby</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Beautiful')">
+                     <p>Beautiful</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Night')">
+                     <p>Night</p>
+                  </li>
+                  <li class="list-item slide-top" onclick="applyFilter('Charming')">
+                     <p>Charming</p>
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <ul class="setting setting-2" id="c-settings">
+            <li class="item"><img class="circular" onclick="showFilters();$('#undo').hide();$('#c-back').show();$('#c-back').css('height','90px');" src="assets/img/Candy-Lollipop2-128.png"><small class="label">Filters</small></li>
+            <li class="item"><img class="circular" onclick="showBrightness();$('.back').hide();$('#c-back').show();$('#c-back').css('height','60px');" src="assets/img/Display-Brightness-128.png"><small class="label">Brightness</small></li>
+            <li class="item"><img class="circular" onclick="showContrast();$('.back').hide();$('#c-back').show();$('#c-back').css('height','60px');" src="assets/img/Display-Contrast-128.png"><small class="label">Contrast</small></li>
+            <li class="item"><img class="circular" onclick="showSaturation();$('.back').hide();$('#c-back').show();$('#c-back').css('height','60px');" src="assets/img/Instrument-Barometer-02-128.png"><small class="label">Saturation</small></li>
+            <li class="item"><img class="circular" onclick="showNoise();$('.back').hide();$('#c-back').show();$('#c-back').css('height','60px');" src="assets/img/Radio-Access-128.png"><small class="label">Noise</small></li>
+            <li class="item"><img class="circular" onclick="showVignette();$('.back').hide();$('#c-back').show();$('#c-back').css('height','60px');" src="assets/img/Pointer-128.png"><small class="label">Vignette</small></li>
+            <li class="item"><img class="circular" onclick="showEffects();$('.back').hide();$('#c-back').show();$('#c-back').css('height','60px');" src="assets/img/Magic-Wand-128.png"><small class="label">Effects</small></li>
+         </ul>
+         <ul class="setting setting-2" id="settings">
+            <li class="item" id="rotation-item"><img class="circular" onclick="showRotation()" src="assets/img/Rotation-128.png"><small class="label">Rotation</small></li>
+            <li class="item" id="flip-item"><img class="circular" onclick="showFlip()" src="assets/img/Repeat-All-128.png"><small class="label">Flip</small></li>
+            <li class="item" id="brightness-item"><img class="circular" onclick="showBrightness()" src="assets/img/Display-Brightness-128.png"><small class="label">Brightness</small></li>
+            <li class="item" id="contrast-item"><img class="circular" onclick="showContrast()" src="assets/img/Display-Contrast-128.png"><small class="label">Contrast</small></li>
+            <li class="item" id="saturation-item"><img class="circular" onclick="showSaturation()" src="assets/img/Instrument-Barometer-02-128.png"><small class="label">Saturation</small></li>
+            <li class="item" id="noise-item"><img class="circular" onclick="showNoise()" src="assets/img/Radio-Access-128.png"><small class="label">Noise</small></li>
+            <li class="item" id="sharpen-item"><img class="circular" onclick="showSharpen()" src="assets/img/Road-Sharp-Right-128.png"><small class="label">Sharpen</small></li>
+            <li class="item" id="blur-item"><img class="circular" onclick="showBlur()" src="assets/img/Water-Drop-128.png"><small class="label">Blur</small></li>
+            <li class="item" id="frameblur-item"><img class="circular" onclick="showFrameBlur()" src="assets/img/Shape53-128.png"><small class="label">FrameBlur</small></li>
+            <li class="item" id="vignette-item"><img class="circular" onclick="showVignette()" src="assets/img/Pointer-128.png"><small class="label">Vignette</small></li>
+            <li class="item" id="effects-item"><img class="circular" onclick="showEffects()" src="assets/img/Magic-Wand-128.png"><small class="label">Effects</small></li>
+            <li class="item" id="rgb-item"><img class="circular" onclick="showRgb()" src="assets/img/Filter-Edit-128.png"><small class="label">Rgb</small></li>
+            <li class="item" id="newcrop-item"><img class="circular" onclick="showNewCrop()" src="assets/img/Crop-128.png"><small class="label">Crop</small></li>
+            <li class="item" id="frames-item"><img class="circular" onclick="showFrames()" src="assets/img/Layers-128.png"><small class="label">Frames</small></li>
+            <li class="item" id="textures-item"><img class="circular" onclick="showTextures()" src="assets/img/Weather-Snow-128.png"><small class="label">Textures</small></li>
+            <li class="item" id="special-item"><img class="circular" onclick="showSpecial()" src="assets/img/Chocolate-05-128.png"><small class="label">Special</small></li>
+            <li class="item" id="logo-item"><img class="circular" onclick="showLogo()" src="assets/img/Strawberry1-128.png"><small class="label">Logos</small></li>
+         </ul>
+         <ul class="setting" id="newCrop">
+            <div class="back" onclick="cropper.destroy();canvasPos();showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="btn" type="button" onclick="applyNewCrop();canvasPos();showSettings()" value="Crop">
+         </ul>
+         <ul class="setting" id="rotation">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="btn" type="button" onclick="applyRotation()" value="Rotate">
+         </ul>
+         <ul class="setting" id="flip">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="btn" type="button" onclick="applyFlipH()" value="Flip">
+         </ul>
+         <ul class="setting" id="brightness">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="b-range" type="range" min="-100" max="100" value="0" step="1" onchange="applyBrightness(this.value)">
+         </ul>
+         <ul class="setting" id="contrast">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="c-range" type="range" min="-100" max="100" value="0" step="1" onchange="applyContrast(this.value)">
+         </ul>
+         <ul class="setting" id="saturation">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="s-range" type="range" min="0" max="2" value="1" step="0.1" onchange="applySaturation(this.value)">
+         </ul>
+         <ul class="setting" id="noise">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="n-range" type="range" min="0" max="100" value="0" step="1" onchange="applyNoise(this.value)">
+         </ul>
+         <ul class="setting" id="sharpen">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="sharpen-range" type="range" min="0" max="1" value="0" step="0.01" onchange="applySharpen(this.value);">
+         </ul>
+         <ul class="setting" id="blur">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="blur-range" type="range" min="0" max="20" value="0" step="1" onchange="effectBlurImage(this.value, true);">
+         </ul>
+         <ul class="setting" id="frame-blur">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="cb-range" type="range" min="0" max="200" value="0" step="1" onchange="applyFrameBlur(this.value)">
+         </ul>
+         <ul class="setting" id="vignette">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="btn" type="button" onclick="applyVignette();vignette=true;" value="Vignette">
+         </ul>
+         <ul class="setting toright" id="effects">
+            <li class="item"><img class="square" src="assets/img/original-icon.png" onclick="if(!isStreaming)loadCheckPoint();effect='none';"></li>
+            <li class="item"><img class="square" src="assets/img/grayscale.png" onclick="applyGrayscale()"></li>
+            <li class="item"><img class="square" src="assets/img/sepia.png" onclick="applySepia()"></li>
+            <li class="item"><img class="square" src="assets/img/invert.png" onclick="applyInvert()"></li>
+         </ul>
+         <ul class="setting" id="rgb">
+            <div class="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+            <input class="range" id="rgb-r-range" type="range" min="0" max="255" value="0" step="1" onchange="applyR(this.value)"><input class="range" id="rgb-g-range" type="range" min="0" max="255" value="0" step="1" onchange="applyG(this.value)"><input class="range" id="rgb-b-range" type="range" min="0" max="255" value="0" step="1" onchange="applyB(this.value)">
+         </ul>
+         <ul class="setting toright" id="frames">
+            <li class="item">
+                <img onclick="loadCheckPoint()" src="assets/img/masks/min/mask0_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('mask1')" src="assets/img/masks/min/mask1_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('Grunge_Frames1')" src="assets/img/masks/min/Grunge_Frames1_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('Grunge_Frames2')" src="assets/img/masks/min/Grunge_Frames2_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('Grunge_Frames3')" src="assets/img/masks/min/Grunge_Frames3_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('Grunge_Frames4')" src="assets/img/masks/min/Grunge_Frames4_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('Grunge_Frames5')" src="assets/img/masks/min/Grunge_Frames5_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('Grunge_Frames6')" src="assets/img/masks/min/Grunge_Frames6_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes1')" src="assets/img/masks/min/grungeframes1_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes2')" src="assets/img/masks/min/grungeframes2_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes3')" src="assets/img/masks/min/grungeframes3_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes4')" src="assets/img/masks/min/grungeframes4_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes5')" src="assets/img/masks/min/grungeframes5_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes6')" src="assets/img/masks/min/grungeframes6_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes7')" src="assets/img/masks/min/grungeframes7_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes8')" src="assets/img/masks/min/grungeframes8_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes9')" src="assets/img/masks/min/grungeframes9_min.jpg" class="square">
+            </li>
+            <li class="item">
+                <img onclick="applyFrame('grungeframes10')" src="assets/img/masks/min/grungeframes10_min.jpg" class="square">
+            </li>
+         </ul>
+         <ul class="setting toright" id="textures">
+            <li class="item"><img class="square" onclick="loadCheckPoint()" src="assets/img/masks/min/mask0_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-1')" src="assets/img/textures/min/grunge-texture-black-and-white-1_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-2')" src="assets/img/textures/min/grunge-texture-black-and-white-2_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-3')" src="assets/img/textures/min/grunge-texture-black-and-white-3_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-4')" src="assets/img/textures/min/grunge-texture-black-and-white-4_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-5')" src="assets/img/textures/min/grunge-texture-black-and-white-5_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-6')" src="assets/img/textures/min/grunge-texture-black-and-white-6_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-7')" src="assets/img/textures/min/grunge-texture-black-and-white-7_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-8')" src="assets/img/textures/min/grunge-texture-black-and-white-8_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-9')" src="assets/img/textures/min/grunge-texture-black-and-white-9_min.jpg"></li>
+            <li class="item"><img class="square" onclick="applyTexture('grunge-texture-black-and-white-10')" src="assets/img/textures/min/grunge-texture-black-and-white-10_min.jpg"></li>
+         </ul>
+         <ul class="setting toright" id="special">
+            <li class="item"><img class="circular" onclick="loadCheckPoint()" src="assets/img/masks/min/mask0_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('2')" src="assets/img/special/min/2_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('3')" src="assets/img/special/min/3_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('4')" src="assets/img/special/min/4_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('6')" src="assets/img/special/min/6_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('grass01')" src="assets/img/special/min/grass01_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('grass02')" src="assets/img/special/min/grass02_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('grass03')" src="assets/img/special/min/grass03_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('grass04')" src="assets/img/special/min/grass04_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('grass05')" src="assets/img/special/min/grass05_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('Colorful_Background_1')" src="assets/img/special/min/Colorful_Background_1_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('Colorful_Background_4')" src="assets/img/special/min/Colorful_Background_4_min.jpg"></li>
+            <li class="item"><img class="circular" onclick="applySpecial('Colorful_Background_5')" src="assets/img/special/min/Colorful_Background_5_min.jpg"></li>
+         </ul>
+         <ul class="setting toright" id="logo">
+            <li class="item"><img class="circular" onclick="loadCheckPoint()" src="assets/img/masks/min/mask0_min.jpg"></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f353.png'"><img class="circular" src="assets/img/logo/1f353.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f352.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f352.png'" src="assets/img/logo/1f352.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f366.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f366.png'" src="assets/img/logo/1f366.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f367.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f367.png'" src="assets/img/logo/1f367.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f36d.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f36d.png'" src="assets/img/logo/1f36d.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f377.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f377.png'" src="assets/img/logo/1f377.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f37b.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f37b.png'" src="assets/img/logo/1f37b.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f4f8.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f4f8.png'" src="assets/img/logo/1f4f8.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f52d.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f52d.png'" src="assets/img/logo/1f52d.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f526.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f526.png'" src="assets/img/logo/1f526.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f947.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f947.png'" src="assets/img/logo/1f947.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f3c6.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f3c6.png'" src="assets/img/logo/1f3c6.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f4b3.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f4b3.png'" src="assets/img/logo/1f4b3.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f49d.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f49d.png'" src="assets/img/logo/1f49d.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f49e.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f49e.png'" src="assets/img/logo/1f49e.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f4c5.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f4c5.png'" src="assets/img/logo/1f4c5.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/231a.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/231a.png'" src="assets/img/logo/231a.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f3a7.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f3a7.png'" src="assets/img/logo/1f3a7.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f3ae.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f3ae.png'" src="assets/img/logo/1f3ae.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f3b2.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f3b2.png'" src="assets/img/logo/1f3b2.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f399.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f399.png'" src="assets/img/logo/1f399.png"></a></li>
+            <li class="item"><a href="#popup3" onclick="window.logoUrl='logo/1f48e.png'"><img class="circular" href="#popup3" onclick="window.logoUrl='logo/1f48e.png'" src="assets/img/logo/1f48e.png"></a></li>
+         </ul>
+         <div class="back" id="back" onclick="showSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+         <div class="back" id="c-back" onclick="showCSettings()"><img class="back-icon" src="assets/img/back.png"></div>
+         <footer>
+            <div class="tab tab-footer"><a class="interaction" id="filters-icon" onclick="showFilters()"><img class="lo-pulse" src="assets/img/Candy-Lollipop-128.png" width="40px"></a><a class="interaction" id="package-icon" onclick="showPackage()"><img class="lo-burst" src="assets/img/Text-Braille-128.png" width="40px"></a><a class="interaction" id="setting-icon" onclick="showSettings()"><img class="lo-spin" src="assets/img/Settings-01-128.png" width="40px"></a><a id="undo" onclick="loadCheckPoint()" title="Undo changes on this layer only"><img class="lo-spin" src="assets/img/Reload2-128.png" width="40px"></a><a id="check" onclick="saveCheckPoint()"><img class="lo-burst" src="assets/img/Check-128.png" width="40px"></a></div>
+         </footer>
+      </div>
+      <div class="overlay" id="popup3">
+         <div class="popup">
+            <h2>Positions</h2>
+            <a class="close" href="#">×</a>
+            <div class="content"><a class="pos" onclick="applyLogo(0)" data-position="0">0°</a><a class="pos" onclick="applyLogo(45)" data-position="45">45°</a><a class="pos" onclick="applyLogo(135)" data-position="135">135°</a><a class="pos" onclick="applyLogo(180)" data-position="180">180°</a></div>
+         </div>
+      </div>
+      <div class="overlay" id="popup4">
+         <div class="popup">
+            <h2>Formats</h2>
+            <a class="close" href="#">×</a>
+            <div class="content"><a class="ext png active-link" onclick="window.setType('png')" data-type="png">PNG File</a><a class="ext jpeg" onclick="window.setType('jpeg')" data-type="jpeg">JPEG File</a></div>
+            <br>
+            <h2>Dimensions</h2>
+            <div class="content"><a class="dim" data-size="100">100%</a><a class="dim" data-size="90">90%</a><a class="dim" data-size="70">70%</a><a class="dim" data-size="50">50%</a><a class="dim" data-size="30">30%</a><a class="dim" data-size="10">10%</a></div>
+         </div>
+      </div>
+      <div class="overlay" id="popup5">
+         <div class="popup">
+            <h2>Formats</h2>
+            <a class="close" href="#">×</a>
+            <div class="content"><a class="ext png active-link" onclick="window.setType('png')" data-type="png">PNG File</a><a class="ext jpeg" onclick="window.setType('jpeg')" data-type="jpeg">JPEG File</a></div>
+            <br>
+            <h2>Upload</h2>
+            <span><a class="upload-button" id="upload-btn" href="#">Upload Image</a></span>
+         </div>
+      </div>
+      <div class="uil-ripple-css" id="loading" style="-webkit-transform:scale(0.6);">
+         <div></div>
+         <div></div>
+      </div>
+	  <script type="text/javascript" src="assets/js/script.js"></script> 
+   </body>
+</html>

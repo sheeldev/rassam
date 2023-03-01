@@ -1,0 +1,367 @@
+
+<section id="side_panel" class="hide">
+    <div class="full-dialog-overlay"></div>
+    <div class="full-dialog-container full-dialog-side-control" id="full-dialog-container-js">
+        <div class="full-dialog-close" onclick="close_full_dialog()"></div>
+        <div class="full-dialog-body">
+            <iframe id="full-dialog-widget" name="full-dialog-widget" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+</section>
+
+
+<!-- Start of sheel Zendesk Widget script -->
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=a286b63b-9d3f-4338-b43f-e7925de0aaba"> </script>
+<!-- End of sheel Zendesk Widget script -->
+<div id="header" class="header-page1">
+	<div class="bg-color2 top-header1">
+		<div class="container">
+			<div class="row">
+				 <div class="col-sm-6 col-xs-5">
+                        <ul class="list-inline-block lang-currency-box">
+                            <if condition="$sheel->language->lang_count_canselect()">
+							<li class="lang-box dropdown-box"><a class="color-ccc title11" href="javascript:;">{user[languageiso]}</a>
+								<ul class="dropdown-list list-none 
+									<if condition=" $sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>"> {languagelinks}
+								</ul>
+							</li>
+							</if>
+                            <li class="dropdown-box">
+                                <a class="title11 text-uppercase color-ccc" href="javascript:;">{_content}</a>
+                                <ul class="dropdown-list list-none">
+                                    {headerpagelinks}
+                                </ul>
+		                   </li>
+                        </ul>
+                    </div>
+                    
+
+				<div class="col-sm-6 col-xs-7">
+					<ul class="social-box list-inline-block pull-right">
+			                    
+			                    <li><a class="title11 text-uppercase color-ccc" href="{http_server}home/"><i class="title12 fa fa-map-marker"></i>{_home}</a></li>
+			                    <if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
+	                				<li><a class="title11 text-uppercase color-ccc" href="{https_server_admin}" title="{_admin}" target="_blank"><i class="title12 fa fa-edit"></i>{_admin}</a></li>
+	                			</if>
+	                			<if condition="isset($sheel->config['brands']) AND $sheel->config['brands']"><li><a href="{https_server}b/" class="title11 text-uppercase color-ccc"><i class="title12 fa fa-car"></i>{_brands}</a></li></if>
+                				<if condition="isset($sheel->config['enablenonprofits']) AND $sheel->config['enablenonprofits']"><li><a href="{https_server}nonprofits/" class="title11 text-uppercase color-ccc"><i class="title12 fa fa-heartbeat"></i>{_nonprofits}</a></li></if>           
+	                </ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--.top-header1-->
+	<div class="bg-white">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2 col-sm-3 col-xs-5">
+					<div class="sheel-logo logo-text">
+						<h1 class="">
+							<a href="{https_server}" title="{site_name}" class="flex-wrap">
+								<img src="{imguploadscdn}meta/logo.png" alt="Sheel Logo" />
+							</a>
+						</h1>
+					</div>
+				</div>
+				
+				
+				
+				<div class="col-md-8 col-sm-4 col-xs-2">
+	                       <nav class="main-nav main-nav1 menu-sticky-on text-center">
+	                           <ul id="menu-main-menu" class="list-none menu-main-menu">
+	                            <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['userid'], 'createproductauctions') == 'yes' OR !isset($_SESSION['sheeldata']['user']['userid'])">
+                               <if condition="empty($_SESSION['sheeldata']['user']['username'])">
+                               <li class="children">
+                               		<a href="javascript:;">{_sell}</a>
+                                    <ul class="sub-menu" id="old-ltr-top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>"> 
+                                        <li class="item has-mega"><a href="{https_server}signin/?redirect={request_uriencoded}"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;{_login}</a></li>
+                                        <li> <a href="{https_server}register/"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;{_register}</a></li>
+                                    </ul>
+                                </li> 
+                               <else />
+                               
+	                           <li class="children">
+                                    <a href="javascript:;">{_sell} {_on} {site_name}</a>
+                                    <ul class="sub-menu">
+                                    	<li><a href="{https_server}startselling/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_start_selling}</a></li>
+                                    	<if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] OR $sheel->stores->has_store($_SESSION['sheeldata']['user']['userid'])">
+                                        <li><a href="{https_server}sell/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_sell_new_item}</a></li>
+                                        </if>
+										<if condition="isset($sheel->config['globalfilters_bulkupload']) AND $sheel->config['globalfilters_bulkupload'] AND isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] OR $sheel->stores->has_store($_SESSION['sheeldata']['user']['userid'])">
+	                                    <li><a href="{https_server}sell/bulk/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_sell_bulk_items}</a></li>
+	                                    </if>
+	                                    <if condition="isset($sheel->config['auctionevents']) AND $sheel->config['auctionevents'] AND isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] OR $sheel->stores->has_store($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}auctions/create-event/" title="{_create_auction_event}"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_create_auction_event}</a></li></if>
+	                                    
+		                                <li><a href="{https_server}selling/?displayorder=desc"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_im_selling}</a></li>
+		                                <li><a href="{https_server}selling/?sub=sold&amp;displayorder=desc"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_items_ive_sold}</a></li>
+										<if condition="isset($sheel->config['auctionevents']) AND $sheel->config['auctionevents'] AND isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] OR $sheel->stores->has_store($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}selling/?sub=auctions"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_my_auction_events}</a></li></if>
+										<li><a href="{https_server}feedback/?cmd=_leave-feedback&view=2"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_leave_feedback_for_buyers}</a></li>
+		                                <li><a href="{https_server}selling/profile/payments/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_selling_payment_profiles}</a></li>
+		                                <li><a href="{https_server}selling/profile/tax/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_selling_tax_profiles}</a></li>
+                                    </ul>
+                                </li>
+                                </if>
+                                </if>
+                                
+	                           <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['userid'], 'createproductauctions') == 'yes' OR !isset($_SESSION['sheeldata']['user']['userid'])">
+                               <if condition="empty($_SESSION['sheeldata']['user']['username'])">
+                               <li class="children">
+                               		<a href="javascript:;">{_buy}</a>
+                                    <ul class="sub-menu" id="old-ltr-top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>"> 
+                                        <li class="item has-mega"><a href="{https_server}signin/?redirect={request_uriencoded}"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;{_login}</a></li>
+                                        <li> <a href="{https_server}register/"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;{_register}</a></li>
+                                    </ul>
+                                </li> 
+                               <else />
+	                           <li class="children">
+                                    <a href="javascript:;">{_buy} {_on} {site_name}</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{http_server}buying/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_buying_activity}</a></li>
+	                                    <li><a href="{https_server}buying/management/?bidsub=awarded"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_items_ive_won}</a></li>
+	                                    <li><a href="{https_server}buying/purchases/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_my_orders}</a></li>
+	                                    <li><a href="{https_server}feedback/?cmd=_leave-feedback&view=1"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_leave_feedback_for_sellers}</a></li>
+	                                    <li><a href="{https_server}purchase/confirm/shipping/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_shipping_profiles}</a></li>
+	                                    <li><a href="{https_server}purchase/confirm/billing/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_billing_profiles}</a></li>
+	                                    <li><a href="{https_server}search/advanced.html"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_advanced_search}</a></li>
+	                                    <if condition="isset($sheel->config['currencyconverter']) AND $sheel->config['currencyconverter']"><li><a href="{https_server}currency-converter/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_currency_converter}</a></li></if>
+                                    </ul>
+                                </li>
+                                </if>
+                                </if>
+                                
+	                           <if condition="isset($sheel->config['stores']) AND $sheel->config['stores']">
+	                           <li class="children">
+	                                   <a href="{https_server}stores/" title="{_stores}">{_stores}</a>
+	                                   <ul class="sub-menu">
+	                                   	   <li><a href="{https_server}stores/" title="{_stores}" class="text-uppercase"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_stores}</a></li>
+	                                   	   <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['userid'], 'canopenstore') == 'yes'">
+	                                       <if condition="$sheel->stores->has_store($_SESSION['sheeldata']['user']['userid'])">
+	                                       <li><a href="{https_server}selling/store/manage/" class="text-uppercase"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_manage_store}</a></li>
+	                                       <else />
+	                                       <li><a href="{https_server}selling/store/create/" class="text-uppercase"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_open_a_store}</a></li></li> 	
+							               </if>
+							               </if>
+	                                   </ul>
+	                           </li>
+	                           </if>    
+	                           
+                              
+                                
+                               
+                                <if condition="isset($sheel->config['auctionevents']) AND $sheel->config['auctionevents']"><li><a href="{https_server}auctions/">{_auctions}</a></li></if>
+                                <li><a href="{https_server}buying/purchases/">{_orders}</a></li> 
+                                
+                                
+                                
+                                <li class="children favorite-hover">
+                                    <a href="javascript:;">{_following}</a>
+                                     <div class="sub-menu dropdown">
+	                                     <div class="panel-group" id="accordion">
+	                                         <div class="panel panel-default">
+	                                             <div class="panel-heading tab-cont">
+	                                                 <h4 class="panel-title"> <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#favouriteauctionevents">{_auction_events} </a>  </h4><a href="javascript:;" onclick="location.href='{https_server}watchlist/auctions/'"><i class="fa fa-cog" aria-hidden="true"></a></i>
+	                                             </div>
+	                                             <div class="panel-collapse collapse in txtb nopadding" id="favouriteauctionevents">
+	                                                 <span class="p-{table_cellpadding}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span>
+	                                             </div>
+	                                         </div> 
+	                                         <div class="panel panel-default">
+	                                             <div class="panel-heading tab-cont">
+	                                                 <h4 class="panel-title"> <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#favouriteitems">{_items} </a>  </h4><a href="javascript:;" onclick="location.href='{https_server}watchlist/'"><i class="fa fa-cog" aria-hidden="true"></a></i>
+	                                             </div>
+	                                             <div class="panel-collapse collapse in txtb nopadding" id="favouriteitems">
+	                                                 <span class="p-{table_cellpadding}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span>
+	                                             </div>
+	                                         </div>
+	                                         <div class="panel panel-default">
+	                                             <div class="panel-heading tab-cont">
+	                                                 <h4 class="panel-title"> <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#favouritesellers">{_sellers} </a>  </h4><a href="javascript:;" onclick="location.href='{https_server}watchlist/sellers/'"><i class="fa fa-cog" aria-hidden="true"></a></i>
+	                                             </div>
+	                                             <div class="panel-collapse collapse in txtb nopadding" id="favouritesellers">
+	                                                 <span class="p-{table_cellpadding}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span>
+	                                             </div>
+	                                         </div>
+	                                         <div class="panel panel-default">
+	                                             <div class="panel-heading tab-cont">
+	                                                 <h4 class="panel-title"> <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#favouritesearches">{_searches} </a>  </h4><a href="javascript:;" onclick="location.href='{https_server}preferences/saved-searches/'"><i class="fa fa-cog" aria-hidden="true"></a></i>
+	                                             </div>
+	                                             <div class="panel-collapse collapse in txtb nopadding" id="favouritesearches">
+	                                                 <span class="p-{table_cellpadding}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span>
+	                                             </div>
+	                                         </div> 
+	                                     </div>
+                                     </div>
+                                </li>
+                                
+                                
+                                
+
+                        
+                                <li></li> 
+	                           </ul>
+	                           <a href="#" class="toggle-mobile-menu"><span></span></a>
+	                       </nav>
+	      		</div>
+
+                <div class="col-md-2 col-sm-5 col-xs-5">
+                        <div class="flex-wrap box-wishlist-cart-account pull-right">
+                        	
+                            <div class="account-manager dropdown-box">
+                                <a class="open-login-form color-title" href="#" title="<if condition="empty($_SESSION['sheeldata']['user']['username'])">{_hello}, {_sign_in}<else />{_hello}, <if condition="empty($_SESSION['sheeldata']['user']['userid'])">{_sign_in}<else />{user[firstname]}</if></if>"><i class="title24 fa fa-user"></i></a>
+                               <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['userid'], 'createproductauctions') == 'yes' OR !isset($_SESSION['sheeldata']['user']['userid'])">
+                               <if condition="empty($_SESSION['sheeldata']['user']['username'])">
+                              	<ul class="list-none dropdown-list dropdown-list-user">
+                              		<li><a href="{https_server}signin/?redirect={request_uriencoded}"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;{_login}</a></li>
+                                    <li> <a href="{https_server}register/"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;{_register}</a></li>
+                              	</ul>
+                                
+                               <else />
+                               	<ul class="list-none dropdown-list dropdown-list-user">
+                              		<li><a href="{https_server}account/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_my_account}</a></li>
+                                    <li><a href="{https_server}messages/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_messages}</a> <span class="gray" id="newmessagestopnav"></span></li>
+                                    <li><a href="{https_server}buying/purchases/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_my_orders}</a></li>
+                                    <li><a href="{https_server}accounting/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_payment_profiles}</a></li>
+                                    <li><a href="{https_server}accounting/billing-payments/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_billing_and_payments}</a></li>
+                                    <li><a href="{https_server}membership/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_subscription}</a></li>
+                                    <li><a href="{https_server}feedback/?cmd=_leave-feedback"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_leave_feedback}</a></li>
+                                    <if condition="!empty($_SESSION['sheeldata']['user']['username']) AND !empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}signout/"><i class="fa fa-arrow-circle-right"></i>&nbsp;{_log_out}</a></li></if>
+                                </ul>
+                               </if>
+                               </if>               
+                            </div>
+                            <div class="wishlist">
+                                <if condition="$sheel->cart->count() <= 0"><a class="minicart-icon color-title" href="#" title="{_your_shopping_cart_is_empty}"> <else /><a class="minicart-icon color-title" href="{https_server}purchase/confirm/" title="{_checkout}"> </if>
+                                    <i class="title24 fa fa-shopping-cart"></i>
+                                    <span class="wishlist-number">{cartcount}</span>
+                                </a> 
+                            </div>                    
+                            </div>
+                        </div>
+                    </div>
+				
+			</div>
+		</div>
+
+	    
+	<div class="bg-color box-cate-search">
+            <div class="container">
+                <div class="row">
+                    <div class=" col-sm-1 col-lg-2 col-md-2 col-xs-2 margin-top-mobile-2">
+                        <div class="cate-list-menu">
+                            <a class="color-title font-bold title14 heading-title" href="javascript:;">{_shop_by} {_category}</a>                               
+                                    {shopbycategory}     
+                        </div>
+                    </div>
+                    <div class="col-sm-7 col-xs-12 pos-abs-mob">
+                        <div class="block-search-element pull-right">
+                        	<form class="search-form live-search-on" name="global" id="globalsearch" action="{https_server}search" method="post" dir="{template_textdirection}" accept-charset="UTF-8">
+                            <input type="hidden" name="mode" id="searchmode" value="product" />
+                            <if condition="defined('LOCATION') AND LOCATION == 'search'">{hiddenfields}</if>
+                            
+                            	
+                                <div class="dropdown-box search-menu">
+                                    <a href="javascript:;" title="{_all_categories_upper}" class="menu-link"><span class="dropdown-link title-mob current-search-cat" id="search-menu-selected">{_all_categories_upper}</span></a>
+                                    <ul class="list-none dropdown-list mob-ul-width">
+                                        {categorypulldownpopup}
+                                    </ul>
+                                </div>
+                                <div id="search_autocomplete" class="hide">
+                                </div>
+                                <input name="q" id="search_keywords_id" type="text" value="{q}" autocomplete="off" spellcheck="false"  />
+                                
+                                 <div class="dropdown-box dropdown-box1">
+                                        <span class="dropdown-link"><i class="fa fa-cog" aria-hidden="true"></i></span>
+                                        <ul class="list-none dropdown-list mar-left-mob">
+                                            <li class="active">
+                                                  <div class="setting-form1">
+                                        <div class="row"> 
+                                       		<label for="cid">{_search_options}</label> 
+                                       		<div class="hr-10-0-10-0"></div>
+                                            <label for="cid">{_category}</label> 
+                                            <div class=" " id="">{search_category_pulldown_v4}</div>
+                                            
+                                        
+
+                                            <div class="checkbox">
+											  <label for="titlesonly"><input name="titlesonly" id="titlesonly" type="checkbox" value="1" class="checkbox <if condition="$sheel->config['template_textdirection'] == 'ltr'">m-2-8-0-0<else />m-2-0-0-8</if>" /> {_search_auction_titles_only}</label>
+											</div>
+											<div class="checkbox">
+											  <label for="imagesonly"><input name="images" id="imagesonly" type="checkbox" value="1" class="checkbox <if condition="$sheel->config['template_textdirection'] == 'ltr'">m-2-8-0-0<else />m-2-0-0-8</if>" /> {_show_only_with_images}</label>
+											</div>
+											<div class="checkbox">
+											  <label for="freeshipping"><input name="freeshipping" id="freeshipping" type="checkbox" value="1" class="checkbox <if condition="$sheel->config['template_textdirection'] == 'ltr'">m-2-8-0-0<else />m-2-0-0-8</if>" /> {_show_items_with_free_shipping}</label>
+											</div>
+
+                                        </div>
+                                        <div class="row">
+                                            <label for="itemnumber">{_item_number}</label>
+                                            <input name="itemid" type="text" id="itemnumber" placeholder="{_eg_placeholder_itemnumber}" class="input-item form-control" autocomplete="off"/>
+                                        </div>
+                                        <div class="row last p-top">
+                                            <input type="submit" value="{_search}" id="bigsearchbutton" class="btn-er button2" />
+                                        </div>
+                                        <div class="row last p-top">
+                                        	<a href="{http_server}search/advanced.html?returnurl={pageurl_urlencoded}" title="{_advanced_search}">{_advanced_search}</a>
+                                        </div>
+                                    </div>
+                                            </li>
+                                          
+                                        </ul>
+                                    </div>
+                                <div class="submit-form">
+                                    <input type="submit" value="">
+                                </div>
+                                <if condition="isset($sheel->config['fulltextsearch']) AND $sheel->config['fulltextsearch']"><input type="hidden" name="sort" id="searchsort" value="124" /><else /><input type="hidden" name="sort" id="searchsort" value="01" /></if>
+                            </form>
+                        </div>
+                    </div>
+
+                
+                </div>
+            </div>
+            
+
+        </div>
+
+
+     
+</div>
+   <button class="btn-toogle btn"><i class="fa fa-2x fa-cog" aria-hidden="true"></i></button>
+    <div class="side-menu">
+        <div class="sidebar">
+			<div class="widget widget_categories">
+				<h3 class="widget-title">Dashboard</h3>
+				<ul class="list-none">
+					<li class="cat-item">
+						<a href="{https_server}accounting/transactions/">{_account_balance}</a>
+						<span class="post_count">{accountbalance}</span>
+					</li>
+					<li class="cat-item">
+						<a href="{https_server}accounting/billing-payments/">{_balance_owing}</a>
+						<span class="post_count">{balanceowing}</span>
+					</li>
+					<li class="cat-item">
+						<a href="{https_server}membership/">{_subscription}</a>
+						<span class="post_count">{membershipstatus}</span>
+					</li>
+					<li class="cat-item">
+						<a href="{https_server}accounting/transactions/points/">{_points_available}</a>
+						<span class="post_count">{pointsavailable}</span>
+					</li>
+					<li class="cat-item">
+						{attachgauge}
+					</li>
+				</ul>
+			</div>
+		</div>
+    
+</div>
+<!-- end header container -->
+<section id="app-widget" class="app-widget"></section>
+<section id="top-subnav" class="top-dynamic subnav<if condition="!isset($sheel->show['topsubnav']) OR (isset($sheel->show['topsubnav']) AND !$sheel->show['topsubnav'])"> hide</if>"><div class="w-100pct">{topsubnav}</div></section>
+<section id="top-dynamic" class="top-dynamic<if condition="!isset($sheel->show['topdynamic']) OR (isset($sheel->show['topdynamic']) AND !$sheel->show['topdynamic'])"> hide</if>"><div class="w-100pct">{topdynamic}</div></section>
+<section id="listing-notices"></section>
+<section id="top-ax"></section>
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpax', cid:'{cid}', limit:1, minlimit:1, viewmode:'billboard', width:980, height:55, zone:'hbnc', container:'top-ax'});}</script>
+
+

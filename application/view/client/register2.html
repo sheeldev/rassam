@@ -1,0 +1,154 @@
+<div class="wrap-bread-crumb text-center" style="min-height: calc(100vh - 232px); background-image: url(/application/assets/images/sheel-theme-images/home/a8.png); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+	<div class="container" style="margin: 25px 10px;">
+		<div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19); background-color:rgba(118, 125, 135, 0.2);">
+					<div class="login-wrap">
+						<div class="login-html">
+							<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label
+								for="tab-1" class="tab" style="margin-left: 20px;">{_contact_information}</label>
+							<div class="login-form">
+								<form method="post" action="{https_server}register/" accept-charset="UTF-8" id="register2">
+									<input type="hidden" name="cmd" value="register" />
+									<input type="hidden" name="step" value="3" />
+									<input type="hidden" name="companyname" value="" />
+									<input type="hidden" name="usecompanyname" value="0" />
+									<input type="hidden" name="timezone" value="{config[globalserverlocale_sitetimezone]}" />
+									<input type="hidden" name="cc" id="cc" value="{cc}" />
+									<if condition="$sheel->config['genderactive']">
+										<div class="col-md-4">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_gender}</label>
+	                                    </div>
+	                                	</div>
+										<div class="col-md-4">
+	                                    <div class="group">
+	                                        <label class="container1-radio"><input type="radio" name="gender" id="gender-male" value="male" {cb_gender_male} />{_male}<span class="checkmark1"></span></label>
+	                                    </div>
+	                                	</div>
+	                                	<div class="col-md-4">
+	                                    <div class="group">
+	                                        <label class="container1-radio"><input type="radio" name="gender" id="gender-female" value="female" {cb_gender_female} />{_female}<span class="checkmark1"></span></label>
+	                                    </div>
+	                                	</div>
+	                                	
+									</if>
+									<div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_first_name}</label>
+	                                        <input type="text" name="first_name" value="{first_name}" id="first_name" maxlength="49" class="input-orig requiredfield" />
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_last_name}</label>
+	                                        <input type="text" name="last_name" value="{last_name}" id="last_name"  maxlength="49" class="input-orig requiredfield" />
+	                                    </div>
+	                                </div>
+	                                 <if condition="isset($sheel->config['requirephonenumber']) AND $sheel->config['requirephonenumber']">
+									<div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_phone_number}</label>
+	                                        <input type="text" name="phone" id="phone" value="{phone}" class="input-orig requiredfield" />
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_currency}</label>
+	                                        <div class="draw-select__wrapper" id="currency-wrapper">{currency_pulldown}</div>
+	                                    </div>
+	                                </div>
+	                                <else />
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_currency}</label>
+	                                        <div class="draw-select__wrapper" id="currency-wrapper">{currency_pulldown}</div>
+	                                    </div>
+	                                </div>
+	                                </if>
+									<div class="col-md-12">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                    <div class="hr"></div>
+	                                </div>	
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_address}</label>
+	                                        <input type="text" name="address" id="address" value="{address}" maxlength="100" class="input-orig requiredfield" placeholder="{_street_address_po_box_etc}" />
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_address}</label>
+	                                        <input type="text" name="address2" id="address2" value="{address2}" maxlength="49" class="input-orig requiredfield" placeholder="{_apartment_suite_etc}" />
+	                                    </div>
+	                                </div>
+	                                
+	                                <div id="showcountrystatecity" class="<if condition="!empty($sheel->config['googlemapsgeocodingkey']) AND !isset($sheel->GPC['do']) AND empty($sheel->GPC['state'])">hide</if>">
+	                                
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_country}</label>
+	                                        <div class="draw-select__wrapper" id="country-wrapper">{country_js_pulldown}</div>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_state_or_province}</label>
+	                                        <div class="draw-select__wrapper" id="state-wrapper">{state_js_pulldown}</div>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_city_or_town}</label>
+	                                        {city_js_pulldown}
+	                                       <!--  <div class="draw-select__wrapper" id="state-wrapper">{state_js_pulldown}</div> -->
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_zip_or_postal_code}<if condition="!empty($sheel->config['googlemapsgeocodingkey']) AND !isset($sheel->GPC['do']) AND empty($sheel->GPC['state'])"><span class="normal" id="zipcodecountrytext"> {_within_lower} {country}</span> <span id="changecountrylink" class="plr-9 smaller">(<span class="blue"><a href="javascript:;" onclick="jQuery('#showcountrystatecity').removeClass('hide');jQuery('#zipcodecountrytext').addClass('hide');jQuery('#changecountrylink').addClass('hide');">{_change_country}</a></span>)</span></if></label>
+	                                        <input type="text" name="zipcode" id="zipcode" value="{zipcode}" maxlength="10" class="input-orig requiredfield<if condition="isset($sheel->show['error_zip_code_api']) AND $sheel->show['error_zip_code_api']"> redborder</if>" />
+	                                        <if condition="isset($sheel->show['error_zip_code_api']) AND $sheel->show['error_zip_code_api']"><script>jQuery.growl.error({ title: '{_notice}', message: '{_please_enter_valid_zip_code}' });</script></if>   
+											<if condition="!empty($sheel->config['googlemapsgeocodingkey']) AND !isset($sheel->GPC['do']) AND empty($sheel->GPC['state'])"><script>jQuery.growl.error({ title: '{_notice}', message: 'We rely on Google API.  Please enter a valid zip code.' });</script></if>   
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-3">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                </div>
+									<div class="col-md-6">
+				                        <div class="group">
+	                                        <input type="button" class="button" value="{_continue}" accesskey="s" id="register2-button" />
+	                                    </div>
+	                                </div>
+									<div class="col-md-3">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                </div>
+									<div id="customquestions">{customquestions}</div>
+
+
+									<div class="clear"></div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

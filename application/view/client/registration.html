@@ -1,0 +1,93 @@
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'expired'">
+<script>
+	jQuery.growl.error({
+		title : '{_session_expired}',
+		message : '{_your_previous_session_expired}'
+	})
+</script>
+</if>
+<div class="wrap-bread-crumb text-center"
+	style="min-height: calc(100vh - 232px); background-image: url(/application/assets/images/sheel-theme-images/home/a8.png); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+	<div class="container" style="margin: 25px 10px;">
+		<div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19); background-color:rgba(118, 125, 135, 0.2);">
+					<div class="login-wrap">
+						<div class="login-html">
+							<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label
+								for="tab-1" class="tab" style="margin-left: 20px;">{_registration}</label>
+							<div class="login-form">
+								<form method="post" action="{https_server}register/"
+									accept-charset="UTF-8" id="register">
+									<input type="hidden" name="cmd" value="register" /> <input
+										type="hidden" name="step" value="1" /> <input type="hidden"
+										name="agreement" value="1" />
+									<if condition="$sheel->config['registrationdisplay_dob']">
+									<div class="col-md-12">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_please_enter_your_date_of_birth}</label>
+	                                    </div>
+	                                </div>
+									<div class="col-md-4">
+									<div class="draw-select__wrapper">{monthpulldown}</div>
+									</div>
+									<div class="col-md-4">
+									<div class="draw-select__wrapper">{daypulldown}</div>
+									</div>
+									<div class="col-md-4">
+									<div class="draw-select__wrapper">{yearpulldown}</div>
+									</div>
+									</if>
+									<div class="col-md-12">
+										<div class="group">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="group">
+											<label class="sheel-checkbox sheel-checkbox-1">{_i_agree_to_the}
+												<a href="{https_server}content/go/terms" target="_blank"
+												class="underlinelink">{_terms_lc}</a> {_and} <a
+												href="{https_server}content/go/privacy" target="_blank"
+												class="underlinelink">{_privacy_policy_lc}</a>. <input
+												type="checkbox" name="agreecheck" id="agreecheck"
+												checked="checked">
+												<div class="checkmark"></div>
+											</label>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="group">
+											<label class="sheel-checkbox sheel-checkbox-1">{_receive_news_and_updates_by_email}.
+												<input type="checkbox" name="marketing" id="marketing"
+												checked="checked">
+												<div class="checkmark"></div>
+											</label>
+										</div>
+									</div>
+									<div class="col-md-3">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                </div>
+									<div class="col-md-6">
+				                        <div class="group">
+	                                        <input type="button"
+										class="button"
+										value="{_continue}" accesskey="s" id="register-button" />
+	                                    </div>
+	                                </div>
+									<div class="col-md-3">
+				                        <div class="group">
+	                                        
+	                                    </div>
+	                                </div>
+									<div class="clear"></div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,80 @@
+<div id="container">
+	<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 1">
+		<div id="system_error" class="status system-error dialog-status">
+			<p>{_you_have_provided_incorrect_login_credentials}</p>
+		</div>
+	</if>
+	<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'suspended'">
+		<div id="system_error" class="status system-error dialog-status">
+			<p>{_your_account_is_suspended_login_disabled}</p>
+		</div>
+	</if>
+	<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] == 'iprestrict'">
+		<div id="system_error" class="status system-error dialog-status">
+			<p>{_your_ip_address_does_not_match_for_this_account}</p>
+		</div>
+	</if>
+
+	<if condition="isset($sheel->show['passwordchange']) AND $sheel->show['passwordchange']=='success'">
+		<div id="system_success" class="status success dialog-status">
+			<p>{_your_account_password_was_changed}</p>
+		</div>
+	</if>
+
+	<noscript class="no-js">{_to_use_site_enable_javascript} <a href="http://www.enable-javascript.com/"
+			target="_blank">{_learn_how_enable_javascript}</a></noscript>
+	<div id="dialog-alternate">
+		<div class="login-form">
+			<h1 class="dialog-heading">{site_name}</h1>
+			<h2 class="dialog-subheading">{_login_to_the_admin_control_panel}</h2>
+
+			<form name="login" action="{https_server}signin/" method="post" accept-charset="UTF-8"
+				onsubmit="return md5(password, md5pass, md5pass_utf)" novalidate>
+				<input type="hidden" name="redirect" value="{redirect}" />
+				<input type="hidden" name="login_process" value="2" />
+				<input type="hidden" name="md5pass" />
+				<input type="hidden" name="md5pass_utf" />
+				<input name="utf8" type="hidden" value="&#x2713;" />
+				<div class="clearfix">
+					<div class="login-container">
+						<div class="lform dialog-form">
+							<div class="require-cookies status dialog-status">
+								<p>{_please_enable_browser_cookies}</p>
+							</div>
+						</div>
+						<div id="sign-in-form" class="lform dialog-form">
+							<div id="login">
+								<div class="dialog-input-container clearfix">
+									<input type="email" name="username" size="30" id="username" class="dialog-input "
+										value="{username}" spellcheck="false" placeholder="{_email} / {_username}" />
+									<label for="login-input" class="visuallyhidden">{_email}</label>
+									<i class="ico dialog-ico ico-email"></i>
+								</div>
+								<div class="dialog-input-container clearfix">
+									<input type="password" name="password" size="16" id="password" class="dialog-input "
+										value="{password}" spellcheck="false" placeholder="{_password}" />
+									<label for="password" class="visuallyhidden">{_password}</label>
+									<i class="ico dialog-ico ico-password"></i>
+									<div class="forgot-password-container">
+										<a class="forgot-password tooltip tooltip-bottom" id="forgot-password"
+											title="{_forgot_your_password}?"
+											href="{https_server_admin}signin/renew-password/">
+											<span class="tooltip-container"><span
+													class="tooltip-label">{_forgot_your_password}?</span></span>
+											<i class="ico dialog-ico ico-forgot-password"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+							<input type="submit" name="commit" value="{_login}" class="dialog-btn" />
+						</div>
+					</div>
+				</div>
+				<div class="remember-me">
+					<input name="remember" type="checkbox" id="remember_checkbox" value="1">
+					<label for="remember_checkbox" class="inline">{_remember_me}</label>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

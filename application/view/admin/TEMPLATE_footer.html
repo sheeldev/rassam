@@ -1,0 +1,125 @@
+<div id="UIFlashWrapper" class="ui-flash-wrapper"><!-- ui-flash-wrapper--is-visible -->
+	<div class="ui-flash ui-flash--draw-nav-offset" aria-live="assertive" tabindex="-1" id="UIFlashMessage" data-tg-refresh-always="true" data-flash-has-message="false"> <!-- true -->
+    	<p class="ui-flash__message" id="flashmessage"></p>
+        <div class="ui-flash__close-button">
+        	<button class="btn btn--transparent btn--icon" aria-label="Close message" type="button" name="button"><svg class="draw-icon draw-icon--color-white draw-icon--size-12"> <use xlink:href="#draw-remove"></use> </svg></button>
+        </div>
+    </div>
+</div>
+<if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] AND isset($sheel->config['license_payment_in_process']) AND $sheel->config['license_payment_in_process']">
+<div class="plan-selection plan-selection--success" id="successbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            Excellent! Your payment is being processed. Thank you!
+        </span>
+      <a class="btn btn" href="{https_server_admin}settings/license/">View billing</a>
+    </div>
+</div>
+<else />
+<if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] AND isset($sheel->config['license_suspended']) AND $sheel->config['license_suspended']">
+<div class="plan-selection plan-selection--error" id="errorbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            Your marketplace license has been suspended. Please contact Sheel.
+        </span>
+      <a class="btn btn" href="https://www.sheel.com/contact/" target="_blank">Contact</a>
+    </div>
+</div>
+<else />
+<if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] AND isset($sheel->config['billing_cancelled']) AND $sheel->config['billing_cancelled']">
+<div class="plan-selection plan-selection--error" id="errorbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            Your last payment to Sheel skipped on {config[paymentskipdate]}. Enter new payment source before {config[paymentskipdatebefore]}.
+        </span>
+      <a class="btn btn" href="{https_server_admin}settings/license/">Update Billing</a>
+    </div>
+</div>
+<else />
+<if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE'] AND isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
+<div class="plan-selection" id="launchbar" refresh="launchbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            Admin Panel in Limited Mode (Cannot save or delete)
+        </span>
+    </div>
+</div>
+</if>
+<if condition="isset($sheel->show['EXPIRED_LICENSE']) AND $sheel->show['EXPIRED_LICENSE'] AND isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
+<div class="plan-selection plan-selection--error" id="expiredbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            <if condition="$sheel->config['istrial'] == 0">
+                <if condition="$sheel->config['license_type'] == 'leased'">
+                Choose a plan before <strong>{config[chooseplanbefore]}</strong> to keep this marketplace alive <a class="btn btn" href="{https_server_admin}settings/license/plans/">Choose plan</a>
+                <else />
+                Renew license to receive security updates and support <a class="btn btn" href="{https_server_admin}settings/license/renewal/">Renew</a>
+                </if>
+            <else />
+                <if condition="$sheel->config['license_type'] == 'leased'">
+                Trial ended &ndash; choose plan before <strong>{config[chooseplanbefore]}</strong> to keep marketplace active <a class="btn btn" href="{https_server_admin}settings/license/plans/">Choose plan</a>
+                <else />
+                Renew license to receive security updates and support <a class="btn btn" href="{https_server_admin}settings/license/renewal/">Renew</a>
+                </if>
+            </if>
+        </span>
+        <!--<a class="btn btn" href="javascript:;" onclick="toggle_hide('expiredbar')">{_close}</a>-->
+    </div>
+</div>
+</if>
+<if condition="isset($sheel->config['istrial']) AND $sheel->config['istrial'] AND isset($sheel->show['EXPIRED_LICENSE']) AND $sheel->show['EXPIRED_LICENSE'] == false AND isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
+<if condition="PROTOCOL_REQUEST == 'http'">
+<div class="plan-selection plan-selection--success" id="sslerrorbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            Your secure SSL certificate is being processed for your 14-day free trial.
+        </span>
+    </div>
+</div>
+<else />
+<div class="plan-selection" id="trialbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            You have {config[trialdaysleft]} days left for your free trial
+        </span>
+        <a class="btn btn" href="{https_server_admin}settings/license/plans/">Choose a plan</a>
+    </div>
+</div>
+</if>
+</if>
+</if>
+</if>
+</if>
+<if condition="isset($error) AND !empty($error)">
+<div class="plan-selection plan-selection--error" id="errorbar">
+    <div class="wrapper clearfix">
+        <span class="plan-selection-message">
+            {error}
+        </span>
+      <a class="btn" href="javascript:;" onclick="toggle_hide('errorbar')">{_close}</a>
+    </div>
+</div>
+</if>
+<!-- modals --><div id="modal_confirm" style="display:none">
+    <div>
+        <header>
+            <h2 id="modal_confirm_header"></h2>
+            <a href="javascript:;" onclick="close_modal()" class="close-modal" role="button" aria-label="Close dialog">×</a>
+        </header>
+        <div class="body" id="modal_confirm_body"></div>
+    </div>
+    <div class="buttons">
+    	<a class="btn close-modal" href="javascript:;" onclick="close_modal()">{_cancel}</a>
+    	<a class="btn btn-primary close-modal" href="javascript:;" onclick="" id="modal_confirm_onclick_action"><span id="modal_spinner">{_confirm}<span></a>
+    </div>
+</div><!-- modals -->
+<div id="modal_container" class="modal"></div>
+<div id="modal_backdrop" class="modal-bg"></div>
+<div id="UIModalBackdrop" class="ui-modal-backdrop"></div>
+<div id="UIModals"></div>
+<div id="global-icon-symbols" class="hide"><svg xmlns="http://www.w3.org/2000/svg"><symbol id="draw-navigation"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" enable-background="new 0 0 24 24"><g><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm6.7 5.7c-.5 1.7-2.1 7-4 8.8l-.1.1-.1.1c-1.9 1.9-7.2 3.5-8.8 4-.2.1-.4-.1-.4-.4.5-1.7 2.1-7 4-8.8l.1-.1.1-.1c1.9-1.9 7.2-3.5 8.8-4 .3-.1.5.1.4.4z"/><circle cx="12" cy="12" r="2"/></g></svg></symbol>
+    <symbol id="draw-search-16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" enable-background="new 0 0 16 16"><path d="M0 5.667c0 3.125 2.542 5.667 5.667 5.667 1.202 0 2.315-.38 3.233-1.02l.455.456c-.07.5.082 1.025.466 1.41l3.334 3.332c.326.325.753.488 1.18.488.425 0 .852-.163 1.177-.488.652-.65.652-1.706 0-2.357L12.18 9.822c-.384-.384-.91-.536-1.41-.466l-.454-.456c.64-.918 1.02-2.03 1.02-3.233C11.333 2.542 8.79 0 5.666 0S0 2.542 0 5.667zm2 0C2 3.645 3.645 2 5.667 2s3.667 1.645 3.667 3.667-1.646 3.666-3.667 3.666S2 7.688 2 5.667z"/></svg></symbol>
+    <symbol id="draw-remove"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" enable-background="new 0 0 24 24"><path d="M19.5 22c-.2 0-.5-.1-.7-.3L12 14.9l-6.8 6.8c-.2.2-.4.3-.7.3-.2 0-.5-.1-.7-.3l-1.6-1.6c-.1-.2-.2-.4-.2-.6 0-.2.1-.5.3-.7L9.1 12 2.3 5.2C2.1 5 2 4.8 2 4.5c0-.2.1-.5.3-.7l1.6-1.6c.2-.1.4-.2.6-.2.3 0 .5.1.7.3L12 9.1l6.8-6.8c.2-.2.4-.3.7-.3.2 0 .5.1.7.3l1.6 1.6c.1.2.2.4.2.6 0 .2-.1.5-.3.7L14.9 12l6.8 6.8c.2.2.3.4.3.7 0 .2-.1.5-.3.7l-1.6 1.6c-.2.1-.4.2-.6.2z"/></svg></symbol>
+    <symbol id="draw-chevron"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.6,6 L8.2,8 L12,12 L8.2,16 L10.6,18 L15.3,13 C15.8,12.4 15.8,11.6 15.3,11 L10.6,6 L10.6,6 Z"/></svg></symbol>
+	<symbol id="draw-menu-16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" enable-background="new 0 0 16 16"><path d="M7 9H1c-.552 0-1-.114-1-.667v-.666C0 7.114.448 7 1 7h14c.552 0 1 .114 1 .667v.667c0 .552-.448.666-1 .666H7zM7 4H1c-.552 0-1-.114-1-.667v-.666C0 2.114.448 2 1 2h14c.552 0 1 .114 1 .667v.667c0 .552-.448.666-1 .666H7zM7 14H1c-.552 0-1-.114-1-.667v-.667C0 12.114.448 12 1 12h14c.552 0 1 .114 1 .667v.667c0 .552-.448.666-1 .666H7z"/></svg></symbol></svg>
+</div>

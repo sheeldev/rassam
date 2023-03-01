@@ -1,0 +1,313 @@
+<section id="side_panel" class="hide">
+    <div class="full-dialog-overlay"></div>
+    <div class="full-dialog-container full-dialog-side-control" id="full-dialog-container-js">
+        <div class="full-dialog-close" onclick="close_full_dialog()"></div>
+        <div class="full-dialog-body">
+            <iframe id="full-dialog-widget" name="full-dialog-widget" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+</section>
+
+<if condition="isset($sheel->show['slimheader']) AND $sheel->show['slimheader']">
+
+<section id="top-head-container" class="header-container-slim">
+<!-- start header -->
+<header class="header-slim">
+	<!-- start top-bar -->
+    <div class="top-bar-slim">
+
+        <div class="m-0-10-0-10">
+        <span class="<if condition="$sheel->config['template_textdirection'] == 'ltr'">left m-2-10-0-0<else />right m-2-0-0-10</if>">
+        	<a href="{http_server}home/" title="{site_name}"><img src="{imguploadscdn}meta/logo.png" alt="{site_name}" /></a>
+            <ul class="slim-links">
+            	<if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
+                <li><a href="{https_server_admin}" title="{_admin}" target="_blank">{_admin_cp}</a></li>
+                </if>
+            	<if condition="isset($sheel->config['stores']) AND $sheel->config['stores']">
+                <li><a href="{https_server}stores/" title="{_stores}">{_stores}</a></li>
+                <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'canopenstore') == 'yes'">
+                <if condition="$sheel->stores->has_store($_SESSION['sheeldata']['user']['companyid])">
+                <li><a href="{https_server}selling/store/manage/" title="{_manage_store}">{_manage_store}</a></li>
+                <else />
+                <li><a href="{https_server}selling/store/create/" title="{_open_a_store}">{_open_a_store}</a></li>
+                </if>
+                </if>
+                </if>
+                <if condition="isset($sheel->config['brands']) AND $sheel->config['brands']"><li><a href="{https_server}b/" class="pt-16">{_brands}</a></li></if>
+                <if condition="isset($sheel->config['enablenonprofits']) AND $sheel->config['enablenonprofits']"><li><a href="{https_server}nonprofits/" class="pt-16">{_nonprofits}</a></li></if>
+				<if condition="!empty($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'createproducts') == 'yes'"><li><a href="{https_server}sell/" title="{_sell_new_item}">{_sell_new_item}</a></li></if>
+                <if condition="!empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}account/" title="{_my_cp}">{_my_cp}</a></li></if>
+                <if condition="!empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}buying/purchases/" title="{_orders}">{_orders}</a></li></if>
+            </ul>
+        </span>
+        <div class="top-bar-info <if condition="$sheel->config['template_textdirection'] == 'ltr'">right<else />left</if>">{login_include}</div>
+        </div>
+    </div>
+    <!-- end top-bar -->
+</header>
+<!-- end header -->
+</section>
+
+<else />
+
+<section id="top-head-container" class="header-container">
+<!-- start header -->
+<header class="header">
+
+	<div class="box-fluid">
+    	<!-- start header-top -->
+    	<div class="header-top">
+        	<div class="top-nav-left border-top-black">
+            	<!-- start logo -->
+                 <div id="logo"> 
+                     <div class="logo onlydesktop"> 
+                         <a href="{https_server}home/" title="{site_name}"><img src="{imguploadscdn}meta/logo.png" alt="logo desktop" /></a> 
+                     </div>
+                     <div class="logo onlymobile">
+                         <a href="{https_server}home/" title="{site_name}"><img src="{imguploadscdn}meta/apple-touch-icon-144x144.png" alt="logo mobile" /></a> 
+                     </div> 
+                 </div> 
+                <!-- end logo -->
+            </div>
+
+            <div class="top-nav-right border-top-black" id="billboard-3"></div>
+            <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpa', id:3, cid:'{cid}', width:400, height:39, divider:false, mime:'.gif', container:'billboard-3'});}</script>
+            <div class="top-nav-fill border-top-black">
+            </div>
+            <div class="header-bot">
+                <div class="bot-nav-left">
+                    <div id="global-location"></div>
+                </div>
+                <div class="bot-nav-right">
+                    <!-- start top-link -->
+                    <div class="top-link">
+                        <ul>
+                            <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND !$_SESSION['sheeldata']['user']['isadmin'] AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'createproducts') == 'yes' OR !isset($_SESSION['sheeldata']['user']['userid'])">
+                            <li class="sell-hover bold fs-14"><a href="javascript:;" class="pt-16"><span>{_listings}</span></a>
+    
+                                <div class="top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                    <if condition="empty($_SESSION['sheeldata']['user']['username'])"><div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                        <a class="login-link" href="{https_server}signin/?redirect={request_uriencoded}">{_login}</a>
+                                        <p><if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey'])"><a href="{https_server}signin/facebook/"><img src="{imgcdn}v5/img_facebook_ico.png" width="24" alt="Facebook" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey'])"><a href="{https_server}signin/twitter/"><img src="{imgcdn}v5/img_twitter_ico.png" width="24" alt="Twitter" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])"><a href="{https_server}signin/linkedin/"><img src="{imgcdn}v5/img_linkedin_ico.png" width="24" alt="Linked In" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['googlepluskey']) AND !empty($sheel->config['googlepluskey'])"><a href="{https_server}signin/googleplus/"><img src="{imgcdn}v5/img_google_ico.png" width="24" alt="GooglePlus" /></a></if></p>
+                                        <span class="new-user smaller">{_dont_have_an_account} <a href="{https_server}register/">{_register} ›</a></span>
+                                    </div>
+                                    <else />
+                                    <div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                        <h3>{_listings}</h3>
+                                    </div>
+                                    <ul>
+                                        <li><a href="{https_server}startselling/">{_start_selling}</a></li>
+                                        <if condition="$sheel->stores->has_store($_SESSION['sheeldata']['user']['companyid'])">
+                                            <li><a href="{https_server}sell/">{_sell_new_item}</a></li>
+                                        </if>
+                                        <if condition="isset($sheel->config['globalfilters_bulkupload']) AND $sheel->config['globalfilters_bulkupload'] OR $sheel->stores->has_store($_SESSION['sheeldata']['user']['companyid'])">
+                                            <li><a href="{https_server}sell/bulk/">{_sell_bulk_items}</a></li>
+                                        </if>
+                                        <li><a href="{https_server}selling/?displayorder=desc">{_im_selling}</a></li>
+                                        <li><a href="{https_server}selling/?sub=sold&amp;displayorder=desc">{_items_ive_sold}</a></li>
+                                    </ul>
+                                    </if>
+                                </div>
+    
+                            </li>
+    
+                            </if>
+                            <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND !$_SESSION['sheeldata']['user']['isadmin'] AND ($sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'dashboardaccess') == 'yes')"><li class="buy-hover bold fs-14"><a href="javascript:;" class="pt-16"><span>{_dashboard}</span></a>
+    
+                                <div class="top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                    <if condition="empty($_SESSION['sheeldata']['user']['username'])"><div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                        <a class="login-link" href="{https_server}signin/?redirect={request_uriencoded}">{_login}</a>
+                                        <p><if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey'])"><a href="{https_server}signin/facebook/"><img src="{imgcdn}v5/img_facebook_ico.png" width="24" alt="Facebook" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey'])"><a href="{https_server}signin/twitter/"><img src="{imgcdn}v5/img_twitter_ico.png" width="24" alt="Twitter" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])"><a href="{https_server}signin/linkedin/"><img src="{imgcdn}v5/img_linkedin_ico.png" width="24" alt="Linked In" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['googlepluskey']) AND !empty($sheel->config['googlepluskey'])"><a href="{https_server}signin/googleplus/"><img src="{imgcdn}v5/img_google_ico.png" width="24" alt="GooglePlus" /></a></if></p>
+                                        <span class="new-user smaller">{_dont_have_an_account} <a href="{https_server}register/">{_register} ›</a></span>
+                                    </div>
+                                    <else />
+                                    <div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                        <h3>{_dashboard}</h3>
+                                    </div>
+                                    <ul>
+                                        <li><a href="{http_server}buying/">{_selling_activities}</a></li>
+                                        <li><a href="{https_server}buying/purchases/">{_orders}</a></li>
+                                        <if condition="isset($sheel->config['currencyconverter']) AND $sheel->config['currencyconverter']"><li><a href="{https_server}currency-converter/">{_currency_converter}</a></li></if>
+                                    </ul>
+                                    </if>
+                                </div>
+    
+                            </li>
+                            </if>
+                            <li class="favorite-hover bold fs-14"><a href="javascript:;" class="pt-16"><span>{_following}</span></a>
+    
+                                <div class="top-dropdown2 <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                    <div class="user-login bb-n <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                        <h3>{_following}</h3>
+                                        <p class="gray mt-10">{_your_favorites_hold_items}</p>
+                                    </div>
+                                    
+                                    <div class="tab-cont">
+                                            <h4><span class="smaller gray <if condition="$sheel->config['template_textdirection'] == 'ltr'">right mr-10<else />left ml-10</if>"><a href="javascript:;" onclick="location.href='{https_server}watchlist/'">{_manage}</a></span><a href="javascript:;" class="link">{_items}</a></h4>
+                                            <if condition="empty($_SESSION['sheeldata']['user']['username'])">
+                                            <div class="txtb">
+                                                <p>{_you_must_be_logged_in_to}</p>
+                                                <a class="login-link" href="{https_server}signin/?redirect={request_uriencoded}">{_login}</a>
+                                                <div class="clear"></div>
+                                                <span class="new-user smaller">{_dont_have_an_account} <a href="{https_server}register/">{_register} ›</a></span>
+                                            </div>
+                                            <else />
+                                            <div class="txtb nopadding">
+                                                <div id="favouriteitems">
+                                                    <span class="p-{table_cellpadding}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></div>
+                                                </div>
+                                            </if>
+                                    </div>
+                                    
+                                    <div class="tab-cont">
+                                            <h4><span class="smaller gray <if condition="$sheel->config['template_textdirection'] == 'ltr'">right mr-10<else />left ml-10</if>"><a href="javascript:;" onclick="location.href='{https_server}preferences/saved-searches/'">{_manage}</a></span><a href="javascript:;" class="link">{_keywords}</a></h4>
+                                            <if condition="empty($_SESSION['sheeldata']['user']['username'])">
+                                            <div class="txtb">
+                                                <p>{_you_must_be_logged_in_to}</p>
+                                                <a class="login-link" href="{https_server}signin/?redirect={request_uriencoded}">{_login}</a>
+                                                <div class="clear"></div>
+                                                <span class="new-user">{_dont_have_an_account} <a href="{https_server}register/">{_register} ›</a></span>
+                                            </div>
+                                            <else />
+                                            <div class="txtb nopadding">
+                                                <div class="minh-395" id="favouritesearches">
+                                                    <span class="p-{table_cellpadding}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span>
+                                                </div>
+                                            </div>
+                                            </if>
+                                    </div>
+                                </div>
+    
+                            </li>
+                            <li class="sell-hover bold fs-14"><a href="javascript:;" class="pt-16"><span>{_content}</span></a>
+                            <div class="top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                <div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                    <h3>{_content}</h3>
+                                </div>
+                                <ul>
+                                    {headerpagelinks}   
+                                </ul>
+                            </div>
+    
+                            </li>
+                            <if condition="$sheel->language->lang_count_canselect() > 1"><li class="lang-hover bold fs-14"><a href="javascript:;">{user[languageiso]}<br /><span class="pt-2"><img src="{imgcdn}v5/ico_language.png" width="14" height="14"></span></a>
+                                <div class="top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                    {languagelinks}
+                                </div>
+                            </li></if>
+                            <if condition="$sheel->styles->styles_count_visible() > 1"><li class="lang-hover"><a href="javascript:;" title="User Experience">UX<br /><span class="pt-2"><img src="{imgcdn}v5/ico_theme.png" height="14"></span></a>
+                                <div class="top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                    {themelinks}
+                                </div>
+                            </li></if>
+                                <li class="login-hover"><if condition="empty($_SESSION['sheeldata']['user']['username'])"><a href="javascript:;">{_hello}, {_sign_in}<br /><span class="bold fs-14">{_your_account}</span></a><else /><a href="javascript:;">{_hello}, <if condition="empty($_SESSION['sheeldata']['user']['userid'])">{_sign_in}<else />{user[firstname]}</if><br /><span class="bold fs-14">{_your_account}</span></a></if>
+    
+                                <div class="top-dropdown <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                                    <if condition="empty($_SESSION['sheeldata']['user']['username']) OR empty($_SESSION['sheeldata']['user']['userid'])"><div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                        <a class="login-link" href="{https_server}signin/?redirect={request_uriencoded}">{_login}</a>
+                                        <p><if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey'])"><a href="{https_server}signin/facebook/"><img src="{imgcdn}v5/img_facebook_ico.png" width="24" alt="Facebook" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey'])"><a href="{https_server}signin/twitter/"><img src="{imgcdn}v5/img_twitter_ico.png" width="24" alt="Twitter" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])"><a href="{https_server}signin/linkedin/"><img src="{imgcdn}v5/img_linkedin_ico.png" width="24" alt="Linked In" /></a>&nbsp;&nbsp;&nbsp;</if><if condition="isset($sheel->config['googlepluskey']) AND !empty($sheel->config['googlepluskey'])"><a href="{https_server}signin/googleplus/"><img src="{imgcdn}v5/img_google_ico.png" width="24" alt="GooglePlus" /></a></if></p>
+                                        <span class="new-user smaller">{_dont_have_an_account} <a href="{https_server}register/">{_register} ›</a></span>
+                                    </div>
+                                    <else />
+                                    <div class="user-login <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-15-0-12-15<else />p-15-15-12-0</if>">
+                                    <h3>{_account}</h3>
+                                    </div>
+                                    </if>
+    
+                                    <ul>
+                                        <li><a href="{https_server}account/">{_my_account}</a></li>
+                                        <li><a href="{https_server}messages/">{_messages}</a> <span class="gray" id="newmessagestopnav"></span></li>
+                                        <li><a href="{https_server}buying/purchases/">{_my_orders}</a></li>
+                                        <li><a href="{https_server}accounting/">{_payment_profiles}</a></li>
+                                        <li><a href="{https_server}accounting/billing-payments/">{_billing_and_payments}</a></li>
+                                        <li><a href="{https_server}membership/">{_subscription}</a></li>
+                                        <li class="divider"><a href="{https_server}feedback/?cmd=_leave-feedback">{_leave_feedback}</a></li>
+                                        <if condition="!empty($_SESSION['sheeldata']['user']['username']) AND !empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}signout/">{_log_out}</a></li></if>
+                                    </ul>
+    
+                                </div>
+                            </li>
+    
+                            <li class="order-hover bold fs-14"><a href="{https_server}buying/purchases/">{_orders}</a>
+    
+                            </li>
+    
+                            
+                        </ul>
+                    </div>
+                    <!-- end top-link -->
+    
+                </div>
+    
+                <div class="bot-nav-fill">
+                    <div id="background-links">
+                        <div class="top-nav-left">
+    
+                            <div class="top-link">
+                                <ul>
+                                    <if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
+                                    <li class="admin-hover bold fs-14"><a href="{https_server_admin}" class="pt-16"><i class="fa fa-edit"></i>&nbsp;{_admin}</a></li>
+                                    </if>
+                                    <li class="admin-hover bold fs-14"><a href="{http_server}" class="pt-16"><i class="fa fa-map-marker"></i>&nbsp;{_home}</a></li>
+                                    <if condition="isset($sheel->config['brands']) AND $sheel->config['brands']"><li class="bold fs-14"><a href="{https_server}b/" class="pt-16"><i class="fa fa-car"></i>&nbsp;{_brands}</a></li></if>
+                                    <if condition="isset($sheel->config['enablenonprofits']) AND $sheel->config['enablenonprofits']"><li class="bold fs-14"><a href="{https_server}nonprofits/" class="pt-16"><i class="fa fa-heartbeat"></i>&nbsp;{_nonprofits}</a></li></if>
+    
+                                    <if condition="isset($sheel->config['stores']) AND $sheel->config['stores'] AND !$_SESSION['sheeldata']['user']['isadmin']">
+                                    <li class="bold fs-14"><a href="{https_server}stores/" class="pt-16">{_stores}</a></li>
+                                    <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'canopenstore') == 'yes' AND !$_SESSION['sheeldata']['user']['isadmin']">
+                                    <if condition="$sheel->stores->has_store($_SESSION['sheeldata']['user']['companyid']) AND !$_SESSION['sheeldata']['user']['isadmin']">
+                                    <li class="bold fs-14"><a href="{https_server}selling/store/manage/" class="pt-16"><i class='fas fa-store'></i>&nbsp;{_manage_store}</a></li>
+                                    <else />
+                                    <li class="bold fs-14"><a href="{https_server}selling/store/create/" class="pt-16" title="{_open_a_store}">{_open_a_store}</a></li>
+                                    </if>
+                                    </if>
+                                    </if>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+    
+                <div class="arrow-bot">
+                    <a href="javascript:;" class="arrow-link" title="{_recently_viewed_items}">arrow-bot</a>
+                    <!-- start product-list -->
+                    <div class="product-list <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">
+                        <a href="javascript:;" class="arrow-bot2 arrow-link <if condition="$sheel->config['template_textdirection'] == 'ltr'">bs-5-5-5-0<else />bs-n5-5-5-0</if>">arrow-bot</a>
+                        <!-- row -->
+                        <div class="row mx-0">
+                            <strong><a href="javascript:;" title="{_close}" class="close <if condition="$sheel->config['template_textdirection'] == 'ltr'">m-15-17-0-0<else />m-15-0-0-17</if>">{_close}</a> {_recently_viewed_items}</strong>
+                        </div>
+                        <!-- row -->
+                        <div id="recentviewedtoploader">
+                        <div class="row2">
+                            <ul>
+                                <li class="active <if condition="$sheel->config['template_textdirection'] == 'ltr'">p-0-17-0-0<else />p-0-0-0-17</if>" title="{_loading}"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                    <!-- end product-list -->
+                </div>
+            </div>
+            <!-- end header-bot -->
+
+        </div>
+        <!-- end header-top -->
+        <!-- start header-bot -->
+        
+    </div>
+    <!-- end box -->
+
+</header>
+<!-- end header -->
+</section>
+</if>
+
+<!-- end header container -->
+<section id="app-widget" class="app-widget"></section>
+<section id="top-subnav" class="top-dynamic subnav<if condition="!isset($sheel->show['topsubnav']) OR (isset($sheel->show['topsubnav']) AND !$sheel->show['topsubnav'])"> hide</if>"><div class="w-100pct">{topsubnav}</div><!-- a links only --></section>
+<section id="top-dynamic" class="top-dynamic<if condition="!isset($sheel->show['topdynamic']) OR (isset($sheel->show['topdynamic']) AND !$sheel->show['topdynamic'])"> hide</if>"><div class="w-100pct">{topdynamic}</div></section>
+<section id="listing-notices"></section>
+<section id="top-ax"></section>
+<script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpax', cid:'{cid}', limit:1, minlimit:1, viewmode:'billboard', width:980, height:55, zone:'hbnc', container:'top-ax'});}</script>

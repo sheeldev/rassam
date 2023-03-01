@@ -1,0 +1,102 @@
+<if condition="isset($sheel->show['error_role']) AND $sheel->show['error_role']"><script>jQuery.growl.error({ title: '{_failed}', message: '{_problem_assigning_you_role_admin}' })</script></if>
+<if condition="isset($sheel->show['error_password']) AND $sheel->show['error_password']"><script>jQuery.growl.error({ title: '{_failed}', message: '{_passwords_do_not_match}' })</script></if>
+<div class="wrap-bread-crumb text-center"
+	style="min-height: calc(100vh - 232px); background-image: url(/application/assets/images/sheel-theme-images/home/a8.png); background-position: center; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+	<div class="container" style="margin: 25px 0;">
+		<div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19); background-color:rgba(118, 125, 135, 0.2);">
+					<div class="login-wrap">
+						<div class="login-html">
+							<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label
+								for="tab-1" class="tab" style="margin-left: 20px;">{_user_registration}</label>
+							<div class="login-form">
+								<form method="post" action="{https_server}register/" accept-charset="UTF-8" id="register1">
+									<input type="hidden" name="cmd" value="register" />
+									<input type="hidden" name="step" value="2" />
+									<if condition="isset($sheel->show['rolescount']) AND $sheel->show['rolescount']">
+										<div class="col-md-12">
+											<div class="group">
+												<label for="user" class="label">{_select_your_role}</label>
+												<div class="draw-select__wrapper" id="role-wrapper">{rolepulldown}</div>
+											</div>
+										</div>
+									<else /><input type="hidden" name="roleid" id="roleid" value="{defaultroleid}" />
+									</if>
+									<div class="col-md-6">
+	                            	    <div class="group">
+	                                        <label for="user" class="label">{_username}</label>
+	                                        <input type="text" name="username" value="{username}" maxlength="49" class="input-orig w-214 requiredfield<if condition="(isset($sheel->show['error_username']) AND $sheel->show['error_username']) OR (isset($sheel->show['error_username2']) AND $sheel->show['error_username2'])"> redborder</if>" id="username" />
+											<if condition="isset($sheel->show['error_username']) AND $sheel->show['error_username']"><script>jQuery.growl.error({ title: '{_failed}', message: '{username_exist_note}' })</script></if>
+											<if condition="isset($sheel->show['error_username2']) AND $sheel->show['error_username2']"><script>jQuery.growl.error({ title: '{_failed}', message: '{username_blocked_note}' })</script></if>
+	                                    </div>
+	                                </div>
+	                            	<div class="col-md-6">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_email}</label>
+	                                        <input type="text" name="email" value="{email}" maxlength="49" class="input-orig w-214 requiredfield<if condition="(isset($sheel->show['error_email']) AND $sheel->show['error_email']) OR (isset($sheel->show['error_email_blocked']) AND $sheel->show['error_email_blocked'])"> redborder</if>" id="email" /><if condition="isset($sheel->show['error_email']) AND $sheel->show['error_email']"><script>jQuery.growl.error({ title: '{_failed}', message: '{_email_address_already_in_use}' })</script></if><if condition="isset($sheel->show['error_email_blocked']) AND $sheel->show['error_email_blocked']"><script>jQuery.growl.error({ title: '{_failed}', message: '{_email_domain_block}' })</script></if>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-6">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_password}<span class="color-grey"> - </span> <span class="color-grey" id="pwd_info">{_password_strength}</span></label>
+	                                        <input type="password" name="password" value="{password}" id="password" maxlength="32" onload="verify.check();checkPassword(this.value)" onkeyup="verify.check();checkPassword(this.value)" class="input-orig w-214 requiredfield" /><span toggle="password-field" class="fa fa-fw fa-eye field-eye-icon toggle-password" onClick="viewPassword('password')"></span>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-6">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_verify_password}<span class="color-grey"> - </span><span class="color-grey" id="pwd_verify">{_password_verify}</label>
+	                                        <input type="password" name="password2" value="{password2}" id="password2" maxlength="32" onload="verify.check()" onkeyup="verify.check()" class="input-orig w-214 requiredfield" /><span toggle="password2-field" class="fa fa-fw fa-eye field-eye-icon toggle-password" onClick="viewPassword('password2')"></span>
+	                                    </div>
+	                                    
+	                                </div>
+	                                <if condition="$sheel->config['registrationdisplay_turingimage']">
+									<div class="col-md-12">
+	                                    <div class="group">
+	                                        <label for="user" class="label">{_security_verification}</label>
+	                                        <input type="text" name="turing" id="turing" maxlength="15" class="input-orig w-465 requiredfield" /><if condition="isset($sheel->show['error_turing']) AND $sheel->show['error_turing']"><div class="pt-6 red smaller">{_invalid_security_code_attempt}</div></if>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-3">
+	                                	<div class="group">    
+	                                	</div>
+	                                </div>
+	                                <div class="col-md-6">
+	                                	<div class="group">
+	                                		{captcha}
+	                                	</div>
+	                                </div>
+	                                <div class="col-md-3">
+	                                	<div class="group">    
+	                                	</div>
+	                                </div>
+									</if>
+									
+									<div class="col-md-12">
+				                        <div class="group">
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-3">
+	                                	<div class="group">    
+	                                	</div>
+	                                </div>
+									<div class="col-md-6">
+				                        <div class="group">
+	                                        <input type="button" class="button" value="{_continue}" accesskey="s" id="register1-button" />
+	                                    </div>
+	                                </div>
+									<div class="col-md-3">
+	                                	<div class="group">    
+	                                	</div>
+	                                </div>
+									<div class="clear"></div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>verify = new verifynotify();verify.field1 = fetch_js_object('password');verify.field2 = fetch_js_object('password2');verify.input1 = 'password';verify.input2 = 'password2';verify.check();checkPassword(fetch_js_object('password').value);</script>
