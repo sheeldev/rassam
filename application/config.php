@@ -4,8 +4,8 @@ error_reporting(0);
 /**
 * Application urls
 */
-define('HTTP_SERVER', 'https://staging.sheel.online/');                # <<< full url to your sheel include end slash
-define('HTTPS_SERVER', 'https://staging.sheel.online/');               # <<< full url to your secure sheel include end slash
+define('HTTP_SERVER', 'https://stock.sheel.online/');                # <<< full url to your sheel include end slash
+define('HTTPS_SERVER', 'https://stock.sheel.online/');               # <<< full url to your secure sheel include end slash
 
 /**
 * Folder paths
@@ -28,7 +28,7 @@ define('SITE_ID', '001');                 # <<< if this is app 2 on node 2 then 
 /**
 * Master database information
 */
-define('DB_DATABASE', 'amazon');                 # <<< full database name
+define('DB_DATABASE', 'rassam');                 # <<< full database name
 define('DB_SERVER', 'localhost');          # <<< database server hostname (default localhost)
 define('DB_SERVER_PORT', '3306');          # <<< database server port (default 3306)
 define('DB_SERVER_USERNAME', 'sheel');          # <<< username with access to the database

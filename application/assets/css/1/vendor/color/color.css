@@ -3,89 +3,89 @@
 a:hover,
 a:focus,
 a:active {
-  color: #fdb819;
+  color: #ffffff;
 }
 .df-hover:hover{
-  color: #fdb819;
+  color: #000000;
 }
 .color {
-  color: #fdb819;
+  color: #000000;
 }
 .bg-color {
-  background: #fdb819;
+  background: #000000;
 }
 .desc.color {
-  color: #fdb819;
+  color: #000000;
 }
 .main-nav > ul > li > a:hover {
-  color: #fdb819;
+  color: #000000;
 }
 .dropdown-list li a:hover {
-  background: #fdb819;
+  background: #000000;
 }
 .product-title a:hover {
-  color: #fdb819;
+  color: #000000;
 }
 .popup-icon {
-  color: #fdb819;
+  color: #000000;
 }
 body .scroll-top {
-  background: #fdb819;
+  background: #000000;
 }
 .preload #loading {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .shop-button:hover {
-  background: #fdb819;
+  background: #000000;
 }
 .contact-form-page input[type="submit"]:hover {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .item-contact-page .contact-thumb {
-  border: 1px solid #fdb819;
+  border: 1px solid #000000;
 }
 .item-contact-page .contact-thumb:hover {
-  color: #fdb819;
+  color: #000000;
 }
 .item-contact-page .contact-thumb::before {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .about-intro-top h3::before {
-  background: #fdb819;
+  background: #000000;
 }
 .list-about-page > li.current > a {
-  color: #fdb819;
+  color: #000000;
 }
 .about-title-number a.readmore {
-  color: #fdb819;
-  border-color: #fdb819;
+  color: #000000;
+  border-color: #000000;
 }
 .about-title-number .readmore:hover {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .item-page-view .page-view-info .btn-page-view:hover,
 .item-page-view .page-view-link:hover {
-  background-color: #fdb819;
-  border-color: #fdb819;
+  background-color: #000000;
+  border-color: #000000;
 }
 .list-about-page > li.current > a::after {
-  border-color: #fdb819;
+  border-color: #000000;
 }
 .about-title-number::before {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .about-banner-history .banner-info h3::before {
-  background: #fdb819;
+  background: #000000;
 }
 .item-price-table .btn-purchase {
-  border: 2px solid #fdb819;
-  color: #fdb819;
+  border: 2px solid #000000;
+  color: #000000;
 }
 .item-price-table .btn-purchase:hover {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .share-social-team a:hover {
-  background-color: #fdb819;
+  background-color: #000000;
 }
 .color2{
   color: #001327;
@@ -95,11 +95,11 @@ body .scroll-top {
 }
 @media (max-width: 767px) {
   .main-nav > ul li:hover > a {
-    color: #fdb819 !important;
+    color: #000000 !important;
   }
   .main-nav .toggle-mobile-menu span,
   .main-nav .toggle-mobile-menu::before,
   .main-nav .toggle-mobile-menu::after {
-    background: #fdb819;
+    background: #000000;
   }
 }

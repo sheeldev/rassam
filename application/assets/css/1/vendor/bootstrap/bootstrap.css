@@ -102,7 +102,7 @@
 .dropdown-menu > li > a:focus,
 .dropdown-submenu:hover > a,
 .dropdown-submenu:focus > a {
-  color: #FDB819;
+  color: #000000;
   text-decoration: none;
   font-weight:700
 }
@@ -110,12 +110,12 @@
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
-        color: #FDB819;
+        color: #000000;
         text-decoration: none;
         font-weight:700
 }
 .dropdown-menu li a.maintain-hover {
-        color: #FDB819;
+        color: #000000;
         text-decoration: none;
         font-weight:700
 }
