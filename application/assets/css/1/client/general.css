@@ -1032,7 +1032,7 @@ li.menu-item-has-children:hover > .sub-menu {
     .main-nav .toggle-mobile-menu span,
     .main-nav .toggle-mobile-menu::before,
     .main-nav .toggle-mobile-menu::after {
-        background: #fdb819;
+        background: #000000;
     }
     .main-nav > ul > li.menu-item-has-children li.menu-item-has-children > .sub-menu {
         left: 0;

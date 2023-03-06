@@ -283,8 +283,8 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
             }
             $vars = array(
                 'defaultroleid' => $defaultroleid,
-                'rolepulldown' => $sheel->role->print_role_pulldown(0, 1, 0, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'roleid', 'roleid'),
-                'captcha' => '<img style="background-color:#FDB819; opacity: 0.5;" src="' . HTTPS_SERVER . 'attachment/captcha/" alt="captcha" border="0" align="center" />',
+                'rolepulldown' => $sheel->role->print_role_pulldown(0, 1, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'roleid', 'roleid'),
+                'captcha' => '<img style="background-color:#000000; opacity: 0.5;" src="' . HTTPS_SERVER . 'attachment/captcha/" alt="captcha" border="0" align="center" />',
                 'password' => '',
                 'password2' => '',
                 'username' => '',
@@ -437,7 +437,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
             $roleselected = ((isset($sheel->GPC['roleid']) and $sheel->GPC['roleid'] > 0) ? intval($sheel->GPC['roleid']) : $sheel->config['subscriptions_defaultroleid_product']);
             $vars = array(
                 'defaultroleid' => $roleselected,
-                'rolepulldown' => $sheel->role->print_role_pulldown($roleselected, 1, 0, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'roleid', 'roleid'),
+                'rolepulldown' => $sheel->role->print_role_pulldown($roleselected, 1, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'roleid', 'roleid'),
                 'password' => $password,
                 'password2' => $password2,
                 'captcha' => '<img style="background-color:#FDB819;opacity: 0.5;" src="' . HTTPS_SERVER . 'attachment/captcha/" alt="captcha" border="0" />',

@@ -2295,8 +2295,16 @@ li:first-child .item-wg-post{
         display: none;
     }
     .banner-slider-home1 .item-slider {
-        height: 500px;
+        height: 300px!important;
     }
+    .banner-slider-home1 .item-slider .banner-info {
+        margin-top: 100px;
+    }
+
+    .banner-slider-home1 .item-slider {
+        height: 300px!important;
+    }
+
     .banner-slider-home1 .item-slider1 {
         height:auto!important;
     }
@@ -3280,6 +3288,63 @@ a.store-button:visited{
 
 }
 
+.sell-circle-bg .sell-13th-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/458-13.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-14th-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/458-14.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-15th-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/458-15.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-16th-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/458-16.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-17th-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/458-17.png);
+    background-size: 90% 90%;
+
+}
+
+
+.sell-circle-bg .sell-leb-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/leb.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-kw-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/kuwait.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-ksa-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/ksa.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-dxb-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/dxb.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-cyprus-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/cyprus.png);
+    background-size: 90% 90%;
+
+}
+.sell-circle-bg .sell-monaco-image{
+    background-image: url(/application/assets/images/sheel-theme-images/home/monaco.png);
+    background-size: 90% 90%;
+
+}
 
 .sell-circle-bg img{
     width: 70%;
@@ -3364,9 +3429,7 @@ a.store-button:visited{
 }
 @media  only screen and (max-width: 768px) {
     .sheel-logo a img{
-        width: 150px;
-        height: 60px!important;
-        margin:10px 0px 0px -20px
+        margin:0px 0px 0px -0px
     }
 }
 
@@ -3498,11 +3561,12 @@ a.store-button:visited{
         margin:0 15px 10px 0;
         display:inline-block;
         border-bottom:2px solid transparent;
+        color: #ccc;
     }
     .login-html .sign-in:checked + .tab,
     .login-html .sign-up:checked + .tab{
         color:#fff;
-        border-color:#000000;
+        border-color:#fff;
     }
     .login-form{
         min-height:345px;
@@ -3541,7 +3605,7 @@ a.store-button:visited{
     }
     .login-form .group .button{
         background: #000000;
-        color: #000;
+        color: #fff;
     }
     .login-form .group label .icon{
         width:15px;
@@ -3597,6 +3661,7 @@ a.store-button:visited{
     }
     .foot-lnk{
         text-align:center;
+        color: #ccc;
     }
     .login-wrap{
         text-align:left;
@@ -3615,6 +3680,7 @@ a.store-button:visited{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    color:#fff;
 }
 /* Hide the browser's default checkbox */
 .sheel-checkbox.sheel-checkbox-1 input {
@@ -3650,8 +3716,8 @@ a.store-button:visited{
     display: block;
 }
 .sheel-checkbox.sheel-checkbox-1 .checkmark:after {
-    left: 6px;
-    top: 3px;
+    left: 8px;
+    top: 4px;
     width: 5px;
     height: 10px;
     border: solid #FFFFFF;

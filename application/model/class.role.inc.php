@@ -56,7 +56,7 @@ class role
 	*
 	* @return      string         Returns HTML representation of the role pulldown menu
 	*/
-	function print_role_pulldown($selected = '', $shownoneselected = 0, $showplancount = 0, $adminmode = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_roleid', $fieldname = 'form[roleid]', $disabled = false)
+	function print_role_pulldown($selected = '', $shownoneselected = 0, $adminmode = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_roleid', $fieldname = 'form[roleid]', $disabled = false)
 	{
 		if (empty($slng))
 		{
@@ -64,12 +64,12 @@ class role
 		}
 		$arr = array();
 		$default = $selected;
-		if ($adminmode == 0)
+		if ($adminmode)
 		{
 			$sql = "
 				SELECT roleid, purpose_$slng AS purpose, title_$slng AS title, custom, roletype, roleusertype, active
 				FROM " . DB_PREFIX . "roles
-				WHERE active = '1'
+				WHERE active = '1' AND isadmin='1'
 			";
 		}
 		else
@@ -77,8 +77,7 @@ class role
 			$sql = "
 				SELECT roleid, purpose_$slng AS purpose, title_$slng AS title, custom, roletype, roleusertype, active
 				FROM " . DB_PREFIX . "roles
-				WHERE active = '1'
-				AND (roletype = 'product' OR roletype = 'both')
+				WHERE active = '1' AND isadmin='0'
 			";
 		}
 		if (isset($shownoneselected) AND $shownoneselected)
@@ -91,11 +90,7 @@ class role
 		{
 			while ($roles = $this->sheel->db->fetch_array($sqlroles, DB_ASSOC))
 			{
-				if (isset($adminmode) AND $adminmode OR $roleattach > 0)
-				{
-					$arr[$roles['roleid']] = stripslashes($roles['title']) . ' - ' . stripslashes($roles['purpose']);
-					$arr[$roles['roleid']] .= (((isset($showplancount) AND $showplancount)) ? ' - ' . $roleattach . ((($roleattach == 1)) ? ' {_subscription_plan}' : ' {_subscription_plans}') : '');
-				}
+				$arr[$roles['roleid']] = stripslashes($roles['title']) . ' - ' . stripslashes($roles['purpose']);
 			}
 		}
 		$extradisabled = (($disabled) ? ' disabled="disabled"' : '');

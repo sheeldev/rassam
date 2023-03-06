@@ -23,21 +23,6 @@
             	<if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
                 <li><a href="{https_server_admin}" title="{_admin}" target="_blank">{_admin_cp}</a></li>
                 </if>
-            	<if condition="isset($sheel->config['stores']) AND $sheel->config['stores']">
-                <li><a href="{https_server}stores/" title="{_stores}">{_stores}</a></li>
-                <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'canopenstore') == 'yes'">
-                <if condition="$sheel->stores->has_store($_SESSION['sheeldata']['user']['companyid])">
-                <li><a href="{https_server}selling/store/manage/" title="{_manage_store}">{_manage_store}</a></li>
-                <else />
-                <li><a href="{https_server}selling/store/create/" title="{_open_a_store}">{_open_a_store}</a></li>
-                </if>
-                </if>
-                </if>
-                <if condition="isset($sheel->config['brands']) AND $sheel->config['brands']"><li><a href="{https_server}b/" class="pt-16">{_brands}</a></li></if>
-                <if condition="isset($sheel->config['enablenonprofits']) AND $sheel->config['enablenonprofits']"><li><a href="{https_server}nonprofits/" class="pt-16">{_nonprofits}</a></li></if>
-				<if condition="!empty($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'createproducts') == 'yes'"><li><a href="{https_server}sell/" title="{_sell_new_item}">{_sell_new_item}</a></li></if>
-                <if condition="!empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}account/" title="{_my_cp}">{_my_cp}</a></li></if>
-                <if condition="!empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}buying/purchases/" title="{_orders}">{_orders}</a></li></if>
             </ul>
         </span>
         <div class="top-bar-info <if condition="$sheel->config['template_textdirection'] == 'ltr'">right<else />left</if>">{login_include}</div>
@@ -64,7 +49,7 @@
                          <a href="{https_server}home/" title="{site_name}"><img src="{imguploadscdn}meta/logo.png" alt="logo desktop" /></a> 
                      </div>
                      <div class="logo onlymobile">
-                         <a href="{https_server}home/" title="{site_name}"><img src="{imguploadscdn}meta/apple-touch-icon-144x144.png" alt="logo mobile" /></a> 
+                         <a href="{https_server}home/" title="{site_name}"><img src="{imguploadscdn}meta/logo-mobile.png" alt="logo mobile" /></a> 
                      </div> 
                  </div> 
                 <!-- end logo -->
@@ -247,21 +232,7 @@
                                 <ul>
                                     <if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
                                     <li class="admin-hover bold fs-14"><a href="{https_server_admin}" class="pt-16"><i class="fa fa-edit"></i>&nbsp;{_admin}</a></li>
-                                    </if>
-                                    <li class="admin-hover bold fs-14"><a href="{http_server}" class="pt-16"><i class="fa fa-map-marker"></i>&nbsp;{_home}</a></li>
-                                    <if condition="isset($sheel->config['brands']) AND $sheel->config['brands']"><li class="bold fs-14"><a href="{https_server}b/" class="pt-16"><i class="fa fa-car"></i>&nbsp;{_brands}</a></li></if>
-                                    <if condition="isset($sheel->config['enablenonprofits']) AND $sheel->config['enablenonprofits']"><li class="bold fs-14"><a href="{https_server}nonprofits/" class="pt-16"><i class="fa fa-heartbeat"></i>&nbsp;{_nonprofits}</a></li></if>
-    
-                                    <if condition="isset($sheel->config['stores']) AND $sheel->config['stores'] AND !$_SESSION['sheeldata']['user']['isadmin']">
-                                    <li class="bold fs-14"><a href="{https_server}stores/" class="pt-16">{_stores}</a></li>
-                                    <if condition="isset($_SESSION['sheeldata']['user']['userid']) AND $sheel->permissions->check_access($_SESSION['sheeldata']['user']['companyid'], 'canopenstore') == 'yes' AND !$_SESSION['sheeldata']['user']['isadmin']">
-                                    <if condition="$sheel->stores->has_store($_SESSION['sheeldata']['user']['companyid']) AND !$_SESSION['sheeldata']['user']['isadmin']">
-                                    <li class="bold fs-14"><a href="{https_server}selling/store/manage/" class="pt-16"><i class='fas fa-store'></i>&nbsp;{_manage_store}</a></li>
-                                    <else />
-                                    <li class="bold fs-14"><a href="{https_server}selling/store/create/" class="pt-16" title="{_open_a_store}">{_open_a_store}</a></li>
-                                    </if>
-                                    </if>
-                                    </if>
+                                    </if>          
                                 </ul>
                             </div>
                         </div>

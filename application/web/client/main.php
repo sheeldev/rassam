@@ -209,7 +209,6 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'content' and isset($she
     $sheel->show['nobreadcrumb'] = $sheel->show['categorynav'] = true;
     $sheel->template->meta['areatitle'] = '{_main_menu}';
     $sheel->template->meta['pagetitle'] = '{_template_metatitle} | ' . SITE_NAME;
-    $sheel->template->meta['pagetitle'] = 'The smart way to sell and monitor products on Amazon | ' . SITE_NAME;
     $sheel->template->meta['description'] = '{_template_metadescription}';
     $sheel->template->meta['keywords'] = '{_template_metakeywords}';
     $sheel->template->meta['navcrumb'] = array();

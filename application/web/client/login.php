@@ -516,13 +516,13 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 			$sqlrolepulldown = $sheel->db->query("
 				SELECT roleid, purpose_" . $_SESSION['sheeldata']['user']['slng'] . " AS purpose, title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title, custom, roletype, roleusertype, active
 				FROM " . DB_PREFIX . "roles
-				WHERE active = '1'
+				WHERE active = '1' and isadmin = '0'
 			", 0, null, __FILE__, __LINE__);
 			$rerole = $sheel->db->fetch_array($sqlrolepulldown, DB_ASSOC);
 			$rolesql = $sheel->db->num_rows($sqlrolepulldown);
 			if ($rolesql > 1) {
 				$sheel->show['rolescount'] = true;
-				$rolepulldown = $sheel->role->print_role_pulldown(0, 1, 0, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'roleid', 'roleid');
+				$rolepulldown = $sheel->role->print_role_pulldown(0, 1, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'roleid', 'roleid');
 			} else {
 				$sheel->show['rolescount'] = false;
 				if ($rolesql == 1) { // only 1 visible role available, use it as default since we don't show the pull down if there is only one available

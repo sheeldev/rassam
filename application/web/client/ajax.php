@@ -4052,7 +4052,6 @@ if (isset($sheel->GPC['do'])) {
 			} else if ($options['mode'] == 'auctionshomepage') { // newly listed
 
 			} else if ($options['mode'] == 'homepage') { // newly listed
-
 			}
 		} else if (isset($sheel->GPC['widget']) and $sheel->GPC['widget'] == 'carousel') {
 			if ($options['mode'] == 'endingsoon') { // ending soon

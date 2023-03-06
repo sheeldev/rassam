@@ -107,31 +107,6 @@
                                     <div class="foot-lnk">
                                         <a href="{https_server}signin/?cmd=_pw-renew">{_recover_my_password}</a>
                                     </div>
-                                    
-                                    <if condition="!$sheel->config['ldap_only']">
-
-                                		<if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey']) OR isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey']) OR isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])">
-                                		<div class="hr"></div>
-                                		<div class="foot-lnk">{_sign_in_with}</div>
-                                 		</if>
-                        				<div class="foot-lnk">
-                                		<if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey'])">
-                                        	<a href="{https_server}signin/facebook/"><i class="fa fa loginsocial fa-facebook"></i></a>
-                                    	</if>
-
-                                    	<if condition="isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey'])">
-                                    		<a href="{https_server}signin/twitter/"><i class="fa fa loginsocial fa-twitter"></i></a>
-                                    	</if>
-
-                                    	<if condition="isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])">
-                                    		<a href="{https_server}signin/linkedin/"><i class="fa fa loginsocial fa-linkedin"></i></a>    	
-                                    	</if> 
-                                		<if condition="isset($sheel->config['facebookkey']) AND !empty($sheel->config['facebookkey']) OR isset($sheel->config['twitterkey']) AND !empty($sheel->config['twitterkey']) OR isset($sheel->config['linkedinkey']) AND !empty($sheel->config['linkedinkey'])">
-                                		<div class="foot-lnk" align="center">{_when_using_sso_you_agree} <a href="{https_server}content/go/terms" class="underlinelink">{_terms_lc}</a> {_and} <a class="underlinelink" href="{https_server}content/go/privacy">{_privacy_policy_lc}</a>.</div>
-                                    	<script>if (in_iframe()){toggle_hide('socialsso');}</script>
-                                    	</if>
-                                    	</div>
-                                	</if>
                                 </div>
                                 <input type="hidden" name="redirect" value="{redirect}" />
                                 <input type="hidden" name="login_process" value="1" />
