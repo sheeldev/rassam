@@ -1,0 +1,105 @@
+<section>
+<script>
+Page();
+</script>
+<div id="settings-general" class="page">
+    <form autocomplete="off" action="{https_server_admin}settings/globalupdate/" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="subcmd" value="_update-config-settings" />
+        <input type="hidden" name="return" value="{https_server_admin}settings/branding/" />
+		<div class="header-row">
+			<header class="header">
+				<h1 class="header__main">
+					<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+					<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+				</h1>
+				<div class="header__primary-actions">
+					<if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+				</div>
+			</header>
+		</div>
+
+
+
+       <section>
+        <div class="section">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Logos</h1>
+                        <p>Upload your logos and give your system the branding it deserves.</p>
+
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+
+                                	<div><img src="{imguploadscdn}meta/logo.png?{rand()}"></div>
+                                	<br />
+                                    <div class="draw-input-wrapper">
+                                        <div class="styled-file-input">
+                                            <div class="btn"> <span>{_browse} logo.png</span>
+                                                <input type="file" name="logobig" class="js-no-dirty"> </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+
+                                	<div><img src="{imguploadscdn}meta/logo-mobile.png?{rand()}"></div>
+                                	<br />
+                                    <div class="draw-input-wrapper">
+                                        <div class="styled-file-input">
+                                            <div class="btn"> <span>{_browse} logo-mobile.png</span>
+                                                <input type="file" name="logomobile" class="js-no-dirty"> </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+
+                                	<div><img src="{imguploadscdn}meta/favicon.png?{rand()}"></div>
+                                	<br />
+                                    <div class="draw-input-wrapper">
+                                        <div class="styled-file-input">
+                                            <div class="btn"> <span>{_browse} favicon.png</span>
+                                                <input type="file" name="favicon" class="js-no-dirty"> </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="draw-card__section">
+                                <div><if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_upload}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_upload}</button></if></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    	</section>
+
+        {settings}
+
+        <div class="section">
+            <div class="draw-grid draw-grid--right-aligned">
+                <div class="draw-grid__cell draw-grid__cell--no-flex">
+                    <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                </div>
+            </div>
+        </div>
+
+	</form>
+</div>
+</section>
+
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

@@ -50,6 +50,9 @@ $router->map('GET|POST', '/admin/companies/items/[dosave:cmd]/[*:requestid]/', _
 $router->map('GET|POST', '/admin/companies/items/[doupdate:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_update');
 $router->map('GET|POST', '/admin/companies/items/[view:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_view');
 $router->map('GET|POST', '/admin/companies/items/[bulk:cmd]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_bulk');
+$router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
+$router->map('GET|POST', '/admin/settings/[branding|locale|mail|currency|invoice|payment|tax|registration|escrow|feedback|shipping|listings|bidding|pmb|privacy|censor|blacklist|categories|seo|search|security|distance|cache|session|attachments|license|license/plans|license/renewal|billing/update|billing/create|billing/cancel|updates|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
+$router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
 
 
 if (file_exists(__DIR__ . '/router_custom.php'))

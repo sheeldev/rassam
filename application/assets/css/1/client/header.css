@@ -61,7 +61,7 @@
 	height:17px;
 	position:absolute;
 	{template_textalignment_alt}:0;
-	bottom:-18px;
+	bottom:-25px;
 	z-index:2;
 	border:1px solid #dbdbdb;
 	border-top:none;
@@ -284,9 +284,18 @@
 	position: relative;
 }
 
+.top-nav-left-link
+{
+	float: {template_textalignment};
+	display: inline-block;
+	height: 39px;
+	position: relative;
+	margin-left:150px;
+}
+
+
 .top-nav-right
 {
-	
 	float: {template_textalignment_alt};
 	display: inline-block;
 	height: 39px;

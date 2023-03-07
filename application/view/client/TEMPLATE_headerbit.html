@@ -54,9 +54,6 @@
                  </div> 
                 <!-- end logo -->
             </div>
-
-            <div class="top-nav-right border-top-black" id="billboard-3"></div>
-            <script>if (true && typeof sheel_widget === 'function') {sheel_widget("block", {mode:'hpa', id:3, cid:'{cid}', width:400, height:39, divider:false, mime:'.gif', container:'billboard-3'});}</script>
             <div class="top-nav-fill border-top-black">
             </div>
             <div class="header-bot">
@@ -207,6 +204,7 @@
                                         <li><a href="{https_server}accounting/billing-payments/">{_billing_and_payments}</a></li>
                                         <li><a href="{https_server}membership/">{_subscription}</a></li>
                                         <li class="divider"><a href="{https_server}feedback/?cmd=_leave-feedback">{_leave_feedback}</a></li>
+                                        <if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']"><li class="admin-hover bold"><a href="{https_server_admin}">{_admin}</a></li></if>
                                         <if condition="!empty($_SESSION['sheeldata']['user']['username']) AND !empty($_SESSION['sheeldata']['user']['userid'])"><li><a href="{https_server}signout/">{_log_out}</a></li></if>
                                     </ul>
     
@@ -222,21 +220,6 @@
                     </div>
                     <!-- end top-link -->
     
-                </div>
-    
-                <div class="bot-nav-fill">
-                    <div id="background-links">
-                        <div class="top-nav-left">
-    
-                            <div class="top-link">
-                                <ul>
-                                    <if condition="isset($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin']">
-                                    <li class="admin-hover bold fs-14"><a href="{https_server_admin}" class="pt-16"><i class="fa fa-edit"></i>&nbsp;{_admin}</a></li>
-                                    </if>          
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
     
     

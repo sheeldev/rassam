@@ -210,15 +210,7 @@ class admincp_nav extends admincp
                                         </a>
                                 </li>
                                 <li class="draw-nav__item--spacer"></li>
-                                <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="apps" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Apps" aria-controls="iLNav_Apps" href="' . HTTPS_SERVER_ADMIN . 'apps/">
-                                                <span class="glyphicons glyphicons-electrical-plug draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">Apps</span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>
+                                
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="settings" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Settings" aria-controls="iLNav_Settings" href="' . HTTPS_SERVER_ADMIN . 'settings/">
                                                 <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
@@ -229,15 +221,7 @@ class admincp_nav extends admincp
                                         </a>
                                 </li>
                                 <li class="draw-nav__item--spacer"></li>
-                                <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="licenseinfo" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_License" aria-controls="iLNav_License" href="' . HTTPS_SERVER_ADMIN . 'settings/license/">
-                                                <span class="glyphicons glyphicons-info-sign draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">License & Info</span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>
+                               
                                 <li class="draw-nav__item--flex-spacer"></li>
                                 <li class="draw-nav__item draw-nav__item--group draw-nav__item--account">
                                         <div class="draw-popover__container draw-popover__container--full-width">

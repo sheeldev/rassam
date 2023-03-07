@@ -257,18 +257,12 @@ class currency
 		if ($inputtype == 'admin')
 		{
 			$disabled = '';
-			$sql_rfp = $this->sheel->db->query("
-				SELECT orderid
-				FROM " . DB_PREFIX . "buynow_orders
-				LIMIT 1
-			");
-			if ($this->sheel->db->num_rows($sql_rfp) > 0)
-			{
-				$disabled = 'disabled="disabled"';
-				$sql_conf = $this->sheel->db->query("SELECT configgroup FROM " . DB_PREFIX . "configuration WHERE name = '" . $this->sheel->db->escape_string($variableinfo) . "'");
-				$res_conf = $this->sheel->db->fetch_array($sql_conf, DB_ASSOC);
-				$this->sheel->template->meta['headinclude'] .= '<script>jQuery(\'document\').ready(function(){ jQuery(\'#formid_' . $res_conf['configgroup'] . '\').submit(function() {alert_js(phrase[\'_active_listings_and_or_invoices_have_been_recorded_in_the_database_and_processed_in_your_previous_default_site_currency\']); }); });</script>';
-			}
+
+			//$disabled = 'disabled="disabled"';
+			$sql_conf = $this->sheel->db->query("SELECT configgroup FROM " . DB_PREFIX . "configuration WHERE name = '" . $this->sheel->db->escape_string($variableinfo) . "'");
+			$res_conf = $this->sheel->db->fetch_array($sql_conf, DB_ASSOC);
+			$this->sheel->template->meta['headinclude'] .= '<script>jQuery(\'document\').ready(function(){ jQuery(\'#formid_' . $res_conf['configgroup'] . '\').submit(function() {alert_js(phrase[\'_active_listings_and_or_invoices_have_been_recorded_in_the_database_and_processed_in_your_previous_default_site_currency\']); }); });</script>';
+
 			$pulldown = $this->sheel->construct_pulldown('config_' . $variableinfo, 'config[' . $variableinfo . ']', $values, $this->sheel->config['globalserverlocale_defaultcurrency'], ' class="' . $cssextra . '" ' . $disabled);
 		}
 		else

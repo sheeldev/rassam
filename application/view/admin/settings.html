@@ -1,0 +1,64 @@
+<section>
+<script>
+Page();
+</script>
+<div id="settings-general" class="page">
+	<form autocomplete="off" action="{https_server_admin}settings/globalupdate/" accept-charset="UTF-8" method="post">
+		<input type="hidden" name="subcmd" value="_update-config-settings" />
+        <input type="hidden" name="return" value="{url}" />
+		<div class="header-row">
+			<header class="header">
+				<h1 class="header__main">
+					<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+					<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+				</h1>
+				<div class="header__primary-actions">
+					<if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+				</div>
+			</header>
+		</div>
+        
+        {settings}
+        
+        <div class="section">
+            <div class="draw-grid draw-grid--right-aligned">
+                <div class="draw-grid__cell draw-grid__cell--no-flex">
+                    <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                </div>
+            </div>
+        </div>
+        
+	</form>
+    <if condition="isset($areanav) AND $areanav == 'settings_mail'">
+    <div class="section customer-accounts" id="settings-customer-accounts">
+    <div class="layout-content">
+        <div class="layout-content__sidebar layout-content__first">
+            <div class="section-summary">
+                <h1>SMTP Log</h1>
+                <p>Each time SMTP is used to email a customer that information will be presented in realtime.</p>
+            </div>
+        </div>
+        <div class="layout-content__main">
+            <div class="draw-card">
+                <div class="section-content">
+                    <div class="draw-card__section">
+                        <div define="">
+                            <div>
+                                <textarea expanding="true" class="draw-textarea log" name="form[log]" id="log"></textarea>
+                            </div>
+                            <!--<div id="scrollLock" class="st"> <button type="button" class="btn disableScrollLock js-btn-loadable has-loading btn-primary">Disable Scroll Lock</button> <button type="button" class="btn enableScrollLock js-btn-loadable has-loading btn-primary" style="display:none">Enable Scroll Lock</button></div>-->
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>var $xhr;if ($xhr != null){$xhr.abort();$xhr = null;}function waitForMsg(){$xhr = $.ajax({type: "GET",url: iL['AJAXURL'] + '?do=smtplog',async: true,cache: false,success: function(data){var json=eval('(' + data + ')');if (json['log'] != '') {$("#log").empty();$("#log").append(json['log']);}var $textarea = $("#log");$textarea.scrollTop($textarea[0].scrollHeight);setTimeout("waitForMsg()", 15000);},error: function(XMLHttpRequest,textStatus,errorThrown) {setTimeout("waitForMsg()", 15000);}});}$(document).ready(function(){waitForMsg();var $textarea = $("#log");$textarea.scrollTop($textarea[0].scrollHeight);});</script>
+</if>
+
+</div>
+</section>
+
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>
