@@ -429,12 +429,12 @@ class sheel
      *
      * @return integer Returns number (i.e.: 3201)
      */
-    function companiescount()
+    function customerscount()
     {
         $count = 0;
         $sql = $this->db->query("
 			SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "COUNT(*) AS count
-			FROM " . DB_PREFIX . "companies where status='active' and requestdeletion='0'");
+			FROM " . DB_PREFIX . "customers where status='active' and requestdeletion='0'");
         $res = $this->db->fetch_array($sql, DB_ASSOC);
         if ($res['count'] > 0) {
             $count = $res['count'];

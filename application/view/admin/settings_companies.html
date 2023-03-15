@@ -1,0 +1,168 @@
+<section>
+<script>
+Page();
+</script>
+<div id="settings-general" class="page">
+	
+		<div class="header-row">
+			<header class="header">
+				<h1 class="header__main">
+					<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+					<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+				</h1>
+				<div class="header__primary-actions">
+					
+				</div>
+			</header>
+		</div>
+        
+        <section>  
+            <div class="section login-services">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Companies Configuration</h1>
+                            <p>Define The List Of Companies Managed by the system.</p>
+                            <p><a href="{https_server_admin}settings/companies/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="">Add new company</button></a></p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="section-content">
+                                <div class="draw-card__section">
+                                    <div class="table-wrapper">
+                                    	<table class="expanded">
+                                        <thead>
+                                        <tr> 
+                                            <th>{_id}</th>
+                                            <th>{_name}</th>
+                                            
+                                            <th>{_bc_code}</th>
+                                            <th>{_description}</th>
+                                            <th>{_country}</th>
+                                            <th>{_timezone}</th>
+                                            <th>{_currency}</th>
+                                            <th>{_status}</th>
+                                        </tr>	
+                                        </thead>		
+                                        <tbody>				
+                                        <loop name="comps"> 
+                                        <tr valign="top"> 
+                                            
+                                            <td nowrap="nowrap"><a href="{https_server_admin}settings/companies/update/{companyid}/">{company_id}</a></td>
+                                            <td><a href="{https_server_admin}settings/companies/update/{companyid}/">{name}</a></td>
+                                            <td nowrap="nowrap">{bc_code}</td>
+                                            <td nowrap="nowrap">{description}</td>
+                                            <td><div class="type--subdued">{country}</div></td>
+                                            <td nowrap="nowrap">{timezone}</td>
+                                            <td >{currency}</td>
+                                            <td >{status}</td>
+                                        </tr>
+                                        </loop name="comps">
+                                        </tbody>
+                                        </table>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+        
+</div>
+</section>
+
+<if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+<div id="newlanguage">
+<form method="post" action="{https_server_admin}settings/companies/" name="addtax" accept-charset="UTF-8">
+<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><input type="hidden" name="subcmd" value="add" /><input type="hidden" name="do" value="process" /><else /><input type="hidden" name="subcmd" value="update" /><input type="hidden" name="do" value="process" /><input type="hidden" name="taxid" value="{form[taxid]}" /></if>
+<section>  
+	<div class="section login-services">
+		<div class="layout-content">
+			<div class="layout-content__sidebar layout-content__first">
+				<div class="section-summary">
+					<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+                    <h1>Add Company</h1>
+					<p>Add a company so that the system is able to connect to the backend and retireve relevant information.</p>
+                    <else />
+                    <h1>Update Company</h1>
+					<p>Update Company Details. </p>
+                    </if>
+					
+				</div>
+			</div>
+			<div class="layout-content__main">
+				<div class="draw-card">
+					<div class="section-content">
+						<div class="draw-card__section">
+							<div class="table-wrapper">
+									
+                                <table class="expanded">
+                                <tr> 
+                                    <td>{_name}</td>
+                                    <td><input name="form[name]" value="{form[name]}" class="draw-input" /></td>
+                                </tr>
+                                <tr> 
+                                    <td>{_bc_code}</td>
+                                    <td><input name="form[bc_code]" value="{form[bc_code]}" class="draw-input" /></td>
+                                </tr>
+                                <tr> 
+                                    <td>{_about}</td>
+                                    <td><input name="form[about]" value="{form[about]}" class="draw-input" /></td>
+                                </tr>
+                                <tr> 
+                                    <td>{_description}</td>
+                                    <td><input name="form[description]" value="{form[description]}" class="draw-input" /></td>
+                                </tr>
+                                <tr> 
+                                    <td>{_country}</td>
+                                    <td>
+                                    	<div class="draw-select__wrapper draw-input--has-content" id="country-wrapper">{form[country_js_pulldown]}</div> 
+                                    	
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>{_timezone}</td>
+                                    <td>
+                                    	<div class="draw-select__wrapper draw-input--has-content" id="country-wrapper">{form[tz]}</div> 
+                                    	
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>{_currency}</td>
+                                  <td><div class="draw-select__wrapper draw-input--has-content">{form[currencypulldown]}</div></td>
+                                </tr>
+                                <tr> 
+                                    <td>{_status}</td>
+                                  <td><div class="draw-select__wrapper draw-input--has-content">{form[status]}</div></td>
+                                </tr>
+                                </table>
+                                        
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+				
+			</div>
+		</div>
+	</div>
+	
+</section>
+<div class="section">
+    <div class="draw-grid draw-grid--right-aligned">
+        <div class="draw-grid__cell draw-grid__cell--no-flex">
+            <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+</if>
+
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

@@ -12,7 +12,7 @@ class admincp_nav extends admincp
     {
         $recentsearches = $this->recent_searches();
         //$ordercount = $this->sheel->ordercount();
-        $companiescount = $this->sheel->companiescount();
+        $customerscount = $this->sheel->customerscount();
         //$categorycount = $this->sheel->categories->count();
         //$installedapplinks = $this->sheel->admincp_products->fetch_installed_apps();
         $ordercount = '0';
@@ -98,13 +98,13 @@ class admincp_nav extends admincp
                                         </a>
                                 </li>
                                 <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="companies" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Companies" aria-controls="iLNav_Companies" href="' . HTTPS_SERVER_ADMIN . 'companies/">
+                                        <a class="draw-nav__link" data-nav-section="customers" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Customers" aria-controls="iLNav_Customers" href="' . HTTPS_SERVER_ADMIN . 'customers/">
                                                 <span class="glyphicons glyphicons-bank draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">{_companies}</span>
-                                                ' . (($companiescount > 0) ? '<span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Companies" title="{_companies}" refresh-always="">
-                                                    <span class="draw-nav__badge-content" id="companiescount">' . $this->custom_number_format($companiescount, 1) . '</span>
-                                                </span>' : '<span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Companies" title="{_companies}" refresh-always="">
-                                                    <span class="draw-nav__badge-content" id="companiescount">' . $this->custom_number_format($companiescount, 1) . '</span>
+                                                <span class="draw-nav__text">{_customers}</span>
+                                                ' . (($customerscount > 0) ? '<span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Customers" title="{_customers}" refresh-always="">
+                                                    <span class="draw-nav__badge-content" id="customerscount">' . $this->custom_number_format($customerscount, 1) . '</span>
+                                                </span>' : '<span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Customers" title="{_customers}" refresh-always="">
+                                                    <span class="draw-nav__badge-content" id="customerscount">' . $this->custom_number_format($customerscount, 1) . '</span>
                                                 </span>') . '
                                                 <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
                                                         <use xlink:href="#draw-chevron"></use>
@@ -268,16 +268,15 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="orders_pending" bind-event-click="" allow-default="1" href="orders/checkouts/">Checkouts Pending</a> </li>
                         </ol>
                         <!-- orders subnav -->
-                        <!-- companies subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="companies" id="iLNav_Companies">
+                        <!-- customers subnav -->
+                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="customers" id="iLNav_Customers">
                                 <li class="draw-nav__item draw-nav__item--header">
-                                        <h2 class="draw-heading--callout">Companies</h2>
+                                        <h2 class="draw-heading--callout">Customers</h2>
                                 </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="companies_companies" bind-event-click="" allow-default="1" href="companies/">{_companies}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="companies_item" bind-event-click="" allow-default="1" href="companies/">{_add_item}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="companies_item_upload" bind-event-click="" allow-default="1" href="companies/items/bulk/">{_add_item_via_upload}</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_customers" bind-event-click="" allow-default="1" href="customers/">{_customers}</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_item" bind-event-click="" allow-default="1" href="customers/">{_all_customers}</a> </li>
                         </ol>
-                        <!-- companies subnav -->
+                        <!-- customers subnav -->
                         <!-- products subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="products" id="iLNav_Products">
                                 <li class="draw-nav__item draw-nav__item--header">
@@ -289,18 +288,6 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="inventory" bind-event-click="" allow-default="1" href="products/inventory/">Inventory</a> </li>
                         </ol>
                         <!-- products subnav -->
-                        <!-- customers subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="customers" id="iLNav_Customers">
-                                <li class="draw-nav__item draw-nav__item--header">
-                                        <h2 class="draw-heading--callout">Customers</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers" bind-event-click="" allow-default="1" href="customers/">Customers</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_bulkmailer" bind-event-click="" allow-default="1" href="customers/bulkmailer/">Bulk Mailer</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_violation" bind-event-click="" allow-default="1" href="customers/violations/">Violation Reports</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_questions" bind-event-click="" allow-default="1" href="customers/questions/">Profile Questions</a> </li>
-                                <!--<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_audit" bind-event-click="" allow-default="1" href="customers/audit/">Audit Log</a> </li>-->
-                        </ol>
-                        <!-- customers subnav -->
                         <!-- accounting subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="accounting" id="iLNav_Accounting">
                                 <li class="draw-nav__item draw-nav__item--header draw-nav__item--view-channel">
@@ -405,6 +392,7 @@ class admincp_nav extends admincp
                                         <h2 class="draw-heading--callout">Settings</h2>
                                 </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_general" bind-event-click="" allow-default="1" href="settings/">General</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_companies" bind-event-click="" allow-default="1" href="settings/companies/">Companies</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_branding" bind-event-click="" allow-default="1" href="settings/branding/">Branding</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locale" bind-event-click="" allow-default="1" href="settings/locale/">Locale</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_mail" bind-event-click="" allow-default="1" href="settings/mail/">Mail / SMTP</a> </li>

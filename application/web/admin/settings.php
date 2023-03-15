@@ -723,74 +723,63 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$form['merchantgatewaypulldown'] = $sheel->construct_pulldown('gateway_provider', 'form[gateway_provider]', $merchantgatewayoptions, '', 'class="draw-select" onchange="if (fetch_js_object(\'gateway_provider\').options[fetch_js_object(\'gateway_provider\').selectedIndex].value != \'\'){fetch_js_object(\'payment-panel\').innerHTML=fetch_js_object(fetch_js_object(\'gateway_provider\').options[fetch_js_object(\'gateway_provider\').selectedIndex].value).innerHTML}else{fetch_js_object(\'payment-panel\').innerHTML=\'\';}"');
 		$form['paymentgatewaypulldown'] = $sheel->construct_pulldown('payment_provider', 'form[payment_provider]', $paymentgatewayoptions, '', 'class="draw-select" onchange="if (fetch_js_object(\'payment_provider\').options[fetch_js_object(\'payment_provider\').selectedIndex].value != \'\'){fetch_js_object(\'payment-panel2\').innerHTML=fetch_js_object(fetch_js_object(\'payment_provider\').options[fetch_js_object(\'payment_provider\').selectedIndex].value).innerHTML}else{fetch_js_object(\'payment-panel2\').innerHTML=\'\';}"');
 		$sheel->template->parse_loop('main', array('manualpayments' => $manualpayments, 'merchantgateways' => $merchantgateways, 'paymentgateways' => $paymentgateways));
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'tax') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Tax';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Tax';
-		$sheel->template->fetch('main', 'settings_tax.html', 1);
-		$areanav = 'settings_tax';
-		$currentarea = '{_tax}';
+	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'companies') {
+		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Companies';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Companies';
+		$sheel->template->fetch('main', 'settings_companies.html', 1);
+		$areanav = 'settings_companies';
+		$currentarea = '{_companies}';
 		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
 			if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'process') {
-				$sheel->GPC['invoicetypes'] = (!empty($sheel->GPC['taxtype'])) ? serialize($sheel->GPC['taxtype']) : '';
-				if (empty($sheel->GPC['country'])) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_country_name_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
-					exit();
-				}
+
+
 				$countryid = intval($sheel->db->fetch_field(DB_PREFIX . "locations", "location_" . $_SESSION['sheeldata']['user']['slng'] . " = '" . $sheel->db->escape_string($sheel->GPC['country']) . "'", "locationid"));
 				if ($countryid == 0) {
-					$sheel->admincp->print_action_failed('{_there_is_no_country_with_this_name_in_the_system_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
+					$sheel->admincp->print_action_failed('{_there_is_no_country_with_this_name_in_the_system_please_retry}', HTTPS_SERVER_ADMIN . 'settings/countries/');
 					exit();
 				}
-				if (empty($sheel->GPC['form']['taxlabel'])) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_title_name_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
-					exit();
-				}
-				if (empty($sheel->GPC['state'])) {
-					$sheel->GPC['state'] = '';
-				}
-				if (empty($sheel->GPC['city'])) {
-					$sheel->GPC['city'] = '';
-				}
-				if (empty($sheel->GPC['form']['amount'])) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_amount_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
-					exit();
-				}
+				
 				if (empty($sheel->GPC['form']['currencyid'])) {
 					$sheel->admincp->print_action_failed('Please select the default currency used for this tax type.', HTTPS_SERVER_ADMIN . 'settings/tax/');
 					exit();
 				}
 				$entirecountry = ((isset($sheel->GPC['form']['entirecountry']) and $sheel->GPC['form']['entirecountry'] == 'true') ? 1 : 0);
 				$sheel->db->query("
-					INSERT INTO " . DB_PREFIX . "taxes
-					(taxid, taxlabel, state, countryname, countryid, city, amount, invoicetypes, entirecountry, currencyid)
+					INSERT INTO " . DB_PREFIX . "companies
+					(company_id, name, bc_code, about, description, status, countryid,currencyid, timezone)
 					VALUES(
 					NULL,
-					'" . $sheel->db->escape_string($sheel->GPC['form']['taxlabel']) . "',
-					'" . $sheel->db->escape_string($sheel->GPC['state']) . "',
-					'" . $sheel->db->escape_string($sheel->GPC['country']) . "',
+					'" . $sheel->db->escape_string($sheel->GPC['form']['name']) . "',
+					'" . $sheel->db->escape_string($sheel->GPC['form']['bc_code']) . "',
+					'" . $sheel->db->escape_string($sheel->GPC['form']['about']) . "',
+					'" . $sheel->db->escape_string($sheel->GPC['form']['description']) . "',
+					'" . $sheel->db->escape_string($sheel->GPC['form']['status']) . "',
 					'" . intval($countryid) . "',
-					'" . $sheel->db->escape_string($sheel->GPC['city']) . "',
-					'" . $sheel->db->escape_string($sheel->GPC['form']['amount']) . "',
-					'" . $sheel->db->escape_string($sheel->GPC['invoicetypes']) . "',
-					'" . intval($entirecountry) . "',
-					'" . intval($sheel->GPC['form']['currencyid']) . "')
+					'" . intval($sheel->GPC['form']['currencyid']) . "',
+					'" . $sheel->db->escape_string($sheel->GPC['form']['tz']) . "')
 				", 0, null, __FILE__, __LINE__);
-				refresh(HTTPS_SERVER_ADMIN . 'settings/tax/');
+				refresh(HTTPS_SERVER_ADMIN . 'settings/companies/');
 				exit();
 			}
-			$form['taxlabel'] = '';
-			$form['amount'] = '';
+			$form['name'] = '';
+			$form['bc_code'] = '';
+			$form['about'] = '';
+			$form['description'] = '';
+			$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+			$tzlistfinal=array();
+			foreach ($tzlist as $key => $value) {
+ 
+        
+                $tzlistfinal[$value]= $value;
+   
+               
+           }
+   
+			$form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, '', 'class="draw-select"');
 			$form['country_js_pulldown'] = $sheel->common_location->construct_country_pulldown(0, '', 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', true, false, '', 0, 'city', 'cityid');
-			$form['state_js_pulldown'] = '<div id="stateid">' . $sheel->common_location->construct_state_pulldown(0, '', 'state', false, true, 0, 'draw-select', 0, 'city', 'cityid') . '</div>';
-			$form['city_js_pulldown'] = '<div id="cityid">' . $sheel->common_location->construct_city_pulldown('', 'city', '', false, true, 'draw-select') . '</div>';
 			$form['currencypulldown'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', '');
-			$form['invoicetaxtype'] = '';
-			$form['invoicetaxtype'] .= '<label for="subscription"><input type="checkbox" name="taxtype[subscription]" id="subscription" value="1" /> {_member_subscription_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="commission"><input type="checkbox" name="taxtype[commission]" id="commission" value="1" /> {_escrow_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="enhancements"><input type="checkbox" name="taxtype[enhancements]" id="enhancements" value="1" /> {_auction_enhancement_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="insertionfee"><input type="checkbox" name="taxtype[insertionfee]" id="insertionfee" value="1" /> {_insertion_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="finalvaluefee"><input type="checkbox" name="taxtype[finalvaluefee]" id="finalvaluefee" value="1" /> {_final_value_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="buyerpremiumfee"><input type="checkbox" name="taxtype[buyerpremiumfee]" id="fbuyerpremiumfee" value="1" /> Buyer\'s premium fees</label>';
+			$statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
+			$form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, '', 'class="draw-select"');
 		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update' and isset($sheel->GPC['taxid']) and $sheel->GPC['taxid'] > 0) {
 			if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'process') {
 				$entirecountry = ((isset($sheel->GPC['form']['entirecountry']) and $sheel->GPC['form']['entirecountry'] == 'true') ? 1 : 0);
@@ -948,38 +937,20 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		}
 		$taxes = array();
 		$sheel->show['no_taxes'] = true;
-		$sqltax = $sheel->db->query("
-			SELECT taxid, taxlabel, state, countryname, countryid, city, amount, invoicetypes, entirecountry, currencyid
-			FROM " . DB_PREFIX . "taxes
+		$sqlcomp = $sheel->db->query("
+			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone
+			FROM " . DB_PREFIX . "companies
 		", 0, null, __FILE__, __LINE__);
-		if ($sheel->db->num_rows($sqltax) > 0) {
-			while ($tax = $sheel->db->fetch_array($sqltax, DB_ASSOC)) {
-				$tax['entire'] = ($tax['entirecountry']) ? '{_yes}' : '{_no}';
-				$tax['currency'] = $sheel->currency->currencies[$tax['currencyid']]['currency_abbrev'];
-				if (!empty($tax['invoicetypes'])) {
-					$invoicetypetaxx = unserialize($tax['invoicetypes']);
-					$typex = '';
-					foreach ($invoicetypetaxx as $invoicetypex => $value) {
-						$typex .= ucfirst($invoicetypex) . ', ';
-					}
-					$typex = mb_substr($typex, 0, -2);
-					$tax['types'] = $typex;
-				} else {
-					$tax['types'] = '{_no_invoice_types_defined}';
-				}
-				if (empty($tax['state'])) {
-					$tax['state'] = '-';
-				}
-				if (empty($tax['city'])) {
-					$tax['city'] = '-';
-				}
-				$tax['actions'] = '<ul class="segmented"><li><a href="' . HTTPS_SERVER_ADMIN . 'settings/tax/update/' . $tax['taxid'] . '/" class="btn btn-slim btn--icon" title="{_update}"><span class="ico-16-svg halflings halflings-edit draw-icon" aria-hidden="true"></span></a></li><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'delete\', \'Delete this tax profile?\', \'Are you sure you want to delete this tax profile?\', \'' . $tax['taxid'] . '\', 1, \'\', \'\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
-				$taxes[] = $tax;
-				$form['invoicetypetax'] = $tax['types'];
+		if ($sheel->db->num_rows($sqlcomp) > 0) {
+			while ($comp = $sheel->db->fetch_array($sqlcomp, DB_ASSOC)) {
+				$comp['currency'] = $sheel->currency->currencies[$comp['currencyid']]['currency_abbrev'];
+				$comp['country'] = $sheel->common_location->print_country_name($comp['countryid'], $_SESSION['sheeldata']['user']['slng'], false, '');
+				$comp['actions'] = '<ul class="segmented"><li><a href="' . HTTPS_SERVER_ADMIN . 'settings/tax/update/' . $comp['taxid'] . '/" class="btn btn-slim btn--icon" title="{_update}"><span class="ico-16-svg halflings halflings-edit draw-icon" aria-hidden="true"></span></a></li><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'delete\', \'Delete this tax profile?\', \'Are you sure you want to delete this tax profile?\', \'' . $comp['taxid'] . '\', 1, \'\', \'\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
+				$comps[] = $comp;;
 			}
-			$sheel->show['no_taxes'] = false;
 		}
-		$sheel->template->parse_loop('main', array('taxes' => $taxes));
+		$sheel->template->parse_loop('main', array('comps' => $comps));
+
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'registration') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Registration';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Registration';

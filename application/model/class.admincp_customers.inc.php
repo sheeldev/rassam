@@ -1,32 +1,32 @@
 <?php
 
-class admincp_companies extends admincp
+class admincp_customers extends admincp
 {
     function construct_new_ref()
     {
         $ref = rand(1, 9) . mb_substr(time(), -7, 10);
         $sql = $this->sheel->db->query("
-			SELECT company_ref
-			FROM " . DB_PREFIX . "companies
-			WHERE company_ref = '" . intval($ref) . "'
+			SELECT customer_ref
+			FROM " . DB_PREFIX . "customers
+			WHERE customer_ref = '" . intval($ref) . "'
 			LIMIT 1
 		", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0)
         {
             $ref = rand(1, 9) . mb_substr(time(), -6, 10);
             $sql = $this->sheel->db->query("
-				SELECT company_ref
-				FROM " . DB_PREFIX . "companies
-				WHERE company_ref = '" . intval($ref) . "'
+				SELECT customer_ref
+				FROM " . DB_PREFIX . "customers
+				WHERE customer_ref = '" . intval($ref) . "'
 				LIMIT 1
 			", 0, null, __FILE__, __LINE__);
             if ($this->sheel->db->num_rows($sql) > 0)
             {
                 $ref = rand(1, 9) . mb_substr(time(), -8, 10);
                 $sql = $this->sheel->db->query("
-					SELECT company_ref
-					FROM " . DB_PREFIX . "companies
-					WHERE company_ref = '" . intval($ref) . "'
+					SELECT customer_ref
+					FROM " . DB_PREFIX . "customers
+					WHERE customer_ref = '" . intval($ref) . "'
 					LIMIT 1
 				", 0, null, __FILE__, __LINE__);
                 if ($this->sheel->db->num_rows($sql) > 0)
@@ -50,10 +50,10 @@ class admincp_companies extends admincp
         }
     }
     /**
-     * Function to delete single or multiple companies 
+     * Function to delete single or multiple customers 
      *
      * @param
-     *            array array with companies ids
+     *            array array with customers ids
      *
      * @return string Returns array with success and error responses where applicable
      */
@@ -82,21 +82,21 @@ class admincp_companies extends admincp
             $display = '{_active}';
 
         } 
-        foreach ($ids as $inc => $companyid) {
-            $response = $this->dostatuschange($companyid, $action, true, $status);
+        foreach ($ids as $inc => $customerid) {
+            $response = $this->dostatuschange($customerid, $action, true, $status);
             if ($response === true) {
-                $successids .= "$companyid~";
+                $successids .= "$customerid~";
                 $count++;
             } else {
-                $failedids .= "$companyid~";
+                $failedids .= "$customerid~";
                 $allerrors .= $response . '|';
             }
         }
         $this->sheel->template->templateregistry['action'] = $display;
-        $this->sheel->template->templateregistry['actionplural'] = (($count == 1) ? '{_company}' : '{_companies}');
+        $this->sheel->template->templateregistry['actionplural'] = (($count == 1) ? '{_customer}' : '{_customers}');
         $success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
         $this->sheel->template->templateregistry['success'] = $success;
-        $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'companies Accepted successfully' : 'Failure accepting companies'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $allerrors));
+        $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'customers Accepted successfully' : 'Failure accepting customers'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $allerrors));
         return array(
             'success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''),
             'errors' => $allerrors,
@@ -105,58 +105,58 @@ class admincp_companies extends admincp
         );
     }
 
-    function dostatuschange($companyid = '', $action = '', $sendemail = true, $status)
+    function dostatuschange($customerid = '', $action = '', $sendemail = true, $status)
     {
         $sql = $this->sheel->db->query("
-			SELECT company_id, companyname
-			FROM " . DB_PREFIX . "companies
-				WHERE company_id = '" . $companyid . "'
+			SELECT customer_id, customername
+			FROM " . DB_PREFIX . "customers
+				WHERE customer_id = '" . $customerid . "'
 			LIMIT 1
 		");
         if ($this->sheel->db->num_rows($sql) > 0) {
             $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 
             $this->sheel->db->query("
-					UPDATE " . DB_PREFIX . "companies
+					UPDATE " . DB_PREFIX . "customers
 					SET status = '". $status ."'
-					WHERE company_id = '" . $this->sheel->db->escape_string($companyid) . "'
+					WHERE customer_id = '" . $this->sheel->db->escape_string($customerid) . "'
 				");
             $sql2 = $this->sheel->db->query("
 					SELECT u.user_id, u.email, u.username
 					FROM " . DB_PREFIX . "users u
-						WHERE u.companyid = '" . $this->sheel->db->escape_string($res['company_id']) . "'
+						WHERE u.customerid = '" . $this->sheel->db->escape_string($res['customer_id']) . "'
 				");
 
             if ($sendemail and $this->sheel->db->num_rows($sql2) > 0) {
                 while ($customer = $this->sheel->db->fetch_array($sql2, DB_ASSOC)) {
                     $existing = array(
                         '{{customer}}' => $customer['username'],
-                        '{{oid}}' => $res['companyname'],
+                        '{{oid}}' => $res['customername'],
                         '{{reason}}' => $action
                     );
                     $this->sheel->email->mail = $customer['email'];
                     $this->sheel->email->slng = $this->sheel->language->fetch_user_slng($customer['user_id']);
-                    $this->sheel->email->get('company_status_change');
+                    $this->sheel->email->get('customer_status_change');
                     $this->sheel->email->set($existing);
                     $this->sheel->email->send();
                 }
             }
             return true;
         }
-        return "Company #$companyid is not in active status";
+        return "Customer #$customerid is not in active status";
     }
-    function construct_new_company($payload)
+    function construct_new_customer($payload)
     {
-        $this->sheel->db->query("INSERT INTO " . DB_PREFIX . "companies
-        (company_id,company_ref,companyname,subscriptionid,usecompanyname,companyabout,companydescription,date_added,status,account_number,available_balance,total_balance,currencyid,timezone,vatnumber,regnumber, autopayment, requestdeletion, logo)
+        $this->sheel->db->query("INSERT INTO " . DB_PREFIX . "customers
+        (customer_id,customer_ref,customername,subscriptionid,usecustomername,customerabout,customerdescription,date_added,status,account_number,available_balance,total_balance,currencyid,timezone,vatnumber,regnumber, autopayment, requestdeletion, logo)
         VALUES (
         NULL,
-        '" . $this->sheel->db->escape_string($payload['companyref']) . "',
-        '" . $this->sheel->db->escape_string($payload['companyname']) . "',
+        '" . $this->sheel->db->escape_string($payload['customerref']) . "',
+        '" . $this->sheel->db->escape_string($payload['customername']) . "',
         '" . $this->sheel->db->escape_string($payload['subscriptionid']) . "',
-        '" . $this->sheel->db->escape_string($payload['companyname']) . "',
-        '" . $this->sheel->db->escape_string($payload['companyabout']) . "',
-        '" . $this->sheel->db->escape_string($payload['companydescription']) . "',
+        '" . $this->sheel->db->escape_string($payload['customername']) . "',
+        '" . $this->sheel->db->escape_string($payload['customerabout']) . "',
+        '" . $this->sheel->db->escape_string($payload['customerdescription']) . "',
         '" . $this->sheel->db->escape_string($payload['date_added']) . "',
         '" . $this->sheel->db->escape_string($payload['status']) . "',
         '" . $this->sheel->db->escape_string($payload['accountnumber']) . "',
@@ -171,9 +171,9 @@ class admincp_companies extends admincp
         '" . $this->sheel->db->escape_string($payload['logo']) . "')
         ");
 
-        $company_id = $this->sheel->db->insert_id();
-        $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'company created successfully', "A new company With ID: '$company_id' was created successfully.");
-        return $company_id;
+        $customer_id = $this->sheel->db->insert_id();
+        $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'customer created successfully', "A new customer With ID: '$customer_id' was created successfully.");
+        return $customer_id;
     }
 
     function get_user_id($rid)
@@ -181,8 +181,8 @@ class admincp_companies extends admincp
         $uid = 0;
         $sql = $this->sheel->db->query("
 				SELECT customer_id
-				FROM " . DB_PREFIX . "companies
-				WHERE company_id = '" . $rid . "'
+				FROM " . DB_PREFIX . "customers
+				WHERE customer_id = '" . $rid . "'
 				LIMIT 1
 			", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0) {

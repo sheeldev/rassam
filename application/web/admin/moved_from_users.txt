@@ -259,3 +259,46 @@
                         }
                 }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            $dynamics = $sheel->dynamics->init_dynamics(array(
+        "base_url"              => "",
+        "authEndPoint"          => "https://login.microsoftonline.com/c2f8c1dc-1645-49aa-9793-f6098a0f4d92/oauth2/v2.0/token",
+        'tokenEndPoint'         => "https://login.microsoftonline.com/c2f8c1dc-1645-49aa-9793-f6098a0f4d92/oauth2/v2.0/token",
+        'crmApiEndPoint'        => "https://api.businesscentral.dynamics.com/v2.0/c2f8c1dc-1645-49aa-9793-f6098a0f4d92/Production/ODataV4/Company('AVER')/Customers",
+        "clientID"              => "80210d2b-7710-413a-8c24-1db97ce635d4", 
+        "clientSecret"          => "3f.8Q~P5e_aN0-zu8lQQz-O5Fuby5Yw35qZVgbk1"
+    ));
+
+    $contactsResponse = $sheel->dynamics->contacts->select(false);
+    if($contactsResponse->isSuccess()) {
+        foreach ($contactsResponse->getData() as $key => $value) {
+ 
+        
+                echo ('<p>'. $value['No'] .':'.$value['Name'].'</p>');
+   
+               
+           }
+           die('test');
+
+        // $contactsResponse->getData(); - Return data as array
+    }
+    else {
+        die ($contactsResponse->getErrorMessage());
+    }

@@ -8,7 +8,7 @@ $sheel->template->meta['jsinclude'] = array(
     'header' => array(
         'functions',
         'admin',
-        'admin_companies',
+        'admin_customers',
         'inline',
         'vendor/chartist',
         'vendor/growl'
@@ -25,14 +25,16 @@ $sheel->template->meta['cssinclude'] = array(
         'balloon'
     )
 );
-$sheel->template->meta['areatitle'] = 'Admin CP | Companies';
-$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Companies';
+$sheel->template->meta['areatitle'] = 'Admin CP | Customers';
+$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Customers';
 
-if (($sidenav = $sheel->cache->fetch("sidenav_companies")) === false) {
-    $sidenav = $sheel->admincp_nav->print('companies');
-    $sheel->cache->store("sidenav_companies", $sidenav);
+if (($sidenav = $sheel->cache->fetch("sidenav_customers")) === false) {
+    $sidenav = $sheel->admincp_nav->print('customers');
+    $sheel->cache->store("sidenav_customers", $sidenav);
 }
 if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
+
+
     $q = ((isset($sheel->GPC['q'])) ? o($sheel->GPC['q']) : '');
     $sheel->GPC['page'] = (! isset($sheel->GPC['page']) or isset($sheel->GPC['page']) and $sheel->GPC['page'] <= 0) ? 1 : intval($sheel->GPC['page']);
     $fview = $sheel->GPC['view'];
@@ -93,8 +95,8 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
         $requests = array();
         $sql = $sheel->db->query("
 			SELECT c.*, sc.paymentmethod, sc.startdate, sc.renewdate, sc.active, s.title_eng,s.description_eng
-			FROM " . DB_PREFIX . "companies c
-            LEFT JOIN " . DB_PREFIX . "subscription_company sc ON c.company_id = sc.companyid
+			FROM " . DB_PREFIX . "customers c
+            LEFT JOIN " . DB_PREFIX . "subscription_customer sc ON c.customer_id = sc.customerid
             LEFT JOIN " . DB_PREFIX . "subscription s ON sc.subscriptionid = s.subscriptionid
 		");
         if ($sheel->db->num_rows($sql) > 0) {
@@ -138,18 +140,18 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
         if (isset($sheel->GPC['do']) AND $sheel->GPC['do'] == 'save') {
             //die($sheel->GPC['subscriptionid']);
 
-            $sheel->GPC['form']['companyref'] = md5(md5($_SESSION['sheeldata']['tmp']['new_company_ref']));
+            $sheel->GPC['form']['customerref'] = md5(md5($_SESSION['sheeldata']['tmp']['new_customer_ref']));
             $sheel->GPC['form']['subscriptionid'] = $sheel->GPC['subscriptionid'];
                 
-            $newcompanyid = $sheel->admincp_companies->construct_new_company($sheel->GPC['form']);
-            if ($newcompanyid > 0)
+            $newcustomerid = $sheel->admincp_customers->construct_new_customer($sheel->GPC['form']);
+            if ($newcustomerid > 0)
             {
-                unset($_SESSION['sheeldata']['tmp']['new_company_ref']);
-                refresh(HTTPS_SERVER_ADMIN . 'companies/');
+                unset($_SESSION['sheeldata']['tmp']['new_customer_ref']);
+                refresh(HTTPS_SERVER_ADMIN . 'customers/');
                 exit();
             }
             else {
-                refresh(HTTPS_SERVER_ADMIN . 'companies/add/?error=wan');
+                refresh(HTTPS_SERVER_ADMIN . 'customers/add/?error=wan');
             }
            
         }
@@ -157,52 +159,52 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
         
         $form = array();
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-        if (empty($_SESSION['sheeldata']['tmp']['new_company_ref']) OR !isset($_SESSION['sheeldata']['tmp']['new_company_ref']))
+        if (empty($_SESSION['sheeldata']['tmp']['new_customer_ref']) OR !isset($_SESSION['sheeldata']['tmp']['new_customer_ref']))
         {
-            $company_ref = $sheel->admincp_companies->construct_new_ref();
-            $_SESSION['sheeldata']['tmp']['new_company_ref'] = $company_ref;
+            $customer_ref = $sheel->admincp_customers->construct_new_ref();
+            $_SESSION['sheeldata']['tmp']['new_customer_ref'] = $customer_ref;
         }
         else
         {
-            $company_ref = $_SESSION['sheeldata']['tmp']['new_company_ref'];
+            $customer_ref = $_SESSION['sheeldata']['tmp']['new_customer_ref'];
         }
 
         
-        $sheel->template->meta['areatitle'] = 'Admin CP | Companies - Add';
-        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Companies - Add';
+        $sheel->template->meta['areatitle'] = 'Admin CP | Customers - Add';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Customers - Add';
         
-        $form['companyname'] = '';
-        $form['companyabout'] = '';
-        $form['companydescription'] = '';
-        $form['companyaccount'] = '';
-        $form['companyvat'] = '';
-        $form['companyreg'] = '';
+        $form['customername'] = '';
+        $form['customerabout'] = '';
+        $form['customerdescription'] = '';
+        $form['customeraccount'] = '';
+        $form['customervat'] = '';
+        $form['customerreg'] = '';
         $form['subscriptions'] = $sheel->subscription->pulldown();
         $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currency]', 'currencyid', '');
-        $companystatuses = array('active' => '{_active}', 'banned' => '{_banned}', 'moderated' => '{_moderated}', 'cancelled' => '{_cancelled}', 'suspended' => '{_suspended}');
-        $form['companystatus'] = $sheel->construct_pulldown('status', 'form[companystatus]', $companystatuses, '', 'class="draw-select"');
+        $customerstatuses = array('active' => '{_active}', 'banned' => '{_banned}', 'moderated' => '{_moderated}', 'cancelled' => '{_cancelled}', 'suspended' => '{_suspended}');
+        $form['customerstatus'] = $sheel->construct_pulldown('status', 'form[customerstatus]', $customerstatuses, '', 'class="draw-select"');
         $form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlist, '', 'class="draw-select"');
         $form['imagename'] = '';
-        $form['companyaddress1'] = '';
-        $form['companyaddress2'] = '';
-        $form['companycity'] = '';
-        $form['companystate'] = '';
-        $form['companyzip'] = '';
-        $form['companycountry'] = $sheel->common_location->construct_country_pulldown('', '', 'draw-select', 'form[companycountry]', 'locationid', '');
-        $form['companyemail'] = '';
-        $form['companyphone'] = '';  
+        $form['customeraddress1'] = '';
+        $form['customeraddress2'] = '';
+        $form['customercity'] = '';
+        $form['customerstate'] = '';
+        $form['customerzip'] = '';
+        $form['customercountry'] = $sheel->common_location->construct_country_pulldown('', '', 'draw-select', 'form[customercountry]', 'locationid', '');
+        $form['customeremail'] = '';
+        $form['customerphone'] = '';  
     }
     
     
     else {
-        $areanav = 'companies_companies';
+        $areanav = 'customers_customers';
         
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'marksuspended') { // mark suspended
 
             if (! empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->admincp_companies->changestatus($ids,'suspended');
+                $response = $sheel->admincp_customers->changestatus($ids,'suspended');
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -216,7 +218,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
                 )));
             } else {
                 
-                $sheel->template->templateregistry['message'] = '{_no_company_were_selected_please_try_again}';
+                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
                 die(json_encode(array(
                     'response' => '0',
                     'message' => $sheel->template->parse_template_phrases('message')
@@ -226,7 +228,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
             if (! empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->admincp_companies->changestatus($ids,'cancelled');
+                $response = $sheel->admincp_customers->changestatus($ids,'cancelled');
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -239,7 +241,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
                     'failedids' => $response['failedids']
                 )));
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_company_were_selected_please_try_again}';
+                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
                 die(json_encode(array(
                     'response' => '0',
                     'message' => $sheel->template->parse_template_phrases('message')
@@ -250,7 +252,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
             if (! empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->admincp_companies->changestatus($ids,'banned');
+                $response = $sheel->admincp_customers->changestatus($ids,'banned');
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -263,7 +265,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
                     'failedids' => $response['failedids']
                 )));
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_company_were_selected_please_try_again}';
+                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
                 die(json_encode(array(
                     'response' => '0',
                     'message' => $sheel->template->parse_template_phrases('message')
@@ -273,7 +275,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
             if (! empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->admincp_companies->changestatus($ids,'active');
+                $response = $sheel->admincp_customers->changestatus($ids,'active');
                 
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
@@ -287,7 +289,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
                     'failedids' => $response['failedids']
                 )));
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_company_were_selected_please_try_again}';
+                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
                 die(json_encode(array(
                     'response' => '0',
                     'message' => $sheel->template->parse_template_phrases('message')
@@ -297,7 +299,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
             if (! empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->admincp_companies->changestatus($ids,'deleted');
+                $response = $sheel->admincp_customers->changestatus($ids,'deleted');
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -310,7 +312,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
                     'failedids' => $response['failedids']
                 )));
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_company_were_selected_please_try_again}';
+                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
                 die(json_encode(array(
                     'response' => '0',
                     'message' => $sheel->template->parse_template_phrases('message')
@@ -375,7 +377,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
             switch ($sheel->GPC['filter']) {
                 case 'name':
                     {
-                        $searchcondition = "AND (c.companyname Like '%" . $sheel->db->escape_string($q) . "%' OR c.description Like '%" . $sheel->db->escape_string($q) . "%')";
+                        $searchcondition = "AND (c.customername Like '%" . $sheel->db->escape_string($q) . "%' OR c.description Like '%" . $sheel->db->escape_string($q) . "%')";
                         break;
                     }
 
@@ -390,23 +392,23 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
         $requests = array();
         $sql = $sheel->db->query("
             SELECT c.*, sc.paymethod, sc.startdate, sc.renewdate, sc.active, s.title_eng,s.description_eng
-            FROM " . DB_PREFIX . "companies c
-            LEFT JOIN " . DB_PREFIX . "subscription_company sc ON c.company_id = sc.companyid
+            FROM " . DB_PREFIX . "customers c
+            LEFT JOIN " . DB_PREFIX . "subscription_customer sc ON c.customer_id = sc.customerid
             LEFT JOIN " . DB_PREFIX . "subscription s ON sc.subscriptionid = s.subscriptionid
             $searchview			
             $searchcondition	
-			ORDER BY c.company_id DESC
+			ORDER BY c.customer_id DESC
 			LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay']) . "," . $sheel->config['globalfilters_maxrowsdisplay'] . "
 		");
          
         $sql2 = $sheel->db->query("
             SELECT c.*, sc.paymethod, sc.startdate, sc.renewdate, sc.active, s.title_eng,s.description_eng
-            FROM " . DB_PREFIX . "companies c
-            LEFT JOIN " . DB_PREFIX . "subscription_company sc ON c.company_id = sc.companyid
+            FROM " . DB_PREFIX . "customers c
+            LEFT JOIN " . DB_PREFIX . "subscription_customer sc ON c.customer_id = sc.customerid
             LEFT JOIN " . DB_PREFIX . "subscription s ON sc.subscriptionid = s.subscriptionid
             $searchview			
             $searchcondition	
-            ORDER BY c.company_id DESC
+            ORDER BY c.customer_id DESC
 		");
 
         $number = (int) $sheel->db->num_rows($sql2);
@@ -418,10 +420,10 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
                 // $res['lineitems'] = $sheel->admincp->fetch_line_items($res['orderidpublic']);
                 // $res['pictures'] = $sheel->buynow->fetch_line_item_pictures($res['orderidpublic']);
                 $res['countrycode'] = $sheel->common_location->print_country_name($res['country']);
-                $res['switchadd'] = '<span class="badge badge--info title="{_add_item}"><a href="' . HTTPS_SERVER_ADMIN .'companies/items/add/' . $res['company_id'] . '/?view='.$fview.'&company_id=' . $res['company_id'] .'" data-no-turbolink>{_add}</a></span>';
-                $res['switchview'] = '<span class="badge badge--success" title="{_view_item}"><a href="' . HTTPS_SERVER_ADMIN .'companies/items/view/' . $res['company_id'] . '/?view='.$fview.'&company_id=' . $res['company_id'] .'" data-no-turbolink>{_view}</a></span>';
+                $res['switchadd'] = '<span class="badge badge--info title="{_add_item}"><a href="' . HTTPS_SERVER_ADMIN .'customers/items/add/' . $res['customer_id'] . '/?view='.$fview.'&customer_id=' . $res['customer_id'] .'" data-no-turbolink>{_add}</a></span>';
+                $res['switchview'] = '<span class="badge badge--success" title="{_view_item}"><a href="' . HTTPS_SERVER_ADMIN .'customers/items/view/' . $res['customer_id'] . '/?view='.$fview.'&customer_id=' . $res['customer_id'] .'" data-no-turbolink>{_view}</a></span>';
                 
-                $companies[] = $res;
+                $customers[] = $res;
             }
         }
 
@@ -432,7 +434,7 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
         $form['view'] = (isset($sheel->GPC['view']) ? $sheel->GPC['view'] : '');
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
-            'name' => '{_company_name}',
+            'name' => '{_customer_name}',
             'date' => '{_date_added} (YYYY-MM-DD)'
         );
         $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
@@ -440,9 +442,9 @@ if (! empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']
         unset($filter_options);
     }
 
-    $sheel->template->fetch('main', 'companies.html', 1);
+    $sheel->template->fetch('main', 'customers.html', 1);
     $sheel->template->parse_loop('main', array(
-        'companies' => $companies
+        'customers' => $customers
     ));
     $sheel->template->parse_hash('main', array(
         'ilpage' => $sheel->ilpage,

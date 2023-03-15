@@ -51,7 +51,7 @@ class subscription
                                                 AND invoiceid = '" . intval($payload['invoiceid']) . "'
                                 ", 0, null, __FILE__, __LINE__);
                                 $this->sheel->db->query("
-                                        UPDATE " . DB_PREFIX . "subscription_company
+                                        UPDATE " . DB_PREFIX . "subscription_customer
                                         SET paymethod = 'ipn',
                                         recurring_gateway = " . $this->sheel->db->escape_string($payload['gateway']) . "'
                                         WHERE user_id = '" . $res['user_id'] . "'
@@ -98,7 +98,7 @@ class subscription
                                         $subscription_length = $this->subscription_length($subscription_plan_result['units'], $subscription_plan_result['length']);
                                         $subscription_renew_date = $this->print_subscription_renewal_datetime($subscription_length);
                                         $this->sheel->db->query("
-                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                 SET active = 'yes',
                                                 cancelled = '0',
                                                 renewdate = '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
@@ -191,7 +191,7 @@ class subscription
                                 $subscription_length = $this->subscription_length($subscription_plan_result['units'], $subscription_plan_result['length']);
                                 $subscription_renew_date = $this->print_subscription_renewal_datetime($subscription_length);
                                 $this->sheel->db->query("
-                                        UPDATE " . DB_PREFIX . "subscription_company
+                                        UPDATE " . DB_PREFIX . "subscription_customer
                                         SET paymethod = 'account',
                                         startdate = '" . DATETIME24H . "',
                                         renewdate = '" . $subscription_renew_date . "',
@@ -308,7 +308,7 @@ class subscription
         {
                 $res = $this->sheel->db->query("
 			SELECT UNIX_TIMESTAMP(u.renewdate) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS countdown
-			FROM " . DB_PREFIX . "subscription_company u
+			FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
 			WHERE u.user_id = '" . intval($userid) . "'
                                 AND s.type = 'product'
@@ -358,7 +358,7 @@ class subscription
         {
                 $sql = $this->sheel->db->query("
                         SELECT u.active, u.cancelled
-                        FROM " . DB_PREFIX . "subscription_company u
+                        FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                         WHERE u.user_id = '" . intval($userid) . "'
                                 AND s.type = 'product'
@@ -448,7 +448,7 @@ class subscription
                         while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
                                 $sql2 = $this->sheel->db->query("
                                         SELECT COUNT(su.user_id) AS count
-                                        FROM " . DB_PREFIX . "subscription_company su
+                                        FROM " . DB_PREFIX . "subscription_customer su
                                         LEFT JOIN " . DB_PREFIX . "users u ON (su.user_id = u.user_id)
                                         WHERE su.active = 'yes'
                                                 AND su.subscriptionid = '" . $res['subscriptionid'] . "'
@@ -478,7 +478,7 @@ class subscription
                         case 'orphaned': {
                                         $sql = $this->sheel->db->query("
                                         SELECT COUNT(su.user_id) AS count
-                                        FROM " . DB_PREFIX . "subscription_company su
+                                        FROM " . DB_PREFIX . "subscription_customer su
                                         LEFT JOIN " . DB_PREFIX . "users u ON (su.user_id = u.user_id)
                                         WHERE su.active = 'no'
                                                 AND u.status = 'active'
@@ -604,7 +604,7 @@ class subscription
                 $slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : 'eng';
                 $sql = $this->sheel->db->query("
                         SELECT u.subscriptionid, s.title_" . $slng . " AS title
-                        FROM " . DB_PREFIX . "subscription_company u
+                        FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                         WHERE u.user_id = '" . intval($userid) . "'
                                 AND s.type = 'product'
@@ -669,7 +669,7 @@ class subscription
                 if (isset($logic)) {
                         $sql = $this->sheel->db->query("
                                 SELECT *
-                                FROM " . DB_PREFIX . "subscription_company_exempt
+                                FROM " . DB_PREFIX . "subscription_customer_exempt
                                 WHERE user_id = '" . intval($userid) . "'
                                         AND accessname = '" . $this->sheel->db->escape_string($accessname) . "'
                                         AND active = '1'
@@ -792,7 +792,7 @@ class subscription
                                 }
                                 if ($nofunds == 0) { // create new exemption
                                         $this->sheel->db->query("
-                                                INSERT INTO " . DB_PREFIX . "subscription_company_exempt
+                                                INSERT INTO " . DB_PREFIX . "subscription_customer_exempt
                                                 (user_id, accessname, value, exemptfrom, exemptto, comments, invoiceid, active)
                                                 VALUES (
                                                 '" . intval($userid) . "',
@@ -943,7 +943,7 @@ class subscription
                                                 $subscription_renew_date = $this->print_subscription_renewal_datetime($subscription_length);
                                                 $sqlcheck = $this->sheel->db->query("
                                                         SELECT u.id, u.subscriptionid
-                                                        FROM " . DB_PREFIX . "subscription_company u
+                                                        FROM " . DB_PREFIX . "subscription_customer u
                                                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                                                         WHERE u.user_id = '" . intval($userid) . "'
                                                                 AND s.type = 'product'
@@ -951,7 +951,7 @@ class subscription
                                                 if ($this->sheel->db->num_rows($sqlcheck) > 0) { // update membership with new plan info
                                                         $rescheck = $this->sheel->db->fetch_array($sqlcheck, DB_ASSOC);
                                                         $this->sheel->db->query("
-                                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                                 SET active = 'yes',
                                                                 renewdate = '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
                                                                 startdate = '" . DATETIME24H . "',
@@ -965,7 +965,7 @@ class subscription
                                                         ", 0, null, __FILE__, __LINE__);
                                                 } else { // create new free active membership for user
                                                         $this->sheel->db->query("
-                                                                INSERT INTO " . DB_PREFIX . "subscription_company
+                                                                INSERT INTO " . DB_PREFIX . "subscription_customer
                                                                 (id, subscriptionid, user_id, paymethod, startdate, renewdate, autopayment, active, cancelled, roleid, migrateto, migratelogic, invoiceid)
                                                                 VALUES(
                                                                 NULL,
@@ -1251,7 +1251,7 @@ class subscription
                                                 $resinsorupd = array();
                                                 $insorupd = $this->sheel->db->query("
                                                         SELECT u.id
-                                                        FROM " . DB_PREFIX . "subscription_company u
+                                                        FROM " . DB_PREFIX . "subscription_customer u
                                                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                                                         WHERE u.user_id = '" . intval($userid) . "'
                                                                 AND s.type = 'product'
@@ -1259,7 +1259,7 @@ class subscription
                                                 if ($this->sheel->db->num_rows($insorupd) > 0) { // set payment method to online account and auto payments to active
                                                         $resinsorupd = $this->sheel->db->fetch_array($insorupd, DB_ASSOC);
                                                         $this->sheel->db->query("
-                                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                                 SET paymethod = 'account',
                                                                 autopayment = '1',
                                                                 migrateto = '" . $subscription_plan_result['migrateto'] . "',
@@ -1271,7 +1271,7 @@ class subscription
                                                         ", 0, null, __FILE__, __LINE__);
                                                 } else {
                                                         $this->sheel->db->query("
-                                                                INSERT INTO " . DB_PREFIX . "subscription_company
+                                                                INSERT INTO " . DB_PREFIX . "subscription_customer
                                                                 (id, subscriptionid, user_id, paymethod, autopayment, active, roleid, migrateto, migratelogic, invoiceid)
                                                                 VALUES(
                                                                 NULL,
@@ -1344,7 +1344,7 @@ class subscription
 
                                                                 // upgrade customers membership plan
                                                                 $this->sheel->db->query("
-                                                                        UPDATE " . DB_PREFIX . "subscription_company
+                                                                        UPDATE " . DB_PREFIX . "subscription_customer
                                                                         SET active = 'yes',
                                                                         renewdate = '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
                                                                         startdate = '" . DATETIME24H . "',
@@ -1407,22 +1407,22 @@ class subscription
          *
          * @param       integer      user id
          */
-        function handle_no_stores_permission($companyid = 0)
+        function handle_no_stores_permission($customerid = 0)
         {
-                if ($companyid > 0) {
+                if ($customerid > 0) {
                         $sql = $this->sheel->db->query("
                                 SELECT u.id, u.subscriptionid, u.active, u.cancelled
-                                FROM " . DB_PREFIX . "subscription_company u
+                                FROM " . DB_PREFIX . "subscription_customer u
                                 LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
-                                WHERE u.user_id = '" . intval($companyid) . "'
+                                WHERE u.user_id = '" . intval($customerid) . "'
                                         AND s.type = 'product'
                                 LIMIT 1
                         ", 0, null, __FILE__, __LINE__);
                         if ($this->sheel->db->num_rows($sql) > 0) {
                                 $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
                                 if ($res['id'] > 0 and $res['subscriptionid'] > 0) {
-                                        if ($this->sheel->stores->has_store($companyid)) {
-                                                $storeid = $this->sheel->stores->get_storeid($companyid);
+                                        if ($this->sheel->stores->has_store($customerid)) {
+                                                $storeid = $this->sheel->stores->get_storeid($customerid);
                                                 if ($res['active'] == 'no') { // inactive membership :: suspend store
                                                         if ($storeid > 0) { // suspend sellers store
                                                                 $this->sheel->stores->suspend($storeid, 'Membership is currently inactive. Store suspended.');
@@ -1491,7 +1491,7 @@ class subscription
                                 $newroleid = $this->fetch_subscription_roleid(intval($subscriptionid));
                                 $sql = $this->sheel->db->query("
                                         SELECT u.id
-                                        FROM " . DB_PREFIX . "subscription_company u
+                                        FROM " . DB_PREFIX . "subscription_customer u
                                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                                         WHERE u.user_id = '" . intval($userid) . "'
                                                 AND s.type = 'product'
@@ -1500,7 +1500,7 @@ class subscription
                                 if ($this->sheel->db->num_rows($sql) > 0) {
                                         $resu = $this->sheel->db->fetch_array($sql, DB_ASSOC);
                                         $this->sheel->db->query("
-                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                 SET subscriptionid = '" . intval($subscriptionid) . "',
                                                 startdate = '" . DATETIME24H . "',
                                                 renewdate = '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
@@ -1515,7 +1515,7 @@ class subscription
                                         ", 0, null, __FILE__, __LINE__);
                                 } else {
                                         $this->sheel->db->query("
-                                                INSERT INTO " . DB_PREFIX . "subscription_company
+                                                INSERT INTO " . DB_PREFIX . "subscription_customer
                                                 (id, subscriptionid, user_id, paymethod, startdate, renewdate, autopayment, active, migrateto, migratelogic, invoiceid, roleid)
                                                 VALUES(
                                                 NULL,
@@ -1587,7 +1587,7 @@ class subscription
                                 $newroleid = $this->fetch_subscription_roleid(intval($subscriptionid));
                                 $sql = $this->sheel->db->query("
                                         SELECT u.id
-                                        FROM " . DB_PREFIX . "subscription_company u
+                                        FROM " . DB_PREFIX . "subscription_customer u
                                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                                         WHERE u.user_id = '" . intval($userid) . "'
                                                 AND s.type = 'product'
@@ -1596,7 +1596,7 @@ class subscription
                                 if ($this->sheel->db->num_rows($sql) > 0) {
                                         $resu = $this->sheel->db->fetch_array($sql, DB_ASSOC);
                                         $this->sheel->db->query("
-                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                 SET subscriptionid = '" . intval($subscriptionid) . "',
                                                 startdate = '" . DATETIME24H . "',
                                                 renewdate = '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
@@ -1611,7 +1611,7 @@ class subscription
                                         ", 0, null, __FILE__, __LINE__);
                                 } else {
                                         $this->sheel->db->query("
-                                                INSERT INTO " . DB_PREFIX . "subscription_company
+                                                INSERT INTO " . DB_PREFIX . "subscription_customer
                                                 (id, subscriptionid, user_id, paymethod, startdate, renewdate, autopayment, active, migrateto, migratelogic, invoiceid, roleid)
                                                 VALUES(
                                                 NULL,
@@ -1652,7 +1652,7 @@ class subscription
                                 $newroleid = $this->fetch_subscription_roleid(intval($subscriptionid));
                                 $sql = $this->sheel->db->query("
                                         SELECT u.id
-                                        FROM " . DB_PREFIX . "subscription_company u
+                                        FROM " . DB_PREFIX . "subscription_customer u
                                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                                         WHERE u.user_id = '" . intval($userid) . "'
                                                 AND s.type = 'product'
@@ -1661,7 +1661,7 @@ class subscription
                                 if ($this->sheel->db->num_rows($sql) > 0) {
                                         $resu = $this->sheel->db->fetch_array($sql, DB_ASSOC);
                                         $this->sheel->db->query("
-                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                 SET subscriptionid = '" . intval($subscriptionid) . "',
                                                 startdate = '" . DATETIME24H . "',
                                                 renewdate = '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
@@ -1677,7 +1677,7 @@ class subscription
                                         ", 0, null, __FILE__, __LINE__);
                                 } else {
                                         $this->sheel->db->query("
-                                                INSERT INTO " . DB_PREFIX . "subscription_company
+                                                INSERT INTO " . DB_PREFIX . "subscription_customer
                                                 (id, subscriptionid, user_id, paymethod, startdate, renewdate, autopayment, active, migrateto, migratelogic, invoiceid, roleid)
                                                 VALUES(
                                                 NULL,
@@ -1708,7 +1708,7 @@ class subscription
         {
                 $sql = $this->sheel->db->query("
                         SELECT u.active, u.cancelled, u.subscriptionid
-                        FROM " . DB_PREFIX . "subscription_company u
+                        FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                         WHERE u.user_id = '" . intval($userid) . "'
                                 AND s.type = 'product'
@@ -1742,7 +1742,7 @@ class subscription
                 $slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : 'eng';
                 $sql = $this->sheel->db->query("
                         SELECT u.subscriptionid, s.title_" . $slng . " AS title
-                        FROM " . DB_PREFIX . "subscription_company u
+                        FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                         WHERE u.user_id = '" . intval($userid) . "'
                                 AND s.type = 'product'
@@ -1766,7 +1766,7 @@ class subscription
                 $slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : 'eng';
                 $sql = $this->sheel->db->query("
                         SELECT u.subscriptionid, s.icon, s.title_" . $slng . " AS title
-                        FROM " . DB_PREFIX . "subscription_company AS u
+                        FROM " . DB_PREFIX . "subscription_customer AS u
 			LEFT JOIN " . DB_PREFIX . "subscription AS s ON u.subscriptionid = s.subscriptionid
                         WHERE u.user_id = '" . intval($userid) . "'
                                 AND s.type = 'product'
@@ -1796,7 +1796,7 @@ class subscription
                 // informing the user about the subscription renewal
                 $remind = $this->sheel->db->query("
                         SELECT u.user_id, u.startdate, u.renewdate, u.paymethod, u.recurring, u.autorenewal, u.autopayment, u.active, s.title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title, s.cost
-                        FROM " . DB_PREFIX . "subscription_company u
+                        FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON (u.subscriptionid = s.subscriptionid)
                         WHERE u.cancelled = '0'
                                 AND s.type = 'product'
@@ -2039,9 +2039,9 @@ class subscription
                                                 WHERE invoiceid = '" . $unpaid['invoiceid'] . "'
                                                 LIMIT 1
                                         ", 0, null, __FILE__, __LINE__);
-                                        // remove ID from subscription_company table..
+                                        // remove ID from subscription_customer table..
                                         $this->sheel->db->query("
-                                                UPDATE " . DB_PREFIX . "subscription_company
+                                                UPDATE " . DB_PREFIX . "subscription_customer
                                                 SET invoiceid = '0'
                                                 WHERE invoiceid = '" . $unpaid['invoiceid'] . "'
                                                 LIMIT 1
@@ -2344,7 +2344,7 @@ class subscription
         {
                 $sql = $this->sheel->db->query("
                         SELECT u.id, u.user_id
-                        FROM " . DB_PREFIX . "subscription_company u
+                        FROM " . DB_PREFIX . "subscription_customer u
                         LEFT JOIN " . DB_PREFIX . "subscription s ON u.subscriptionid = s.subscriptionid
                         WHERE s.type = 'product'
                 ", 0, null, __FILE__, __LINE__);
@@ -2357,7 +2357,7 @@ class subscription
                                 ", 0, null, __FILE__, __LINE__);
                                 if ($this->sheel->db->num_rows($sql2) == 0) {
                                         $this->sheel->db->query("
-                                                DELETE FROM " . DB_PREFIX . "subscription_company
+                                                DELETE FROM " . DB_PREFIX . "subscription_customer
                                                 WHERE id = '" . $res['id'] . "'
                                         ", 0, null, __FILE__, __LINE__);
                                 }

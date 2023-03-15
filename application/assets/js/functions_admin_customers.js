@@ -1,4 +1,4 @@
-function verify_acp_company(mode)
+function verify_acp_customer(mode)
 {
 //	console.log(jQuery('#fileuploader_iframe').contents().find('.files .template-download .preview').html());
 	
@@ -6,10 +6,10 @@ function verify_acp_company(mode)
 	var haserror = false;
 	jQuery('#subscription-wrapper').removeClass('redborder');
 	jQuery('#subscriptionid').removeClass('error');
-	jQuery('#companyaccount').removeClass('error');
-	jQuery('#companyname').removeClass('error');
-	jQuery('#companyemail').removeClass('error');
-	jQuery('#companyphone').removeClass('error');
+	jQuery('#customeraccount').removeClass('error');
+	jQuery('#customername').removeClass('error');
+	jQuery('#customeremail').removeClass('error');
+	jQuery('#customerphone').removeClass('error');
 	jQuery('#vehicle_year').removeClass('error');
 	jQuery('#request_date').removeClass('error');
 	jQuery('#vehicle_value').removeClass('error');
@@ -20,37 +20,37 @@ function verify_acp_company(mode)
 	{
 		jQuery('#subscription-wrapper').addClass('redborder');
 		jQuery('#subscriptionid').addClass('error');
-		jQuery.growl.error({title: phrase['_error'], message: 'Select Membership for this Company'});
+		jQuery.growl.error({title: phrase['_error'], message: 'Select Membership for this Customer'});
 		return false;
 	}
 
-	if (jQuery('#companyaccount').val().length <= 0)
+	if (jQuery('#customeraccount').val().length <= 0)
 	{
 		haserror = true;
-		jQuery('#companyaccount').addClass('error');
+		jQuery('#customeraccount').addClass('error');
 		jQuery.growl.error({title: phrase['_error'], message: 'Account is required'});
 		return false;
 	}
-	if (jQuery('#companyname').val().length <= 0)
+	if (jQuery('#customername').val().length <= 0)
 	{
 		haserror = true;
-		jQuery('#companyname').addClass('error');
+		jQuery('#customername').addClass('error');
 		jQuery.growl.error({title: phrase['_error'], message: 'Name is required'});
 		return false;
 	}
 	
-	if (jQuery('#companyphone').val().length <= 0)
+	if (jQuery('#customerphone').val().length <= 0)
 	{
 		haserror = true;
-		jQuery('#companyphone').addClass('error');
+		jQuery('#customerphone').addClass('error');
 		jQuery.growl.error({title: phrase['_error'], message: 'Phone is required'});
 		return false;
 	}
 	
-	if (jQuery('#companyemail').val().length <= 0)
+	if (jQuery('#customeremail').val().length <= 0)
 	{
 		haserror = true;
-		jQuery('#companyemail').addClass('error');
+		jQuery('#customeremail').addClass('error');
 		jQuery.growl.error({title: phrase['_error'], message: 'Email is required'});
 		return false;
 	}

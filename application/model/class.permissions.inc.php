@@ -22,18 +22,18 @@ class permissions
 	 *
 	 * @return      bool           Returns [yes] or [no] or will return the actual "value" if other (ie: bid limit per day might return 10)..
 	 */
-	function check_access($companyid = 0, $accessname = '', $subscriptionid = 0)
+	function check_access($customerid = 0, $accessname = '', $subscriptionid = 0)
 	{
 		$value = 'no';
-		$companyid = intval($companyid);
+		$customerid = intval($customerid);
 		$subscriptionid = intval($subscriptionid);
-		if ($companyid > 0 and !empty($accessname) and $subscriptionid <= 0) {
+		if ($customerid > 0 and !empty($accessname) and $subscriptionid <= 0) {
 			$sql = $this->sheel->db->query("
-				SELECT c.subscriptionid, c.companyid, perm.value
-				FROM " . DB_PREFIX . "subscription_company c
+				SELECT c.subscriptionid, c.customerid, perm.value
+				FROM " . DB_PREFIX . "subscription_customer c
 				LEFT JOIN " . DB_PREFIX . "subscription sub ON (c.subscriptionid = sub.subscriptionid)
 				LEFT JOIN " . DB_PREFIX . "subscription_permissions perm ON (c.subscriptionid = perm.subscriptionid)
-				WHERE c.companyid = '" . intval($companyid) . "'
+				WHERE c.customerid = '" . intval($customerid) . "'
 					AND sub.active = 'yes'
 					AND sub.type = 'product'
 					AND c.active = 'yes'
@@ -45,8 +45,8 @@ class permissions
 				$res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 				$sql2 = $this->sheel->db->query("
 					SELECT value
-					FROM " . DB_PREFIX . "subscription_company_exempt
-					WHERE companyid = '" . intval($companyid) . "'
+					FROM " . DB_PREFIX . "subscription_customer_exempt
+					WHERE customerid = '" . intval($customerid) . "'
 						AND accessname = '" . $this->sheel->db->escape_string($accessname) . "'
 						AND active = '1'
 					LIMIT 1
@@ -62,7 +62,7 @@ class permissions
 					$value = $res['value'];
 				}
 			}
-		} else if ($companyid <= 0 and !empty($accessname) and $subscriptionid > 0) {
+		} else if ($customerid <= 0 and !empty($accessname) and $subscriptionid > 0) {
 			$sql = $this->sheel->db->query("
 				SELECT perm.value
 				FROM " . DB_PREFIX . "subscription sub

@@ -39,21 +39,22 @@ $router->map('GET|POST', '/admin/', __DIR__ . '/application/web/admin/home.php',
 $router->map('GET|POST', '/admin/signin/', __DIR__ . '/application/web/admin/login.php', 'admin_login');
 $router->map('GET|POST', '/admin/signin/[renew-password:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_login_renew');
 $router->map('GET|POST', '/admin/signin/[*:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_logout');
-$router->map('GET|POST', '/admin/companies/', __DIR__ . '/application/web/admin/companies.php', 'admin_companies');
-$router->map('GET|POST', '/admin/companies/[view:cmd]/[*:rid]/', __DIR__ . '/application/web/admin/companies.php', 'admin_companies_view');
-$router->map('GET|POST', '/admin/companies/[add:cmd]/', __DIR__ . '/application/web/admin/companies.php', 'admin_companies_add');
-$router->map('GET|POST', '/admin/companies/[update:cmd]/[*:rid]/[*:view]/', __DIR__ . '/application/web/admin/companies.php', 'admin_update_companies_view');
-$router->map('GET|POST', '/admin/companies/items/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items');
-$router->map('GET|POST', '/admin/companies/items/[add:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_add');
-$router->map('GET|POST', '/admin/companies/items/[update:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_edit');
-$router->map('GET|POST', '/admin/companies/items/[dosave:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_save');
-$router->map('GET|POST', '/admin/companies/items/[doupdate:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_update');
-$router->map('GET|POST', '/admin/companies/items/[view:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_view');
-$router->map('GET|POST', '/admin/companies/items/[bulk:cmd]/', __DIR__ . '/application/web/admin/companies-items.php', 'admin_companies_items_bulk');
+$router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers');
+$router->map('GET|POST', '/admin/customers/[view:cmd]/[*:rid]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
+$router->map('GET|POST', '/admin/customers/[add:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_add');
+$router->map('GET|POST', '/admin/customers/[update:cmd]/[*:rid]/[*:view]/', __DIR__ . '/application/web/admin/customers.php', 'admin_update_customers_view');
+$router->map('GET|POST', '/admin/customers/items/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items');
+$router->map('GET|POST', '/admin/customers/items/[add:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_add');
+$router->map('GET|POST', '/admin/customers/items/[update:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_edit');
+$router->map('GET|POST', '/admin/customers/items/[dosave:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_save');
+$router->map('GET|POST', '/admin/customers/items/[doupdate:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_update');
+$router->map('GET|POST', '/admin/customers/items/[view:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_view');
+$router->map('GET|POST', '/admin/customers/items/[bulk:cmd]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_bulk');
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
-$router->map('GET|POST', '/admin/settings/[branding|locale|mail|currency|invoice|payment|tax|registration|escrow|feedback|shipping|listings|bidding|pmb|privacy|censor|blacklist|categories|seo|search|security|distance|cache|session|attachments|license|license/plans|license/renewal|billing/update|billing/create|billing/cancel|updates|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
+$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|invoice|payment|registration|escrow|feedback|shipping|listings|bidding|pmb|privacy|censor|blacklist|categories|seo|search|security|distance|cache|session|attachments|license|license/plans|license/renewal|billing/update|billing/create|billing/cancel|updates|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
 $router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
-
+$router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
+$router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
 
 if (file_exists(__DIR__ . '/router_custom.php'))
 {
