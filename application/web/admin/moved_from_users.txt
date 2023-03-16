@@ -287,18 +287,19 @@
     ));
 
     $contactsResponse = $sheel->dynamics->contacts->select(false);
-    if($contactsResponse->isSuccess()) {
-        foreach ($contactsResponse->getData() as $key => $value) {
+        if ($contactsResponse->isSuccess()) {
+            $customers = $contactsResponse->getData();
+  
+            foreach ($customers as $key => $value) {
  
-        
-                echo ('<p>'. $value['No'] .':'.$value['Name'].'</p>');
+                foreach ($value as $key1 => $value1) {
+                    echo ('<p>'.$key1.'</p>');
+                }
+                
    
                
            }
            die('test');
-
-        // $contactsResponse->getData(); - Return data as array
-    }
-    else {
-        die ($contactsResponse->getErrorMessage());
-    }
+        } else {
+            die($contactsResponse->getErrorMessage());
+        }

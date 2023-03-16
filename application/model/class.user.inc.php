@@ -22,8 +22,8 @@ class user
 		$profileid = 0;
 		$sql = $this->sheel->db->query("
 			SELECT cp.id
-			FROM " . DB_PREFIX . "company_profiles cp
-			LEFT JOIN " . DB_PREFIX . "users u ON (cp.company_id = u.companyid)
+			FROM " . DB_PREFIX . "customer_profiles cp
+			LEFT JOIN " . DB_PREFIX . "users u ON (cp.customer_id = u.customerid)
 			WHERE u.user_id = '" . intval($userid) . "'
 				AND cp.type = 'billing'
 				AND cp.isdefault = '1'
@@ -41,8 +41,8 @@ class user
 		$profileid = 0;
 		$sql = $this->sheel->db->query("
 			SELECT cp.id
-			FROM " . DB_PREFIX . "company_profiles cp
-			LEFT JOIN " . DB_PREFIX . "users u ON (cp.company_id = u.companyid)
+			FROM " . DB_PREFIX . "customer_profiles cp
+			LEFT JOIN " . DB_PREFIX . "users u ON (cp.customer_id = u.customerid)
 			WHERE u.user_id = '" . intval($userid) . "'
 				AND cp.type = 'shipping'
 				AND cp.isdefault = '1'
@@ -60,8 +60,8 @@ class user
 		$array = array();
 		$sql = $this->sheel->db->query("
 			SELECT cp.country
-			FROM " . DB_PREFIX . "company_profiles cp
-			LEFT JOIN " . DB_PREFIX . "users u ON (cp.company_id = u.companyid)
+			FROM " . DB_PREFIX . "customer_profiles cp
+			LEFT JOIN " . DB_PREFIX . "users u ON (cp.customer_id = u.customerid)
 			WHERE u.user_id = '" . intval($userid) . "'
 				AND cp.type = 'shipping'
 				AND cp.status = '1'
@@ -86,8 +86,8 @@ class user
 		$array = array();
 		$sql = $this->sheel->db->query("
 			SELECT cp.country
-			FROM " . DB_PREFIX . "company_profiles cp
-			LEFT JOIN " . DB_PREFIX . "users u ON (cp.company_id = u.companyid)
+			FROM " . DB_PREFIX . "customer_profiles cp
+			LEFT JOIN " . DB_PREFIX . "users u ON (cp.customer_id = u.customerid)
 			WHERE u.user_id = '" . intval($userid) . "'
 				AND cp.type = 'shipping'
 				AND cp.status = '1'

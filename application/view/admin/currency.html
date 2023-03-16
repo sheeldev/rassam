@@ -1,0 +1,106 @@
+<section>
+<script>
+Page();
+</script>
+<div id="currencies-index" class="page has-contextual-help">
+	
+    <form method="post" action="{https_server_admin}currency/save/" accept-charset="UTF-8" name="savecurrencies">
+    <div class="header-row">
+		<header class="header">
+		<h1 class="header__main">
+        		<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+				<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / <a href="{https_server_admin}settings/currency/">{_currency}</a> /</span>
+				{currentarea}
+			</h1>
+			<div class="header__primary-actions">
+                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_save}</button>
+            </div>
+            <div class="header__secondary-actions"> </div>
+		</header>
+        
+	</div>
+	
+    <div class="section login-services">
+		<div class="layout-content">
+			<div class="layout-content__sidebar layout-content__first">
+				<div class="section-summary">
+					<h1>{_currency_management}</h1>
+					<p>This area lets you add and manage all types of currencies for your system.  If your system supports only USD you can safely remove others.</p>
+					<p>All master currency rates are updated every 15 minutes through the <a href="{https_server_admin}settings/automation/">automation system</a>. </p>
+					<p>The base master currency for exchange rates is <code>USD</code> = 1.0000.</p>
+                  <p><a href="{https_server_admin}settings/currency/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_settings}</button></a></p>
+				</div>
+			</div>
+			<div class="layout-content__main">
+				<div class="draw-card">
+					<div class="section-content">
+						<div class="draw-card__section">
+							<div class="table-wrapper">
+                            	<table class="expanded">	
+                                <thead>
+                                <tr> 
+                                    <th nowrap="nowrap">{_currency}</th>
+                                    <th nowrap="nowrap">Sub unit</th>
+                                    <th nowrap="nowrap">{_abbreviation}</th>
+                                    <th nowrap="nowrap">{_rate}</th>
+                                    <th nowrap="nowrap">{_symbol_left}</th>
+                                    <th nowrap="nowrap">{_symbol_right}</th>
+                                    <th nowrap="nowrap">Symbol (local)</th>
+                                    <th nowrap="nowrap">{_decimal_point}</th>
+                                    <th nowrap="nowrap">{_thousands_point}</th>
+                                    <th nowrap="nowrap">{_decimal_places}</th>
+                                    <th nowrap="nowrap">{_decimal_places} (local)</th>
+                                    <th nowrap="nowrap">Is Crypto</th>
+                                    <th align="center" nowrap="nowrap">{_action}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <loop name="currencies">
+                                <tr valign="top"> 
+                                    <td width="20%" align="left">{currencyname}</td>
+                                    <td width="10%" align="left">{subunit}</td>
+                                    <td width="5%" align="center">{abbrev}</td>
+                                    <td width="10%" align="center">{rate}</td>
+                                    <td width="4%" align="center" nowrap="nowrap">{symbolleft}</td>
+                                    <td width="4%" align="center" nowrap="nowrap">{symbolright}</td>
+                                    <td width="4%" align="center" nowrap="nowrap">{symbollocal}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{decimalpoint}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{thousandspoint}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{decimalplaces}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{decimalplaceslocal}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{iscrypto}</td>
+                                    <td align="center" width="15%" nowrap="nowrap">{action}</td>
+                                </tr>
+                                </loop name="currencies">
+                                <tr valign="top"> 
+                                    <td width="20%" align="left">{form[currencyname]}</td>
+                                    <td width="10%" align="left">{form[subunit]}</td>
+                                    <td width="5%" align="center">{form[abbrev]}</td>
+                                    <td width="10%" align="center">{form[rate]}</td>
+                                    <td width="4%" align="center" nowrap="nowrap">{form[symbolleft]}</td>
+                                    <td width="4%" align="center" nowrap="nowrap">{form[symbolright]}</td>
+                                    <td width="4%" align="center" nowrap="nowrap">{form[symbollocal]}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{form[decimalpoint]}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{form[thousandspoint]}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{form[decimalplaces]}</td>
+                                    <td width="3%" align="center" nowrap="nowrap">{form[decimalplaceslocal]}</td>
+                                    <td width="3%" align="center" valign="middle" nowrap="nowrap">{form[iscrypto]}</td>
+                                    <td align="center" width="15%" nowrap="nowrap">&nbsp;</td>
+                                </tr>
+                                </tbody>
+                                </table>
+							</div>
+						</div>
+					</div>
+				</div>
+                
+			</div>
+		</div>
+	</div>
+    </form>
+    
+</div>
+</section>
+
+
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

@@ -8,12 +8,12 @@ $sheel->template->meta['jsinclude'] = array(
 	'header' => array(
 		'functions',
 		'admin',
+		'inline',
 		'vendor/chartist',
 		'vendor/growl',
 		'vendor/inputtags'
 	),
 	'footer' => array(
-		'admin_payment',
 		'vendor/inputtags'
 	)
 );
@@ -337,7 +337,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$sheel->template->fetch('main', 'settings.html', 1);
 		$areanav = 'settings_currency';
 		$currentarea = '{_currency}';
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'accounting/currency/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_currency_manager}</button></a></p>';
+		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'currency/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_currency_manager}</button></a></p>';
 		$settings = $sheel->admincp->construct_admin_input('globalserverlocalecurrency', HTTPS_SERVER_ADMIN . 'settings/currency/', '', $buttons);
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'invoice') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Invoice &amp; Transactions';
@@ -346,383 +346,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$areanav = 'settings_invoice';
 		$currentarea = '{_invoice}';
 		$settings = $sheel->admincp->construct_admin_input('invoicesystem', HTTPS_SERVER_ADMIN . 'settings/invoice/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'payment') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Payments &amp; APIs';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Payments &amp; APIs';
-		$sheel->template->meta['jsinclude']['footer'][] = 'admin_payment_settings';
-		$sheel->template->fetch('main', 'settings_payments.html', 1);
-		$areanav = 'settings_payment';
-		$currentarea = 'Payment &amp; Gateway';
-		$settings = $sheel->admincp->construct_admin_input('defaultgateway', HTTPS_SERVER_ADMIN . 'settings/payment/', '', '', 'payment_groups', 'payment_configuration');
-		$form = array(
-			'name' => '',
-			'number' => '',
-			'swift' => '',
-			'sort' => '100',
-			'visible' => '1',
-			'company_name' => '',
-			'company_address' => '',
-			'fee' => '',
-			'custom_notes' => '',
-			'phone' => '',
-			'routing' => '',
-			'iban' => ''
-		);
-		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-			if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'manualpayment') {
-				if ($sheel->show['ADMINCP_TEST_MODE']) {
-					$sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-					die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-				}
-				if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
-					$varname = $sheel->db->fetch_field(DB_PREFIX . "payment_methods", "id = '" . intval($sheel->GPC['xid']) . "'", "title");
-					$sql = $sheel->db->query("
-						SELECT id, paymethod
-						FROM " . DB_PREFIX . "payment_profiles
-					", 0, null, __FILE__, __LINE__);
-					if ($sheel->db->num_rows($sql) > 0 and !empty($varname)) {
-						while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-							if (!empty($res['paymethod']) and $sheel->is_serialized($res['paymethod'])) {
-								if (strchr($res['paymethod'], $varname)) { // seller is using this offline method..
-									$array = unserialize($res['paymethod']);
-									$newarray = $emaillisting = array();
-									foreach ($array as $paymethod) {
-										if ($paymethod != '' and $paymethod != $varname) {
-											$newarray[] = $paymethod;
-										}
-									}
-									if (count($newarray) > 0) {
-										$newarray = serialize($newarray);
-										$sheel->db->query("
-											UPDATE " . DB_PREFIX . "payment_profiles
-											SET paymethod = '" . $sheel->db->escape_string($newarray) . "',
-											updated = '" . DATETIME24H . "'
-											WHERE id = '" . $res['id'] . "'
-										", 0, null, __FILE__, __LINE__);
-									} else { // blank payment methods now for listing....(seller only using offline payment methods) email auction owner to update his listing?
-										$sheel->db->query("
-											UPDATE " . DB_PREFIX . "payment_profiles
-											SET filter_offline = '0',
-											paymethod = 'a:0:{}',
-											updated = '" . DATETIME24H . "'
-											WHERE id = '" . $res['id'] . "'
-										", 0, null, __FILE__, __LINE__);
-										$emaillisting[] = $res['id'];
-									}
-								}
-							}
-						}
-					}
-					if (isset($emaillisting) and count($emaillisting) > 0) {
-						foreach ($emaillisting as $projectid) {
-							// TODO: email listing owners that they should update payment methods or risk not getting paid
-							// ..
-						}
-					}
-					$sheel->db->query("
-						DELETE FROM " . DB_PREFIX . "payment_methods
-						WHERE id = '" . intval($sheel->GPC['xid']) . "'
-						LIMIT 1
-					", 0, null, __FILE__, __LINE__);
-					$sheel->db->query("
-						DELETE FROM " . DB_PREFIX . "language_phrases
-						WHERE varname = '" . $sheel->db->escape_string($varname) . "'
-						LIMIT 1
-					", 0, null, __FILE__, __LINE__);
-					$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Payment method deleted', 'A custom payment method has been successfully deleted.');
-					die(json_encode(array('response' => '1', 'message' => 'A payment method has been successfully deleted.')));
-				} else {
-					$sheel->template->templateregistry['message'] = 'This payment method could not be deleted.';
-					die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-				}
-			}
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'addmanualpayment') {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				$sheel->admincp->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'settings/payment/');
-				exit();
-			}
-			$varname = str_replace(' ', '_', $sheel->GPC['form']['title']);
-			$varname = preg_replace("/[^a-zA-Z_]+/", "", $varname);
-			$varname = (mb_substr($varname, 0, 1) == '_') ? $varname : '_' . $varname;
-			$varname = mb_strtolower($varname);
-			$text = (isset($sheel->GPC['form']['title']) ? $sheel->GPC['form']['title'] : '');
-			if (!empty($text)) { // add new payment method
-				$sheel->db->query("
-					INSERT INTO " . DB_PREFIX . "payment_methods
-					(id, title, sort)
-					VALUES(
-					NULL,
-					'" . $sheel->db->escape_string($varname) . "',
-					'100')
-				", 0, null, __FILE__, __LINE__);
-				$query = $sheel->db->query("
-					SELECT text_" . $_SESSION['sheeldata']['user']['slng'] . " AS text
-					FROM " . DB_PREFIX . "language_phrases
-					WHERE varname = '" . $sheel->db->escape_string($varname) . "'
-				", 0, null, __FILE__, __LINE__);
-				if ($sheel->db->num_rows($query) == 0) {
-					$field = $value = '';
-					$sql_languages = $sheel->db->query("
-						SELECT languagecode
-						FROM " . DB_PREFIX . "language
-					", 0, null, __FILE__, __LINE__);
-					while ($res = $sheel->db->fetch_array($sql_languages, DB_ASSOC)) {
-						$field .= ", text_" . mb_substr($res['languagecode'], 0, 3);
-						$value .= ", '" . $sheel->db->escape_string($text) . "'";
-					}
-					$sheel->db->query("
-						INSERT INTO " . DB_PREFIX . "language_phrases
-						(phraseid, phrasegroup, varname, text_original" . $field . ")
-						VALUES(
-						NULL,
-						'main',
-						'" . $sheel->db->escape_string($varname) . "',
-						'" . $sheel->db->escape_string($text) . "'
-						" . $value . ")
-					", 0, null, __FILE__, __LINE__);
-				}
-				if (isset($sheel->GPC['bulkemail']) and $sheel->GPC['bulkemail']) {
-					$query_seller = $sheel->db->query("
-						SELECT u.first_name, u.email, l.languagecode
-						FROM " . DB_PREFIX . "projects AS p
-						INNER JOIN " . DB_PREFIX . "users AS u ON p.user_id = u.user_id
-						INNER JOIN " . DB_PREFIX . "language AS l ON l.languageid = u.languageid
-						WHERE p.status = 'open'
-						GROUP BY p.user_id
-					", 0, null, __FILE__, __LINE__);
-					$number_seller = $sheel->db->num_rows($query_seller);
-					if ($number_seller > 0) {
-						$text = str_replace('_', ' ', $varname);
-						$text = ucfirst(ltrim($text));
-						while ($seller_var = $sheel->db->fetch_array($query_seller, DB_ASSOC)) {
-							$sheel->email->get('notify_new_payment_module');
-							$sheel->email->mail = $seller_var['email'];
-							$sheel->email->slng = mb_substr($seller_var['languagecode'], 0, 3);
-							$sheel->email->get('notify_new_payment_module');
-							$sheel->email->set(
-								array(
-									'{{firstname}}' => ucwords($seller_var['first_name']),
-									'{{site_name}}' => SITE_NAME,
-									'{{paymenttype}}' => $text,
-									'{{http_server}}' => HTTP_SERVER
-								)
-							);
-							$sheel->email->send();
-						}
-					}
-				}
-			}
-			if (isset($sheel->GPC['title']) and !empty($sheel->GPC['title'])) { // update payment method phrases
-				foreach ($sheel->GPC['title'] as $varname => $title) {
-					if (!empty($title)) {
-						$query = $sheel->db->query("
-							SELECT text_" . $_SESSION['sheeldata']['user']['slng'] . " AS text
-							FROM " . DB_PREFIX . "language_phrases
-							WHERE varname = '" . $sheel->db->escape_string($varname) . "'
-						", 0, null, __FILE__, __LINE__);
-						if ($sheel->db->num_rows($query) > 0) {
-							$sql_languages = $sheel->db->query("SELECT languagecode FROM " . DB_PREFIX . "language", 0, null, __FILE__, __LINE__);
-							while ($res = $sheel->db->fetch_array($sql_languages, DB_ASSOC)) {
-								$sheel->db->query("
-									UPDATE " . DB_PREFIX . "language_phrases
-									SET text_" . mb_substr($res['languagecode'], 0, 3) . " = '" . $sheel->db->escape_string($title) . "'
-									WHERE varname = '" . $sheel->db->escape_string($varname) . "'
-									LIMIT 1
-								", 0, null, __FILE__, __LINE__);
-							}
-						}
-					}
-				}
-			}
-			refresh(HTTPS_SERVER_ADMIN . 'settings/payment/');
-			exit();
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'updategateway') {
-			foreach ($sheel->GPC['config'] as $key => $value) {
-				if (isset($key) and !empty($key)) {
-					$sheel->db->query("
-						UPDATE " . DB_PREFIX . "payment_configuration
-						SET value = '" . $sheel->db->escape_string(trim($value)) . "',
-						sort = '" . intval($sheel->GPC['sort'][$key]) . "'
-						WHERE name = '" . $sheel->db->escape_string($key) . "'
-							AND configgroup = '" . $sheel->db->escape_string($sheel->GPC['module']) . "'
-					", 0, null, __FILE__, __LINE__);
-				}
-			}
-			refresh(HTTPS_SERVER_ADMIN . 'settings/payment/');
-			exit();
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'bank-deposit-accounts') {
-			if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
-				if ($sheel->show['ADMINCP_TEST_MODE']) {
-					$sheel->admincp->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'settings/payment/');
-					exit();
-				}
-				if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
-					$name = isset($sheel->GPC['bank']['name']) ? $sheel->db->escape_string($sheel->GPC['bank']['name']) : '';
-					$phone = isset($sheel->GPC['bank']['phone']) ? $sheel->db->escape_string($sheel->GPC['bank']['phone']) : '';
-					$number = isset($sheel->GPC['bank']['number']) ? $sheel->db->escape_string($sheel->GPC['bank']['number']) : '';
-					$swift = isset($sheel->GPC['bank']['swift']) ? $sheel->db->escape_string($sheel->GPC['bank']['swift']) : '';
-					$routing = isset($sheel->GPC['bank']['routing']) ? $sheel->db->escape_string($sheel->GPC['bank']['routing']) : '';
-					$iban = isset($sheel->GPC['bank']['iban']) ? $sheel->db->escape_string($sheel->GPC['bank']['iban']) : '';
-					$company_name = isset($sheel->GPC['bank']['company_name']) ? $sheel->db->escape_string($sheel->GPC['bank']['company_name']) : '';
-					$company_address = isset($sheel->GPC['bank']['company_address']) ? $sheel->db->escape_string($sheel->GPC['bank']['company_address']) : '';
-					$custom_notes = isset($sheel->GPC['bank']['custom_notes']) ? $sheel->db->escape_string($sheel->GPC['bank']['custom_notes']) : '';
-					$fee = isset($sheel->GPC['bank']['fee']) ? $sheel->db->escape_string($sheel->GPC['bank']['fee']) : '0.00';
-					$visible = 1;
-					$sort = 100;
-					$sheel->db->query("
-						UPDATE " . DB_PREFIX . "deposit_offline_methods
-						SET name = '" . $sheel->db->escape_string($name) . "',
-						phone = '" . $sheel->db->escape_string($phone) . "',
-						number = '" . $sheel->db->escape_string($number) . "',
-						swift = '" . $sheel->db->escape_string($swift) . "',
-						routing = '" . $sheel->db->escape_string($routing) . "',
-						iban = '" . $sheel->db->escape_string($iban) . "',
-						company_name = '" . $sheel->db->escape_string($company_name) . "',
-						company_address = '" . $sheel->db->escape_string($company_address) . "',
-						custom_notes = '" . $sheel->db->escape_string($custom_notes) . "',
-						fee = '" . $sheel->db->escape_string($fee) . "',
-						visible = '" . $sheel->db->escape_string($visible) . "',
-						sort = '" . $sheel->db->escape_string($sort) . "'
-						WHERE id = '" . intval($sheel->GPC['id']) . "'
-						LIMIT 1
-					", 0, null, __FILE__, __LINE__);
-				} else {
-					$name = isset($sheel->GPC['bank']['name']) ? $sheel->db->escape_string($sheel->GPC['bank']['name']) : '';
-					$phone = isset($sheel->GPC['bank']['phone']) ? $sheel->db->escape_string($sheel->GPC['bank']['phone']) : '';
-					$number = isset($sheel->GPC['bank']['number']) ? $sheel->db->escape_string($sheel->GPC['bank']['number']) : '';
-					$swift = isset($sheel->GPC['bank']['swift']) ? $sheel->db->escape_string($sheel->GPC['bank']['swift']) : '';
-					$routing = isset($sheel->GPC['bank']['routing']) ? $sheel->db->escape_string($sheel->GPC['bank']['routing']) : '';
-					$iban = isset($sheel->GPC['bank']['iban']) ? $sheel->db->escape_string($sheel->GPC['bank']['iban']) : '';
-					$company_name = isset($sheel->GPC['bank']['company_name']) ? $sheel->db->escape_string($sheel->GPC['bank']['company_name']) : '';
-					$company_address = isset($sheel->GPC['bank']['company_address']) ? $sheel->db->escape_string($sheel->GPC['bank']['company_address']) : '';
-					$custom_notes = isset($sheel->GPC['bank']['custom_notes']) ? $sheel->db->escape_string($sheel->GPC['bank']['custom_notes']) : '';
-					$fee = isset($sheel->GPC['bank']['fee']) ? $sheel->db->escape_string($sheel->GPC['bank']['fee']) : '0.00';
-					$visible = 1;
-					$sort = 100;
-					$sheel->db->query("
-						INSERT INTO " . DB_PREFIX . "deposit_offline_methods
-						(id, name, phone, number, swift, routing, iban, company_name, company_address, custom_notes, fee, visible, sort)
-						VALUES(
-						NULL,
-						'" . $name . "',
-						'" . $phone . "',
-						'" . $number . "',
-						'" . $swift . "',
-						'" . $routing . "',
-						'" . $iban . "',
-						'" . $company_name . "',
-						'" . $company_address . "',
-						'" . $custom_notes . "',
-						'" . $fee . "',
-						'" . $visible . "',
-						'" . $sort . "')
-					", 0, null, __FILE__, __LINE__);
-				}
-				refresh(HTTPS_SERVER_ADMIN . 'settings/payment/');
-				exit();
-			} else if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'delete') {
-				if ($sheel->show['ADMINCP_TEST_MODE']) {
-					$sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-					die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-				}
-				if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
-					$sheel->db->query("
-						DELETE FROM " . DB_PREFIX . "deposit_offline_methods
-						WHERE id = '" . intval($sheel->GPC['xid']) . "'
-						LIMIT 1
-					", 0, null, __FILE__, __LINE__);
-					$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Bank deposit account deleted', 'A bank deposit account has been successfully deleted.');
-					die(json_encode(array('response' => '1', 'message' => 'A bank deposit account has been successfully deleted.')));
-				} else {
-					$sheel->template->templateregistry['message'] = 'This bank deposit account could not be deleted.';
-					die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-				}
-			} else if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'update' and isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
-				$form = array();
-				$sql = $sheel->db->query("
-					SELECT name, phone, number, swift, routing, iban, sort, visible, company_name, company_address, fee, custom_notes
-					FROM " . DB_PREFIX . "deposit_offline_methods
-					WHERE id = '" . intval($sheel->GPC['id']) . "'
-					ORDER BY sort ASC
-				", 0, null, __FILE__, __LINE__);
-				if ($sheel->db->num_rows($sql) > 0) {
-					while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-						$form['name'] = o($row['name']);
-						$form['phone'] = o($row['phone']);
-						$form['number'] = o($row['number']);
-						$form['swift'] = o($row['swift']);
-						$form['routing'] = o($row['routing']);
-						$form['iban'] = o($row['iban']);
-						$form['sort'] = o($row['sort']);
-						$form['visible'] = o($row['visible']);
-						$form['company_name'] = o($row['company_name']);
-						$form['company_address'] = o($row['company_address']);
-						$form['fee'] = o($row['fee']);
-						$form['custom_notes'] = o($row['custom_notes']);
-					}
-				}
-			}
-		}
-		// manual payment types
-		$sheel->show['no_paytypes_rows'] = true;
-		$manualpayments = array();
-		$sql = $sheel->db->query("
-			SELECT id, title
-			FROM " . DB_PREFIX . "payment_methods
-			ORDER BY sort ASC
-		", 0, null, __FILE__, __LINE__);
-		if ($sheel->db->num_rows($sql) > 0) {
-			while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-				$row['titleplain'] = '{' . stripslashes(o($row['title'])) . '}';
-				$row['totalcount'] = number_format($sheel->admincp_paymodules->count_offline_payment_types($row['id']));
-				$row['title'] = '<input type="text" name="title[' . $row['title'] . ']" value="{' . stripslashes(o($row['title'])) . '}" class="draw-input" />';
-				$row['action'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'delete\', \'Delete this payment method?\', \'Are you sure you want to delete this payment method? ' . $row['totalcount'] . ' sellers are currently using this method within their listings.\', \'' . $row['id'] . '\', 1, \'manualpayment\', \'\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
-				$manualpayments[] = $row;
-			}
-			$sheel->show['no_paytypes_rows'] = false;
-		}
-		$merchantgateways = $merchantgatewayoptions = array();
-		$merchantgatewayoptions[''] = '{_select_merchant_gateway} &ndash;';
-		$sql = $sheel->db->query("
-			SELECT groupname
-			FROM " . DB_PREFIX . "payment_groups
-			WHERE moduletype = 'gateway'
-			ORDER BY groupname ASC
-		", 0, null, __FILE__, __LINE__);
-		if ($sheel->db->num_rows($sql) > 0) {
-			while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-				$row['blurb'] = '{_paygroup_' . $row['groupname'] . '}';
-				//$row['blurb'] .= '<br /><p><a href="javascript:;" onclick="test_payment_settings(\'' . $row['groupname'] . '\')"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Test {_' . $row['groupname'] . '} API Settings</button></a></p>';
-				$row['input'] = $sheel->admincp_paymodules->construct_paymodules_input($row['groupname'], HTTPS_SERVER_ADMIN . 'settings/payment/');
-				$merchantgatewayoptions[$row['groupname']] = '{_' . $row['groupname'] . '}' . (($sheel->config['use_internal_gateway'] == $row['groupname']) ? ' [{_active}]' : '');
-				$merchantgateways[] = $row;
-			}
-		}
-		$paymentgateways = $paymentgatewayoptions = array();
-		$paymentgatewayoptions[''] = '{_select_payment_gateway} &ndash;';
-		$sql = $sheel->db->query("
-			SELECT groupname
-			FROM " . DB_PREFIX . "payment_groups
-			WHERE (moduletype = 'ipn' OR moduletype = 'local')
-			ORDER BY groupname ASC
-		", 0, null, __FILE__, __LINE__);
-		if ($sheel->db->num_rows($sql) > 0) {
-			while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-				$row['blurb'] = '{_paygroup_' . $row['groupname'] . '}';
-				$row['input'] = $sheel->admincp_paymodules->construct_paymodules_input($row['groupname'], HTTPS_SERVER_ADMIN . 'settings/payment/');
-				if ($row['groupname'] == 'owner_bank_info') {
-					$paymentgatewayoptions[$row['groupname']] = '{_bank_deposit_accounts_acp}';
-					$row['actions'] = '<input type="button" name="addaccount" value="{_add_deposit_account}" class="btn btn-primary" onclick="location.href=\'' . HTTPS_SERVER_ADMIN . 'settings/payment/bank-deposit-accounts/add/\'">';
-				} else {
-					$paymentgatewayoptions[$row['groupname']] = (($row['groupname'] == 'bank') ? '{_bank_withdraw_accounts}' : '{_' . $row['groupname'] . '}');
-					$row['actions'] = '<!--<button type="submit" class="btn js-btn-primary js-btn-loadable has-loading">Run Test Transaction</button>--><input type="submit" name="commit" value="{_save}" class="btn btn-primary">';
-				}
-				$paymentgateways[] = $row;
-			}
-		}
-		$form['merchantgatewaypulldown'] = $sheel->construct_pulldown('gateway_provider', 'form[gateway_provider]', $merchantgatewayoptions, '', 'class="draw-select" onchange="if (fetch_js_object(\'gateway_provider\').options[fetch_js_object(\'gateway_provider\').selectedIndex].value != \'\'){fetch_js_object(\'payment-panel\').innerHTML=fetch_js_object(fetch_js_object(\'gateway_provider\').options[fetch_js_object(\'gateway_provider\').selectedIndex].value).innerHTML}else{fetch_js_object(\'payment-panel\').innerHTML=\'\';}"');
-		$form['paymentgatewaypulldown'] = $sheel->construct_pulldown('payment_provider', 'form[payment_provider]', $paymentgatewayoptions, '', 'class="draw-select" onchange="if (fetch_js_object(\'payment_provider\').options[fetch_js_object(\'payment_provider\').selectedIndex].value != \'\'){fetch_js_object(\'payment-panel2\').innerHTML=fetch_js_object(fetch_js_object(\'payment_provider\').options[fetch_js_object(\'payment_provider\').selectedIndex].value).innerHTML}else{fetch_js_object(\'payment-panel2\').innerHTML=\'\';}"');
-		$sheel->template->parse_loop('main', array('manualpayments' => $manualpayments, 'merchantgateways' => $merchantgateways, 'paymentgateways' => $paymentgateways));
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'companies') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Companies';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Companies';
@@ -731,19 +354,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$currentarea = '{_companies}';
 		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
 			if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'process') {
-
-
 				$countryid = intval($sheel->db->fetch_field(DB_PREFIX . "locations", "location_" . $_SESSION['sheeldata']['user']['slng'] . " = '" . $sheel->db->escape_string($sheel->GPC['country']) . "'", "locationid"));
 				if ($countryid == 0) {
-					$sheel->admincp->print_action_failed('{_there_is_no_country_with_this_name_in_the_system_please_retry}', HTTPS_SERVER_ADMIN . 'settings/countries/');
+					$sheel->admincp->print_action_failed('{_there_is_no_country_with_this_name_in_the_system_please_retry}', HTTPS_SERVER_ADMIN . 'settings/companies/');
 					exit();
 				}
-				
-				if (empty($sheel->GPC['form']['currencyid'])) {
-					$sheel->admincp->print_action_failed('Please select the default currency used for this tax type.', HTTPS_SERVER_ADMIN . 'settings/tax/');
-					exit();
+				$sql = $sheel->db->query("
+				SELECT company_id
+				FROM " . DB_PREFIX . "companies
+				WHERE bc_code = '" . $sheel->db->escape_string($sheel->GPC['form']['bc_code']) . "'
+				", 0, null, __FILE__, __LINE__);
+				if ($sheel->db->num_rows($sql) > 0)
+				{
+					$sheel->admincp->print_action_failed('Business Central Code already exist. Please choose a different Code.', HTTPS_SERVER_ADMIN . 'settings/companies/add/');
+					exit();	
 				}
-				$entirecountry = ((isset($sheel->GPC['form']['entirecountry']) and $sheel->GPC['form']['entirecountry'] == 'true') ? 1 : 0);
 				$sheel->db->query("
 					INSERT INTO " . DB_PREFIX . "companies
 					(company_id, name, bc_code, about, description, status, countryid,currencyid, timezone)
@@ -768,175 +393,107 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 			$tzlistfinal=array();
 			foreach ($tzlist as $key => $value) {
- 
-        
                 $tzlistfinal[$value]= $value;
-   
-               
            }
    
 			$form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, '', 'class="draw-select"');
-			$form['country_js_pulldown'] = $sheel->common_location->construct_country_pulldown(0, '', 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', true, false, '', 0, 'city', 'cityid');
+			$form['country_js_pulldown'] = $sheel->common_location->construct_country_pulldown(0, '', 'country', false);
 			$form['currencypulldown'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', '');
 			$statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
 			$form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, '', 'class="draw-select"');
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update' and isset($sheel->GPC['taxid']) and $sheel->GPC['taxid'] > 0) {
+			
+		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update' and isset($sheel->GPC['companyid']) and $sheel->GPC['companyid'] > 0) {
 			if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'process') {
-				$entirecountry = ((isset($sheel->GPC['form']['entirecountry']) and $sheel->GPC['form']['entirecountry'] == 'true') ? 1 : 0);
-				if ($entirecountry and empty($sheel->GPC['state'])) {
-					$sheel->GPC['state'] = '';
-				}
-				if ($entirecountry and empty($sheel->GPC['city'])) {
-					$sheel->GPC['city'] = '';
-				}
-				if (!empty($sheel->GPC['taxtype'])) {
-					$sheel->GPC['invoicetypes'] = serialize($sheel->GPC['taxtype']);
-				} else {
-					$sheel->GPC['invoicetypes'] = '';
-				}
 				if (empty($sheel->GPC['country'])) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_country_name_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
+					$sheel->admincp->print_action_failed('{_you_must_choose_country}', HTTPS_SERVER_ADMIN . 'settings/companies/');
 					exit();
 				}
 				$countryid = (int) $sheel->db->fetch_field(DB_PREFIX . "locations", "location_" . $_SESSION['sheeldata']['user']['slng'] . " = '" . $sheel->db->escape_string($sheel->GPC['country']) . "'", "locationid");
 				if ($countryid == 0) {
-					$sheel->admincp->print_action_failed('{_there_is_no_country_with_this_name_in_the_system_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
+					$sheel->admincp->print_action_failed('{_there_is_no_country_with_this_name_in_the_system_please_retry}', HTTPS_SERVER_ADMIN . 'settings/companies/');
 					exit();
 				}
-				if (empty($sheel->GPC['form']['taxlabel'])) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_title_name_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
+				if (empty($sheel->GPC['form']['name'])) {
+					$sheel->admincp->print_action_failed('{_you_must_enter_a_company_name}', HTTPS_SERVER_ADMIN . 'settings/companies/');
 					exit();
 				}
-				if (empty($sheel->GPC['state']) and $entirecountry == 0) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_state_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
+				if (empty($sheel->GPC['form']['bc_code'])) {
+					$sheel->admincp->print_action_failed('{_you_must_enter_a_business_central_reference}', HTTPS_SERVER_ADMIN . 'settings/companies/');
 					exit();
 				}
-				if (empty($sheel->GPC['form']['amount'])) {
-					$sheel->admincp->print_action_failed('{_you_must_enter_a_tax_zone_amount_please_retry}', HTTPS_SERVER_ADMIN . 'settings/tax/');
-					exit();
+				$sql = $sheel->db->query("
+				SELECT company_id
+				FROM " . DB_PREFIX . "companies
+				WHERE bc_code = '" . $sheel->db->escape_string($sheel->GPC['form']['bc_code']) . "'
+				", 0, null, __FILE__, __LINE__);
+				if ($sheel->db->num_rows($sql) > 0)
+				{
+					$sheel->admincp->print_action_failed('Business Central Code already exist. Please choose a different Code.', HTTPS_SERVER_ADMIN . 'settings/companies/update/'.intval($sheel->GPC['companyid']).'/');
+					exit();	
 				}
-				if (empty($sheel->GPC['form']['currencyid'])) {
-					$sheel->admincp->print_action_failed('Please select the default currency used for this tax type.', HTTPS_SERVER_ADMIN . 'settings/tax/');
-					exit();
-				}
+
 				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "taxes
-					SET taxlabel = '" . $sheel->db->escape_string($sheel->GPC['form']['taxlabel']) . "',
-					state = '" . $sheel->db->escape_string($sheel->GPC['state']) . "',
-					countryname = '" . $sheel->db->escape_string($sheel->GPC['country']) . "',
-					countryid = '" . intval($countryid) . "',
-					city = '" . $sheel->db->escape_string($sheel->GPC['city']) . "',
-					amount = '" . $sheel->db->escape_string($sheel->GPC['form']['amount']) . "',
-					invoicetypes = '" . $sheel->GPC['invoicetypes'] . "',
-					entirecountry = '" . $entirecountry . "',
-					currencyid = '" . intval($sheel->GPC['form']['currencyid']) . "'
-					WHERE taxid = '" . intval($sheel->GPC['taxid']) . "'
+					UPDATE " . DB_PREFIX . "companies
+					SET name = '" . $sheel->db->escape_string($sheel->GPC['form']['name']) . "',
+					bc_code = '" . $sheel->db->escape_string($sheel->GPC['form']['bc_code']) . "',
+					about = '" . $sheel->db->escape_string($sheel->GPC['form']['about']) . "',
+					description = '" . $sheel->db->escape_string($sheel->GPC['form']['description']) . "',
+					countryid = '" . $countryid . "',
+					currencyid = '" . intval($sheel->GPC['form']['currencyid']) . "',
+					status = '" . $sheel->GPC['form']['status'] . "',
+					timezone = '" . $sheel->GPC['form']['tz'] . "'
+					WHERE company_id = '" . intval($sheel->GPC['companyid']) . "'
 					LIMIT 1
 				", 0, null, __FILE__, __LINE__);
-				refresh(HTTPS_SERVER_ADMIN . 'settings/tax/');
+				refresh(HTTPS_SERVER_ADMIN . 'settings/companies/');
 				exit();
 			}
-			$form['taxid'] = (isset($sheel->GPC['taxid']) ? $sheel->GPC['taxid'] : '0');
-			$checked1 = $checked2 = $checked3 = $checked4 = $checked5 = $checked6 = $checked7 = $checked8 = $checked9 = $checked10 = '';
 			$sql = $sheel->db->query("
-				SELECT taxid, taxlabel, state, countryname, countryid, city, amount, invoicetypes, entirecountry, currencyid
-				FROM " . DB_PREFIX . "taxes
-				WHERE taxid = '" . intval($sheel->GPC['taxid']) . "'
+			SELECT company_id, name, bc_code, about, description, countryid, currencyid, status, timezone
+			FROM " . DB_PREFIX . "companies
+			WHERE company_id = '" . intval($sheel->GPC['companyid']) . "'
 			", 0, null, __FILE__, __LINE__);
-			if ($sheel->db->num_rows($sql) > 0) {
+			if ($sheel->db->num_rows($sql) > 0)
+			{
 				$res = $sheel->db->fetch_array($sql, DB_ASSOC);
+				$form['companyid'] = $res['company_id'];
+				$form['name'] = $res['name'];
+				$form['bc_code'] = $res['bc_code'];
+				$form['about'] = $res['about'];
+				$form['description'] = $res['description'];
+				$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+				$tzlistfinal=array();
+				foreach ($tzlist as $key => $value) {
+					$tzlistfinal[$value]= $value;
+			   }
+	   
+				$form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, $res['timezone'], 'class="draw-select"');
 				$form['currencypulldown'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', $res['currencyid']);
-				$form['taxlabel'] = $res['taxlabel'];
-				$form['amount'] = $res['amount'];
-				$form['entirecountry'] = $res['entirecountry'];
-				$countryname = $res['countryname'];
-				$state = $res['state'];
-				$city = $res['city'];
+				$statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
+				$form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, $res['status'], 'class="draw-select"');
+
+
 				$countryid = $res['countryid'];
-				if ($res['entirecountry']) {
-					$form['entirecountry_cb'] = 'checked="checked"';
-					$sheel->template->meta['headinclude'] .= "<script>function disable_select(){document.ilform.state.disabled = true;document.ilform.city.disabled = true;}</script>";
-					$sheel->template->meta['onload'] .= "return disable_select();";
-				}
-				if (!empty($res['invoicetypes'])) {
-					$invoicetypetax = unserialize($res['invoicetypes']);
-					foreach ($invoicetypetax as $invoicetype => $value) {
-						switch ($invoicetype) {
-							case 'storesubscription': {
-									$checked1 .= 'checked="checked"';
-									break;
-								}
-							case 'subscription': {
-									$checked2 .= 'checked="checked"';
-									break;
-								}
-							case 'commission': {
-									$checked3 .= 'checked="checked"';
-									break;
-								}
-							case 'credential': {
-									$checked4 .= 'checked="checked"';
-									break;
-								}
-							case 'portfolio': {
-									$checked5 .= 'checked="checked"';
-									break;
-								}
-							case 'enhancements': {
-									$checked6 .= 'checked="checked"';
-									break;
-								}
-							case 'lanceads': {
-									$checked7 .= 'checked="checked"';
-									break;
-								}
-							case 'insertionfee': {
-									$checked8 .= 'checked="checked"';
-									break;
-								}
-							case 'finalvaluefee': {
-									$checked9 .= 'checked="checked"';
-									break;
-								}
-							case 'buyerpremiumfee': {
-									$checked10 .= 'checked="checked"';
-									break;
-								}
-						}
-					}
-				}
 			}
-			// tax types currently supported
-			$form['invoicetaxtype'] = '';
-			$form['invoicetaxtype'] .= '<label for="subscription"><input type="checkbox" name="taxtype[subscription]" id="subscription" value="1" ' . $checked2 . ' /> {_member_subscription_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="commission"><input type="checkbox" name="taxtype[commission]" id="commission" value="1" ' . $checked3 . ' /> {_escrow_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="enhancements"><input type="checkbox" name="taxtype[enhancements]" id="enhancements" value="1" ' . $checked6 . ' /> {_auction_enhancement_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="insertionfee"><input type="checkbox" name="taxtype[insertionfee]" id="insertionfee" value="1" ' . $checked8 . ' /> {_insertion_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="finalvaluefee"><input type="checkbox" name="taxtype[finalvaluefee]" id="finalvaluefee" value="1" ' . $checked9 . ' /> {_final_value_fees}</label>';
-			$form['invoicetaxtype'] .= '<label for="buyerpremiumfee"><input type="checkbox" name="taxtype[buyerpremiumfee]" id="buyerpremiumfee" value="1" ' . $checked10 . ' /> Buyer\'s premium fees</label>';
-			$form['country_js_pulldown'] = $sheel->common_location->construct_country_pulldown($countryid, $countryname, 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', false, false, '', 0, 'city', 'cityid');
-			$form['state_js_pulldown'] = $sheel->common_location->construct_state_pulldown($countryid, $state, 'state', false, false, 0, 'draw-select', 0, 'city', 'cityid');
-			$form['city_js_pulldown'] = $sheel->common_location->construct_city_pulldown($state, 'city', $city, false, true, 'draw-select');
+
+			$form['country_js_pulldown'] = $sheel->common_location->construct_country_pulldown($countryid, $countryname, 'country', false);
+			
 		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				$sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-			}
-			if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
+			if (isset($sheel->GPC['companyid']) and $sheel->GPC['companyid'] > 0) {
 				$sheel->db->query("
-					DELETE FROM " . DB_PREFIX . "taxes
-					WHERE taxid = '" . intval($sheel->GPC['xid']) . "'
+					DELETE FROM " . DB_PREFIX . "companies
+					WHERE company_id = '" . intval($sheel->GPC['companyid']) . "'
 					LIMIT 1
 				", 0, null, __FILE__, __LINE__);
-				$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Tax profile deleted', 'A tax profile has been successfully deleted.');
-				die(json_encode(array('response' => '1', 'message' => 'A tax profile has been successfully deleted.')));
+				$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Company deleted', 'A managed company has been successfully deleted.');
+				$sheel->template->templateregistry['message'] = 'A Company has been successfully deleted.';
+				die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+
 			} else {
-				$sheel->template->templateregistry['message'] = 'This tax profile could not be deleted.';
+				$sheel->template->templateregistry['message'] = 'This Company could not be deleted.';
 				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
 			}
 		}
-		$taxes = array();
-		$sheel->show['no_taxes'] = true;
 		$sqlcomp = $sheel->db->query("
 			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone
 			FROM " . DB_PREFIX . "companies
@@ -945,7 +502,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			while ($comp = $sheel->db->fetch_array($sqlcomp, DB_ASSOC)) {
 				$comp['currency'] = $sheel->currency->currencies[$comp['currencyid']]['currency_abbrev'];
 				$comp['country'] = $sheel->common_location->print_country_name($comp['countryid'], $_SESSION['sheeldata']['user']['slng'], false, '');
-				$comp['actions'] = '<ul class="segmented"><li><a href="' . HTTPS_SERVER_ADMIN . 'settings/tax/update/' . $comp['taxid'] . '/" class="btn btn-slim btn--icon" title="{_update}"><span class="ico-16-svg halflings halflings-edit draw-icon" aria-hidden="true"></span></a></li><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'delete\', \'Delete this tax profile?\', \'Are you sure you want to delete this tax profile?\', \'' . $comp['taxid'] . '\', 1, \'\', \'\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
 				$comps[] = $comp;;
 			}
 		}
@@ -1470,7 +1026,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	$sheel->template->pprint('main', $vars);
 	exit();
 } else {
-	refresh(HTTPS_SERVER_ADMIN . 'signin/?redirect=' . urlencode(SCRIPT_URI));
+	refresh(HTTPS_SERVER_ADMIN . 'signin/?redirect=' . urlencode('/admin/settings/'));
 	exit();
 }
 ?>

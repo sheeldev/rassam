@@ -121,9 +121,6 @@ class admincp
                 $details = "failure\n" . $this->sheel->array2string($this->sheel->GPC);
                 $this->sheel->log_event($userid, basename(__FILE__), $details);
                 $this->sheel->template->meta['jsinclude'] = array('header' => array('functions', 'admin'), 'footer' => array());
-
-                ($apihook = $this->sheel->api('admincp_action_failed')) ? eval($apihook) : false;
-
                 $this->sheel->template->fetch('main', 'action_failed.html', 1);
                 $this->sheel->template->parse_hash('main', array('ilpage' => $this->sheel->ilpage));
                 $this->sheel->template->pprint('main', array('error' => $error, 'admurl' => $admurl, 'sidenav' => $sidenav));

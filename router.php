@@ -40,21 +40,20 @@ $router->map('GET|POST', '/admin/signin/', __DIR__ . '/application/web/admin/log
 $router->map('GET|POST', '/admin/signin/[renew-password:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_login_renew');
 $router->map('GET|POST', '/admin/signin/[*:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_logout');
 $router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers');
+$router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_bc_list');
 $router->map('GET|POST', '/admin/customers/[view:cmd]/[*:rid]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
 $router->map('GET|POST', '/admin/customers/[add:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_add');
 $router->map('GET|POST', '/admin/customers/[update:cmd]/[*:rid]/[*:view]/', __DIR__ . '/application/web/admin/customers.php', 'admin_update_customers_view');
-$router->map('GET|POST', '/admin/customers/items/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items');
-$router->map('GET|POST', '/admin/customers/items/[add:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_add');
-$router->map('GET|POST', '/admin/customers/items/[update:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_edit');
-$router->map('GET|POST', '/admin/customers/items/[dosave:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_save');
-$router->map('GET|POST', '/admin/customers/items/[doupdate:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_update');
-$router->map('GET|POST', '/admin/customers/items/[view:cmd]/[*:requestid]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_view');
-$router->map('GET|POST', '/admin/customers/items/[bulk:cmd]/', __DIR__ . '/application/web/admin/customers-items.php', 'admin_customers_items_bulk');
+
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
 $router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|invoice|payment|registration|escrow|feedback|shipping|listings|bidding|pmb|privacy|censor|blacklist|categories|seo|search|security|distance|cache|session|attachments|license|license/plans|license/renewal|billing/update|billing/create|billing/cancel|updates|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
 $router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
+
+$router->map('GET|POST', '/admin/[currency:cmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_cmd');
+$router->map('POST',     '/admin/[currency:cmd]/[save:subcmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_save');
+$router->map('GET|POST', '/admin/[currency:cmd]/[default|defaultusers|delete:subcmd]/[*:currencyid]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_defaults');
 
 if (file_exists(__DIR__ . '/router_custom.php'))
 {

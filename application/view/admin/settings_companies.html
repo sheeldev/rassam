@@ -34,9 +34,7 @@ Page();
                                     	<table class="expanded">
                                         <thead>
                                         <tr> 
-                                            <th>{_id}</th>
                                             <th>{_name}</th>
-                                            
                                             <th>{_bc_code}</th>
                                             <th>{_description}</th>
                                             <th>{_country}</th>
@@ -48,15 +46,14 @@ Page();
                                         <tbody>				
                                         <loop name="comps"> 
                                         <tr valign="top"> 
-                                            
-                                            <td nowrap="nowrap"><a href="{https_server_admin}settings/companies/update/{companyid}/">{company_id}</a></td>
-                                            <td><a href="{https_server_admin}settings/companies/update/{companyid}/">{name}</a></td>
+                                            <td><a href="{https_server_admin}settings/companies/update/{company_id}/">{name}</a></td>
                                             <td nowrap="nowrap">{bc_code}</td>
                                             <td nowrap="nowrap">{description}</td>
                                             <td><div class="type--subdued">{country}</div></td>
                                             <td nowrap="nowrap">{timezone}</td>
                                             <td >{currency}</td>
                                             <td >{status}</td>
+                                            <td ><a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected company?', 'Are you sure you want to delete the selected company?', '{company_id}', 1, '', '{https_server_admin}settings/companies/delete/{company_id}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></td>
                                         </tr>
                                         </loop name="comps">
                                         </tbody>
@@ -79,7 +76,7 @@ Page();
 <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
 <div id="newlanguage">
 <form method="post" action="{https_server_admin}settings/companies/" name="addtax" accept-charset="UTF-8">
-<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><input type="hidden" name="subcmd" value="add" /><input type="hidden" name="do" value="process" /><else /><input type="hidden" name="subcmd" value="update" /><input type="hidden" name="do" value="process" /><input type="hidden" name="taxid" value="{form[taxid]}" /></if>
+<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><input type="hidden" name="subcmd" value="add" /><input type="hidden" name="do" value="process" /><else /><input type="hidden" name="subcmd" value="update" /><input type="hidden" name="do" value="process" /><input type="hidden" name="companyid" value="{form[companyid]}" /></if>
 <section>  
 	<div class="section login-services">
 		<div class="layout-content">
