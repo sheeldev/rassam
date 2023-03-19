@@ -2,13 +2,13 @@
 class dynamicsresponse
 {
 
-
+  private $endpoint = '';
   private $rawResponse = '';
   private $data = false;
   private $responseHeaders = array();
   private $originMethod = '';
 
-  public function __construct($responseBody, $respHeaders, $originMethod, $rawResponse = '')
+  public function __construct($responseBody, $respHeaders, $endpoint, $originMethod, $rawResponse = '')
   {
     $this->rawResponse = $rawResponse;
 
@@ -17,6 +17,8 @@ class dynamicsresponse
     } else {
       $this->data = $responseBody;
     }
+
+    $this->endpoint = $endpoint;
     $this->originMethod = $originMethod;
 
     $array = explode("\r\n", $respHeaders);
@@ -149,6 +151,12 @@ class dynamicsresponse
     return $this->data["@odata.nextLink"];
   }
 
+  public function getRecordCount() {
+    if (!$this->isSuccess()) {
+      return false;
+    }
+    return $this->data["@odata.count"];
+  }
   /**
    * Get the ID of the newly created entity (only when the request type is insert (POST)), false anyway.
    *
@@ -171,20 +179,37 @@ class dynamicsresponse
     return $result;
   }
 
-  /**
-   * Get the response headers as array.
-   *
-   * @return array
-   */
+
   public function getHeaders()
   {
     return $this->responseHeaders;
   }
 }
 
-class dynamicsworker
+class dynamics
 {
-  private $config = false;
+
+  private $entity = null;
+  protected $sheel;
+  private $config = array(
+    'authEndPoint' => '',
+    'tokenEndPoint' => '',
+    'crmApiEndPoint' => '',
+    'clientID' => '',
+    'clientSecret' => '',
+  );
+
+  
+	function __construct($sheel)
+	{
+		$this->sheel = $sheel;   
+	}
+
+  public function init_dynamics($config, $entity)
+  {
+    $this->config = $config;
+    $this->entity = $entity;
+  }
 
   private function fetchToken()
   {
@@ -236,31 +261,37 @@ class dynamicsworker
     );
   }
 
-  /*
-   * Perform a cURL request to the CRM Web API
-   *
-   * @param $endpoint - The API endpoint without the API URL
-   * @param $method - The method of the request. Could be 'POST', 'PATCH', 'GET', 'DELETE'
-   * @param $payload - On Insert/Update requests (POST/PATCH) the array of the fields to insert/update
-   * @param $customHeaders - Extra headers from users. Default headers: Authorization, Content-type and Accept
-   * @param $originMethod - Could be 'insert', 'update', 'delete', 'select' 
-   */
-  private function performRequest($method, $payload = false, $customHeaders, $originMethod)
+
+  private function performRequest($endpoint, $method, $payload = false, $customHeaders, $originMethod)
   {
     try {
-      $request = $this->config['crmApiEndPoint'];
+      $endpoint = str_replace(" ", "%20", $endpoint);
+      $endpoint = str_replace("''", "%27", $endpoint);
+
+      if (!preg_match('/^http(s)?\:\/\//', $endpoint)) {
+        if (!preg_match('/^\//', $endpoint)) {
+          $endpoint = '/' . $endpoint;
+        }
+
+        $request = $this->config["crmApiEndPoint"] . $endpoint;
+      } else {
+        $request = $endpoint;
+      }
+
       $curl = curl_init($request);
       curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+
       $token = $this->fetchToken();
 
       if (!$token["success"]) {
-        return new dynamicsresponse(json_encode(
-          array(
-            'error' => array(
-              'message' => '<strong>TOKEN ERROR</strong> (' . $token["error"] . '): ' . $token["description"]
+        return new dynamicsresponse(
+          json_encode(
+            array(
+              'error' => array(
+                'message' => '<strong>TOKEN ERROR</strong> (' . $token["error"] . '): ' . $token["description"]
+              )
             )
-          )
-        ), array(), $this->config['tokenEndPoint'], "fetch_token");
+          ), array(), $this->config['tokenEndPoint'], "fetch_token");
       }
 
       $requestHeaders = array(
@@ -300,20 +331,16 @@ class dynamicsworker
       $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
       $responseHeaders = substr($response, 0, $headerSize);
       $responseBody = substr($response, $headerSize);
-      return new dynamicsresponse($responseBody, $responseHeaders, $originMethod, $rawResponse);
+
+      return new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
     } catch (\Exception $e) {
       return false;
     }
   }
 
-  public function __construct($config)
-  {
-    $this->config = $config;
-  }
-
   public function performBatchRequest($payload, $batchID)
   {
-    return $this->performRequest('POST', $payload, array(
+    return $this->performRequest('/$batch', 'POST', $payload, array(
       'Content-Type: multipart/mixed;boundary=' . $batchID
     ), 'batch');
   }
@@ -324,9 +351,12 @@ class dynamicsworker
    * @param $endpoint - The API endpoint without the API URL
    * @param $extraHeaders - Extra headers from users. Default headers: Authorization, Content-type and Accept
    */
-  public function select( $extraHeaders = false)
+  public function select($endpoint = '', $extraHeaders = false)
   {
-    return $this->performRequest( 'GET', false, $extraHeaders, "select");
+    if (!preg_match('/^http(s)?\:\/\//', $endpoint)) {
+      $endpoint =  $this->entity . $endpoint;
+    }
+    return $this->performRequest($endpoint, 'GET', false, $extraHeaders, "select");
   }
 
   /*
@@ -337,7 +367,7 @@ class dynamicsworker
    */
   public function insert($payload, $extraHeaders = false)
   {
-    return $this->performRequest('POST', $payload, $extraHeaders, "insert");
+    return $this->performRequest('/' . $this->entity, 'POST', $payload, $extraHeaders, "insert");
   }
 
   /*
@@ -348,7 +378,7 @@ class dynamicsworker
    */
   public function update($GUID, $payload, $extraHeaders = false)
   {
-    return $this->performRequest('PATCH', $payload, $extraHeaders, "update");
+    return $this->performRequest('/' . $this->entity . '(' . $GUID . ')', 'PATCH', $payload, $extraHeaders, "update");
   }
 
   /*
@@ -358,47 +388,8 @@ class dynamicsworker
    */
   public function delete($GUID, $extraHeaders = false)
   {
-    return $this->performRequest('DELETE', false, $extraHeaders, "delete");
+    return $this->performRequest('/' . $this->entity . '(' . $GUID . ')', 'DELETE', false, $extraHeaders, "delete");
   }
 
-}
-
-class dynamics
-{
-  protected $sheel;
-  private $config = array(
-    'authEndPoint' => '',
-    'tokenEndPoint' => '',
-    'crmApiEndPoint' => '',
-    'clientID' => '',
-    'clientSecret' => '',
-  );
-
-	/**
-	* Constructor
-	*
-	*/
-	function __construct($sheel)
-	{
-		$this->sheel = $sheel;
-	}
-
-  public function init_dynamics($config)
-  {
-    $this->config = $config;
-    
-  }
-
-  public function performBatchRequest($payload, $batchID)
-  {
-    $worker = new dynamicsworker($this->config);
-    return $worker->performBatchRequest($payload, $batchID);
-  }
-
-  public function __get($prop)
-  {
-    $worker = new dynamicsworker($this->config);
-    return $worker;
-  }
 }
 ?>

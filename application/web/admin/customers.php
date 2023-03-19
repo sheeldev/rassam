@@ -41,13 +41,19 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $fview = $sheel->GPC['view'];
     $vars = array(
         'sidenav' => $sidenav,
-        'rid' => ((isset($sheel->GPC['rid'])) ? $sheel->GPC['rid'] : ''),
         'q' => $q,
         'fview' => $fview,
     );
+
+
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bc') {
        
         $customers = array();
+        $searchcondition = '';
+        $searchfilters = array(
+            'name',
+            'account'
+        );
         $dynamics = $sheel->dynamics->init_dynamics(
             array(
                 "base_url" => "",
@@ -59,12 +65,55 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             )
         );
 
-        $contactsResponse = $sheel->dynamics->contacts->select(false);
+        
+        
+        $pagination = '&$skip='.($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'].'&$top='.$sheel->config['globalfilters_maxrowsdisplay'];
+
+
+        if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
+            switch ($sheel->GPC['filter']) {
+                case 'name': {
+                        $searchcondition = '$filter=contains( Name, \''. $sheel->db->escape_string($q).'\')';
+                        break;
+                    }
+
+                case 'account': {
+                        $searchcondition = '$filter=No eq \''.$sheel->db->escape_string($q).'\'';
+                        break;
+                    }
+            }
+        }
+        
+
+        //$contactsResponse = $sheel->dynamics->select('?$select=No&$filter=No eq \'AVR-CF00001\'');
+        $contactsResponse = $sheel->dynamics->select('?$count=true&'.$searchcondition. $pagination);
+        $pageurl = PAGEURL;
+        
+
         if ($contactsResponse->isSuccess()) {
             $customers = $contactsResponse->getData();
         } else {
-            die($contactsResponse->getErrorMessage());
+            $sheel->template->templateregistry['message'] = $contactsResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
         }
+        $vars['prevnext'] = $sheel->admincp->pagination($contactsResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+
+        $filter_options = array(
+            '' => '{_select_filter} &ndash;',
+            'account' => '{_account}',
+            'name' => '{_name}'
+        );
+        $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
+        $form['q'] = (isset($sheel->GPC['q']) ? $sheel->GPC['q'] : '');
+        unset($filter_options);
+        
 
         $areanav = 'customers_bc';
         $vars['areanav'] = $areanav;
