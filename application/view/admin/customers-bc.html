@@ -1,3 +1,146 @@
+<if condition="$sheel->GPC['cmd'] == 'bcview'">
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+     <form autocomplete="off" class="address-form" id="new_customer" action="{https_server_admin}customers/<if condition="$ilance->GPC['cmd'] == 'add'">add<else />update/{form[userid]}</if>/" accept-charset="UTF-8" onsubmit="return verify_acp_customer('<if condition="$ilance->GPC['cmd'] == 'add'">add<else />update</if>')" method="post">
+
+    <div class="section account-overview">
+        <div class="header-row">
+			<header class="header">
+				<h1 class="header__main">
+					<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+					<span class="breadcrumb"><a href="{https_server_admin}customers/bc/">{_customers}</a> / </span> {currentarea}
+				</h1>
+				<div class="header__primary-actions">
+                    <if condition="isset($ilance->show['ADMINCP_TEST_MODE']) AND $ilance->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                </div>
+                
+                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/add/">{_add_customer}</a> <a class="btn" href="{https_server_admin}customers/">{_cancel}</a> </div>
+			</header>
+		</div>
+
+
+       
+
+
+        <loop name="customercard">
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Account overview</h1>
+                    <p> The account details for this customer. </div>
+            </div>
+            <div class="layout-content__main">
+                <div class="draw-card">
+                    <div class="section-content">
+                        <div class="draw-card__section">
+                        
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label for="member-since">{_account_number}</label> 
+                                    <span id="member-since">{No}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="current-plan">{_name}</label> 
+                                    <span id="current-plan">{Name}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_name2}</label> 
+                                    <span id="current-plan">{Name2} </span>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_name_local}</label> 
+                                    <span id="current-plan">{Name_Arabic} </span>
+                                </div>
+                            </div>
+
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label for="member-since">{_brand}</label> 
+                                    <span id="member-since">{Brand}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="current-plan">{_nature_of_business}</label> 
+                                    <span id="current-plan">{Nature_Of_Business}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_created_by}</label> 
+                                    <span id="current-plan">{Created_By} </span>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_modified_by}</label> 
+                                    <span id="current-plan">{Modified_By} </span>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Address & Contact</h1>
+                    <p> The account address details for this customer. </div>
+            </div>
+            <div class="layout-content__main">
+                <div class="draw-card">
+                    <div class="section-content">
+                        <div class="draw-card__section">
+                        
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label for="member-since">{_address_1}</label> 
+                                    <span id="member-since">{Address}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="current-plan">{_address_2}</label> 
+                                    <span id="current-plan">{Address_2}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_country}</label> 
+                                    <span id="current-plan">{Country_Region_Code} </span>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_city}</label> 
+                                    <span id="current-plan">{City} </span>
+                                </div>
+                            </div>
+
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label for="member-since">{_phone}</label> 
+                                    <span id="member-since">{Phone_No}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="current-plan">{_mobile}</label> 
+                                    <span id="current-plan">{MobilePhoneNo}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_email}</label> 
+                                    <span id="current-plan">{E_Mail} </span>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label for="account-status">{_contact}</label> 
+                                    <span id="current-plan">{ContactName} </span>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </loop name="customercard">
+    </div>
+    </form>
+    <div define="iLNav.setPage(['customers','customers_bc']), iLPage.close()"></div>
+</section>
+<else />
 <section>
     <script type="text/javascript">
         Page();
@@ -32,8 +175,13 @@
                                    
                                     <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/bc/" id="formsearch" accept-charset="UTF-8" method="get">
                                     <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}"></if>
+                                    
                                     <div class="draw-field__connected-wrapper">
-                                        
+                                        <div class="draw-field--connected--no-flex">
+                                            <div class="draw-select__wrapper">
+                                            	{form[company_pulldown]}
+											</div>
+										</div>
                                         <div class="draw-field--connected--no-flex">
 											<div class="draw-select__wrapper">
                                             	{form[filter_pulldown]}
@@ -63,7 +211,7 @@
                                         <tr>
                                                 <th class="is-sortable "> <span>{_account}</span> </th>
                                                 <th class="customer is-sortable "> <span>{_name}</span> </th>
-                                                <th class="customer"> <span>{_description}</span> </th>
+                                                <th class="customer"> <span>{_name2}</span> </th>
                                                 <th class="customer is-sortable "> <span>{_country}</span> </th>
                                                 <th> <span>{_contact}</span> </th>
                                                 <th> <span>{_phone}</span> </th>
@@ -74,7 +222,7 @@
                         <tbody>
                         	<loop name="customers">
                             <tr id="tr_selected_{No}" valign="top">
-                               <td class="no-wrap"><a href="customers/view/{request_id}/?view={fview}">{No}</a></td>
+                               <td class="no-wrap"><a href="customers/bcview/{No}/?company={form[company]}">{No}</a></td>
                                 <td class="date draw-table__cell--full-width-when-condensed type--subdued"> <span>{Name}</span></td>
                                 <td class="status type--subdued">{Name_2}</td>
                                 <td class="status no-wrap type--subdued">{Country_Region_Code}</td>
@@ -102,3 +250,6 @@
     </div>
     <div define="iLNav.setPage(['customers','customers_bc']), iLPage.close()"></div>
 </section>
+</if>
+
+

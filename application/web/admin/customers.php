@@ -38,62 +38,49 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
     $q = ((isset($sheel->GPC['q'])) ? o($sheel->GPC['q']) : '');
     $sheel->GPC['page'] = (!isset($sheel->GPC['page']) or isset($sheel->GPC['page']) and $sheel->GPC['page'] <= 0) ? 1 : intval($sheel->GPC['page']);
-    $fview = $sheel->GPC['view'];
     $vars = array(
         'sidenav' => $sidenav,
         'q' => $q,
-        'fview' => $fview,
     );
-
-
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bc') {
-       
         $customers = array();
         $searchcondition = '';
         $searchfilters = array(
             'name',
             'account'
         );
-        $dynamics = $sheel->dynamics->init_dynamics(
-            array(
-                "base_url" => "",
-                "authEndPoint" => "https://login.microsoftonline.com/c2f8c1dc-1645-49aa-9793-f6098a0f4d92/oauth2/v2.0/token",
-                'tokenEndPoint' => "https://login.microsoftonline.com/c2f8c1dc-1645-49aa-9793-f6098a0f4d92/oauth2/v2.0/token",
-                'crmApiEndPoint' => "https://api.businesscentral.dynamics.com/v2.0/c2f8c1dc-1645-49aa-9793-f6098a0f4d92/Production/ODataV4/Company('AVER')/Customers",
-                "clientID" => "80210d2b-7710-413a-8c24-1db97ce635d4",
-                "clientSecret" => "3f.8Q~P5e_aN0-zu8lQQz-O5Fuby5Yw35qZVgbk1"
-            )
-        );
-
-        
-        
-        $pagination = '&$skip='.($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'].'&$top='.$sheel->config['globalfilters_maxrowsdisplay'];
-
-
+        $companies = array();
+        $sql = $sheel->db->query("
+        SELECT name, bc_code
+        FROM " . DB_PREFIX . "companies");
+        if ($sheel->db->num_rows($sql) > 0) {
+            while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $companies[$res['bc_code']] = $res['name'];
+            }
+        }
+        $form['company'] =  (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER');
+        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER'), 'class="draw-select" onchange="this.form.submit()"');
+        $sheel->dynamics->init_dynamics('Customers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER'));
+        $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = '$filter=contains( Name, \''. $sheel->db->escape_string($q).'\')';
+                        $searchcondition = '$filter=contains( Name, \'' . $sheel->db->escape_string($q) . '\')';
                         break;
                     }
-
                 case 'account': {
-                        $searchcondition = '$filter=No eq \''.$sheel->db->escape_string($q).'\'';
+                        $searchcondition = '$filter=No eq \'' . $sheel->db->escape_string($q) . '\'';
                         break;
                     }
             }
         }
-        
-
         //$contactsResponse = $sheel->dynamics->select('?$select=No&$filter=No eq \'AVR-CF00001\'');
-        $contactsResponse = $sheel->dynamics->select('?$count=true&'.$searchcondition. $pagination);
+        $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition . $pagination);
         $pageurl = PAGEURL;
-        
-
-        if ($contactsResponse->isSuccess()) {
-            $customers = $contactsResponse->getData();
+        if ($apiResponse->isSuccess()) {
+            $customers = $apiResponse->getData();
         } else {
-            $sheel->template->templateregistry['message'] = $contactsResponse->getErrorMessage();
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             die(
                 json_encode(
                     array(
@@ -103,8 +90,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             );
         }
-        $vars['prevnext'] = $sheel->admincp->pagination($contactsResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
-
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
             'account' => '{_account}',
@@ -113,8 +99,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
         $form['q'] = (isset($sheel->GPC['q']) ? $sheel->GPC['q'] : '');
         unset($filter_options);
-        
-
         $areanav = 'customers_bc';
         $vars['areanav'] = $areanav;
         $sheel->template->fetch('main', 'customers-bc.html', 1);
@@ -133,10 +117,47 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         );
         $sheel->template->pprint('main', $vars);
         exit();
+    } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
 
+        $customer = array();
+        $areanav = 'customers_bc';
+        $currentarea = $sheel->GPC['no'];
+        $vars['areanav'] = $areanav;
+        $vars['currentarea'] = $currentarea;
+        $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $sheel->GPC['company']);
+        $searchcondition = '$filter=No eq \'' . $sheel->GPC['no'] . '\'';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $customer = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
 
-    }
-     else {
+        $sheel->template->fetch('main', 'customers-bc.html', 1);
+        $sheel->template->parse_loop(
+            'main',
+            array(
+                'customercard' => $customer
+            )
+        );
+        $sheel->template->parse_hash(
+            'main',
+            array(
+                'ilpage' => $sheel->ilpage,
+                'form' => $form
+            )
+        );
+        $sheel->template->pprint('main', $vars);
+        exit();
+    } else {
         $areanav = 'customers_customers';
         $vars['areanav'] = $areanav;
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'marksuspended') { // mark suspended

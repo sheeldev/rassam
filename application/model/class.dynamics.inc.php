@@ -151,7 +151,8 @@ class dynamicsresponse
     return $this->data["@odata.nextLink"];
   }
 
-  public function getRecordCount() {
+  public function getRecordCount()
+  {
     if (!$this->isSuccess()) {
       return false;
     }
@@ -199,16 +200,30 @@ class dynamics
     'clientSecret' => '',
   );
 
-  
-	function __construct($sheel)
-	{
-		$this->sheel = $sheel;   
-	}
 
-  public function init_dynamics($config, $entity)
+  function __construct($sheel)
   {
-    $this->config = $config;
-    $this->entity = $entity;
+    $this->sheel = $sheel;
+  }
+
+  public function init_dynamics($name, $company)
+  {
+    $sql = $this->sheel->db->query("
+				SELECT id, apigroup, name, value, tokenendpoint, authendpoint, clientid, clientsecret, params, provides
+				FROM " . DB_PREFIX . "dynamics_api
+				WHERE name = '" . $name . "'
+				LIMIT 1
+        ", 0, null, __FILE__, __LINE__);
+    if ($this->sheel->db->num_rows($sql) > 0) {
+      $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+      $this->config['authEndPoint'] = $res['authendpoint'];
+      $this->config['tokenEndPoint'] = $res['tokenendpoint'];
+      $this->config['clientID'] = $res['clientid'];
+      $this->config['clientSecret'] = $res['clientsecret'];
+      $this->config['crmApiEndPoint'] = $res['value'].'Company(\''.$company.'\')/'.$res['name'];
+    } else {
+
+    }
   }
 
   private function fetchToken()
@@ -291,7 +306,10 @@ class dynamics
                 'message' => '<strong>TOKEN ERROR</strong> (' . $token["error"] . '): ' . $token["description"]
               )
             )
-          ), array(), $this->config['tokenEndPoint'], "fetch_token");
+          ),
+          array(), $this->config['tokenEndPoint'],
+          "fetch_token"
+        );
       }
 
       $requestHeaders = array(
@@ -354,7 +372,7 @@ class dynamics
   public function select($endpoint = '', $extraHeaders = false)
   {
     if (!preg_match('/^http(s)?\:\/\//', $endpoint)) {
-      $endpoint =  $this->entity . $endpoint;
+      $endpoint = $this->entity . $endpoint;
     }
     return $this->performRequest($endpoint, 'GET', false, $extraHeaders, "select");
   }
