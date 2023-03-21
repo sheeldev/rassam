@@ -8,12 +8,13 @@ $sheel->template->meta['jsinclude'] = array(
     'header' => array(
         'functions',
         'admin',
-        'admin_customers',
         'inline',
         'vendor/chartist',
         'vendor/growl'
     ),
-    'footer' => array()
+    'footer' => array(
+        'admin_customers',
+    )
 );
 $sheel->template->meta['cssinclude'] = array(
     'common',
@@ -58,7 +59,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $companies[$res['bc_code']] = $res['name'];
             }
         }
-        $form['company'] =  (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER');
+        $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER');
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER'), 'class="draw-select" onchange="this.form.submit()"');
         $sheel->dynamics->init_dynamics('Customers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER'));
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
@@ -118,12 +119,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
-
         $customer = array();
-        $areanav = 'customers_bc';
-        $currentarea = $sheel->GPC['no'];
-        $vars['areanav'] = $areanav;
-        $vars['currentarea'] = $currentarea;
         $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $sheel->GPC['company']);
         $searchcondition = '$filter=No eq \'' . $sheel->GPC['no'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
@@ -140,19 +136,97 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             );
         }
+        $customer = $customer['0'];
+        if (isset($sheel->GPC['activate']) and $sheel->GPC['activate'] == 'yes') {
+            $payload = array();
+            $ext = mb_substr($_FILES['imagename']['name'], strpos($_FILES['imagename']['name'], '.'), strlen($_FILES['imagename']['name']) - 1);
+            list($width, $height) = getimagesize($_FILES['imagename']['tmp_name']);
+            if (in_array($ext, array('.png', '.jpg', '.jpeg', '.gif')) and filesize($_FILES['imagename']['name']) <= 250000 and $width >= 150 and $height >= 150) {
+                if (file_exists(DIR_ATTACHMENTS . 'customers/' . $_FILES['imagename']['name'])) {
+                    if (!unlink(DIR_ATTACHMENTS . 'customers/' . $_FILES['imagename']['name'])) {
+                        $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error removing old customer logo file', 'Old customer logo file could not be removed (check permission)');
+                    }
+                }
+                if (!move_uploaded_file($_FILES['imagename']['tmp_name'], DIR_ATTACHMENTS . 'customers/' . $sheel->GPC['no'].$ext)) {
+                    die ($_FILES["imagename"]["error"]);
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error saving customer logo file', 'customer logo file could not be uploaded (check folder permission)');
+                } else {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'Added customer logo file', 'A new customer logo file was saved ');
+                }
+            } else {
+                if (!in_array($ext, array('.png', '.jpg', '.jpeg', '.gif'))) {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be .png, .jpg, .jpeg, or .gif.');
+                    $sheel->GPC['note'] = 'extension';
+                }
+                if (filesize($_FILES['imagename']['name']) >= 250000) {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be under 250kb in file size.');
+                    $sheel->GPC['note'] = 'size';
+                }
+                if($width < 150 || $height < 150) {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be at least 150x150.');
+                    $sheel->GPC['note'] = 'wh';
+                }
+            }
+
+            $payload['customerref'] = $customer['No'];
+            $payload['customername'] = $customer['Name'];
+            $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
+            $payload['customername2'] = $customer['Name2'];
+            $payload['customerabout'] = $customer['Name_Arabic'];
+            $payload['customerdescription'] = $customer['Nature_Of_Business'];
+            $payload['date_added'] = date("Y/m/d H:i:s");
+            $payload['status'] = $sheel->GPC['form']['status'];
+            $payload['accountnumber'] = $customer['No'];
+            $payload['available_balance'] = '';
+            $payload['total_balance'] = '';
+            $payload['currencyid'] = $sheel->GPC['form']['currencyid'];
+            $payload['timezone'] = $sheel->GPC['form']['tz'];
+            $payload['vatnumber'] = $customer['VAT_Registration_No'];
+            $payload['regnumber'] = $customer['CR_No'];
+            $payload['autopayment'] = '0';
+            $payload['requestdeletion'] = '0';
+            $payload['logo'] =  $sheel->GPC['no'].$ext;
+
+            $newcustomerid = $sheel->admincp_customers->construct_new_customer($payload);
+            if ($newcustomerid > 0)
+            {
+                unset($_SESSION['sheeldata']['tmp']['new_customer_ref']);
+                refresh(HTTPS_SERVER_ADMIN . 'customers/');
+                exit();
+            }
+            else {
+                refresh(HTTPS_SERVER_ADMIN . 'customers/add/?error=wan');
+            }
+        }
+
+
+        $areanav = 'customers_bc';
+        $currentarea = $sheel->GPC['no'];
+        $vars['areanav'] = $areanav;
+        $vars['currentarea'] = $currentarea;
+        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        $tzlistfinal = array();
+        foreach ($tzlist as $key => $value) {
+            $tzlistfinal[$value] = $value;
+        }
+
+        $form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, '', 'class="draw-select"');
+        $form['no'] = $sheel->GPC['no'];
+        $form['company'] = $sheel->GPC['company'];
+        $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', '');
+        $statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
+        $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, '', 'class="draw-select"');
+        $form['subscriptions'] = $sheel->subscription->pulldown();
+       
 
         $sheel->template->fetch('main', 'customers-bc.html', 1);
-        $sheel->template->parse_loop(
-            'main',
-            array(
-                'customercard' => $customer
-            )
-        );
+
         $sheel->template->parse_hash(
             'main',
             array(
                 'ilpage' => $sheel->ilpage,
-                'form' => $form
+                'form' => $form,
+                'customercard' => $customer
             )
         );
         $sheel->template->pprint('main', $vars);
