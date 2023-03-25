@@ -41,6 +41,7 @@ Page();
                                             <th>{_timezone}</th>
                                             <th>{_currency}</th>
                                             <th>{_status}</th>
+                                            <th nowrap="nowrap">{_action}</th>
                                         </tr>	
                                         </thead>		
                                         <tbody>				
@@ -53,7 +54,10 @@ Page();
                                             <td nowrap="nowrap">{timezone}</td>
                                             <td >{currency}</td>
                                             <td >{status}</td>
-                                            <td ><a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected company?', 'Are you sure you want to delete the selected company?', '{company_id}', 1, '', '{https_server_admin}settings/companies/delete/{company_id}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></td>
+                                            <td >
+                                                {action}
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected company?', 'Are you sure you want to delete the selected company?', '{company_id}', 1, '', '{https_server_admin}settings/companies/default/{company_id}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                            </td>
                                         </tr>
                                         </loop name="comps">
                                         </tbody>

@@ -212,7 +212,7 @@ class currency
 		return $html;
 	}
 	/**
-	* Function to fetch the default currency id installed for the marketplace
+	* Function to fetch the default currency id installed for the system
 	*
 	*/
 	function fetch_default_currencyid()

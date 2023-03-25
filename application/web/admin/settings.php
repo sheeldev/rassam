@@ -304,7 +304,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 					}
 				}
 			}
-			$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Marketplace payment settings saved', 'Marketplace payment settings were successfully saved.');
+			$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'System payment settings saved', 'System payment settings were successfully saved.');
 			refresh(HTTPS_SERVER_ADMIN . 'settings/payment/');
 			exit();
 		}
@@ -493,15 +493,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$sheel->template->templateregistry['message'] = 'This Company could not be deleted.';
 				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
 			}
+		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'default') { // update system to this new currency
+
+			if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
+				
+				die(json_encode(array('response' => 1, 'message' => 'Successfully set default system company to ID ' . $sheel->GPC['xid'])));
+			} else {
+				$sheel->template->templateregistry['message'] = 'No company was selected.  Please try again.';
+				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+			}
 		}
 		$sqlcomp = $sheel->db->query("
-			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone
+			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone, isdefault
 			FROM " . DB_PREFIX . "companies
 		", 0, null, __FILE__, __LINE__);
 		if ($sheel->db->num_rows($sqlcomp) > 0) {
 			while ($comp = $sheel->db->fetch_array($sqlcomp, DB_ASSOC)) {
 				$comp['currency'] = $sheel->currency->currencies[$comp['currencyid']]['currency_abbrev'];
 				$comp['country'] = $sheel->common_location->print_country_name($comp['countryid'], $_SESSION['sheeldata']['user']['slng'], false, '');
+				$comp['action'] = '<a href="javascript:;"' . (($comp['isdefault'] == '1') ? '' : ' data-bind-event-click="acp_confirm(\'default\', \'{_set_system_default_company}\', \'{_set_company_system_default_message}\', \'' . $comp['company_id'] . '\', 1, \'\', \'\')"') . ' class="btn btn-slim btn--icon" title="'. (($comp['isdefault'] == '1') ? '{_default_company}' : '{_set_as_default}') .'"><span class="halflings halflings-star draw-icon' . (($comp['isdefault'] == '1') ? '--sky-darker' : '') . '" aria-hidden="true"></span></a></li></ul>';
+
 				$comps[] = $comp;;
 			}
 		}

@@ -57,7 +57,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->template->templateregistry['message'] = 'No currency was selected.  Please try again.';
             die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
         }
-    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'default') { // update marketplace to this new currency
+    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'default') { // update system to this new currency
 
         if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
             $sheel->db->query("
@@ -66,7 +66,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 					WHERE name = 'globalserverlocale_defaultcurrency'
 					LIMIT 1
 				");
-            die(json_encode(array('response' => 1, 'message' => 'Successfully set default marketplace currency to ID ' . $sheel->GPC['xid'])));
+            die(json_encode(array('response' => 1, 'message' => 'Successfully set default system currency to ID ' . $sheel->GPC['xid'])));
         } else {
             $sheel->template->templateregistry['message'] = 'No currency was selected.  Please try again.';
             die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));

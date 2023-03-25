@@ -15,7 +15,7 @@ define('DIR_SERVER_ROOT_IMAGES', SITE_ROOT);     # <<< should be same as DIR_SER
 define('SUB_FOLDER_ROOT', '/');           # <<< leave it / unless installed in a sub /folder/
 
 /**
-* Marketplace identifier id
+* System identifier id
 */
 define('APP_ID', '657753');         # <<< unique app identifier for the app store
 define('SITE_ID', '001');                 # <<< if this is app 2 on node 2 then enter 002
@@ -79,7 +79,7 @@ define('DIR_APPLOG_NAME', 'applog');
 define('DIR_ROTATELOG_NAME', 'rotatelog');
 
 /**
-* define if we want to output the debug footer on the marketplace
+* define if we want to output the debug footer on the System
 */
 define('DEBUG_FOOTER', false);
 

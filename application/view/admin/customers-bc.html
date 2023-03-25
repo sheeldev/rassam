@@ -3,6 +3,8 @@
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'extension'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be .png, .jpg or .gif.' });</script></if>
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'size'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be under 250kb in file size.' });</script></if>
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'wh'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be at least 150 x 150 dimension.' });</script></if>
+    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'error'"><script>jQuery.growl.error({ title: '{_error}', message: 'Error in activating selected customer. Please contact administrator.' });</script></if>
+    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'exist'"><script>jQuery.growl.error({ title: '{_error}', message: 'The selected customer is already activated.' });</script></if>
 </if>
 <section>
     <script type="text/javascript">
@@ -20,7 +22,7 @@
 					<span class="breadcrumb"><a href="{https_server_admin}customers/bc/">{_customers}</a> / </span> {currentarea}
 				</h1>
 				<div class="header__primary-actions">
-                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_activate}</button>
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">btn-disabled</if>" >{_activate}</button>
                 </div>
                 
                 <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/bc/">{_cancel}</a> </div>
@@ -328,7 +330,7 @@
                                 <td class="status no-wrap">{Blocked}</td>
                                 <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
                                 <else />
-                                <td class="last_order type--subdued"><a href="javascript:;" data-bind-event-click="acp_confirm('activate', 'Activate selected Customer?', 'Are you sure you want to activate the selected customer?', '{No}', 1, '', '{https_server_admin}settings/customers/activate/{No}/')" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-plus x1" aria-hidden="true"></span></a></td>
+                                <td class="last_order type--subdued"><a href="javascript:;" data-bind-event-click="acp_confirm('activate', 'Activate selected Customer?', 'Are you sure you want to activate the selected customer?', '{No}', 1, '', '{https_server_admin}customers/bcview/{No}/')" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-plus x1" aria-hidden="true"></span></a></td>
                                 </if>
                             </tr>
                             </loop name="customers">

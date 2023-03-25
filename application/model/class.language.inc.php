@@ -478,7 +478,7 @@ class language
 		return 'language->clean_cache(), ';
 	}
 	/**
-	 * Function to fetch the short form language identifier used by the marketplace as default (english = eng)
+	 * Function to fetch the short form language identifier used by the system as default (english = eng)
 	 *
 	 * @return      string       Short form language identifier
 	 */
@@ -498,7 +498,7 @@ class language
 		return 'eng';
 	}
 	/**
-	 * Function to fetch the short form language identifier used by the marketplace as default (english = eng)
+	 * Function to fetch the short form language identifier used by the system as default (english = eng)
 	 *
 	 * @param       integer      user id
 	 *

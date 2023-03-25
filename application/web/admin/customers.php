@@ -137,7 +137,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             );
         }
         $customer = $customer['0'];
-        if (isset($sheel->GPC['activate']) and $sheel->GPC['activate'] == 'yes') {
+        $sheel->GPC['activated'] = '0';
+        $sql = $sheel->db->query("
+        SELECT customer_ref
+        FROM " . DB_PREFIX . "customers
+        WHERE customer_ref = '" . $sheel->GPC['no'] . "'
+        LIMIT 1
+        ");
+        $number = (int) $sheel->db->num_rows($sql);
+        if ($number > 0) {
+            $sheel->GPC['activated'] = '1';
+        }
+        if (isset($sheel->GPC['activate']) and $sheel->GPC['activate'] == 'yes' and $sheel->GPC['activated'] == '0') {
             $payload = array();
             $ext = mb_substr($_FILES['imagename']['name'], strpos($_FILES['imagename']['name'], '.'), strlen($_FILES['imagename']['name']) - 1);
             list($width, $height) = getimagesize($_FILES['imagename']['tmp_name']);
@@ -147,8 +158,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error removing old customer logo file', 'Old customer logo file could not be removed (check permission)');
                     }
                 }
-                if (!move_uploaded_file($_FILES['imagename']['tmp_name'], DIR_ATTACHMENTS . 'customers/' . $sheel->GPC['no'].$ext)) {
-                    die ($_FILES["imagename"]["error"]);
+                if (!move_uploaded_file($_FILES['imagename']['tmp_name'], DIR_ATTACHMENTS . 'customers/' . $sheel->GPC['no'] . $ext)) {
+                    die($_FILES["imagename"]["error"]);
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error saving customer logo file', 'customer logo file could not be uploaded (check folder permission)');
                 } else {
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'Added customer logo file', 'A new customer logo file was saved ');
@@ -162,12 +173,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be under 250kb in file size.');
                     $sheel->GPC['note'] = 'size';
                 }
-                if($width < 150 || $height < 150) {
+                if ($width < 150 || $height < 150) {
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be at least 150x150.');
                     $sheel->GPC['note'] = 'wh';
                 }
             }
-
             $payload['customerref'] = $customer['No'];
             $payload['customername'] = $customer['Name'];
             $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
@@ -185,20 +195,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $payload['regnumber'] = $customer['CR_No'];
             $payload['autopayment'] = '0';
             $payload['requestdeletion'] = '0';
-            $payload['logo'] =  $sheel->GPC['no'].$ext;
-
+            $payload['logo'] = $sheel->GPC['no'] . $ext;
             $newcustomerid = $sheel->admincp_customers->construct_new_customer($payload);
-            if ($newcustomerid > 0)
-            {
+            if ($newcustomerid > 0) {
                 unset($_SESSION['sheeldata']['tmp']['new_customer_ref']);
                 refresh(HTTPS_SERVER_ADMIN . 'customers/');
                 exit();
+            } else {
+                $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be at least 150x150.');
+                $sheel->GPC['note'] = 'error';
             }
-            else {
-                refresh(HTTPS_SERVER_ADMIN . 'customers/add/?error=wan');
-            }
-        }
 
+        } else {
+            $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'The selected customer is already activated. Visit the main customer list for update');
+            $sheel->GPC['note'] = 'exist';
+        }
 
         $areanav = 'customers_bc';
         $currentarea = $sheel->GPC['no'];
@@ -217,7 +228,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
         $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, '', 'class="draw-select"');
         $form['subscriptions'] = $sheel->subscription->pulldown();
-       
+
 
         $sheel->template->fetch('main', 'customers-bc.html', 1);
 
