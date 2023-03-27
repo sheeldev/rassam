@@ -171,9 +171,14 @@
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <label class="draw-label" for="customer_subscription">{_subscription}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="subscription-wrapper">
-                                            {form[subscriptions]}
-                                        </div>
+                                        <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">
+                                            <span id="current-plan">{customercard[subscription]} </span>
+                                        <else />
+                                            <div class="draw-select__wrapper draw-input--has-content" id="subscription-wrapper">
+                                                {form[subscriptions]}
+                                            </div>
+                                        </if>
+                                        
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
@@ -221,16 +226,20 @@
                             <div class="draw-grid draw-grid--no-outside-padding">
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
+                                        <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">
+                                            <div class="ssb"><img src="{config[imguploadscdn]}customers/{customercard[logo]}" width="100"></div>
+                                        <else />
+                                            <label class="draw-label" for="form_imagename">Upload Image <span class="type--subdued"></span></label>
+                                            <div class="styled-file-input">
+                                                <div class="btn"> <span>{_browse}</span>
+                                                    <input type="file" name="imagename" id="uploadimage" class="js-no-dirty"> </div>
+                                            </div>
 
-                                        <label class="draw-label" for="form_imagename">Upload Image <span class="type--subdued"></span></label>
-                                        <div class="styled-file-input">
-                                            <div class="btn"> <span>{_browse}</span>
-                                                <input type="file" name="imagename" id="uploadimage" class="js-no-dirty"> </div>
-                                        </div>
-
-                                        <div class="st">{_accepted}: <span class="type--subdued">.gif, .jpg, .jpeg, .png</span></div>
-                                        <div>Dimension: <span class="type--subdued">150 x 150</span></div>
-                                        <div id="file-upload-filename"></div>
+                                            <div class="st">{_accepted}: <span class="type--subdued">.gif, .jpg, .jpeg, .png</span></div>
+                                            <div>Dimension: <span class="type--subdued">150 x 150</span></div>
+                                            <div id="file-upload-filename"></div>
+                                        </if>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -275,6 +284,7 @@
                         <div class="draw-card__section draw-card__section--no-bottom-spacing">
                             <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
                                 <div class="draw-input-wrapper">
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/bc/" id="formsearch" accept-charset="UTF-8" method="get">
                                     <div class="draw-field__connected-wrapper">
                                         <div class="draw-field--connected--no-flex">
                                             <div class="draw-select__wrapper">
@@ -330,7 +340,7 @@
                                 <td class="status no-wrap">{Blocked}</td>
                                 <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
                                 <else />
-                                <td class="last_order type--subdued"><a href="javascript:;" data-bind-event-click="acp_confirm('activate', 'Activate selected Customer?', 'Are you sure you want to activate the selected customer?', '{No}', 1, '', '{https_server_admin}customers/bcview/{No}/')" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-plus x1" aria-hidden="true"></span></a></td>
+                                <td class="last_order type--subdued"><a href="customers/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-plus x1" aria-hidden="true"></span></a></td>
                                 </if>
                             </tr>
                             </loop name="customers">

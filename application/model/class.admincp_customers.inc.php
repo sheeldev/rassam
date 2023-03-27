@@ -165,6 +165,27 @@ class admincp_customers extends admincp
         ");
 
         $customer_id = $this->sheel->db->insert_id();
+
+        $this->sheel->db->query("
+        INSERT INTO " . DB_PREFIX . "customer_profiles
+        (id, customer_id, address, address2, phone, email, city, state, zipcode, country, dateadded, type,billing_type, status, isdefault)
+        VALUES(
+        NULL,
+        '" . $customer_id . "',
+        '" . $this->sheel->db->escape_string($payload['address']) . "',
+        '" . $this->sheel->db->escape_string($payload['address2']) . "',
+        '" . $this->sheel->db->escape_string($payload['phone']) . "',
+        '" . $this->sheel->db->escape_string($payload['email']) . "',
+        '" . $this->sheel->db->escape_string($payload['city']) . "',
+        '" . $this->sheel->db->escape_string($payload['state']) . "',
+        '" . $this->sheel->db->escape_string($payload['zipcode']) . "',
+        '" . $this->sheel->db->escape_string($this->sheel->common_location->print_country_name_bycode($payload['country'], $_SESSION['sheeldata']['user']['slng'])) . "',
+        '" . DATETIME24H . "',
+        'shipping',
+        'business',
+        '1',
+        '1')
+        ", 0, null, __FILE__, __LINE__);
         $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'customer created successfully', "A new customer With ID: '$customer_id' was created successfully.");
         return $customer_id;
     }

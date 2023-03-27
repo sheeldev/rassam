@@ -429,6 +429,22 @@ class subscription
                 $html .= '</optgroup></select></div>';
                 return $html;
         }
+
+        function getname($subscriptionid) {
+                $slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : 'eng';
+                $name = '';
+                $sql = $this->sheel->db->query("
+                        SELECT subscriptionid, title_" . $slng . " AS title
+                        FROM " . DB_PREFIX . "subscription
+                        WHERE subscriptionid = '".$subscriptionid."'
+                ", 0, null, __FILE__, __LINE__);
+                if ($this->sheel->db->num_rows($sql) > 0) {
+                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+                                $name = stripslashes(o($res['title']));
+                        }
+                }
+                return $name;
+        }
         /**
          * Function to display for users any subscription plans within a pulldown menu element
          *

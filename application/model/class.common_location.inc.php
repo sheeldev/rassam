@@ -400,6 +400,26 @@ class common_location extends common
 		}
 		return '{_unknown}';
 	}
+
+	function print_country_name_bycode($countrycode, $slng = 'eng')
+	{
+		if (empty($slng))
+		{
+			$slng = 'eng';
+		}
+		$condition = "cc = '" . $countrycode . "'";
+		$sql = $this->sheel->db->query("
+			SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "location_$slng AS countryname
+			FROM " . DB_PREFIX . "locations
+			WHERE $condition
+		", 0, null, __FILE__, __LINE__);
+		if ($this->sheel->db->num_rows($sql) > 0)
+		{
+			$res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+			return $res['countryname'];
+		}
+		return '{_unknown}';
+	}
 	/**
 	* Function to print a country flag based on a supplied country id
 	*

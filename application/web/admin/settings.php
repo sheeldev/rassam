@@ -493,10 +493,19 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$sheel->template->templateregistry['message'] = 'This Company could not be deleted.';
 				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
 			}
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'default') { // update system to this new currency
+		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'default') {
 
 			if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
-				
+				$sheel->db->query("
+					UPDATE " . DB_PREFIX . "companies
+					SET isdefault = '0'
+					WHERE company_id != '" . intval($sheel->GPC['xid']) . "'
+				", 0, null, __FILE__, __LINE__);
+				$sheel->db->query("
+					UPDATE " . DB_PREFIX . "companies
+					SET isdefault = '1'
+					WHERE company_id = '" . intval($sheel->GPC['xid']) . "'
+				", 0, null, __FILE__, __LINE__);
 				die(json_encode(array('response' => 1, 'message' => 'Successfully set default system company to ID ' . $sheel->GPC['xid'])));
 			} else {
 				$sheel->template->templateregistry['message'] = 'No company was selected.  Please try again.';

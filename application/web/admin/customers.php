@@ -51,6 +51,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             'account'
         );
         $companies = array();
+        $defaulcompany = '';
+
         $sql = $sheel->db->query("
         SELECT name, bc_code
         FROM " . DB_PREFIX . "companies");
@@ -59,9 +61,20 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $companies[$res['bc_code']] = $res['name'];
             }
         }
-        $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER');
-        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER'), 'class="draw-select" onchange="this.form.submit()"');
-        $sheel->dynamics->init_dynamics('Customers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : 'AVER'));
+
+        $sqldefault = $sheel->db->query("
+        SELECT bc_code
+        FROM " . DB_PREFIX . "companies 
+        WHERE isdefault='1' 
+        LIMIT 1");
+        if ($sheel->db->num_rows($sqldefault) > 0) {
+            while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
+                $defaulcompany = $res['bc_code'];
+            }
+        }
+        $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
+        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
+        $sheel->dynamics->init_dynamics('Customers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
@@ -120,6 +133,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
         $customer = array();
+        
         $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $sheel->GPC['company']);
         $searchcondition = '$filter=No eq \'' . $sheel->GPC['no'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
@@ -139,15 +153,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $customer = $customer['0'];
         $sheel->GPC['activated'] = '0';
         $sql = $sheel->db->query("
-        SELECT customer_ref
+        SELECT customer_ref, subscriptionid, currencyid, timezone, status, logo
         FROM " . DB_PREFIX . "customers
         WHERE customer_ref = '" . $sheel->GPC['no'] . "'
         LIMIT 1
         ");
-        $number = (int) $sheel->db->num_rows($sql);
-        if ($number > 0) {
+        if ($sheel->db->num_rows($sql) > 0) {
             $sheel->GPC['activated'] = '1';
+            while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $customer['logo'] = $res['logo'];
+                $customer['status'] = $res['status'];
+                $customer['tz'] =  $res['timezone'];
+                $customer['currency'] =  $res['currencyid'];
+                $customer['subscription'] =  $sheel->subscription->getname($res['subscriptionid']);;
+            }
         }
+
+
         if (isset($sheel->GPC['activate']) and $sheel->GPC['activate'] == 'yes' and $sheel->GPC['activated'] == '0') {
             $payload = array();
             $ext = mb_substr($_FILES['imagename']['name'], strpos($_FILES['imagename']['name'], '.'), strlen($_FILES['imagename']['name']) - 1);
@@ -193,6 +215,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $payload['timezone'] = $sheel->GPC['form']['tz'];
             $payload['vatnumber'] = $customer['VAT_Registration_No'];
             $payload['regnumber'] = $customer['CR_No'];
+            $payload['address'] = $customer['Address'];
+            $payload['address2'] = $customer['Address_2'];
+            $payload['phone'] = $customer['Phone_No'];
+            $payload['mobile'] = $customer['MobilePhoneNo'];
+            $payload['email'] = $customer['E_Mail'];
+            $payload['city'] = $customer['City'];
+            $payload['state'] = '';
+            $payload['zipcode'] = $customer['Post_Code'];
+            $payload['country'] = $customer['Country_Region_Code'];
             $payload['autopayment'] = '0';
             $payload['requestdeletion'] = '0';
             $payload['logo'] = $sheel->GPC['no'] . $ext;
@@ -221,12 +252,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tzlistfinal[$value] = $value;
         }
 
-        $form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, '', 'class="draw-select"');
+        $form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, $customer['tz'], 'class="draw-select"');
         $form['no'] = $sheel->GPC['no'];
         $form['company'] = $sheel->GPC['company'];
-        $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', '');
+        $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', $customer['currency']);
         $statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
-        $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, '', 'class="draw-select"');
+        $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses,  $customer['status'], 'class="draw-select"');
         $form['subscriptions'] = $sheel->subscription->pulldown();
 
 
