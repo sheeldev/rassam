@@ -18,7 +18,7 @@
         <div class="header-row">
 			<header class="header">
 				<h1 class="header__main">
-					<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+					<span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
 					<span class="breadcrumb"><a href="{https_server_admin}customers/bc/">{_customers}</a> / </span> {currentarea}
 				</h1>
 				<div class="header__primary-actions">
@@ -217,7 +217,7 @@
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
                         <h1>{_logo}</h1>
-                        <p>Upload Logo for this customer.</p>
+                        <p>Logo for this customer.</p>
                     </div>
                 </div>
                 <div class="layout-content__main">
@@ -261,7 +261,7 @@
         <div class="header-row">
             <header id="customers-index-header" class="header">
                 <h1 class="header__main">
-                    <span class="glyphicons glyphicons-credit-card draw-icon" aria-hidden="true"></span>
+                    <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
                     {_customers}
               	</h1>
                 <div class="header__primary-actions"> 
@@ -340,7 +340,7 @@
                                 <td class="status no-wrap">{Blocked}</td>
                                 <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
                                 <else />
-                                <td class="last_order type--subdued"><a href="customers/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-plus x1" aria-hidden="true"></span></a></td>
+                                <td class="last_order type--subdued"><a href="customers/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>
                                 </if>
                             </tr>
                             </loop name="customers">

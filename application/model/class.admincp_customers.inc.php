@@ -11,8 +11,7 @@ class admincp_customers extends admincp
 			WHERE customer_ref = '" . intval($ref) . "'
 			LIMIT 1
 		", 0, null, __FILE__, __LINE__);
-        if ($this->sheel->db->num_rows($sql) > 0)
-        {
+        if ($this->sheel->db->num_rows($sql) > 0) {
             $ref = rand(1, 9) . mb_substr(time(), -6, 10);
             $sql = $this->sheel->db->query("
 				SELECT customer_ref
@@ -20,8 +19,7 @@ class admincp_customers extends admincp
 				WHERE customer_ref = '" . intval($ref) . "'
 				LIMIT 1
 			", 0, null, __FILE__, __LINE__);
-            if ($this->sheel->db->num_rows($sql) > 0)
-            {
+            if ($this->sheel->db->num_rows($sql) > 0) {
                 $ref = rand(1, 9) . mb_substr(time(), -8, 10);
                 $sql = $this->sheel->db->query("
 					SELECT customer_ref
@@ -29,30 +27,23 @@ class admincp_customers extends admincp
 					WHERE customer_ref = '" . intval($ref) . "'
 					LIMIT 1
 				", 0, null, __FILE__, __LINE__);
-                if ($this->sheel->db->num_rows($sql) > 0)
-                {
+                if ($this->sheel->db->num_rows($sql) > 0) {
                     $ref = rand(1, 9) . mb_substr(time(), -8, 10);
                     return $ref;
-                }
-                else
-                {
+                } else {
                     return $ref;
                 }
-            }
-            else
-            {
+            } else {
                 return $ref;
             }
-        }
-        else
-        {
+        } else {
             return $ref;
         }
     }
 
     function changestatus($ids = array(), $status)
     {
-        $allerrors = $successids = $failedids = $action = $display =  '';
+        $allerrors = $successids = $failedids = $action = $display = '';
         $count = 0;
         if ($status == 'deleted') {
             $action = '{_deleted}';
@@ -74,7 +65,7 @@ class admincp_customers extends admincp
             $action = '{_active}';
             $display = '{_active}';
 
-        } 
+        }
         foreach ($ids as $inc => $customerid) {
             $response = $this->dostatuschange($customerid, $action, true, $status);
             if ($response === true) {
@@ -111,7 +102,7 @@ class admincp_customers extends admincp
 
             $this->sheel->db->query("
 					UPDATE " . DB_PREFIX . "customers
-					SET status = '". $status ."'
+					SET status = '" . $status . "'
 					WHERE customer_id = '" . $this->sheel->db->escape_string($customerid) . "'
 				");
             $sql2 = $this->sheel->db->query("
@@ -163,7 +154,6 @@ class admincp_customers extends admincp
         '" . $this->sheel->db->escape_string($payload['requestdeletion']) . "',
         '" . $this->sheel->db->escape_string($payload['logo']) . "')
         ");
-
         $customer_id = $this->sheel->db->insert_id();
 
         $this->sheel->db->query("
@@ -186,9 +176,76 @@ class admincp_customers extends admincp
         '1',
         '1')
         ", 0, null, __FILE__, __LINE__);
+        $this->build_customer_subscription($customer_id, $payload['subscriptionid'],'account');
         $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'customer created successfully', "A new customer With ID: '$customer_id' was created successfully.");
         return $customer_id;
     }
+
+    /**
+     * Function for creating a new customer subscription plan.
+     *
+     * @param       integer      customer id
+     * @param       integer      subscription id
+     * @param       string       payment method (account, creditcard, ipn, bank, check)
+     * @param       integer      subscription role id
+     *
+     */
+    private function build_customer_subscription($customerid = 0, $subscriptionid = 0, $paymethod = 'account')
+    {
+        $subscription_plan_result = array();
+        $sql = $this->sheel->db->query("
+                        SELECT subscriptionid, title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title, description_" . $_SESSION['sheeldata']['user']['slng'] . " AS description, cost, length, units,  active, canremove, visible_registration, visible_upgrade, icon
+                        FROM " . DB_PREFIX . "subscription
+                        WHERE subscriptionid = '" . intval($subscriptionid) . "'
+                                AND type = 'product'
+                ", 0, null, __FILE__, __LINE__);
+        if ($this->sheel->db->num_rows($sql) > 0) {
+            $subscription_plan_result = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+
+
+            $subscription_plan_cost = sprintf('%01.2f', $subscription_plan_result['cost']);
+            $subscription_length = $this->sheel->subscription->subscription_length($subscription_plan_result['units'], $subscription_plan_result['length']);
+            $subscription_renew_date = $this->sheel->subscription->print_subscription_renewal_datetime($subscription_length);
+            $sql_check = $this->sheel->db->query("
+                                SELECT c.id
+                                FROM " . DB_PREFIX . "subscription_customer c
+                                LEFT JOIN " . DB_PREFIX . "subscription s ON c.subscriptionid = s.subscriptionid
+                                WHERE c.customerid = '" . intval($customerid) . "'
+                                        AND s.type = 'product'
+                                LIMIT 1
+                        ", 0, null, __FILE__, __LINE__);
+            if ($this->sheel->db->num_rows($sql_check) == 0) {
+                if (empty($paymethod)) {
+                    $paymethod = 'account';
+                }
+                // build membership for user and set to unpaid / not active
+                $this->sheel->db->query("
+                                        INSERT INTO " . DB_PREFIX . "subscription_customer
+                                        (id, subscriptionid, customerid, paymethod, startdate, renewdate, autopayment, active)
+                                        VALUES(
+                                        NULL,
+                                        '" . intval($subscriptionid) . "',
+                                        '" . intval($customerid) . "',
+                                        '" . $this->sheel->db->escape_string($paymethod) . "',
+                                        '" . DATETIME24H . "',
+                                        '" . $this->sheel->db->escape_string($subscription_renew_date) . "',
+                                        '1',
+                                        'no')
+                                ", 0, null, __FILE__, __LINE__);
+                if ($subscription_plan_result['cost'] <= 0) {
+                    $this->sheel->db->query("
+                                                UPDATE " . DB_PREFIX . "subscription_customer
+                                                SET active = 'yes',
+                                                autopayment = '1'
+                                                WHERE customerid = '" . intval($customerid) . "'
+                                                        AND subscriptionid = '" . intval($subscriptionid) . "'
+                                                LIMIT 1
+                                        ", 0, null, __FILE__, __LINE__);
+                }
+            }
+        }
+    }
+
 
     function get_user_id($rid)
     {
