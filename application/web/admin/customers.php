@@ -43,6 +43,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'sidenav' => $sidenav,
         'q' => $q,
     );
+    $defaulcompany = '';
+    $sqldefault = $sheel->db->query("
+    SELECT bc_code
+    FROM " . DB_PREFIX . "companies 
+    WHERE isdefault='1' 
+    LIMIT 1");
+    if ($sheel->db->num_rows($sqldefault) > 0) {
+        while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
+            $defaulcompany = $res['bc_code'];
+        }
+    }
+    
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bc') {
         $customers = array();
         $searchcondition = '';
@@ -51,7 +63,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             'account'
         );
         $companies = array();
-        $defaulcompany = '';
+        
 
         $sql = $sheel->db->query("
         SELECT name, bc_code
@@ -62,16 +74,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
 
-        $sqldefault = $sheel->db->query("
-        SELECT bc_code
-        FROM " . DB_PREFIX . "companies 
-        WHERE isdefault='1' 
-        LIMIT 1");
-        if ($sheel->db->num_rows($sqldefault) > 0) {
-            while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
-                $defaulcompany = $res['bc_code'];
-            }
-        }
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
         $sheel->dynamics->init_dynamics('Customers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
@@ -133,7 +135,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
         $customer = array();
-        
+
         $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $sheel->GPC['company']);
         $searchcondition = '$filter=No eq \'' . $sheel->GPC['no'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
@@ -163,9 +165,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
                 $customer['logo'] = $res['logo'];
                 $customer['status'] = $res['status'];
-                $customer['tz'] =  $res['timezone'];
-                $customer['currency'] =  $res['currencyid'];
-                $customer['subscription'] =  $sheel->subscription->getname($res['subscriptionid']);;
+                $customer['tz'] = $res['timezone'];
+                $customer['currency'] = $res['currencyid'];
+                $customer['subscription'] = $sheel->subscription->getname($res['subscriptionid']);
+                ;
             }
         }
 
@@ -200,6 +203,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $sheel->GPC['note'] = 'wh';
                 }
             }
+            $payload['companycode'] =$sheel->GPC['company'];
             $payload['customerref'] = $customer['No'];
             $payload['customername'] = $customer['Name'];
             $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
@@ -219,6 +223,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $payload['address2'] = $customer['Address_2'];
             $payload['phone'] = $customer['Phone_No'];
             $payload['mobile'] = $customer['MobilePhoneNo'];
+            $payload['contact'] = $customer['ContactName'];
             $payload['email'] = $customer['E_Mail'];
             $payload['city'] = $customer['City'];
             $payload['state'] = '';
@@ -257,7 +262,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['company'] = $sheel->GPC['company'];
         $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', $customer['currency']);
         $statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
-        $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses,  $customer['status'], 'class="draw-select"');
+        $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, $customer['status'], 'class="draw-select"');
         $form['subscriptions'] = $sheel->subscription->pulldown();
 
 
@@ -273,105 +278,129 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         );
         $sheel->template->pprint('main', $vars);
         exit();
+    } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'view' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
+        $areanav = 'customers_customers';
+        $currentarea = $sheel->GPC['no'];
+        $vars['areanav'] = $areanav;
+        $vars['currentarea'] = $currentarea;
+        $customer = array();
+        $sql = $sheel->db->query("
+        SELECT c.*, cp.address, cp.address2, cp.phone, cp.mobile, cp.contact, cp.email, cp.city, cp.state, cp.zipcode, cp.country, cp.dateadded
+            FROM " . DB_PREFIX . "customers c
+            LEFT JOIN " . DB_PREFIX . "customer_profiles cp ON c.customer_id = cp.customer_id
+        WHERE c.customer_id = '" . $sheel->GPC['no'] . "'
+        LIMIT 1
+        ");
+
+        if ($sheel->db->num_rows($sql) > 0) {
+            $sheel->GPC['activated'] = '1';
+            $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
+            $customer['subscription'] = $sheel->subscription->getname($customer['subscriptionid']);
+            ;
+        }
+
+        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        $tzlistfinal = array();
+        foreach ($tzlist as $key => $value) {
+            $tzlistfinal[$value] = $value;
+        }
+        $form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, $customer['timezone'], 'class="draw-select"');
+        $form['no'] = $sheel->GPC['no'];
+        $form['company'] = $sheel->GPC['company'];
+        $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', $customer['currencyid']);
+        $statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
+        $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, $customer['status'], 'class="draw-select"');
+        $form['subscriptions'] = $sheel->subscription->pulldown();
+        $sheel->template->fetch('main', 'customers.html', 1);
+
+        $sheel->template->parse_hash(
+            'main',
+            array(
+                'ilpage' => $sheel->ilpage,
+                'customercard' => $customer,
+                'form' => $form
+            )
+        );
+        $sheel->template->pprint('main', $vars);
+        exit();
+
+    } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'refresh' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
+        $customer = array();
+        $companycode = $defaulcompany;
+        $sql = $sheel->db->query("
+            SELECT company_id
+            FROM " . DB_PREFIX . "customers
+            WHERE customer_id = '" . $sheel->GPC['no'] . "'
+            LIMIT 1
+        ", 0, null, __FILE__, __LINE__);
+        if ($sheel->db->num_rows($sql) > 0) {
+            $res = $sheel->db->fetch_array($sql, DB_ASSOC);
+            $companycode = $sheel->admincp_customers->get_company_name($res['company_id'],true);
+        } else {
+            
+        }
+
+        $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $companycode);
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $customer = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
+        $customer = $customer['0'];
+        $payload = array();
+        $payload['customer_id'] = $sheel->GPC['no'];
+        $payload['customerref'] = $customer['No'];
+        $payload['customername'] = $customer['Name'];
+        $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
+        $payload['customername2'] = $customer['Name2'];
+        $payload['customerabout'] = $customer['Name_Arabic'];
+        $payload['customerdescription'] = $customer['Nature_Of_Business'];
+        $payload['date_added'] = date("Y/m/d H:i:s");
+        $payload['status'] = $sheel->GPC['form']['status'];
+        $payload['accountnumber'] = $customer['No'];
+        $payload['available_balance'] = '';
+        $payload['total_balance'] = '';
+        $payload['currencyid'] = $sheel->GPC['form']['currencyid'];
+        $payload['timezone'] = $sheel->GPC['form']['tz'];
+        $payload['vatnumber'] = $customer['VAT_Registration_No'];
+        $payload['regnumber'] = $customer['CR_No'];
+        $payload['address'] = $customer['Address'];
+        $payload['address2'] = $customer['Address_2'];
+        $payload['phone'] = $customer['Phone_No'];
+        $payload['mobile'] = $customer['MobilePhoneNo'];
+        $payload['contact'] = $customer['ContactName'];
+        $payload['email'] = $customer['E_Mail'];
+        $payload['city'] = $customer['City'];
+        $payload['state'] = '';
+        $payload['zipcode'] = $customer['Post_Code'];
+        $payload['country'] = $customer['Country_Region_Code'];
+        $payload['autopayment'] = '0';
+        $payload['requestdeletion'] = '0';
+        $payload['logo'] = $sheel->GPC['no'] . $ext;
+        $refreshed = $sheel->admincp_customers->refresh_customer($payload);
+        if ($refreshed) {
+            unset($_SESSION['sheeldata']['tmp']['new_customer_ref']);
+            refresh(HTTPS_SERVER_ADMIN . 'customers/view/'.$sheel->GPC['no'].'/');
+            exit();
+        } else {
+            $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be at least 150x150.');
+            $sheel->GPC['note'] = 'error';
+        }
+
+
     } else {
         $areanav = 'customers_customers';
         $vars['areanav'] = $areanav;
-        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'marksuspended') { // mark suspended
-
-            if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
-                $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
-                $response = array();
-                $response = $sheel->admincp_customers->changestatus($ids, 'suspended');
-                unset($ids);
-                $sheel->template->templateregistry['success'] = $response['success'];
-                $sheel->template->templateregistry['errors'] = $response['errors'];
-                die(
-                    json_encode(
-                        array(
-                            'response' => '2',
-                            'success' => $sheel->template->parse_template_phrases('success'),
-                            'errors' => $sheel->template->parse_template_phrases('errors'),
-                            'ids' => $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']],
-                            'successids' => $response['successids'],
-                            'failedids' => $response['failedids']
-                        )
-                    )
-                );
-            } else {
-
-                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
-                die(
-                    json_encode(
-                        array(
-                            'response' => '0',
-                            'message' => $sheel->template->parse_template_phrases('message')
-                        )
-                    )
-                );
-            }
-        } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markcancelled') { // mark cancelled
-            if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
-                $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
-                $response = array();
-                $response = $sheel->admincp_customers->changestatus($ids, 'cancelled');
-                unset($ids);
-                $sheel->template->templateregistry['success'] = $response['success'];
-                $sheel->template->templateregistry['errors'] = $response['errors'];
-                die(
-                    json_encode(
-                        array(
-                            'response' => '2',
-                            'success' => $sheel->template->parse_template_phrases('success'),
-                            'errors' => $sheel->template->parse_template_phrases('errors'),
-                            'ids' => $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']],
-                            'successids' => $response['successids'],
-                            'failedids' => $response['failedids']
-                        )
-                    )
-                );
-            } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
-                die(
-                    json_encode(
-                        array(
-                            'response' => '0',
-                            'message' => $sheel->template->parse_template_phrases('message')
-                        )
-                    )
-                );
-            }
-        } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markbanned') { // mark banned
-            if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
-                $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
-                $response = array();
-                $response = $sheel->admincp_customers->changestatus($ids, 'banned');
-                unset($ids);
-                $sheel->template->templateregistry['success'] = $response['success'];
-                $sheel->template->templateregistry['errors'] = $response['errors'];
-                die(
-                    json_encode(
-                        array(
-                            'response' => '2',
-                            'success' => $sheel->template->parse_template_phrases('success'),
-                            'errors' => $sheel->template->parse_template_phrases('errors'),
-                            'ids' => $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']],
-                            'successids' => $response['successids'],
-                            'failedids' => $response['failedids']
-                        )
-                    )
-                );
-            } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
-                die(
-                    json_encode(
-                        array(
-                            'response' => '0',
-                            'message' => $sheel->template->parse_template_phrases('message')
-                        )
-                    )
-                );
-            }
-        } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markactive') { // mark active
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markactive') { // mark active
             if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
@@ -403,11 +432,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     )
                 );
             }
-        } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markdeleted') { // mark deleted
+        } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markinactive') { // mark inactive
             if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->admincp_customers->changestatus($ids, 'deleted');
+                $response = $sheel->admincp_customers->changestatus($ids, 'inactive');
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -437,18 +466,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $searchfilters = array(
-            'customer',
-            'date',
-            'cphone',
-            'cemail'
+            'name',
+            'account',
+            'date'
         );
         $searchviews = array(
             'active',
-            'moderated',
-            'banned',
-            'suspended',
-            'cancelled',
-            'deleted'
+            'inactive'
         );
         $searchcondition = $searchview = '';
 
@@ -458,24 +482,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $searchview = " WHERE (c.status = 'active')";
                         break;
                     }
-                case 'banned': {
-                        $searchview = " WHERE (c.status = 'banned')";
-                        break;
-                    }
-                case 'cancelled': {
-                        $searchview = " WHERE (c.status = 'cancelled')";
-                        break;
-                    }
-                case 'deleted': {
-                        $searchview = " WHERE (c.status = 'deleted')";
-                        break;
-                    }
-                case 'suspended': {
-                        $searchview = " WHERE (c.status = 'suspended')";
-                        break;
-                    }
-                case 'moderated': {
-                        $searchview = " WHERE (c.status = 'moderated')";
+                case 'inactive': {
+                        $searchview = " WHERE (c.status = 'inactive')";
                         break;
                     }
             }
@@ -487,6 +495,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             switch ($sheel->GPC['filter']) {
                 case 'name': {
                         $searchcondition = "AND (c.customername Like '%" . $sheel->db->escape_string($q) . "%' OR c.description Like '%" . $sheel->db->escape_string($q) . "%')";
+                        break;
+                    }
+                case 'account': {
+                        $searchcondition = "AND (c.customer_ref = '" . $sheel->db->escape_string($q) . "' OR c.account_number = '" . $sheel->db->escape_string($q) . "')";
                         break;
                     }
 
@@ -528,21 +540,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 // $res['lineitems'] = $sheel->admincp->fetch_line_items($res['orderidpublic']);
                 // $res['pictures'] = $sheel->buynow->fetch_line_item_pictures($res['orderidpublic']);
                 $res['countrycode'] = $sheel->common_location->print_country_name($res['country']);
-                $res['switchadd'] = '<span class="badge badge--info title="{_add_item}"><a href="' . HTTPS_SERVER_ADMIN . 'customers/items/add/' . $res['customer_id'] . '/?view=' . $fview . '&customer_id=' . $res['customer_id'] . '" data-no-turbolink>{_add}</a></span>';
-                $res['switchview'] = '<span class="badge badge--success" title="{_view_item}"><a href="' . HTTPS_SERVER_ADMIN . 'customers/items/view/' . $res['customer_id'] . '/?view=' . $fview . '&customer_id=' . $res['customer_id'] . '" data-no-turbolink>{_view}</a></span>';
-
                 $customers[] = $res;
             }
         }
 
         $pageurl = PAGEURL;
         $vars['prevnext'] = $sheel->admincp->pagination($number, $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
-        $vars['fview'] = $fview;
 
         $form['view'] = (isset($sheel->GPC['view']) ? $sheel->GPC['view'] : '');
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
-            'name' => '{_customer_name}',
+            'account' => '{_account}',
+            'name' => '{_name}',
             'date' => '{_date_added} (YYYY-MM-DD)'
         );
         $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');

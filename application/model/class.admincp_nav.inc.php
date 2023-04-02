@@ -99,7 +99,7 @@ class admincp_nav extends admincp
                                 </li>
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="customers" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Customers" aria-controls="iLNav_Customers" href="' . HTTPS_SERVER_ADMIN . 'customers/">
-                                                <span class="glyphicons glyphicons-bank draw-icon" aria-hidden="true"></span>
+                                                <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">{_customers}</span>
                                                 ' . (($customerscount > 0) ? '<span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Customers" title="{_customers}" refresh-always="">
                                                     <span class="draw-nav__badge-content" id="customerscount">' . $this->custom_number_format($customerscount, 1) . '</span>

@@ -132,7 +132,7 @@ class admincp_customers extends admincp
     function construct_new_customer($payload)
     {
         $this->sheel->db->query("INSERT INTO " . DB_PREFIX . "customers
-        (customer_id,customer_ref,customername,subscriptionid,customername2,customerabout,customerdescription,date_added,status,account_number,available_balance,total_balance,currencyid,timezone,vatnumber,regnumber, autopayment, requestdeletion, logo)
+        (customer_id,customer_ref,customername,subscriptionid,customername2,customerabout,customerdescription,date_added,status,account_number,available_balance,total_balance,currencyid,timezone,vatnumber,regnumber, autopayment, requestdeletion, logo, company_id)
         VALUES (
         NULL,
         '" . $this->sheel->db->escape_string($payload['customerref']) . "',
@@ -152,19 +152,22 @@ class admincp_customers extends admincp
         '" . $this->sheel->db->escape_string($payload['regnumber']) . "',
         '" . $this->sheel->db->escape_string($payload['autopayment']) . "',
         '" . $this->sheel->db->escape_string($payload['requestdeletion']) . "',
-        '" . $this->sheel->db->escape_string($payload['logo']) . "')
+        '" . $this->sheel->db->escape_string($payload['logo']) . "',
+        '" . $this->sheel->db->escape_string($this->get_company_id($payload['companycode'])) . "')
         ");
         $customer_id = $this->sheel->db->insert_id();
 
         $this->sheel->db->query("
         INSERT INTO " . DB_PREFIX . "customer_profiles
-        (id, customer_id, address, address2, phone, email, city, state, zipcode, country, dateadded, type,billing_type, status, isdefault)
+        (id, customer_id, address, address2, phone, mobile, contact, email, city, state, zipcode, country, dateadded, type,billing_type, status, isdefault)
         VALUES(
         NULL,
         '" . $customer_id . "',
         '" . $this->sheel->db->escape_string($payload['address']) . "',
         '" . $this->sheel->db->escape_string($payload['address2']) . "',
         '" . $this->sheel->db->escape_string($payload['phone']) . "',
+        '" . $this->sheel->db->escape_string($payload['mobile']) . "',
+        '" . $this->sheel->db->escape_string($payload['contact']) . "',
         '" . $this->sheel->db->escape_string($payload['email']) . "',
         '" . $this->sheel->db->escape_string($payload['city']) . "',
         '" . $this->sheel->db->escape_string($payload['state']) . "',
@@ -176,9 +179,43 @@ class admincp_customers extends admincp
         '1',
         '1')
         ", 0, null, __FILE__, __LINE__);
-        $this->build_customer_subscription($customer_id, $payload['subscriptionid'],'account');
+        $this->build_customer_subscription($customer_id, $payload['subscriptionid'], 'account');
         $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'customer created successfully', "A new customer With ID: '$customer_id' was created successfully.");
         return $customer_id;
+    }
+
+    function refresh_customer($payload)
+    {
+        $refreshed = false;
+        $customerid = intval($payload['customer_id']);
+        $this->sheel->db->query("UPDATE " . DB_PREFIX . "customers
+        SET customer_ref = '" . $this->sheel->db->escape_string($payload['customerref']) . "',
+            customername = '" . $this->sheel->db->escape_string($payload['customername']) . "',
+            customername2 = '" . $this->sheel->db->escape_string($payload['customername2']) . "',
+            customerabout = '" . $this->sheel->db->escape_string($payload['customerabout']) . "',
+            customerdescription = '" . $this->sheel->db->escape_string($payload['customerdescription']) . "',
+            account_number = '" . $this->sheel->db->escape_string($payload['accountnumber']) . "',
+            vatnumber = '" . $this->sheel->db->escape_string($payload['vatnumber']) . "',
+            regnumber = '" . $this->sheel->db->escape_string($payload['regnumber']) . "'
+        WHERE customer_id = '" . $customerid . "'
+        ");
+
+        $this->sheel->db->query("UPDATE " . DB_PREFIX . "customer_profiles
+        SET address = '" . $this->sheel->db->escape_string($payload['address']) . "',
+            address2 = '" . $this->sheel->db->escape_string($payload['address2']) . "',
+            phone = '" . $this->sheel->db->escape_string($payload['phone']) . "',
+            mobile = '" . $this->sheel->db->escape_string($payload['mobile']) . "',
+            contact = '" . $this->sheel->db->escape_string($payload['contact']) . "',
+            email = '" . $this->sheel->db->escape_string($payload['email']) . "',
+            city = '" . $this->sheel->db->escape_string($payload['city']) . "',
+            state = '" . $this->sheel->db->escape_string($payload['state']) . "',
+            zipcode = '" . $this->sheel->db->escape_string($payload['zipcode']) . "',
+            country = '" . $this->sheel->common_location->print_country_name_bycode($payload['country'], $_SESSION['sheeldata']['user']['slng']) . "'
+        WHERE customer_id = '" . $customerid . "'
+        ");
+        $refreshed = true;
+        $this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'customer refreshed successfully', "customer With ID: '$customerid' was refreshed successfully.");
+        return $refreshed;
     }
 
     /**
@@ -264,5 +301,45 @@ class admincp_customers extends admincp
         }
         return $uid;
     }
+    function get_company_id($code)
+    {
+        $cid = 0;
+        $sql = $this->sheel->db->query("
+				SELECT company_id
+				FROM " . DB_PREFIX . "companies
+				WHERE bc_code = '" . $code . "'
+				LIMIT 1
+			", 0, null, __FILE__, __LINE__);
+        if ($this->sheel->db->num_rows($sql) > 0) {
+            $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+            $cid = $res['company_id'];
+        } else {
+            $cid = 0;
+        }
+        return $cid;
+    }
+    function get_company_name($companyid, $code = true)
+    {
+        $returnedc = '';
+        $sql = $this->sheel->db->query("
+				SELECT name, bc_code
+				FROM " . DB_PREFIX . "companies
+				WHERE company_id = '" . $companyid . "'
+				LIMIT 1
+			", 0, null, __FILE__, __LINE__);
+        if ($this->sheel->db->num_rows($sql) > 0) {
+            $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+            if ($code) {
+                $returnedc = $res['bc_code'];
+            } else {
+                $returnedc = $res['name'];
+            }
+        } else {
+
+        }
+        return $returnedc;
+    }
+
+
 }
 ?>
