@@ -45,21 +45,9 @@ class admincp_customers extends admincp
     {
         $allerrors = $successids = $failedids = $action = $display = '';
         $count = 0;
-        if ($status == 'deleted') {
-            $action = '{_deleted}';
-            $display = '{_deleted}';
-
-        } else if ($status == 'suspended') {
-            $action = '{_suspended}';
-            $display = '{_suspended}';
-
-        } else if ($status == 'canceled') {
-            $action = '{_canceled}';
-            $display = '{_canceled}';
-
-        } else if ($status == 'banned') {
-            $action = '{_banned}';
-            $display = '{_banned}';
+        if ($status == 'inactive') {
+            $action = '{_inactive}';
+            $display = '{_inactive}';
 
         } else if ($status == 'active') {
             $action = '{_active}';

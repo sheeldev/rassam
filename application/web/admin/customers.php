@@ -13,7 +13,6 @@ $sheel->template->meta['jsinclude'] = array(
         'vendor/growl'
     ),
     'footer' => array(
-        'admin_customers',
     )
 );
 $sheel->template->meta['cssinclude'] = array(
@@ -54,7 +53,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $defaulcompany = $res['bc_code'];
         }
     }
-    
+
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bc') {
         $customers = array();
         $searchcondition = '';
@@ -63,7 +62,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             'account'
         );
         $companies = array();
-        
+
 
         $sql = $sheel->db->query("
         SELECT name, bc_code
@@ -134,8 +133,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
+        $sheel->template->meta['jsinclude']['footer'][] = 'admin_customers';
         $customer = array();
-
         $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $sheel->GPC['company']);
         $searchcondition = '$filter=No eq \'' . $sheel->GPC['no'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
@@ -203,7 +202,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $sheel->GPC['note'] = 'wh';
                 }
             }
-            $payload['companycode'] =$sheel->GPC['company'];
+            $payload['companycode'] = $sheel->GPC['company'];
             $payload['customerref'] = $customer['No'];
             $payload['customername'] = $customer['Name'];
             $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
@@ -279,6 +278,45 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'view' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
+        if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
+            $ext = mb_substr($_FILES['imagename']['name'], strpos($_FILES['imagename']['name'], '.'), strlen($_FILES['imagename']['name']) - 1);
+            list($width, $height) = getimagesize($_FILES['imagename']['tmp_name']);
+            if (in_array($ext, array('.png', '.jpg', '.jpeg', '.gif')) and filesize($_FILES['imagename']['name']) <= 250000 and $width >= 150 and $height >= 150) {
+                if (file_exists(DIR_ATTACHMENTS . 'customers/' . $_FILES['imagename']['name'])) {
+                    if (!unlink(DIR_ATTACHMENTS . 'customers/' . $_FILES['imagename']['name'])) {
+                        $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error removing old customer logo file', 'Old customer logo file could not be removed (check permission)');
+                    }
+                }
+                if (!move_uploaded_file($_FILES['imagename']['tmp_name'], DIR_ATTACHMENTS . 'customers/' . $sheel->GPC['customer_ref'] . $ext)) {
+                    die($_FILES["imagename"]["error"]);
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error saving customer logo file', 'customer logo file could not be uploaded (check folder permission)');
+                } else {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'Added customer logo file', 'A new customer logo file was saved ');
+                }
+            } else {
+                if (!in_array($ext, array('.png', '.jpg', '.jpeg', '.gif'))) {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be .png, .jpg, .jpeg, or .gif.');
+                    $sheel->GPC['note'] = 'extension';
+                }
+                if (filesize($_FILES['imagename']['name']) >= 250000) {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be under 250kb in file size.');
+                    $sheel->GPC['note'] = 'size';
+                }
+                if ($width < 150 || $height < 150) {
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be at least 150x150.');
+                    $sheel->GPC['note'] = 'wh';
+                }
+            }
+            $sheel->db->query("UPDATE " . DB_PREFIX . "customers
+                SET subscriptionid = '" . $sheel->GPC['form']['subscriptionid'] . "',
+                status = '" . $sheel->GPC['form']['status'] . "',
+                timezone = '" . $sheel->GPC['form']['tz'] . "',
+                currencyid = '" . $sheel->GPC['form']['currencyid'] . "',
+                logo ='" . $sheel->GPC['customer_ref'] . $ext . "'
+                WHERE customer_id = '" . $sheel->GPC['no'] . "'
+            ");
+
+        }
         $areanav = 'customers_customers';
         $currentarea = $sheel->GPC['no'];
         $vars['areanav'] = $areanav;
@@ -296,9 +334,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->GPC['activated'] = '1';
             $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
             $customer['subscription'] = $sheel->subscription->getname($customer['subscriptionid']);
-            ;
-        }
 
+        }
+        $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         $tzlistfinal = array();
         foreach ($tzlist as $key => $value) {
@@ -306,19 +344,82 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $form['tz'] = $sheel->construct_pulldown('tz', 'form[tz]', $tzlistfinal, $customer['timezone'], 'class="draw-select"');
         $form['no'] = $sheel->GPC['no'];
-        $form['company'] = $sheel->GPC['company'];
+        $form['company'] = $companycode;
         $form['currency'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', $customer['currencyid']);
         $statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
         $form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, $customer['status'], 'class="draw-select"');
-        $form['subscriptions'] = $sheel->subscription->pulldown();
-        $sheel->template->fetch('main', 'customers.html', 1);
+        $form['subscriptions'] = $sheel->subscription->plans_pulldown('draw-select', $customer['subscriptionid']);
+        $form['imagename'] = $customer['logo'];
 
+        $departments = array();
+        $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
+        $searchcondition = '$filter=Customer_No eq \'' .$customer['customer_ref'] . '\'';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $departments = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
+
+        $positions = array();
+        $sheel->dynamics->init_dynamics('Department_Positions_Excel', $companycode);
+        $searchcondition = '$filter=Customer_No eq \'' .$customer['customer_ref'] . '\'';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $positions = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
+
+        $staff = array();
+        $sheel->dynamics->init_dynamics('Staffs_Excel', $companycode);
+        $searchcondition = '$filter=Customer_No eq \'' .$customer['customer_ref'] . '\'';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $staff = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
+
+        $sheel->template->fetch('main', 'customers.html', 1);
         $sheel->template->parse_hash(
             'main',
             array(
                 'ilpage' => $sheel->ilpage,
                 'customercard' => $customer,
                 'form' => $form
+            )
+        );
+        $sheel->template->parse_loop(
+            'main',
+            array(
+                'departments' => $departments,
+                'positions' => $positions,
+                'staff' => $staff
             )
         );
         $sheel->template->pprint('main', $vars);
@@ -335,9 +436,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         ", 0, null, __FILE__, __LINE__);
         if ($sheel->db->num_rows($sql) > 0) {
             $res = $sheel->db->fetch_array($sql, DB_ASSOC);
-            $companycode = $sheel->admincp_customers->get_company_name($res['company_id'],true);
+            $companycode = $sheel->admincp_customers->get_company_name($res['company_id'], true);
         } else {
-            
+
         }
 
         $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $companycode);
@@ -389,7 +490,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $refreshed = $sheel->admincp_customers->refresh_customer($payload);
         if ($refreshed) {
             unset($_SESSION['sheeldata']['tmp']['new_customer_ref']);
-            refresh(HTTPS_SERVER_ADMIN . 'customers/view/'.$sheel->GPC['no'].'/');
+            refresh(HTTPS_SERVER_ADMIN . 'customers/view/' . $sheel->GPC['no'] . '/');
             exit();
         } else {
             $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error uploading customer logo file', 'The customer logo file must be at least 150x150.');
@@ -530,7 +631,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $searchcondition	
             ORDER BY c.customer_id DESC
 		");
-
         $number = (int) $sheel->db->num_rows($sql2);
         $form['number'] = number_format($number);
         $form['filter'] = ((isset($sheel->GPC['filter'])) ? $sheel->GPC['filter'] : '');

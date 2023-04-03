@@ -41,9 +41,8 @@ $router->map('GET|POST', '/admin/signin/[renew-password:cmd]/', __DIR__ . '/appl
 $router->map('GET|POST', '/admin/signin/[*:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_logout');
 $router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers');
 $router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_bc_list');
-$router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
-$router->map('GET|POST', '/admin/customers/[add:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_add');
-$router->map('GET|POST', '/admin/customers/[update:cmd]/[*:rid]/[*:view]/', __DIR__ . '/application/web/admin/customers.php', 'admin_update_customers_view');
+$router->map('GET|POST', '/admin/customers/[view|bcview|refresh|departments|positions|staff:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
+
 
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
 $router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|invoice|payment|registration|escrow|feedback|shipping|listings|bidding|pmb|privacy|censor|blacklist|categories|seo|search|security|distance|cache|session|attachments|license|license/plans|license/renewal|billing/update|billing/create|billing/cancel|updates|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');

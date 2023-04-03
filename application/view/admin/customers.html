@@ -161,12 +161,14 @@
 <else />
 <if condition="isset($sheel->GPC['cmd']) AND ($sheel->GPC['cmd'] == 'view')">
 
-<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'wan'"><script>jQuery.growl.error({ title: '{_wrong_account}', message: '{_wrong_account_number}' })</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'extension'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be .png, .jpg or .gif.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'size'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be under 250kb in file size.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'wh'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be at least 150 x 150 dimension.' });</script></if>
 
 <div id="customers-new" class="page">
-        <form autocomplete="off" id="new_customer" action="{https_server_admin}customers/<if condition="$sheel->GPC['cmd'] == 'add'">add</if>/" accept-charset="UTF-8" onsubmit="return verify_acp_customer('<if condition="$sheel->GPC['cmd'] == 'add'">add<else />update</if>')" method="post">
+        <form autocomplete="off" id="new_customer" action="{https_server_admin}customers/view/{customercard[customer_id]}/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
     	<input type="hidden" name="do" value="save" />
-    	<input type="hidden" name="form[pid]" id="pid" value="{form[pid]}">
+        <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
         <div class="header-row">
             <header class="header">
                 <h1 class="header__main">
@@ -350,17 +352,15 @@
                                         <div class="draw-input-wrapper">
 
                                             <label class="draw-label" for="form_imagename">Upload Image <span class="type--subdued"></span></label>
-
-                                            <if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'update'">
-                                                <div class="ssb"><img src="{config[imguploadscdn]}announcements/{form[imagename]}" width="100"></div>
-                                                <input type="hidden" name="form[imagename_old]" id="imagename_old" value="{form[imagename_old]}"> 
-                                            </if>
+                                            <div class="ssb"><img src="{config[imguploadscdn]}customers/{form[imagename]}" width="100"></div>
                                             <div class="styled-file-input">
                                                 <div class="btn"> <span>{_browse}</span>
-                                                    <input type="file" name="form[imagename]"  id="uploadimage" class="js-no-dirty"> </div>
+                                                    <input type="file" name="imagename"  id="uploadimage" class="js-no-dirty"> 
+                                                </div>
                                             </div>
                                             <div class="st">{_accepted}: <span class="type--subdued">.gif, .jpg, .jpeg, .png</span></div>
                                             <div>Dimension: <span class="type--subdued">150 x 150</span></div> 
+                                            <div id="file-upload-filename"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -370,7 +370,134 @@
                 </div>
             </div>
 
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Customer Departments</h1>
+                        <p>Departments List for this Customer.</p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+          
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="10%"><label>Code</label> </th>
+                                        <th width="100%"><label>Name</label></th> 
+                                        
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="departments">
+                                        <tr valign="top">
+                                            <td width="10%" nowrap="nowrap">{Department_Code}</td>
+                                            <td width="100%" align="left">{Department_Name}</td> 
+                                        </tr>
+                                    </loop name="departments"> 
+                                    </tbody>
+                                    </table>
+                                </div>
+                                <div class="draw-grid draw-grid--outside-padding draw-grid--inner-grid">
+                                    <div class="draw-input-wrapper">
+                                       <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/departments/{customercard[customer_id]}/">Add Department</a>
+                                    </div>
+                                </div>
 
+                            </div>
+                            
+
+                    </div>
+                </div>
+            </div>
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Customer Positions</h1>
+                        <p>Positions List for this Customer.</p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+          
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="10%"><label>Code</label></th>
+                                        <th width="15%"><label>Name</label></th> 
+                                        <th width="85%"><label>Department</label></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="positions">
+                                        <tr valign="top">
+                                            <td width="10%" nowrap="nowrap">{Position_Code}</td>
+                                            <td width="15%" align="left">{Position_Name}</td> 
+                                            <td width="85%" align="left">{Department_Name}</td> 
+                                        </tr>
+                                    </loop name="positions"> 
+                                    </tbody>
+                                    </table>
+                                </div>
+                                <div class="draw-grid draw-grid--outside-padding draw-grid--inner-grid">
+                                    <div class="draw-input-wrapper">
+                                       <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/positions/{customercard[customer_id]}/">Add Positions</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Customer Staffs</h1>
+                        <p>Staff List for this Customer.</p>
+                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/staff/{customercard[customer_id]}/">Manage Staff</a></p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+          
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="10%"><label>Code</label></th>
+                                        <th width="15%"><label>Name</label></th> 
+                                        <th width="15%"><label>Position</label></th>
+                                        <th width="60%"><label>Department</label></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="staff">
+                                        <tr valign="top">
+                                            <td width="10%" nowrap="nowrap">{Code}</td>
+                                            <td width="15%" align="left">{Name}</td> 
+                                            <td width="15%" align="left">{Position_Name}</td> 
+                                            <td width="60%" align="left">{Department_Name}</td> 
+                                        </tr>
+                                    </loop name="staff"> 
+                                    </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                            
+
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>      
     </form>
     </div>
