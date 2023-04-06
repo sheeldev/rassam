@@ -132,6 +132,106 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         );
         $sheel->template->pprint('main', $vars);
         exit();
+    } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'org' and isset($sheel->GPC['sub']) and $sheel->GPC['sub'] != 'departments') {
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
+            if (isset($sheel->GPC['no']) and $sheel->GPC['no'] > 0) {
+
+                //$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Company deleted', 'A managed company has been successfully deleted.');
+                $sheel->template->templateregistry['message'] = 'A Customer Department has been successfully deleted.';
+                die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+
+            } else {
+                $sheel->template->templateregistry['message'] = 'This Customer Department could not be deleted.';
+                die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+            }
+        }
+        $areanav = 'customers_bc';
+        $vars['areanav'] = $areanav;
+        $tempdep = array();
+        $departments = array();
+        $custdepartments = array();
+        $customer = array();
+        $sql = $sheel->db->query("
+        SELECT customer_id, customer_ref, company_id
+            FROM " . DB_PREFIX . "customers 
+        WHERE customer_id = '" . $sheel->GPC['no'] . "'
+        LIMIT 1
+        ");
+
+        if ($sheel->db->num_rows($sql) > 0) {
+            $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
+        }
+        $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
+        $sheel->dynamics->init_dynamics('Departments_Excel', $companycode);
+        $apiResponse = $sheel->dynamics->select('');
+        if ($apiResponse->isSuccess()) {
+            $tempdep = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
+
+        foreach ($tempdep as $key => $value) {
+   
+            foreach ($value as $key1 => $value1) {
+                if ($key1=='Code') {
+                    $code = $value1;
+                }
+                if ($key1=='Name') {
+                    $name = $value1;
+                }   
+            }
+            $departments += [$code => $name];
+        }
+
+        $form['department_pulldown'] = $sheel->construct_pulldown('departments', 'departments', $departments, '', 'class="draw-select"');
+        $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
+        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $departments = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            die(
+                json_encode(
+                    array(
+                        'response' => '0',
+                        'message' => $sheel->template->parse_template_phrases('message')
+                    )
+                )
+            );
+        }
+
+        $sheel->template->fetch('main', 'customer-departments.html', 1);
+        $sheel->template->parse_loop(
+            'main',
+            array(
+                'customers' => $customers
+            )
+        );
+        $sheel->template->parse_hash(
+            'main',
+            array(
+                'ilpage' => $sheel->ilpage,
+                'customercard' => $customer,
+                'form' => $form
+            )
+        );
+        $sheel->template->parse_loop(
+            'main',
+            array(
+                'departments' => $departments
+            )
+        );
+        $sheel->template->pprint('main', $vars);
+        exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
         $sheel->template->meta['jsinclude']['footer'][] = 'admin_customers';
         $customer = array();
@@ -353,7 +453,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $departments = array();
         $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' .$customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $departments = $apiResponse->getData();
@@ -371,7 +471,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $positions = array();
         $sheel->dynamics->init_dynamics('Department_Positions_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' .$customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $positions = $apiResponse->getData();
@@ -389,7 +489,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $staff = array();
         $sheel->dynamics->init_dynamics('Staffs_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' .$customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $staff = $apiResponse->getData();

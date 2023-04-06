@@ -1,0 +1,115 @@
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    <div id="customers-index" class="page has-contextual-help customers-page">
+        <div class="header-row">
+            <header id="customers-index-header" class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span> {currentarea}
+                </h1>           
+                
+                <div class="header__secondary-actions">
+                    <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
+                    <ul class="segmented"> </ul>
+                </div>
+            </header>
+    </div>
+    
+    <form autocomplete="off" class="address-form" id="new_customer_transaction" action="{https_server_admin}customers/update/{form[userid]}/" accept-charset="UTF-8" method="post" onsubmit="return verify_acp_customer_txn()">
+    <input type="hidden" name="do" value="transaction" />
+    <div class="section overview">
+    <div class="section section--no-border tags">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>{_account_balance_transaction}</h1>
+                        <p>Received cash or offline funds? Credit or debit a customers account balance from here. </p>
+                        <p class="type--subdued">You can also create a points credit or debit transaction by changing type to "Points" instead of "Money".</p>
+                  </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password"><if condition="$ilance->config['pointsystem']">{_money_or_points_amount}<else />{_amount}</if></label>
+                                        <input class="draw-input" size="30" type="text" name="form[amount]" id="customer_amount" placeholder="<if condition="$ilance->config['pointsystem']">10.50 or 10 (for points)<else />10.00</if>">
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_transaction_type}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[department_pulldown]}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_secret_answer">{_transaction_description} <span class="type--subdued">(Only customer can see)</span></label>
+                                        <input class="draw-input" size="30" type="text" name="form[transaction_description]" id="customer_transaction_description" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_secret_answer">{_notes} <span class="type--subdued">(Only staff can see)</span></label>
+                                        <input class="draw-input" size="30" type="text" name="form[transaction_notes]" id="customer_transaction_notes" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-input-wrapper">
+                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Create Transaction</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Customer Departments</h1>
+                        <p>Departments List for this Customer.</p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+          
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="10%"><label>Code</label> </th>
+                                        <th width="100%"><label>Name</label></th> 
+                                        <th>{_action}</span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="departments">
+                                        <tr valign="top">
+                                            <td width="10%" nowrap="nowrap">{Department_Code}</td>
+                                            <td width="100%" align="left">{Department_Name}</td> 
+                                            <td >
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer department?', 'Are you sure you want to delete the selected customer department?', '{customer_id}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/departments/')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                            </td>
+                                        </tr>
+                                    </loop name="departments"> 
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+</section>
