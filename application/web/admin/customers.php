@@ -105,6 +105,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             );
         }
+
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
@@ -145,8 +146,29 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
             }
         }
+
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
+            
+            $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
+            $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
+            $addResponse =$sheel->dynamics->insert(array(
+                "Department_Code"     => $sheel->GPC['departments'],
+                "Customer_No"  => $sheel->GPC['customer_ref']
+            ));
+            
+            if($addResponse->isSuccess()) {
+                $sheel->GPC['note'] = 'addsuccess';
+                // $contactsResponse->getGuidCreated(); - Get the GUID of the created entity
+            }
+            else {
+                $sheel->GPC['note'] = 'adderror';
+                // $contactsResponse->getErrorMessage(); - Get the error message as string
+            }
+        }
+
         $areanav = 'customers_bc';
         $vars['areanav'] = $areanav;
+        $vars['currentarea'] = 'Departments';
         $tempdep = array();
         $departments = array();
         $custdepartments = array();
@@ -208,14 +230,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             );
         }
-
         $sheel->template->fetch('main', 'customer-departments.html', 1);
-        $sheel->template->parse_loop(
-            'main',
-            array(
-                'customers' => $customers
-            )
-        );
         $sheel->template->parse_hash(
             'main',
             array(
@@ -251,7 +266,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             );
         }
+
         $customer = $customer['0'];
+
         $sheel->GPC['activated'] = '0';
         $sql = $sheel->db->query("
         SELECT customer_ref, subscriptionid, currencyid, timezone, status, logo

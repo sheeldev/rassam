@@ -1,3 +1,5 @@
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Department has been successfully Created.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Customer Department could not be added.' });</script></if>
 <section>
     <script type="text/javascript">
         Page();
@@ -7,7 +9,7 @@
             <header id="customers-index-header" class="header">
                 <h1 class="header__main">
                     <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
-                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span> {currentarea}
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> /</span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{customercard[customer_id]}/">{customercard[customer_id]}</a> / </span>{currentarea}
                 </h1>           
                 
                 <div class="header__secondary-actions">
@@ -17,16 +19,18 @@
             </header>
     </div>
     
-    <form autocomplete="off" class="address-form" id="new_customer_transaction" action="{https_server_admin}customers/update/{form[userid]}/" accept-charset="UTF-8" method="post" onsubmit="return verify_acp_customer_txn()">
-    <input type="hidden" name="do" value="transaction" />
+    
     <div class="section overview">
     <div class="section section--no-border tags">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/departments/" accept-charset="UTF-8" method="post">
+            <input type="hidden" name="subcmd" value="add" />
+            <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
+            <input type="hidden" name="company_id" value="{customercard[company_id]}" />
             <div class="layout-content">
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
-                        <h1>{_account_balance_transaction}</h1>
-                        <p>Received cash or offline funds? Credit or debit a customers account balance from here. </p>
-                        <p class="type--subdued">You can also create a points credit or debit transaction by changing type to "Points" instead of "Money".</p>
+                        <h1>Add Department For {customercard[customer_ref]}</h1>
+                        <p>Add specific department for this customer. </p>
                   </div>
                 </div>
                 <div class="layout-content__main">
@@ -35,13 +39,7 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password"><if condition="$ilance->config['pointsystem']">{_money_or_points_amount}<else />{_amount}</if></label>
-                                        <input class="draw-input" size="30" type="text" name="form[amount]" id="customer_amount" placeholder="<if condition="$ilance->config['pointsystem']">10.50 or 10 (for points)<else />10.00</if>">
-                                    </div>
-                                </div>
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_transaction_type}</label>
+                                        <label class="draw-label" for="customer_password2">{_department}</label>
                                         <div class="draw-select__wrapper draw-input--has-content">
                                             {form[department_pulldown]}
                                         </div>
@@ -49,28 +47,15 @@
                                 </div>
                             </div>
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_secret_answer">{_transaction_description} <span class="type--subdued">(Only customer can see)</span></label>
-                                        <input class="draw-input" size="30" type="text" name="form[transaction_description]" id="customer_transaction_description" placeholder="">
-                                    </div>
-                                </div>
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_secret_answer">{_notes} <span class="type--subdued">(Only staff can see)</span></label>
-                                        <input class="draw-input" size="30" type="text" name="form[transaction_notes]" id="customer_transaction_notes" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-input-wrapper">
-                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Create Transaction</button>
+                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Department</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </form>
             <div class="layout-content">
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
@@ -83,9 +68,53 @@
                         <div class="draw-card__section">
           
                                 <div class="table-wrapper">
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/departments/" id="formdepartments" accept-charset="UTF-8" method="get">
                                     <table class="expanded">
                                     <thead>
                                     <tr>
+                                        <th class="select">
+                                            <span id="bulkOperations">
+                                            <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                </div>
+                                            </div>
+                                            <div class="bulk-actions">
+                                                <ul class="segmented">
+                                                    <li>
+                                                        <a class="btn btn-slim btn-disabled btn--selection">
+                                                            <span class="selection-count">
+                                                              <span id="selectedcount"></span> {_selected_departments}
+                                                            </span> 
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                        <div class="draw-popover__container">
+                                                            
+                                                            <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                            <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                <div class="draw-popover__content-wrapper">
+                                                                    <div class="draw-popover__content" style="max-height: 637px;">
+                                                                        <div class="draw-popover__pane">
+                                                                            <ul class="draw-list draw-list--compact">
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markactive', 'Mark [x] selected customers as ready?', 'Are you sure you want to mark selected customers as active?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers active</a></li>
+                                                                                <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markinactive', 'Mark [x] selected customers as inactive?', 'Are you sure you want to mark selected customers as inactive?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers inactive</a></li>
+                                                                            </ul> 
+                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <span class="bulk-select-all">
+                                                    <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
+                                                </span>
+                                            </div>
+                                            </span></th>
                                         <th width="10%"><label>Code</label> </th>
                                         <th width="100%"><label>Name</label></th> 
                                         <th>{_action}</span></th>
@@ -93,16 +122,22 @@
                                     </thead>
                                     <tbody>
                                     <loop name="departments">
-                                        <tr valign="top">
+                                        <tr id="tr_selected_{Department_Code}" valign="top">
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="customerid[]" id="reqssss_{Department_Code}" value="{Department_Code}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                
                                             <td width="10%" nowrap="nowrap">{Department_Code}</td>
                                             <td width="100%" align="left">{Department_Name}</td> 
                                             <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer department?', 'Are you sure you want to delete the selected customer department?', '{customer_id}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/departments/')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer department?', 'Are you sure you want to delete the selected customer department?', '{Department_Code}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/departments/')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
                                     </loop name="departments"> 
                                     </tbody>
                                     </table>
+                                </form>
+                                    <script type="text/javascript">
+                                        inlineCB = new iL_Inline('inlineCB', 'reqssss', 'formdepartments', '{_go}'); 
+                                    </script>
                                 </div>
                             </div>
                     </div>
@@ -110,6 +145,5 @@
             </div>
         </div>
     </div>
-    </form>
     <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
 </section>
