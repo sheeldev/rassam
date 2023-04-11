@@ -75,22 +75,22 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
-        $sheel->dynamics->init_dynamics('Customers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
+        $sheel->dynamics->init_dynamics('erCustomers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = '$filter=contains( Name, \'' . $sheel->db->escape_string($q) . '\')';
+                        $searchcondition = 'filter=contains( Name, \'' . $sheel->db->escape_string($q) . '\')';
                         break;
                     }
                 case 'account': {
-                        $searchcondition = '$filter=No eq \'' . $sheel->db->escape_string($q) . '\'';
+                        $searchcondition = 'filter=No eq \'' . $sheel->db->escape_string($q) . '\'';
                         break;
                     }
             }
         }
         //$contactsResponse = $sheel->dynamics->select('?$select=No&$filter=No eq \'AVR-CF00001\'');
-        $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition . $pagination);
+        $apiResponse = $sheel->dynamics->select('?sort=Name&direction=asc&count=true&' . $searchcondition . $pagination);
         $pageurl = PAGEURL;
         if ($apiResponse->isSuccess()) {
             $customers = $apiResponse->getData();
@@ -135,16 +135,47 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'org' and isset($sheel->GPC['sub']) and $sheel->GPC['sub'] != 'departments') {
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-            if (isset($sheel->GPC['no']) and $sheel->GPC['no'] > 0) {
+            if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
+                $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
+                //$response = array();
+                //$response = $sheel->admincp_customers->changestatus($ids, 'active');
+
+                unset($ids);
+                $sheel->template->templateregistry['success'] = $response['success'];
+                $sheel->template->templateregistry['errors'] = $response['errors'];
+                die(
+                    json_encode(
+                        array(
+                            'response' => '2',
+                            'success' => $sheel->template->parse_template_phrases('success'),
+                            'errors' => $sheel->template->parse_template_phrases('errors'),
+                            'ids' => $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']],
+                            'successids' => $response['successids'],
+                            'failedids' => $response['failedids']
+                        )
+                    )
+                );
+            } else if (isset($sheel->GPC['no']) and $sheel->GPC['no'] > 0) {
 
                 //$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Company deleted', 'A managed company has been successfully deleted.');
                 $sheel->template->templateregistry['message'] = 'A Customer Department has been successfully deleted.';
                 die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
 
             } else {
-                $sheel->template->templateregistry['message'] = 'This Customer Department could not be deleted.';
-                die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
+                die(
+                    json_encode(
+                        array(
+                            'response' => '0',
+                            'message' => $sheel->template->parse_template_phrases('message')
+                        )
+                    )
+                );
             }
+        }
+
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markactive') { // mark active
+            
         }
 
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {

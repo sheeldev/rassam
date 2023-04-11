@@ -57,19 +57,14 @@
             </div>
         </form>
             <div class="layout-content">
-                <div class="layout-content__sidebar layout-content__first">
-                    <div class="section-summary">
-                        <h1>Customer Departments</h1>
-                        <p>Departments List for this Customer.</p>
-                    </div>
-                </div>
                 <div class="layout-content__main">
                     <div class="draw-card">
+                        <div class="has-bulk-actions">
                         <div class="draw-card__section">
           
                                 <div class="table-wrapper">
                                     <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/departments/" id="formdepartments" accept-charset="UTF-8" method="get">
-                                    <table class="expanded">
+                                    <table class="table-hover expanded">
                                     <thead>
                                     <tr>
                                         <th class="select">
@@ -99,8 +94,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markactive', 'Mark [x] selected customers as ready?', 'Are you sure you want to mark selected customers as active?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers active</a></li>
-                                                                                <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markinactive', 'Mark [x] selected customers as inactive?', 'Are you sure you want to mark selected customers as inactive?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers inactive</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected customers?', 'Are you sure you want to delete selected customers?', 'depssss', 'selectedcount', '1', '0', '')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -114,7 +108,8 @@
                                                     <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
                                                 </span>
                                             </div>
-                                            </span></th>
+                                            </span>
+                                        </th>
                                         <th width="10%"><label>Code</label> </th>
                                         <th width="100%"><label>Name</label></th> 
                                         <th>{_action}</span></th>
@@ -123,7 +118,7 @@
                                     <tbody>
                                     <loop name="departments">
                                         <tr id="tr_selected_{Department_Code}" valign="top">
-                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="customerid[]" id="reqssss_{Department_Code}" value="{Department_Code}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="customerid[]" id="depssss_{Department_Code}" value="{Department_Code}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{Department_Code}</td>
                                             <td width="100%" align="left">{Department_Name}</td> 
@@ -136,9 +131,10 @@
                                     </table>
                                 </form>
                                     <script type="text/javascript">
-                                        inlineCB = new iL_Inline('inlineCB', 'reqssss', 'formdepartments', '{_go}'); 
+                                        inlineCB = new iL_Inline('inlineCB', 'depssss', 'formdepartments', '{_go}'); 
                                     </script>
                                 </div>
+                            </div>
                             </div>
                     </div>
                 </div>

@@ -42,7 +42,7 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-grid__cell">
                                     <label for="member-since">{_account_number}</label> 
-                                    <span id="member-since">{customercard[No]}</span> 
+                                    <span id="member-since">{customercard[number]}</span> 
                                 </div>
                                 <div class="draw-grid__cell">
                                     <label for="current-plan">{_name}</label> 
@@ -332,13 +332,13 @@
                         <tbody>
                         	<loop name="customers">
                             <tr id="tr_selected_{No}" valign="top">
-                               <td class="no-wrap"><a href="customers/bcview/{No}/?company={form[company]}">{No}</a></td>
+                               <td class="no-wrap"><a href="customers/bcview/{No}/?company={form[company]}">{number}</a></td>
                                 <td class="date draw-table__cell--full-width-when-condensed type--subdued"> <span>{Name}</span></td>
-                                <td class="status type--subdued">{Name_2}</td>
-                                <td class="status no-wrap type--subdued">{Country_Region_Code}</td>
-                                <td class="status no-wrap">{Contact}</td>
-                                <td class="status no-wrap">{Phone_No}</td>
-                                <td class="status no-wrap">{Blocked}</td>
+                                <td class="status type--subdued">{Name2}</td>
+                                <td class="status no-wrap type--subdued">{country}</td>
+                                <td class="status no-wrap">{contact}</td>
+                                <td class="status no-wrap">{phoneNumber}</td>
+                                <td class="status no-wrap">{blocked}</td>
                                 <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
                                 <else />
                                 <td class="last_order type--subdued"><a href="customers/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>

@@ -220,7 +220,7 @@ class dynamics
       $this->config['tokenEndPoint'] = $res['tokenendpoint'];
       $this->config['clientID'] = $res['clientid'];
       $this->config['clientSecret'] = $res['clientsecret'];
-      $this->config['crmApiEndPoint'] = $res['value'].'Company(\''.$company.'\')/'.$res['name'];
+      $this->config['crmApiEndPoint'] = $res['value'].'companies('.$company.')/'.$res['name'];
     } else {
 
     }
