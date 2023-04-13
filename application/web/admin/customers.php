@@ -75,22 +75,22 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
-        $sheel->dynamics->init_dynamics('erCustomers', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
+        $sheel->dynamics->init_dynamics('erCustomerList', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = 'filter=contains( Name, \'' . $sheel->db->escape_string($q) . '\')';
+                        $searchcondition = '$filter=contains( name, \'' . $sheel->db->escape_string($q) . '\')';
                         break;
                     }
                 case 'account': {
-                        $searchcondition = 'filter=No eq \'' . $sheel->db->escape_string($q) . '\'';
+                        $searchcondition = '$filter=number eq \'' . $sheel->db->escape_string($q) . '\'';
                         break;
                     }
             }
         }
         //$contactsResponse = $sheel->dynamics->select('?$select=No&$filter=No eq \'AVR-CF00001\'');
-        $apiResponse = $sheel->dynamics->select('?sort=Name&direction=asc&count=true&' . $searchcondition . $pagination);
+        $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition . $pagination);
         $pageurl = PAGEURL;
         if ($apiResponse->isSuccess()) {
             $customers = $apiResponse->getData();
@@ -105,6 +105,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             );
         }
+
 
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
         $filter_options = array(
@@ -181,10 +182,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
             
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
+            $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
             $addResponse =$sheel->dynamics->insert(array(
-                "Department_Code"     => $sheel->GPC['departments'],
-                "Customer_No"  => $sheel->GPC['customer_ref']
+                "departmentCode"     => $sheel->GPC['departments'],
+                "customerNo"  => $sheel->GPC['customer_ref']
             ));
             
             if($addResponse->isSuccess()) {
@@ -215,7 +216,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
         }
         $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
-        $sheel->dynamics->init_dynamics('Departments_Excel', $companycode);
+        $sheel->dynamics->init_dynamics('erDepartments', $companycode);
         $apiResponse = $sheel->dynamics->select('');
         if ($apiResponse->isSuccess()) {
             $tempdep = $apiResponse->getData();
@@ -234,10 +235,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         foreach ($tempdep as $key => $value) {
    
             foreach ($value as $key1 => $value1) {
-                if ($key1=='Code') {
+                if ($key1=='code') {
                     $code = $value1;
                 }
-                if ($key1=='Name') {
+                if ($key1=='name') {
                     $name = $value1;
                 }   
             }
@@ -245,8 +246,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $form['department_pulldown'] = $sheel->construct_pulldown('departments', 'departments', $departments, '', 'class="draw-select"');
-        $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
+        $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $departments = $apiResponse->getData();
@@ -281,8 +282,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
         $sheel->template->meta['jsinclude']['footer'][] = 'admin_customers';
         $customer = array();
-        $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $sheel->GPC['company']);
-        $searchcondition = '$filter=No eq \'' . $sheel->GPC['no'] . '\'';
+        $dynamics = $sheel->dynamics->init_dynamics('erCustomer', $sheel->GPC['company']);
+        $searchcondition = '$filter=number eq \'' . $sheel->GPC['no'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $customer = $apiResponse->getData();
@@ -351,31 +352,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
             }
             $payload['companycode'] = $sheel->GPC['company'];
-            $payload['customerref'] = $customer['No'];
-            $payload['customername'] = $customer['Name'];
+            $payload['customerref'] = $customer['number'];
+            $payload['customername'] = $customer['name'];
             $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
-            $payload['customername2'] = $customer['Name2'];
-            $payload['customerabout'] = $customer['Name_Arabic'];
-            $payload['customerdescription'] = $customer['Nature_Of_Business'];
+            $payload['customername2'] = $customer['name2'];
+            $payload['customerabout'] = $customer['nameArabic'];
+            $payload['customerdescription'] = $customer['natureOfBusiness'];
             $payload['date_added'] = date("Y/m/d H:i:s");
             $payload['status'] = $sheel->GPC['form']['status'];
-            $payload['accountnumber'] = $customer['No'];
+            $payload['accountnumber'] = $customer['number'];
             $payload['available_balance'] = '';
             $payload['total_balance'] = '';
             $payload['currencyid'] = $sheel->GPC['form']['currencyid'];
             $payload['timezone'] = $sheel->GPC['form']['tz'];
-            $payload['vatnumber'] = $customer['VAT_Registration_No'];
-            $payload['regnumber'] = $customer['CR_No'];
-            $payload['address'] = $customer['Address'];
-            $payload['address2'] = $customer['Address_2'];
-            $payload['phone'] = $customer['Phone_No'];
-            $payload['mobile'] = $customer['MobilePhoneNo'];
-            $payload['contact'] = $customer['ContactName'];
-            $payload['email'] = $customer['E_Mail'];
-            $payload['city'] = $customer['City'];
+            $payload['vatnumber'] = $customer['vatNumber'];
+            $payload['regnumber'] = $customer['crNumber'];
+            $payload['address'] = $customer['address'];
+            $payload['address2'] = $customer['address2'];
+            $payload['phone'] = $customer['phoneNumber'];
+            $payload['mobile'] = $customer['mobileNumber'];
+            $payload['contact'] = $customer['contact'];
+            $payload['email'] = $customer['email'];
+            $payload['city'] = $customer['city'];
             $payload['state'] = '';
-            $payload['zipcode'] = $customer['Post_Code'];
-            $payload['country'] = $customer['Country_Region_Code'];
+            $payload['zipcode'] = $customer['postalCode'];
+            $payload['country'] = $customer['country'];
             $payload['autopayment'] = '0';
             $payload['requestdeletion'] = '0';
             $payload['logo'] = $sheel->GPC['no'] . $ext;
@@ -500,8 +501,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['imagename'] = $customer['logo'];
 
         $departments = array();
-        $sheel->dynamics->init_dynamics('Customer_Departments_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
+        $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $departments = $apiResponse->getData();
@@ -518,8 +519,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $positions = array();
-        $sheel->dynamics->init_dynamics('Department_Positions_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
+        $sheel->dynamics->init_dynamics('erCustomerPositions', $companycode);
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $positions = $apiResponse->getData();
@@ -536,8 +537,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $staff = array();
-        $sheel->dynamics->init_dynamics('Staffs_Excel', $companycode);
-        $searchcondition = '$filter=Customer_No eq \'' . $customer['customer_ref'] . '\'';
+        $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $staff = $apiResponse->getData();
@@ -577,19 +578,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $customer = array();
         $companycode = $defaulcompany;
         $sql = $sheel->db->query("
-            SELECT company_id
+            SELECT customer_ref
             FROM " . DB_PREFIX . "customers
             WHERE customer_id = '" . $sheel->GPC['no'] . "'
             LIMIT 1
         ", 0, null, __FILE__, __LINE__);
         if ($sheel->db->num_rows($sql) > 0) {
             $res = $sheel->db->fetch_array($sql, DB_ASSOC);
-            $companycode = $sheel->admincp_customers->get_company_name($res['company_id'], true);
         } else {
 
         }
-
-        $dynamics = $sheel->dynamics->init_dynamics('Customer_Card_Excel', $companycode);
+        $searchcondition = '$filter=number eq \'' . $res['customer_ref'] . '\'';
+        $dynamics = $sheel->dynamics->init_dynamics('erCustomer', $companycode);
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $customer = $apiResponse->getData();
@@ -607,31 +607,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $customer = $customer['0'];
         $payload = array();
         $payload['customer_id'] = $sheel->GPC['no'];
-        $payload['customerref'] = $customer['No'];
-        $payload['customername'] = $customer['Name'];
+        $payload['customerref'] = $customer['number'];
+        $payload['customername'] = $customer['name'];
         $payload['subscriptionid'] = $sheel->GPC['subscriptionid'];
-        $payload['customername2'] = $customer['Name2'];
-        $payload['customerabout'] = $customer['Name_Arabic'];
-        $payload['customerdescription'] = $customer['Nature_Of_Business'];
+        $payload['customername2'] = $customer['name2'];
+        $payload['customerabout'] = $customer['nameArabic'];
+        $payload['customerdescription'] = $customer['natureOfBusiness'];
         $payload['date_added'] = date("Y/m/d H:i:s");
         $payload['status'] = $sheel->GPC['form']['status'];
-        $payload['accountnumber'] = $customer['No'];
+        $payload['accountnumber'] = $customer['number'];
         $payload['available_balance'] = '';
         $payload['total_balance'] = '';
         $payload['currencyid'] = $sheel->GPC['form']['currencyid'];
         $payload['timezone'] = $sheel->GPC['form']['tz'];
-        $payload['vatnumber'] = $customer['VAT_Registration_No'];
-        $payload['regnumber'] = $customer['CR_No'];
-        $payload['address'] = $customer['Address'];
-        $payload['address2'] = $customer['Address_2'];
-        $payload['phone'] = $customer['Phone_No'];
-        $payload['mobile'] = $customer['MobilePhoneNo'];
-        $payload['contact'] = $customer['ContactName'];
-        $payload['email'] = $customer['E_Mail'];
-        $payload['city'] = $customer['City'];
+        $payload['vatnumber'] = $customer['vatNumber'];
+        $payload['regnumber'] = $customer['crNumber'];
+        $payload['address'] = $customer['address'];
+        $payload['address2'] = $customer['address2'];
+        $payload['phone'] = $customer['phoneNumber'];
+        $payload['mobile'] = $customer['mobileNumber'];
+        $payload['contact'] = $customer['contact'];
+        $payload['email'] = $customer['email'];
+        $payload['city'] = $customer['city'];
         $payload['state'] = '';
-        $payload['zipcode'] = $customer['Post_Code'];
-        $payload['country'] = $customer['Country_Region_Code'];
+        $payload['zipcode'] = $customer['postalCode'];
+        $payload['country'] = $customer['country'];
         $payload['autopayment'] = '0';
         $payload['requestdeletion'] = '0';
         $payload['logo'] = $sheel->GPC['no'] . $ext;
