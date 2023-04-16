@@ -137,10 +137,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'org' and isset($sheel->GPC['sub']) and $sheel->GPC['sub'] != 'departments') {
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
             if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
+                
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
-                //$response = array();
-                //$response = $sheel->admincp_customers->changestatus($ids, 'active');
-
+                $response = array();
+                $response = $sheel->dynamics_activities->bulkdelete($ids, 'erCustomerDepartments', $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['company_id']]);
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -156,14 +156,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         )
                     )
                 );
-            } else if (isset($sheel->GPC['no']) and $sheel->GPC['no'] > 0) {
+            } else if (isset($sheel->GPC['systemid']) and $sheel->GPC['systemid'] != '') {
+                $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
+                $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
+                $deleteResponse =$sheel->dynamics->delete($sheel->GPC['systemid']);
+                $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Customer Department deleted', 'A customer department has been successfully deleted.');
+                if($deleteResponse->isSuccess()) {
+                    $sheel->template->templateregistry['message'] = 'A Customer Department has been successfully deleted.';
+                    die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+                }
+                else {
+                    $sheel->template->templateregistry['message'] = $deleteResponse->getErrorMessage();
+                    die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+                }
 
-                //$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Company deleted', 'A managed company has been successfully deleted.');
-                $sheel->template->templateregistry['message'] = 'A Customer Department has been successfully deleted.';
-                die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+               
 
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_were_selected_please_try_again}';
+                $sheel->template->templateregistry['message'] = '{_no_customer_selected}';
                 die(
                     json_encode(
                         array(
@@ -175,14 +185,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
 
-        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markactive') { // mark active
-            
-        }
-
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
             
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
+            $sheel->dynamics->init_dynamics('erCustomerDepartments', $defaulcompany);
             $addResponse =$sheel->dynamics->insert(array(
                 "departmentCode"     => $sheel->GPC['departments'],
                 "customerNo"  => $sheel->GPC['customer_ref']
@@ -197,7 +203,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 // $contactsResponse->getErrorMessage(); - Get the error message as string
             }
         }
-
         $areanav = 'customers_bc';
         $vars['areanav'] = $areanav;
         $vars['currentarea'] = 'Departments';

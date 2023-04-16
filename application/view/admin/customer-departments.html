@@ -63,7 +63,7 @@
                         <div class="draw-card__section">
           
                                 <div class="table-wrapper">
-                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/departments/" id="formdepartments" accept-charset="UTF-8" method="get">
+                                    <form class="draw-form draw-form--full-width" id="formdepartments" accept-charset="UTF-8" method="get">
                                     <table class="table-hover expanded">
                                     <thead>
                                     <tr>
@@ -94,7 +94,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected customers?', 'Are you sure you want to delete selected customers?', 'depssss', 'selectedcount', '1', '0', '')">Delete</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Departments?', 'Are you sure you want to delete selected Customer Departments?', 'depssss', 'selectedcount', '1', '0', '')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -117,13 +117,13 @@
                                     </thead>
                                     <tbody>
                                     <loop name="departments">
-                                        <tr id="tr_selected_{Department_Code}" valign="top">
-                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="customerid[]" id="depssss_{Department_Code}" value="{Department_Code}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                        <tr id="tr_selected_{systemId}" valign="top">
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="departmentid[]" id="depssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{departmentCode}</td>
                                             <td width="100%" align="left">{departmentName}</td> 
                                             <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer department?', 'Are you sure you want to delete the selected customer department?', '{Department_Code}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/departments/')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer department?', 'Are you sure you want to delete the selected customer department?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/departments/?systemid={systemId}&company_id={customercard[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
                                     </loop name="departments"> 

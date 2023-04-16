@@ -62,7 +62,6 @@ class dynamicsresponse
     if ($this->originMethod == "batch") {
       return true;
     }
-
     if (isset($this->data["error"])) {
       return false;
     } else {
@@ -285,7 +284,6 @@ class dynamics
 
       if (!preg_match('/^http(s)?\:\/\//', $endpoint)) {
         if (!preg_match('/^\//', $endpoint)) {
-          $endpoint = '/' . $endpoint;
         }
 
         $request = $this->config["crmApiEndPoint"] . $endpoint;
@@ -349,9 +347,8 @@ class dynamics
       $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
       $responseHeaders = substr($response, 0, $headerSize);
       $responseBody = substr($response, $headerSize);
-
       return new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       return false;
     }
   }
@@ -406,7 +403,7 @@ class dynamics
    */
   public function delete($GUID, $extraHeaders = false)
   {
-    return $this->performRequest('/' . $this->entity . '(' . $GUID . ')', 'DELETE', false, $extraHeaders, "delete");
+    return $this->performRequest('(' . $GUID . ')', 'DELETE', false, $extraHeaders, "delete");
   }
 
 }
