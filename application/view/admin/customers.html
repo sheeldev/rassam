@@ -447,7 +447,7 @@
                     <div class="section-summary">
                         <h1>Customer Staffs</h1>
                         <p>Staff List for this Customer.</p>
-                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/staff/">Manage Staff</a></p>
+                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/">Manage Staff</a></p>
                     </div>
                 </div>
                 <div class="layout-content__main">
@@ -460,6 +460,7 @@
                                     <tr>
                                         <th width="10%"><label>Code</label></th>
                                         <th width="15%"><label>Name</label></th> 
+                                        <th width="15%"><label>Gender</label></th> 
                                         <th width="15%"><label>Position</label></th>
                                         <th width="60%"><label>Department</label></th>
                                     </tr>
@@ -469,6 +470,7 @@
                                         <tr valign="top">
                                             <td width="10%" nowrap="nowrap">{code}</td>
                                             <td width="15%" align="left">{name}</td> 
+                                            <td width="15%" align="left">{gender}</td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="60%" align="left">{departmentName}</td> 
                                         </tr>

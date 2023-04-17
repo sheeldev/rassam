@@ -1,14 +1,20 @@
 <?php
 class dynamics_activities 
 {
+    protected $sheel;
+
+    public function __construct($sheel)
+    {
+            $this->sheel = $sheel;
+    }
+
     function bulkdelete($ids = array(), $entity, $companyid)
     {
-        
         $allerrors = $successids = $failedids = $display = '';
         $count = 0;
-        $display = '{_delete}';
+        $display = '{_deleted}';
         foreach ($ids as $inc => $entityid) {
-            $this->dobulkdelete($entityid, $entity, $companyid);
+            $response = $this->dobulkdelete($entityid, $entity, $companyid);
             if ($response === true) {
                 $successids .= "$entityid~";
                 $count++;
@@ -33,7 +39,6 @@ class dynamics_activities
     function dobulkdelete($id, $entity, $companyid)
     {
         $companycode = $this->sheel->admincp_customers->get_company_name($companyid, true);
-        die ($companycode );
         $this->sheel->dynamics->init_dynamics($entity, $companycode);
         $deleteResponse =$this->sheel->dynamics->delete($id);
         if($deleteResponse->isSuccess()) {

@@ -41,7 +41,7 @@ $router->map('GET|POST', '/admin/signin/[renew-password:cmd]/', __DIR__ . '/appl
 $router->map('GET|POST', '/admin/signin/[*:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_logout');
 $router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers');
 $router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_bc_list');
-$router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_org');
+$router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_org');
 $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
 
 

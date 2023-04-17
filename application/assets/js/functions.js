@@ -2736,6 +2736,7 @@ function bulk_confirm_submit(action, checkboxid, refresh, isdelete, endpoint)
 					if (successids[i] != '') {
 						if (jQuery('#tr_selected_' + successids[i]).length && jQuery('#' + checkboxid + '_' + successids[i]).length) {
 							inlineCB.uncheck(jQuery('#' + checkboxid + '_' + successids[i] + ':checkbox').get(0));
+							
 							if (isdelete == '1') {
 								jQuery('#tr_selected_' + successids[i]).addClass('draw-nav__link--is-disabled');
 								jQuery('#tr_selected_' + successids[i]).hide(500);
