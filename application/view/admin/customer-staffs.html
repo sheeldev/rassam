@@ -1,0 +1,178 @@
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Member has been successfully Created.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Customer Staff Member could not be added.' });</script></if>
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    <div id="customers-index" class="page has-contextual-help customers-page">
+        <div class="header-row">
+            <header id="customers-index-header" class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> /</span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{customercard[customer_id]}/">{customercard[customer_ref]}</a> / </span>{currentarea}
+                </h1>
+                <div class="header__secondary-actions">
+                    <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
+                    <ul class="segmented"> </ul>
+                </div>
+            </header>
+        </div>
+    <div class="section overview">
+    <div class="section section--no-border tags">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" accept-charset="UTF-8" method="post">
+            <input type="hidden" name="subcmd" value="add" />
+            <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
+            <input type="hidden" name="company_id" value="{customercard[company_id]}" />
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Add Staff For {customercard[customer_ref]}</h1>
+                        <p>Add specific Staff Memeber for this customer. </p>
+                  </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                            
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_code}</label>
+                                        <input name="form[staffcode]" value="{form[staffcode]}" class="draw-input" />
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_name}</label>
+                                        <input name="form[staffname]" value="{form[staffname]}" class="draw-input" />
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_gender}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[gender]}
+                                        </div>
+                                    </div>.
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_position}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[position_pulldown]}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_department}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[department_pulldown]}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-input-wrapper">
+                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+            <div class="layout-content">
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="has-bulk-actions">
+                        <div class="draw-card__section">
+          
+                                <div class="table-wrapper">
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" id="formstaffs" accept-charset="UTF-8" method="get">
+                                    <table class="table-hover expanded">
+                                    <thead>
+                                    <tr>
+                                        <th class="select">
+                                            <span id="bulkOperations">
+                                            <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                </div>
+                                            </div>
+                                            <div class="bulk-actions">
+                                                <ul class="segmented">
+                                                    <li>
+                                                        <a class="btn btn-slim btn-disabled btn--selection">
+                                                            <span class="selection-count">
+                                                              <span id="selectedcount"></span> {_selected_staffs}
+                                                            </span> 
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                        <div class="draw-popover__container">
+                                                            
+                                                            <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                            <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                <div class="draw-popover__content-wrapper">
+                                                                    <div class="draw-popover__content" style="max-height: 637px;">
+                                                                        <div class="draw-popover__pane">
+                                                                            <ul class="draw-list draw-list--compact">
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', 'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?company_id={customercard[company_id]}')">Delete</a></li>
+                                                                            </ul> 
+                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <span class="bulk-select-all">
+                                                    <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
+                                                </span>
+                                            </div>
+                                            </span>
+                                        </th>
+                                        <th width="10%"><label>Code</label> </th>
+                                        <th width="15%"><label>Name</label></th> 
+                                        <th width="15%"><label>Gender</label></th> 
+                                        <th width="15%"><label>Position</label></th> 
+                                        <th width="100%"><label>Department</label></th> 
+                                        <th>{_action}</span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="custstaffs">
+                                        <tr id="tr_selected_{systemId}" valign="top">
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="memssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                
+                                            <td width="10%" nowrap="nowrap">{code}</td>
+                                            <td width="15%" align="left">{name}</td> 
+                                            <td width="15%" align="left">{gender}</td> 
+                                            <td width="15%" align="left">{positionName}</td> 
+                                            <td width="100%" align="left">{departmentName}</td> 
+                                            <td >
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer staff?', 'Are you sure you want to delete the selected customer staff?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?systemid={systemId}&company_id={customercard[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                            </td>
+                                        </tr>
+                                    </loop name="custstaffs"> 
+                                    </tbody>
+                                    </table>
+                                </form>
+                                    <script type="text/javascript">
+                                        inlineCB = new iL_Inline('inlineCB', 'memssss', 'formstaffs', '{_go}'); 
+                                    </script>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+</section>
