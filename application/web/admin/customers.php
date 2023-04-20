@@ -172,7 +172,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_selected}';
+                $sheel->template->templateregistry['message'] = '{_no_record_selected}';
                 die(
                     json_encode(
                         array(
@@ -322,7 +322,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_selected}';
+                $sheel->template->templateregistry['message'] = '{_no_record_selected}';
                 die(
                     json_encode(
                         array(
@@ -485,7 +485,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
                 }
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_selected}';
+                $sheel->template->templateregistry['message'] = '{_no_record_selected}';
                 die(
                     json_encode(
                         array(
@@ -638,7 +638,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->dynamics_activities->bulkdelete($ids, 'erCustomerStaffs', $sheel->GPC['company_id']);
+                $response = $sheel->dynamics_activities->bulkdelete($ids, 'erStaffMeasurements', $sheel->GPC['company_id']);
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -656,18 +656,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 );
             } else if (isset($sheel->GPC['systemid']) and $sheel->GPC['systemid'] != '') {
                 $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-                $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
+                $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
                 $deleteResponse = $sheel->dynamics->delete($sheel->GPC['systemid']);
                 $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Staff Memeber deleted', 'A customer staff member has been successfully deleted.');
                 if ($deleteResponse->isSuccess()) {
-                    $sheel->template->templateregistry['message'] = 'A Customer Staff Member has been successfully deleted.';
+                    $sheel->template->templateregistry['message'] = 'A Staff Measurements has been successfully deleted.';
                     die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
                 } else {
                     $sheel->template->templateregistry['message'] = $deleteResponse->getErrorMessage();
                     die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
                 }
             } else {
-                $sheel->template->templateregistry['message'] = '{_no_customer_selected}';
+                $sheel->template->templateregistry['message'] = '{_no_record_selected}';
                 die(
                     json_encode(
                         array(
@@ -682,21 +682,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
 
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            $sheel->dynamics->init_dynamics('erCustomerStaffs', $defaulcompany);
+            $sheel->dynamics->init_dynamics('erStaffMeasurements', $defaulcompany);
+            $staffdetails = explode('|',$sheel->GPC['staffs']);
+
             $addResponse = $sheel->dynamics->insert(
                 array(
-                    "code" => $sheel->GPC['form']['staffcode'],
-                    "name" => $sheel->GPC['form']['staffname'],
-                    "gender" => $sheel->GPC['form']['gender'],
-                    "positionCode" => $sheel->GPC['positions'],
-                    "departmentCode" => $sheel->GPC['departments'],
-                    "customerNo" => $sheel->GPC['customer_ref']
+                    "customerNo" => $sheel->GPC['customer_ref'],
+                    "staffCode" => $staffdetails[0],
+                    "positionCode" => $staffdetails[1],
+                    "departmentCode" => $staffdetails[2],
+                    "measurementCode" => $sheel->GPC['measurements'],
+                    "value" => intval($sheel->GPC['form']['value']),
+                    "uomCode" => $sheel->GPC['uoms']
+                    
                 )
             );
 
             if ($addResponse->isSuccess()) {
                 $sheel->GPC['note'] = 'addsuccess';
             } else {
+                die($addResponse->getErrorMessage());
                 $sheel->GPC['note'] = 'adderror';
             }
         }
@@ -739,16 +744,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         foreach ($tempcuststaffs as $key => $value) {
 
             foreach ($value as $key1 => $value1) {
+                
                 if ($key1 == 'code') {
                     $code = $value1;
                 }
+                if ($key1 == 'departmentCode') {
+                    $code = $code . '|' . $value1;
+                }
+                if ($key1 == 'positionCode') {
+                    $code = $code . '|' . $value1;
+                }
+
                 if ($key1 == 'name') {
                     $name = $value1;
                 }
+                if ($key1 == 'departmentName') {
+                    $name = $name . ' > ' . $value1;
+                }
+                if ($key1 == 'positionName') {
+                    $name = $name . ' > ' . $value1;
+                }
             }
+            
+
             $custstaffs += [$code => $name];
         }
-
         $sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode);
         $apiResponse = $sheel->dynamics->select('');
         if ($apiResponse->isSuccess()) {
@@ -799,7 +819,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['value']='';
 
         $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=measurementCode asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $staffmeasurements = $apiResponse->getData();

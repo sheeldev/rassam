@@ -1,5 +1,5 @@
-<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Member has been successfully Created.' });</script></if>
-<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Customer Staff Member could not be added.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Measurement has been successfully Created.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Customer Staff Measurement could not be added.' });</script></if>
 <section>
     <script type="text/javascript">
         Page();
@@ -19,7 +19,7 @@
         </div>
     <div class="section overview">
     <div class="section section--no-border tags">
-        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" accept-charset="UTF-8" method="post">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" accept-charset="UTF-8" method="post">
             <input type="hidden" name="subcmd" value="add" />
             <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
             <input type="hidden" name="company_id" value="{customercard[company_id]}" />
@@ -45,7 +45,7 @@
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_position}</label>
+                                        <label class="draw-label" for="customer_password2">{_measurement_category}</label>
                                         <div class="draw-select__wrapper draw-input--has-content">
                                             {form[measurement_pulldown]}
                                         </div>
@@ -84,7 +84,7 @@
                         <div class="draw-card__section">
           
                                 <div class="table-wrapper">
-                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" id="formstaffs" accept-charset="UTF-8" method="get">
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" id="formmeasurements" accept-charset="UTF-8" method="get">
                                     <table class="table-hover expanded">
                                     <thead>
                                     <tr>
@@ -100,7 +100,7 @@
                                                     <li>
                                                         <a class="btn btn-slim btn-disabled btn--selection">
                                                             <span class="selection-count">
-                                                              <span id="selectedcount"></span> {_selected_staffs}
+                                                              <span id="selectedcount"></span> {_selected_measurements}
                                                             </span> 
                                                         </a>
                                                     </li>
@@ -115,7 +115,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', 'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?company_id={customercard[company_id]}')">Delete</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', 'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?company_id={customercard[company_id]}')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -131,11 +131,12 @@
                                             </div>
                                             </span>
                                         </th>
-                                        <th width="10%"><label>Code</label> </th>
-                                        <th width="15%"><label>Name</label></th> 
-                                        <th width="15%"><label>Gender</label></th> 
+                                        <th width="10%"><label>Staff Code</label></th>
+                                        <th width="15%"><label>Measurement Category</label></th> 
                                         <th width="15%"><label>Position</label></th> 
-                                        <th width="100%"><label>Department</label></th> 
+                                        <th width="15%"><label>Department</label></th>
+                                        <th width="15%"><label>Value</label></th> 
+                                        <th width="100%"><label>UOM</label></th>  
                                         <th>{_action}</span></th>
                                     </tr>
                                     </thead>
@@ -146,11 +147,12 @@
                                 
                                             <td width="10%" nowrap="nowrap">{staffCode}</td>
                                             <td width="15%" align="left">{measurementCode}</td> 
-                                            <td width="15%" align="left">{gender}</td> 
                                             <td width="15%" align="left">{positionName}</td> 
-                                            <td width="100%" align="left">{departmentName}</td> 
+                                            <td width="15%" align="left">{departmentName}</td> 
+                                            <td width="15%" align="left">{value}</td> 
+                                            <td width="100%" align="left">{uomCode}</td> 
                                             <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer staff?', 'Are you sure you want to delete the selected customer staff?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?systemid={systemId}&company_id={customercard[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer staff?', 'Are you sure you want to delete the selected customer staff?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}&company_id={customercard[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
                                     </loop name="staffmeasurements"> 
@@ -158,7 +160,7 @@
                                     </table>
                                 </form>
                                     <script type="text/javascript">
-                                        inlineCB = new iL_Inline('inlineCB', 'memssss', 'formstaffs', '{_go}'); 
+                                        inlineCB = new iL_Inline('inlineCB', 'memssss', 'formmeasurements', '{_go}'); 
                                     </script>
                                 </div>
                             </div>
