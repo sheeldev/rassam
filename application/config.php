@@ -4,8 +4,8 @@ error_reporting(0);
 /**
 * Application urls
 */
-define('HTTP_SERVER', 'https://stock.sheel.online/');                # <<< full url to your sheel include end slash
-define('HTTPS_SERVER', 'https://stock.sheel.online/');               # <<< full url to your secure sheel include end slash
+define('HTTP_SERVER', 'https://portal.emilerassam.com/');                # <<< full url to your sheel include end slash
+define('HTTPS_SERVER', 'https://portal.emilerassam.com/');               # <<< full url to your secure sheel include end slash
 
 /**
 * Folder paths
@@ -28,14 +28,14 @@ define('SITE_ID', '001');                 # <<< if this is app 2 on node 2 then 
 /**
 * Master database information
 */
-define('DB_DATABASE', 'rassam');                 # <<< full database name
+define('DB_DATABASE', 'erportal');                 # <<< full database name
 define('DB_SERVER', 'localhost');          # <<< database server hostname (default localhost)
 define('DB_SERVER_PORT', '3306');          # <<< database server port (default 3306)
-define('DB_SERVER_USERNAME', 'sheel');          # <<< username with access to the database
-define('DB_SERVER_PASSWORD', 'cA3W@ShL1');          # <<< password with access to the database
+define('DB_SERVER_USERNAME', 'erportal');          # <<< username with access to the database
+define('DB_SERVER_PASSWORD', 'Hard2guess@ER5$');          # <<< password with access to the database
 define('DB_PERSISTANT_MASTER', 1);         # <<< persistant database connections (default true)
 define('DB_SERVER_TYPE', 'mysqli');        # <<< database server type (mysql or mysqli)
-define('DB_PREFIX', 'sheel_');            # <<< database table prefix (default sheel_)
+define('DB_PREFIX', 'erportal_');            # <<< database table prefix (default sheel_)
 define('DB_CHARSET', 'utf8');              # <<< database character set (default utf-8)
 define('DB_COLLATE', 'utf8_general_ci');   # <<< database collation (default utf-8)
 
