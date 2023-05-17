@@ -1,5 +1,10 @@
 <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Member has been successfully Created.' });</script></if>
 <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Customer Staff Member could not be added.' });</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidf'"><script>jQuery.growl.error({ title: '{_invalid_bulk_import_file}', message: '{_the_bulk_file_you_uploaded_was_not_correct_please_try_again}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidfe'"><script>jQuery.growl.error({ title: '{_invalid_file_extension}', message: '{_the_bulk_file_you_uploaded_did_not_have_the_correct_file_extension}' })</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'cancel'"><script>jQuery.growl.error({ title: '{_cancelled}', message: '{_bulk_upload_cancelled}' })</script></if>
+<if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidff'"><script>jQuery.growl.error({ title: '{_invalid_bulk_import_file_format}', message: '{_the_bulk_file_format_you_uploaded_was_not_correct_check_columns}' })</script></if>
+
 <section>
     <script type="text/javascript">
         Page();
@@ -27,7 +32,7 @@
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
                         <h1>Add Staff For {customercard[customer_ref]}</h1>
-                        <p>Add specific Staff Memeber for this customer. </p>
+                        <p>Add specific Staff Member for this customer. </p>
                   </div>
                 </div>
                 <div class="layout-content__main">
@@ -37,19 +42,19 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_code}</label>
+                                        <label class="draw-label" >{_code}</label>
                                         <input name="form[staffcode]" value="{form[staffcode]}" class="draw-input" disabled/>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_name}</label>
+                                        <label class="draw-label" >{_name}</label>
                                         <input name="form[staffname]" value="{form[staffname]}" class="draw-input" />
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_gender}</label>
+                                        <label class="draw-label" >{_gender}</label>
                                         <div class="draw-select__wrapper draw-input--has-content">
                                             {form[gender]}
                                         </div>
@@ -57,7 +62,7 @@
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_position}</label>
+                                        <label class="draw-label" >{_position}</label>
                                         <div class="draw-select__wrapper draw-input--has-content">
                                             {form[position_pulldown]}
                                         </div>
@@ -65,7 +70,7 @@
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_department}</label>
+                                        <label class="draw-label" >{_department}</label>
                                         <div class="draw-select__wrapper draw-input--has-content">
                                             {form[department_pulldown]}
                                         </div>
@@ -83,6 +88,94 @@
                 </div>
             </div>
         </form>
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Upload Staffs For {customercard[customer_ref]}</h1>
+                    <p>Add Bulk Staff Members for this customer. </p>
+                    <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/staffs/?subcmd=staffsample'" /></div>
+								
+              </div>
+            </div>
+            <div class="layout-content__main">
+               <div class="draw-card">
+                   <div class="draw-card__section">
+                   	    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                            <div class="draw-grid__cell">
+                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/staffs/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
+                                <div class="draw-input-wrapper">
+                                    <h2 class="mb-20" id="item-description">{_upload_file}</h2>
+                                    <label class="draw-label" for="vehicle_registration_category">{_staff_document_format_only}</label>
+                                    <div class="pb-6"><input type="file" name="xlsx_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/></div>
+                                    <div class="pb-14"><label for="containsheader"><input type="checkbox" name="containsheader" id="containsheader" value="1" checked="checked" /> {_my_xlsx_file_contains_title_header_columns}</label></div>
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div><input type="button" id="upload" value="{_upload}" class="btn large"/></div>
+                                    <input name="subcmd" value="bulkupload" type="hidden" />
+                                    <input name="do" value="assign" type="hidden" />
+                                    <input name="mode" value="bulk" type="hidden" />
+                                    <input name="nextstaffid" value="{form[staffid]}" type="hidden" />
+                                    <div class="hr-20-0-20-0"></div>
+                                </div>
+                                </form>
+                            </div>
+                   	    </div>    
+               	    </div>
+           	    </div>
+                   <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
+                   <div class="draw-card">
+                    <div class="draw-card__section">
+                        <form action="customers/org/{customercard[customer_id]}/staffs/" name="formuploadedstaff" accept-charset="UTF-8" id="formuploadedstaff" autocomplete="off"> 
+                        <div class="table-wrapper">
+                            <table class="table-hover expanded">
+                            <thead>
+                            <tr>
+                                <th width="17%"><label>Code</label> </th>
+                                <th width="35%"><label>Name</label></th> 
+                                <th width="15%"><label>Gender</label></th> 
+                                <th width="17%"><label>Position</label></th> 
+                                <th width="17%"><label>Department</label></th> 
+                                <th width="100%"><label>Error</label></th> 
+                                <th>{_action}</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <loop name="uploadedstaffs">
+                                <tr valign="top">
+                                
+                                        <input name="subcmd" value="bulkupload" type="hidden" />
+                                        <input name="do" value="assign" type="hidden" />
+                                        <input name="uploadid" id="uploadedid" value="{id}" type="hidden" />
+                                        <td width="17%" nowrap="nowrap"><input name="uploadedcode" id="uploadedcode" value="{code}" class="draw-input" disabled/></td>
+                                        <td width="35%" align="left"><input name="uploadedname" id="uploadedname" value="{name}" class="draw-input" /></td> 
+                                        <td width="15%" align="left"><input name="uploadedgender" id="uploadedgender" value="{gender}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadedposition" id="uploadedposition" value="{positioncode}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadeddepartment" id="uploadeddepartment" value="{departmentcode}" class="draw-input" /></td> 
+                                        
+                                        <td width="100%" align="left"><input name="staffuploaderrormessage" id="staffuploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
+                                        <td >
+                                            <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_staff();"/>
+                                        </td>
+                                    
+                                </tr>
+                            </loop name="uploadedstaffs"> 
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="hr-20-0-20-0"></div>
+                    
+                            <div class="draw-input-wrapper">
+                                <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_add}</button>
+                                <a href="javascript:;" data-bind-event-click="acp_confirm_simple('cancel', 'Cancel upload customer staff?', 'Are you sure you want to cancel the upload of customer staffs in error?', 'customers/org/{customercard[customer_id]}/staffs/?subcmd=bulkupload&cancel=cancel')" class="btn" title="{_cancel}">{_cancel}</a>
+                            </div>
+                        </form>
+                      
+                    </div>
+                    </div>
+                    </if>
+            </div>
+       </div>
             <div class="layout-content">
                 <div class="layout-content__main">
                     <div class="draw-card">
@@ -175,4 +268,7 @@
         </div>
     </div>
     <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+    <div id="refreshloading" class="hide">
+        <div class="loading">{_loading}&#8230;</div>
+    </div>
 </section>

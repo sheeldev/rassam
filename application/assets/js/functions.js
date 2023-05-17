@@ -2587,6 +2587,18 @@ function acpjs_confirm_submit(action, xid, runfunction, arg1, arg2, arg3, arg4, 
 	jQuery('#modal_container #modal_spinner').html('Working <img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" style="display:inline-block;padding-left:4px">');
 	acpjs_function(runfunction, arg1, arg2, arg3, arg4, arg5);
 }
+function acp_confirm_simple(action, title, message,endpoint) {
+	if (endpoint == 'undefined' || endpoint == '' || endpoint == 'NaN') {
+		endpoint = location.href;
+	}
+	var newtitle = title;
+	jQuery('#modal_confirm #modal_confirm_header').html(newtitle);
+	jQuery('#modal_confirm #modal_confirm_body').html(message);
+	jQuery('#modal_confirm #modal_confirm_onclick_action').attr('data-no-turbolink', 'true');
+	jQuery('#modal_confirm #modal_confirm_onclick_action').attr('onclick', 'event.preventDefault();window.location.href = "'+ endpoint + '";');
+	show_modal('confirm', action, '');
+}
+
 function acp_confirm(action, title, message, xid, refresh, docmd, endpoint) {
 	if (endpoint == 'undefined' || endpoint == '' || endpoint == 'NaN') {
 		endpoint = location.href;

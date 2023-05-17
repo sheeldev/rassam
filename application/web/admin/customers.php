@@ -1,6 +1,10 @@
 <?php
 define('LOCATION', 'admin');
 require_once(SITE_ROOT . 'application/config.php');
+require_once(DIR_CLASSES . '/vendor/office/autoload.php');
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+
 if (isset($match['params'])) {
     $sheel->GPC = array_merge($sheel->GPC, $match['params']);
 }
@@ -8,6 +12,7 @@ $sheel->template->meta['jsinclude'] = array(
     'header' => array(
         'functions',
         'admin',
+        'admin_customers',
         'inline',
         'vendor/chartist',
         'vendor/growl'
@@ -17,6 +22,8 @@ $sheel->template->meta['jsinclude'] = array(
 );
 $sheel->template->meta['cssinclude'] = array(
     'common',
+    'addition',
+    'spinner',
     'vendor' => array(
         'font-awesome',
         'glyphicons',
@@ -451,6 +458,123 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'org' and isset($sheel->GPC['sub']) and $sheel->GPC['sub'] == 'staffs') {
+        $customer = array();
+        $sql = $sheel->db->query("
+        SELECT customer_id, customer_ref, company_id
+            FROM " . DB_PREFIX . "customers 
+        WHERE customer_id = '" . $sheel->GPC['no'] . "'
+        LIMIT 1
+        ");
+
+        if ($sheel->db->num_rows($sql) > 0) {
+            $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
+        }
+        $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'staffsample') {
+            $samplefile = file_get_contents(DIR_OTHER . 'staffsample.xlsx');
+            $sheel->common->download_file($samplefile, "staffsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            exit();
+        } 
+
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'bulkupload') {
+            if (isset($sheel->GPC['cancel']) and $sheel->GPC['cancel'] =='cancel') { // user cancelled bulk upload
+                $sheel->db->query("
+                    DELETE FROM " . DB_PREFIX . "bulk_tmp_staffs
+                    WHERE customerno = '" . $customer['customer_ref'] . "'
+                        AND uploaded = '0'
+                    ", 0, null, __FILE__, __LINE__);
+            }
+            if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'assign') {
+                if (isset($sheel->GPC['mode']) and $sheel->GPC['mode'] == 'bulk') {
+                    if (empty($_FILES['xlsx_file']['name'])) {
+                        refresh(HTTPS_SERVER_ADMIN . 'customers/org/'.$customer['customer_id'].'/staffs/?error=invalidf');
+                    } else {
+                        $extension = mb_strtolower(mb_strrchr($_FILES['xlsx_file']['name'], '.'));
+                        if ($extension != '.xlsx') {
+                            refresh(HTTPS_SERVER_ADMIN . 'customers/org/'.$customer['customer_id'].'/staffs/?error=invalidfe');
+                        }
+                    }
+                    $tmp_name = $_FILES['xlsx_file']['tmp_name'];
+                    $file_name = DIR_TMP_XLSX . $customer['customer_id'] .'_STAFF'.'.'. pathinfo($_FILES['xlsx_file']['name'], PATHINFO_EXTENSION);
+                    if (file_exists($file_name)) {
+                        unlink($file_name);
+                    }
+                    move_uploaded_file($tmp_name, $file_name);
+                    $reader  = new Xlsx();
+                    $reader->setReadDataOnly(true);
+                    $reader->setLoadSheetsOnly(["Sheet1"]);
+                    $spreadsheet = $reader->load($file_name);
+                    
+                    //die ($spreadsheet->getSheet(0)->getHighestDataColumn().'-------'.$spreadsheet->getSheet(0)->getHighestDataRow());
+                    if ($spreadsheet->getSheet(0)->getHighestDataColumn()!='D') {
+                        refresh(HTTPS_SERVER_ADMIN . 'customers/org/'.$customer['customer_id'].'/staffs/?error=invalidff');
+                    }
+                    $sheetData=$spreadsheet->getSheet(0)->toArray();
+                    $fileinfo = serialize($sheetData);
+                    $i=1;
+                    if (isset($sheel->GPC['containsheader']) and $sheel->GPC['containsheader'] == '1') {
+                        unset($sheetData[0]);
+                    }
+                    $sheel->db->query("
+                            INSERT INTO " . DB_PREFIX . "bulk_sessions
+                            (id, user_id, dateupload, uploadtype, linescount, linesuploaded, picturesuploaded, haserrors, fileinfo)
+                            VALUES (
+                            NULL,
+                            '" . $_SESSION['sheeldata']['user']['userid'] . "',
+                            '" . $sheel->db->escape_string(DATETIME24H) . "',
+                            'STAFF',
+                            '".(intval($spreadsheet->getSheet(0)->getHighestDataRow())-1)."',
+                            '0',
+                            '0',
+                            '0',
+                            '" . $sheel->db->escape_string($fileinfo) . "')
+                        ", 0, null, __FILE__, __LINE__);
+                    $bulk_id = $sheel->db->insert_id();
+                    unset($fileinfo);
+    
+                    $sheel->xlsx->staff_xlsx_to_db($sheetData, $customer['customer_ref'], $sheel->GPC['nextstaffid'], $_SESSION['sheeldata']['user']['userid'], $bulk_id);
+    
+                    if (file_exists($file_name)) { // remove uploaded xlsx file...
+                        unlink($file_name);
+                    }
+                }
+                $sql = $sheel->db->query("
+                    SELECT id, code, name, gender, positioncode, departmentcode, customerno
+                        FROM " . DB_PREFIX . "bulk_tmp_staffs 
+                    WHERE customerno = '" . $customer['customer_ref']. "' AND uploaded = '0'
+                    ORDER BY code
+                ");
+                while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                    $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
+                    $addResponse = $sheel->dynamics->insert(
+                        array(
+                            "code" => $res['code'],
+                            "name" => $res['name'],
+                            "gender" => $res['gender'],
+                            "positionCode" => $res['positioncode'],
+                            "departmentCode" => $res['departmentcode'],
+                            "customerNo" => $res['customerno'],
+                        )
+                    );
+                    if ($addResponse->isSuccess()) {
+                        $sheel->db->query("
+                            UPDATE " . DB_PREFIX . "bulk_tmp_staffs
+                            SET errors = '[No Errors]',
+                                uploaded = '1'
+                            WHERE id = '" . $res['id'] . "'
+                            ", 0, null, __FILE__, __LINE__);
+          
+                    } else {
+                        $sheel->db->query("
+                            UPDATE " . DB_PREFIX . "bulk_tmp_staffs
+                            SET errors = '[". $addResponse->getErrorMessage()."]'
+                            WHERE id = '" . $res['id'] . "'
+                            ", 0, null, __FILE__, __LINE__);
+                       
+                    }
+                }
+            }
+        } 
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
             if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 
@@ -528,19 +652,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $custstaffs = array();
         $gender = array('Male' => '{_male}', 'Female' => '{_female}');
-        $customer = array();
-        $sql = $sheel->db->query("
-        SELECT customer_id, customer_ref, company_id
-            FROM " . DB_PREFIX . "customers 
-        WHERE customer_id = '" . $sheel->GPC['no'] . "'
-        LIMIT 1
-        ");
-
-        if ($sheel->db->num_rows($sql) > 0) {
-            $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
-        }
-        $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
-
         $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
         $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
@@ -561,7 +672,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $name = $value1;
                 }
             }
-            $custdepartments += [$code => $name];
+            $custdepartments += [$code => $code.' > '.$name];
         }
 
 
@@ -585,7 +696,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $name = $value1;
                 }
             }
-            $custpositions += [$code => $name];
+            $custpositions += [$code => $code.' > '.$name];
         }
         $form['department_pulldown'] = $sheel->construct_pulldown('departments', 'departments', $custdepartments, '', 'class="draw-select"');
         $form['position_pulldown'] = $sheel->construct_pulldown('positions', 'positions', $custpositions, '', 'class="draw-select"');
@@ -615,6 +726,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $ids[] = $value[2]; 
         }
         $form['staffcode'] = max($ids)>0? $customer['customer_ref'].'-'. intval(max($ids)+1): $customer['customer_ref'].'-1';
+        $form['staffid'] = max($ids) > 0 ? ''.intval(max($ids)+1) : '1';
+        $uploadedstaffs = array();
+        $sqlupd = $sheel->db->query("
+            SELECT id, code, name, gender, positioncode, departmentcode, customerno, errors
+                FROM " . DB_PREFIX . "bulk_tmp_staffs 
+            WHERE customerno = '" . $customer['customer_ref']. "' AND uploaded = '0'
+            ORDER BY code
+        ");
+
+        while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
+           
+            $uploadedstaffs[] = $res;
+        }
+
+        if ($sheel->db->num_rows($sqlupd) > 0) {
+            $sheel->GPC['haspendinguploads']='1';
+        }
         $sheel->template->fetch('main', 'customer-staffs.html', 1);
         $sheel->template->parse_hash(
             'main',
@@ -627,7 +755,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_loop(
             'main',
             array(
-                'custstaffs' => $custstaffs
+                'uploadedstaffs' => $uploadedstaffs,
+                'custstaffs' => $custstaffs,
+                
             )
         );
         $sheel->template->pprint('main', $vars);
@@ -846,7 +976,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bcview' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
-        $sheel->template->meta['jsinclude']['footer'][] = 'admin_customers';
+        $sheel->template->meta['jsinclude']['footer'][] = 'admin_bccustomers';
         $customer = array();
         $dynamics = $sheel->dynamics->init_dynamics('erCustomer', $sheel->GPC['company']);
         $searchcondition = '$filter=number eq \'' . $sheel->GPC['no'] . '\'';

@@ -39,11 +39,11 @@ define('DIR_CLASSES', __DIR__.'/model/');
 define('DIR_TMP', __DIR__.'/uploads/cache/');
 define('DIR_TMP_JS', __DIR__.'/uploads/cache/js/');
 define('DIR_TMP_CSS', __DIR__.'/uploads/cache/css/');
+define('DIR_TMP_XLSX', __DIR__.'/uploads/cache/xlsx/');
 define('HTTP_TMP', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/".'application/uploads/cache/');
 define('HTTP_TMP_CSS', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/".'application/uploads/cache/css/');
 define('DIR_XML', __DIR__.'/assets/xml/');
 define('PAGEURL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-
 require_once(__DIR__ . '/model/class.sheel.inc.php');
 $sheel = new sheel($sheel);
 require_once (__DIR__ . '/model/class.timer.inc.php');

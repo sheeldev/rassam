@@ -1,0 +1,48 @@
+<?php
+/**
+* xlsx class to perform the majority of importing and exporting functions within sheel.
+*
+* @package      sheel\xlsx
+* @version      1.0.0.0
+* @author       sheel
+*/
+class xlsx
+{
+	protected $sheel;
+
+	function __construct($sheel)
+	{
+	$this->sheel = $sheel;
+	}
+	function staff_xlsx_to_db($data, $customer_ref, $nextid, $userid = 0, $bulk_id = 0)
+	{
+		foreach ($data as $t) {
+			$this->sheel->db->query("
+                        INSERT INTO " . DB_PREFIX . "bulk_tmp_staffs
+                        (id, code, name, gender, positioncode, departmentcode, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+                        VALUES (
+                        NULL,
+                        '" . $customer_ref .'-'. $nextid . "',
+						'" . $t[0] . "',
+						'" . $t[1] . "',
+						'" . $t[2] . "',
+						'" . $t[3] . "',
+						'" . $customer_ref . "',
+						'',
+                        '" . $this->sheel->db->escape_string(DATETODAY) . "',
+                        '0',
+						'" . $userid . "',
+						'" . $bulk_id . "')
+                    ", 0, null, __FILE__, __LINE__);
+			$nextid++;
+
+		}
+	}
+	function isEmptyRow($row) {
+		foreach($row as $cell){
+			if (null !== $cell) return false;
+		}
+		return true;
+	}	
+}
+?>

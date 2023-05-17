@@ -18,6 +18,9 @@ $sheel->template->meta['cssinclude'] = array(
 );
 // only skip session if method doesn't change active session in any way
 $methods = array(
+	'updatebulkstaff' => array('skipsession' => true),
+
+
 	'atc' => array('skipsession' => true),
 	'dfc' => array('skipsession' => true),
 	'avr' => array('skipsession' => true),
@@ -31,7 +34,7 @@ $methods = array(
 	'pminfo' => array('skipsession' => true),
 	'vminfo' => array('skipsession' => true),
 	'pmremove' => array('skipsession' => true),
-	'inlineedit' => array('skipsession' => true),
+	
 	'watchlist' => array('skipsession' => true),
 	'addwatchlist' => array('skipsession' => true),
 	'unfollow' => array('skipsession' => true),
@@ -152,57 +155,35 @@ if (isset($sheel->GPC['do'])) {
 	} else {
 		define('SKIP_SESSION', false);
 	}
-	if ($sheel->GPC['do'] == 'inlineedit') { // inline text input editor
-		if (isset($sheel->GPC['action']) and !empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) {
-			switch ($sheel->GPC['action']) {
-				case 'permission_accesstext': { // subscription permissions title
-						break;
-					}
-				case 'permission_description': { // subscription permissions description
-						break;
-					}
-				case 'favsearchtitle': { // favorite search title
-						$sheel->GPC['text'] = $sheel->common->js_escaped_to_xhtml_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = $sheel->common->xhtml_entities_to_numeric_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = mb_convert_encoding($sheel->GPC['text'], 'UTF-8', 'HTML-ENTITIES');
-						$sheel->db->query("
-						UPDATE " . DB_PREFIX . "search_favorites
-						SET title = '" . $sheel->db->escape_string($sheel->GPC['text']) . "'
-						WHERE searchid = '" . intval($sheel->GPC['id']) . "'
-					", 0, null, __FILE__, __LINE__);
-						echo $sheel->GPC['text'];
-						break;
-					}
-				case 'watchlistcomment': { // favorite search title
-						$sheel->GPC['text'] = $sheel->common->js_escaped_to_xhtml_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = $sheel->common->xhtml_entities_to_numeric_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = mb_convert_encoding($sheel->GPC['text'], 'UTF-8', 'HTML-ENTITIES');
-						$sheel->db->query("
-						UPDATE " . DB_PREFIX . "watchlist
-						SET comment = '" . $sheel->db->escape_string($sheel->GPC['text']) . "'
-						WHERE watchlistid = '" . intval($sheel->GPC['id']) . "'
-						LIMIT 1
-					", 0, null, __FILE__, __LINE__);
-						echo $sheel->GPC['text'];
-						break;
-					}
-				case 'sellerpaymethod': { // seller updating pay method
-						$sheel->GPC['text'] = $sheel->common->js_escaped_to_xhtml_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = $sheel->common->xhtml_entities_to_numeric_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = mb_convert_encoding($sheel->GPC['text'], 'UTF-8', 'HTML-ENTITIES');
-						echo $sheel->GPC['text'];
-						break;
-					}
-				case 'sellershiptracking': { // seller updating shipment tracking number
-						$sheel->GPC['text'] = $sheel->common->js_escaped_to_xhtml_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = $sheel->common->xhtml_entities_to_numeric_entities($sheel->GPC['text']);
-						$sheel->GPC['text'] = mb_convert_encoding($sheel->GPC['text'], 'UTF-8', 'HTML-ENTITIES');
-						echo $sheel->GPC['text'];
-						break;
-					}
-			}
-			exit();
+	if ($sheel->GPC['do'] == 'updatebulkstaff') { 
+
+		if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
+			
+			$sheel->db->query("
+				UPDATE " . DB_PREFIX . "bulk_tmp_staffs
+				SET name = '".$sheel->GPC['name']."',
+					gender = '".$sheel->GPC['gender']."',
+					positioncode = '".$sheel->GPC['position']."',
+					departmentcode = '".$sheel->GPC['department']."'
+				WHERE id = '" . $sheel->GPC['id'] . "'
+				", 0, null, __FILE__, __LINE__);
+			$result = array(
+				'error' => '0',
+				'message' => 'Record Updated',
+				'timestamp' => ''
+			);
 		}
+		else {
+			$result = array(
+				'error' => '1',
+				'message' => 'No Record ID Provided',
+				'timestamp' => ''
+			);
+		}
+		$json = json_encode($result);
+		http_response_code(200);
+		echo $json;
+		exit();
 	} else if ($sheel->GPC['do'] == 'unfollow') { // remove item or seller from watchlist
 
 
