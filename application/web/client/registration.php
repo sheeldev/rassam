@@ -104,21 +104,7 @@ if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'activate') { // new m
 									WHERE user_id = '" . intval($sheel->GPC['u']) . "'
 								");
                             }
-                            $categories = '';
-                            $getcats = $sheel->db->query("
-								SELECT cid, title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title
-								FROM " . DB_PREFIX . "categories
-								WHERE parentid = '0'
-									AND cattype = 'product'
-									AND visible = '1'
-								ORDER BY title_" . $_SESSION['sheeldata']['user']['slng'] . " ASC
-								LIMIT 10
-							", 0, null, __FILE__, __LINE__);
-                            if ($sheel->db->num_rows($getcats) > 0) {
-                                while ($res = $sheel->db->fetch_array($getcats, DB_ASSOC)) {
-                                    $categories .= "$res[title]\n";
-                                }
-                            }
+                            
                             // admin activates new members after their email link code verification
                             // so in this case, let's dispatch a new welcome email to the member
                             $sheel->email->mail = $user['email'];

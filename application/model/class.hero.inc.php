@@ -14,7 +14,7 @@ class hero
 	{
 		$this->sheel = $sheel;
 		$sql = $this->sheel->db->query("
-                        SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "id, mode, cid, filename, imagemap, caption1, caption2, caption3, buttoncaption, buttonurl, newwindow, width, height,styleid, date_added, sort
+                        SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "id, mode, filename, imagemap, caption1, caption2, caption3, buttoncaption, buttonurl, newwindow, width, height,styleid, date_added, sort
                         FROM " . DB_PREFIX . "hero
                 ", 0, null, __FILE__, __LINE__);
 		if ($this->sheel->db->num_rows($sql) > 0) {
@@ -25,16 +25,12 @@ class hero
 		}
 	}
 
-	function fetch_heros($mode = '', $cid = 0)
+	function fetch_heros($mode = '')
 	{
 		$this->sheel->timer->start();
 		$caller = get_calling_location();
 		$cidcondition = "";
 		$heros = array();
-		if ($cid > 0)
-		{
-			$cidcondition = "AND cid = '" . intval($cid). "'";
-		}
 		$styleid = $this->sheel->config['defaultstyle'];
 		if (isset($_SESSION['sheeldata']['user']['styleid']) AND $_SESSION['sheeldata']['user']['styleid'] > 0)
 		{

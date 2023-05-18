@@ -16,8 +16,6 @@
 			e.preventDefault();
 			jQuery(this).css('background', '#fff');
 			var image = e.originalEvent.dataTransfer.files;
-			var cid = jQuery(this).attr("data-catid");
-			jQuery().categorythumbupload(image, cid);
 		});
 	};
 	$.fn.carousels = function(){

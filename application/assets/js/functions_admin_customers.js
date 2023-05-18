@@ -14,27 +14,26 @@ function init_page()
         init_bulk_animation();
 }
 
-function update_uploded_staff()
+function update_uploded_staff(uploadid)
 {
         jQuery('#refreshloading').removeClass('hide');
-        setTimeout(fetch_post_form(this.parentNode), 500);
+        setTimeout(fetch_post_form(this.parentNode, uploadid), 500);
         
 }
 function display_error_message() {
         var message = "" + jQuery('#staffuploaderrormessage').val();
         jQuery.growl.error({title: phrase['_error'], message: message});
 }
-function fetch_post_form(obj)
+function fetch_post_form(obj, id)
 {
-	
         var parameters = "do=updatebulkstaff" +
-        "&id=" + jQuery('#uploadedid').val() +
-	"&name=" + jQuery('#uploadedname').val() +
-	"&gender=" + jQuery('#uploadedgender').val() +
-        "&position=" + jQuery('#uploadedposition').val() +
-        "&department=" + jQuery('#uploadeddepartment').val();
+						"&id=" + jQuery('#uploadedid_'+ id).val() +
+						"&name=" + jQuery('#uploadedname_'+ id).val() +
+						"&gender=" + jQuery('#uploadedgender_'+ id).val() +
+						"&position=" + jQuery('#uploadedposition_'+ id).val() +
+						"&department=" + jQuery('#uploadeddepartment_'+ id).val();
         xhr = new AJAX_Handler(true);
-	xhr.send(iL['AJAXURL'], parameters);
+		xhr.send(iL['AJAXURL'], parameters);
         xhr.onreadystatechange(function() {
 		if (xhr.handler.readyState == 4 && xhr.handler.status == 200)
 		{
@@ -57,7 +56,34 @@ function fetch_post_form(obj)
 		}
 	});
 }
+function submit_measurement_form() {
+	haserror = false;
+	jQuery('#measurements').removeClass('error');
+	jQuery('#measurement_value').removeClass('error');
+	jQuery('#measurement-wrapper').removeClass('redborder');
 
+	if (jQuery('#measurements').val()== 0)
+	{
+		jQuery('#measurement-wrapper').addClass('redborder');
+		jQuery('#measurements').addClass('error');
+		jQuery.growl.error({title: phrase['_error'], message: 'Select Measurement Category for this Staff'});
+		return false;
+	}
+
+	if (jQuery('#measurement_value').val()== '')
+	{
+		jQuery('#measurement_value').addClass('error');
+		jQuery.growl.error({title: phrase['_error'], message: 'Measurement Value can\'t be empty.'});
+		return false;
+	}
+
+
+	if (!haserror)
+	{
+		return true;
+	}
+	return false;
+}(jQuery);
 jQuery(document).ready(function() {
 	init_page();
 });

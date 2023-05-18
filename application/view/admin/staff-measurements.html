@@ -1,5 +1,5 @@
 <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Measurement has been successfully Created.' });</script></if>
-<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Customer Staff Measurement could not be added.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: '{errorMessage}'});</script></if>
 <section>
     <script type="text/javascript">
         Page();
@@ -19,7 +19,7 @@
         </div>
     <div class="section overview">
     <div class="section section--no-border tags">
-        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" accept-charset="UTF-8" method="post">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" accept-charset="UTF-8" method="post" onsubmit="return submit_measurement_form()">
             <input type="hidden" name="subcmd" value="add" />
             <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
             <input type="hidden" name="company_id" value="{customercard[company_id]}" />
@@ -46,7 +46,7 @@
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <label class="draw-label" for="customer_password2">{_measurement_category}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content">
+                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
                                             {form[measurement_pulldown]}
                                         </div>
                                     </div>
@@ -54,7 +54,7 @@
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <label class="draw-label" for="customer_password2">{_value}</label>
-                                        <input name="form[value]" value="{form[value]}" class="draw-input" />
+                                        <input name="form[value]" id="measurement_value" value="{form[value]}" class="draw-input" />
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
@@ -69,7 +69,7 @@
 
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-input-wrapper">
-                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff</button>
+                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff Measurement</button>
                                 </div>
                             </div>
                         </div>
@@ -77,10 +77,122 @@
                 </div>
             </div>
         </form>
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Upload Staffs For {customercard[customer_ref]}</h1>
+                    <p>Add Bulk Staff Members for this customer. </p>
+                    <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/staffs/?subcmd=staffsample'" /></div>
+								
+              </div>
+            </div>
+            <div class="layout-content__main">
+               <div class="draw-card">
+                   <div class="draw-card__section">
+                   	    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                            <div class="draw-grid__cell">
+                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/staffs/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
+                                <div class="draw-input-wrapper">
+                                    <h2 class="mb-20" id="item-description">{_upload_file}</h2>
+                                    <label class="draw-label" for="vehicle_registration_category">{_staff_document_format_only}</label>
+                                    <div class="pb-6"><input type="file" name="xlsx_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/></div>
+                                    <div class="pb-14"><label for="containsheader"><input type="checkbox" name="containsheader" id="containsheader" value="1" checked="checked" /> {_my_xlsx_file_contains_title_header_columns}</label></div>
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div class="clear"></div>
+                                    <div><input type="button" id="upload" value="{_upload}" class="btn large"/></div>
+                                    <input name="subcmd" value="bulkupload" type="hidden" />
+                                    <input name="do" value="assign" type="hidden" />
+                                    <input name="mode" value="bulk" type="hidden" />
+                                    <input name="nextstaffid" value="{form[staffid]}" type="hidden" />
+                                    <div class="hr-20-0-20-0"></div>
+                                </div>
+                                </form>
+                            </div>
+                   	    </div>    
+               	    </div>
+           	    </div>
+                   <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
+                   <div class="draw-card">
+                    <div class="draw-card__section">
+                        <form action="customers/org/{customercard[customer_id]}/staffs/" name="formuploadedstaff" accept-charset="UTF-8" id="formuploadedstaff" autocomplete="off"> 
+                        <div class="table-wrapper">
+                            <table class="table-hover expanded">
+                            <thead>
+                            <tr>
+                                <th width="17%"><label>Code</label> </th>
+                                <th width="35%"><label>Name</label></th> 
+                                <th width="15%"><label>Gender</label></th> 
+                                <th width="17%"><label>Position</label></th> 
+                                <th width="17%"><label>Department</label></th> 
+                                <th width="100%"><label>Error</label></th> 
+                                <th>{_action}</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <loop name="uploadedstaffs">
+                                <tr valign="top">
+                                
+                                        <input name="subcmd" value="bulkupload" type="hidden" />
+                                        <input name="do" value="assign" type="hidden" />
+                                        <input name="uploadid_{id}" id="uploadedid_{id}" value="{id}" type="hidden" />
+                                        <td width="17%" nowrap="nowrap"><input name="uploadedcode_{id}" id="uploadedcode_{id}" value="{code}" class="draw-input" disabled/></td>
+                                        <td width="35%" align="left"><input name="uploadedname_{id}" id="uploadedname_{id}" value="{name}" class="draw-input" /></td> 
+                                        <td width="15%" align="left"><input name="uploadedgender_{id}" id="uploadedgender_{id}" value="{gender}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadedposition_{id}" id="uploadedposition_{id}" value="{positioncode}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadeddepartment" id="uploadeddepartment_{id}" value="{departmentcode}" class="draw-input" /></td> 
+                                        
+                                        <td width="100%" align="left"><input name="staffuploaderrormessage" id="staffuploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
+                                        <td >
+                                            <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_staff({id});"/>
+                                        </td>
+                                    
+                                </tr>
+                            </loop name="uploadedstaffs"> 
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="hr-20-0-20-0"></div>
+                    
+                            <div class="draw-input-wrapper">
+                                <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_add}</button>
+                                <a href="javascript:;" data-bind-event-click="acp_confirm_simple('cancel', 'Cancel upload customer staff?', 'Are you sure you want to cancel the upload of customer staffs in error?', 'customers/org/{customercard[customer_id]}/staffs/?subcmd=bulkupload&cancel=cancel')" class="btn" title="{_cancel}">{_cancel}</a>
+                            </div>
+                        </form>
+                      
+                    </div>
+                    </div>
+                    </if>
+            </div>
+       </div>
             <div class="layout-content">
                 <div class="layout-content__main">
                     <div class="draw-card">
                         <div class="has-bulk-actions">
+                            <div context="filterer">
+                                <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                                    <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                        <div class="draw-input-wrapper">
+                                            <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" id="formsearch" accept-charset="UTF-8" method="get">
+                                            <div class="draw-field__connected-wrapper">
+                                                <div class="draw-field--connected--no-flex">
+                                                    <div class="draw-select__wrapper">
+                                                        {form[filter_pulldown]}
+                                                    </div>
+                                                </div>
+                                                    <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
+                                                    <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                                        <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
+                                                    </div>
+                                                
+                                                <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                            </div>
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         <div class="draw-card__section">
           
                                 <div class="table-wrapper">
@@ -115,7 +227,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', 'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?company_id={customercard[company_id]}')">Delete</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', 'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -152,7 +264,7 @@
                                             <td width="15%" align="left">{value}</td> 
                                             <td width="100%" align="left">{uomCode}</td> 
                                             <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer staff?', 'Are you sure you want to delete the selected customer staff?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}&company_id={customercard[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff measurement?', 'Are you sure you want to delete the selected staff measurement?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
                                     </loop name="staffmeasurements"> 

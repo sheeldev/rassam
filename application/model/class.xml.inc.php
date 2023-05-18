@@ -502,59 +502,6 @@ class xml
                 return $result;
         }
         /*
-         * Function to process a valid sheel XML Category Template data to convert all xml tags into usable arrays
-         *
-         * @param       array 	     xml data
-         * @param       string        error level
-         *
-         * @return      array         Returns formatted array of xml tag data
-         */
-        function process_category_xml($a = array(), $e)
-        {
-                $ilversion = $langcode = $cid = $title = $description = $keywords = $seourl = '';
-                $catsarray = array();
-                $arraycount = count($a);
-                for ($i = 0; $i < $arraycount; $i++) {
-                        if ($a[$i]['tag'] == 'LANGUAGE') {
-                                if (empty($ilversion) and $a[$i]['type'] == 'open') {
-                                        $ilversion = $a[$i]['attributes']['ILVERSION'];
-                                }
-                        } else if ($a[$i]['tag'] == 'LANGUAGECODE') {
-                                if (empty($langcode) and $a[$i]['type'] == 'complete') {
-                                        $langcode = preg_replace("/[^a-zA-Z0-9_]+/", '', $a[$i]['value']);
-                                }
-                        } else if ($a[$i]['tag'] == 'CATEGORY') {
-                                if (empty($cid) and $a[$i]['type'] == 'open') {
-                                        $cid = $a[$i]['attributes']['CID'];
-                                }
-                        } else if ($a[$i]['tag'] == 'TITLE') {
-                                $title = ((isset($a[$i]['value'])) ? $a[$i]['value'] : '');
-                        } else if ($a[$i]['tag'] == 'DESCRIPTION') {
-                                $description = ((isset($a[$i]['value'])) ? $a[$i]['value'] : '');
-                        } else if ($a[$i]['tag'] == 'KEYWORDS') {
-                                $keywords = ((isset($a[$i]['value'])) ? $a[$i]['value'] : '');
-                        } else if ($a[$i]['tag'] == 'SEOURL') {
-                                $seourl = ((isset($a[$i]['value'])) ? $a[$i]['value'] : '');
-                        }
-                        if ($cid != '' and !empty($title) and !empty($description) and !empty($seourl)) {
-                                $catsarray[] = array(
-                                        $cid,
-                                        $title,
-                                        $description,
-                                        $keywords,
-                                        $seourl
-                                );
-                                $cid = $title = $description = $keywords = $seourl = '';
-                        }
-                }
-                $result = array(
-                        'ilversion' => $ilversion,
-                        'langcode' => $langcode,
-                        'catsarray' => $catsarray
-                );
-                return $result;
-        }
-        /*
          * Function to process a valid sheel XML Add-on Installer Package to convert all xml tags into usable arrays
          *
          * @param       array 	     xml data

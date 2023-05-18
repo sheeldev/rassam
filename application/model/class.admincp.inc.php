@@ -1482,29 +1482,6 @@ class admincp
                 );
                 return $array;
         }
-        function fetch_parent_hero_category_options($cid = 0, $type = '', $label = '', $mode = '')
-        {
-                $html = '';
-                $sql = $this->sheel->db->query("
-                        SELECT cid, title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title
-                        FROM " . DB_PREFIX . "categories
-                        WHERE parentid = 0
-                                AND cattype = 'product'
-                        ORDER BY sort ASC
-                ", 0, null, __FILE__, __LINE__);
-                if ($this->sheel->db->num_rows($sql) > 0) {
-                        $html .= '<optgroup label="' . $label . '">';
-                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-                                if ($cid > 0 and $cid == $res['cid'] and (($type == 'categorymap' and $type == $mode) or ($type == 'storescategorymap' and $type == $mode) or ($type == 'categoryflyout' and $type == $mode))) {
-                                        $html .= '<option value="' . $res['cid'] . '" id="' . $res['cid'] . '" cid="' . $res['cid'] . '" type="' . $type . '" selected="selected">' . o($res['title']) . '</option>';
-                                } else {
-                                        $html .= '<option value="' . $res['cid'] . '" id="' . $res['cid'] . '" cid="' . $res['cid'] . '" type="' . $type . '">' . o($res['title']) . '</option>';
-                                }
-                        }
-                        $html .= '</optgroup>';
-                }
-                return $html;
-        }
         function stats($what = '', $period = 'today')
         {
                 if ($what == 'home') {

@@ -363,32 +363,6 @@ jQuery(document).ready(function() {
 			}
 		});
 	};
-	$.fn.categorythumbupload = function(image, cid){
-		var clone = $('#drop-area-' + cid).children().clone();
-		$('#drop-area-' + cid).html('<div style="margin:50% 50%"><img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" border="0" /></div>');
-		var formImage = new FormData();
-		formImage.append('userImage', image[0]);
-		$.ajax({
-			url: iL['AJAXURL'] + '?do=thumbdragdropupload&cid=' + cid,
-			type: 'POST',
-			data: formImage,
-			contentType: false,
-			cache: false,
-			processData: false,
-			dataType: 'json',
-			success: function(data) {
-				if (data.error == '0')
-				{
-					$('#drop-area-' + cid).html(data.note);
-				}
-				else
-				{
-					$('#drop-area-' + cid).html(clone);
-					alert(data.note);
-				}
-			}
-		});
-	};
 	$.fn.herosliderhidebuttons = function() {
 		if (jQuery('.slides_container').length && jQuery('.slides_control').length) {
 			if (jQuery('#slider-prev').length) {

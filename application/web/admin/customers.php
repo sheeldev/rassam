@@ -653,7 +653,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $custstaffs = array();
         $gender = array('Male' => '{_male}', 'Female' => '{_female}');
         $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=departmentCode asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $tempcustdepartments = $apiResponse->getData();
@@ -677,7 +677,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
         $sheel->dynamics->init_dynamics('erCustomerPositions', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=positionCode asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $tempcustpos = $apiResponse->getData();
@@ -704,7 +704,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['staffname'] = '';
         $form['staffcode'] = '';
         $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=code asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $custstaffs = $apiResponse->getData();
@@ -763,12 +763,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'org' and isset($sheel->GPC['sub']) and $sheel->GPC['sub'] == 'measurements') {
+        $customer = array();
+        $sql = $sheel->db->query("
+        SELECT customer_id, customer_ref, company_id
+            FROM " . DB_PREFIX . "customers 
+        WHERE customer_id = '" . $sheel->GPC['no'] . "'
+        LIMIT 1
+        ");
+
+        if ($sheel->db->num_rows($sql) > 0) {
+            $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
+        }
+        $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
             if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
                 
                 $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
                 $response = array();
-                $response = $sheel->dynamics_activities->bulkdelete($ids, 'erStaffMeasurements', $sheel->GPC['company_id']);
+                $response = $sheel->dynamics_activities->bulkdelete($ids, 'erStaffMeasurements', $customer['company_id']);
                 unset($ids);
                 $sheel->template->templateregistry['success'] = $response['success'];
                 $sheel->template->templateregistry['errors'] = $response['errors'];
@@ -785,7 +797,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     )
                 );
             } else if (isset($sheel->GPC['systemid']) and $sheel->GPC['systemid'] != '') {
-                $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
+                
                 $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
                 $deleteResponse = $sheel->dynamics->delete($sheel->GPC['systemid']);
                 $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Staff Memeber deleted', 'A customer staff member has been successfully deleted.');
@@ -810,9 +822,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
-
-            $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            $sheel->dynamics->init_dynamics('erStaffMeasurements', $defaulcompany);
+            $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
             $staffdetails = explode('|',$sheel->GPC['staffs']);
 
             $addResponse = $sheel->dynamics->insert(
@@ -831,8 +841,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             if ($addResponse->isSuccess()) {
                 $sheel->GPC['note'] = 'addsuccess';
             } else {
-                die($addResponse->getErrorMessage());
                 $sheel->GPC['note'] = 'adderror';
+                $vars['errorMessage'] = $addResponse->getErrorMessage();
             }
         }
         $areanav = 'customers_bc';
@@ -844,23 +854,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $measurements = array();
         $tempuom = array();
         $uom = array();
+        $searchfilters = array(
+            'staff',
+            'measurement',
+            'position',
+            'department'
+        );
+        $filter_options = array(
+            '' => '{_select_filter} &ndash;',
+            'staff' => '{_staff}',
+            'measurement' => '{_measurement}',
+            'position' => '{_position}',
+            'department' => '{_department}'
+            
+        );
+        $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
+        $form['q'] = (isset($sheel->GPC['q']) ? $sheel->GPC['q'] : '');
+        unset($filter_options);
 
         $staffmeasurements = array();
         
-        $customer = array();
-        $sql = $sheel->db->query("
-        SELECT customer_id, customer_ref, company_id
-            FROM " . DB_PREFIX . "customers 
-        WHERE customer_id = '" . $sheel->GPC['no'] . "'
-        LIMIT 1
-        ");
-
-        if ($sheel->db->num_rows($sql) > 0) {
-            $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
-        }
-        $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
-
-
         $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
         $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
@@ -870,9 +883,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             die($sheel->template->parse_template_phrases('message'));
         }
-
         foreach ($tempcuststaffs as $key => $value) {
-
             foreach ($value as $key1 => $value1) {
                 
                 if ($key1 == 'code') {
@@ -895,12 +906,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $name = $name . ' > ' . $value1;
                 }
             }
-            
-
             $custstaffs += [$code => $name];
         }
         $sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode);
-        $apiResponse = $sheel->dynamics->select('');
+        $searchcondition = '$orderby=name asc';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $tempmeasurements = $apiResponse->getData();
         } else {
@@ -920,7 +930,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
             $measurements += [$code => $name];
         }
-
         $sheel->dynamics->init_dynamics('erUOM', $companycode);
         $apiResponse = $sheel->dynamics->select('');
         if ($apiResponse->isSuccess()) {
@@ -929,9 +938,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             die($sheel->template->parse_template_phrases('message'));
         }
-
         foreach ($tempuom as $key => $value) {
-
             foreach ($value as $key1 => $value1) {
                 if ($key1 == 'code') {
                     $code = $value1;
@@ -942,15 +949,39 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
             $uom += [$code => $name];
         }
-
         $form['staff_pulldown'] = $sheel->construct_pulldown('staffs', 'staffs', $custstaffs, '', 'class="draw-select"');
         $form['measurement_pulldown'] = $sheel->construct_pulldown('measurements', 'measurements', $measurements, '', 'class="draw-select"');
         $form['uom_pulldown'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, 'CM', 'class="draw-select"');
         $form['value']='';
 
+
         $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=measurementCode asc';
-        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
+            switch ($sheel->GPC['filter']) {
+                case 'staff': {
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
+                case 'measurement': {
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and measurementCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
+                case 'position': {
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and positionName eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
+                case 'department': {
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and departmentName eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
+            }
+        }
+        else {
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        }
+        
+        $ordercondition = '&$orderby=staffCode asc';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition . $ordercondition);
         if ($apiResponse->isSuccess()) {
             $staffmeasurements = $apiResponse->getData();
         } else {
@@ -1197,7 +1228,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $vars['currentarea'] = $currentarea;
         $departments = array();
         $sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=departmentCode asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $departments = $apiResponse->getData();
@@ -1215,7 +1246,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $positions = array();
         $sheel->dynamics->init_dynamics('erCustomerPositions', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=positionCode asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $positions = $apiResponse->getData();
@@ -1233,7 +1264,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $staff = array();
         $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
-        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=code asc';
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $staff = $apiResponse->getData();

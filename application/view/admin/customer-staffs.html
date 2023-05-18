@@ -146,16 +146,16 @@
                                 
                                         <input name="subcmd" value="bulkupload" type="hidden" />
                                         <input name="do" value="assign" type="hidden" />
-                                        <input name="uploadid" id="uploadedid" value="{id}" type="hidden" />
-                                        <td width="17%" nowrap="nowrap"><input name="uploadedcode" id="uploadedcode" value="{code}" class="draw-input" disabled/></td>
-                                        <td width="35%" align="left"><input name="uploadedname" id="uploadedname" value="{name}" class="draw-input" /></td> 
-                                        <td width="15%" align="left"><input name="uploadedgender" id="uploadedgender" value="{gender}" class="draw-input" /></td> 
-                                        <td width="17%" align="left"><input name="uploadedposition" id="uploadedposition" value="{positioncode}" class="draw-input" /></td> 
-                                        <td width="17%" align="left"><input name="uploadeddepartment" id="uploadeddepartment" value="{departmentcode}" class="draw-input" /></td> 
+                                        <input name="uploadid_{id}" id="uploadedid_{id}" value="{id}" type="hidden" />
+                                        <td width="17%" nowrap="nowrap"><input name="uploadedcode_{id}" id="uploadedcode_{id}" value="{code}" class="draw-input" disabled/></td>
+                                        <td width="35%" align="left"><input name="uploadedname_{id}" id="uploadedname_{id}" value="{name}" class="draw-input" /></td> 
+                                        <td width="15%" align="left"><input name="uploadedgender_{id}" id="uploadedgender_{id}" value="{gender}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadedposition_{id}" id="uploadedposition_{id}" value="{positioncode}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadeddepartment" id="uploadeddepartment_{id}" value="{departmentcode}" class="draw-input" /></td> 
                                         
                                         <td width="100%" align="left"><input name="staffuploaderrormessage" id="staffuploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
                                         <td >
-                                            <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_staff();"/>
+                                            <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_staff({id});"/>
                                         </td>
                                     
                                 </tr>
