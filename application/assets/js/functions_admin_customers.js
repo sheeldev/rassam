@@ -8,7 +8,10 @@ function init_bulk_animation()
 		});
 	}
 }
-
+function display_error_message() {
+	var message = "" + jQuery('#uploaderrormessage').val();
+	jQuery.growl.error({title: phrase['_error'], message: message});
+}
 function init_page()
 {
         init_bulk_animation();
@@ -17,14 +20,10 @@ function init_page()
 function update_uploded_staff(uploadid)
 {
         jQuery('#refreshloading').removeClass('hide');
-        setTimeout(fetch_post_form(this.parentNode, uploadid), 500);
+        setTimeout(fetch_staff_post_form(this.parentNode, uploadid), 500);
         
 }
-function display_error_message() {
-        var message = "" + jQuery('#staffuploaderrormessage').val();
-        jQuery.growl.error({title: phrase['_error'], message: message});
-}
-function fetch_post_form(obj, id)
+function fetch_staff_post_form(obj, id)
 {
         var parameters = "do=updatebulkstaff" +
 						"&id=" + jQuery('#uploadedid_'+ id).val() +
@@ -43,13 +42,53 @@ function fetch_post_form(obj, id)
 				var result = JSON.parse(xhr.response);
 				if (result.error == '1')
 				{
-                                        jQuery('#refreshloading').addClass('hide');
+                    jQuery('#refreshloading').addClass('hide');
 					jQuery.growl.error({title: phrase['_error'], message: result.message});
 				}
 				else
 				{
-                                        jQuery('#refreshloading').addClass('hide');
-                                        jQuery.growl.notice({title: phrase['_success'], message: result.message});
+					jQuery('#refreshloading').addClass('hide');
+					jQuery.growl.notice({title: phrase['_success'], message: result.message});
+				}
+			}
+			xhr.handler.abort();
+		}
+	});
+}
+function update_uploded_measurement(uploadid)
+{
+        jQuery('#refreshloading').removeClass('hide');
+        setTimeout(fetch_measurement_post_form(this.parentNode, uploadid), 500);
+        
+}
+function fetch_measurement_post_form(obj, id)
+{
+        var parameters = "do=updatebulkmeasurement" +
+						"&id=" + jQuery('#uploadedid_'+ id).val() +
+						"&staffcode=" + jQuery('#uploadedstaffcode_'+ id).val() +
+						"&measurementcategory=" + jQuery('#uploadedmeasurementcategory_'+ id).val() +
+						"&position=" + jQuery('#uploadedpositioncode_'+ id).val() +
+						"&department=" + jQuery('#uploadeddepartmentcode_'+ id).val()+
+						"&mvalue=" + jQuery('#uploadedvalue_'+ id).val()+
+						"&uom=" + jQuery('#uploadeduom_'+ id).val();
+        xhr = new AJAX_Handler(true);
+		xhr.send(iL['AJAXURL'], parameters);
+        xhr.onreadystatechange(function() {
+		if (xhr.handler.readyState == 4 && xhr.handler.status == 200)
+		{
+			if (xhr.handler.responseText != '')
+			{
+				xhr.response = xhr.handler.responseText;
+				var result = JSON.parse(xhr.response);
+				if (result.error == '1')
+				{
+                    jQuery('#refreshloading').addClass('hide');
+					jQuery.growl.error({title: phrase['_error'], message: result.message});
+				}
+				else
+				{
+					jQuery('#refreshloading').addClass('hide');
+					jQuery.growl.notice({title: phrase['_success'], message: result.message});
 				}
 			}
 			xhr.handler.abort();

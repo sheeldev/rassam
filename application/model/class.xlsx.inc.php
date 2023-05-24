@@ -14,6 +14,31 @@ class xlsx
 	{
 	$this->sheel = $sheel;
 	}
+	function measurement_xlsx_to_db($data, $staffs,  $customer_ref, $userid = 0, $bulk_id = 0)
+	{
+		foreach ($data as $t) {
+			$staffdetails = explode('|',$staffs[$t[0]]);
+			$this->sheel->db->query("
+                        INSERT INTO " . DB_PREFIX . "bulk_tmp_measurements
+                        (id, staffcode, measurementcategory, positioncode, departmentcode, mvalue, uom, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+                        VALUES (
+                        NULL,
+						'" . $t[0] . "',
+						'" . $t[1] . "',
+						'" . $staffdetails[0] . "',
+						'" . $staffdetails[1] . "',
+						'" . $t[2] . "',
+						'" . $t[3] . "',
+						'" . $customer_ref . "',
+						'',
+                        '" . $this->sheel->db->escape_string(DATETODAY) . "',
+                        '0',
+						'" . $userid . "',
+						'" . $bulk_id . "')
+                    ", 0, null, __FILE__, __LINE__);
+		}
+	}
+
 	function staff_xlsx_to_db($data, $customer_ref, $nextid, $userid = 0, $bulk_id = 0)
 	{
 		foreach ($data as $t) {

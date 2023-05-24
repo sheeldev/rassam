@@ -43,7 +43,7 @@
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <label class="draw-label" >{_code}</label>
-                                        <input name="form[staffcode]" value="{form[staffcode]}" class="draw-input" disabled/>
+                                        <input name="form[staffcode]" value="{form[staffcode]}" class="draw-input" readonly/>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
@@ -151,9 +151,9 @@
                                         <td width="35%" align="left"><input name="uploadedname_{id}" id="uploadedname_{id}" value="{name}" class="draw-input" /></td> 
                                         <td width="15%" align="left"><input name="uploadedgender_{id}" id="uploadedgender_{id}" value="{gender}" class="draw-input" /></td> 
                                         <td width="17%" align="left"><input name="uploadedposition_{id}" id="uploadedposition_{id}" value="{positioncode}" class="draw-input" /></td> 
-                                        <td width="17%" align="left"><input name="uploadeddepartment" id="uploadeddepartment_{id}" value="{departmentcode}" class="draw-input" /></td> 
+                                        <td width="17%" align="left"><input name="uploadeddepartment_{id}" id="uploadeddepartment_{id}" value="{departmentcode}" class="draw-input" /></td> 
                                         
-                                        <td width="100%" align="left"><input name="staffuploaderrormessage" id="staffuploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
+                                        <td width="100%" align="left"><input name="uploaderrormessage" id="uploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
                                         <td >
                                             <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_staff({id});"/>
                                         </td>

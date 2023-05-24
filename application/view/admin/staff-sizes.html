@@ -31,8 +31,8 @@
             <div class="layout-content">
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
-                        <h1>Add Staffs Measurements For {customercard[customer_ref]}</h1>
-                        <p>Add Staff Measurements for this customer. </p>
+                        <h1>Add Staffs Sizes For {customercard[customer_ref]}</h1>
+                        <p>Add Staff Sizes for this customer. </p>
                   </div>
                 </div>
                 <div class="layout-content__main">
@@ -50,25 +50,35 @@
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_measurement_category}</label>
+                                        <label class="draw-label" for="customer_password2">{_size}</label>
                                         <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
-                                            {form[measurement_pulldown]}
+                                            {form[size_pulldown]}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_value}</label>
-                                        <input name="form[value]" id="measurement_value" value="{form[value]}" class="draw-input" />
+                                        <label class="draw-label" for="customer_password2">{_fit}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
+                                            {form[fit_pulldown]}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_uom}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[uom_pulldown]}
+                                        <label class="draw-label" for="customer_password2">{_cut}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
+                                            {form[cut_pulldown]}
                                         </div>
-                                    </div>.
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="customer_password2">{_category}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
+                                            {form[itemcategory_pulldown]}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -178,7 +188,7 @@
                                 <div class="draw-card__section draw-card__section--no-bottom-spacing">
                                     <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
                                         <div class="draw-input-wrapper">
-                                            <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" id="formsearch" accept-charset="UTF-8" method="get">
+                                            <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" id="formsearch" accept-charset="UTF-8" method="get">
                                             <div class="draw-field__connected-wrapper">
                                                 <div class="draw-field--connected--no-flex">
                                                     <div class="draw-select__wrapper">
@@ -249,30 +259,33 @@
                                             </span>
                                         </th>
                                         <th width="10%"><label>Staff Code</label></th>
-                                        <th width="15%"><label>Measurement Category</label></th> 
+                                        <th width="15%"><label>Size</label></th> 
+                                        <th width="15%"><label>Fit</label></th> 
+                                        <th width="15%"><label>Cut</label></th> 
                                         <th width="15%"><label>Position</label></th> 
-                                        <th width="15%"><label>Department</label></th>
-                                        <th width="15%"><label>Value</label></th> 
-                                        <th width="100%"><label>UOM</label></th>  
+                                        <th width="15%"><label>Department</label></th> 
+                                        <th width="100%"><label>Type</label></th> 
                                         <th>{_action}</span></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <loop name="staffmeasurements">
+                                    <loop name="staffsizes">
                                         <tr id="tr_selected_{systemId}" valign="top">
                                             <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="memssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{staffCode}</td>
-                                            <td width="15%" align="left">{measurementCode}</td> 
+                                            <td width="15%" align="left">{sizeCode}</td> 
+                                            <td width="15%" align="left">{fitCode}</td> 
+                                            <td width="15%" align="left">{cutCode}</td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="15%" align="left">{departmentName}</td> 
-                                            <td width="15%" align="left">{value}</td> 
-                                            <td width="100%" align="left">{uomCode}</td> 
+                                            <td width="100%" align="left">{sizeType}</td> 
+
                                             <td >
                                                 <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff measurement?', 'Are you sure you want to delete the selected staff measurement?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
-                                    </loop name="staffmeasurements"> 
+                                    </loop name="staffsizes"> 
                                     </tbody>
                                     </table>
                                 </form>

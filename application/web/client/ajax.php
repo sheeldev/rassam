@@ -19,6 +19,7 @@ $sheel->template->meta['cssinclude'] = array(
 // only skip session if method doesn't change active session in any way
 $methods = array(
 	'updatebulkstaff' => array('skipsession' => true),
+	'updatebulkmeasurement' => array('skipsession' => true),
 	'check_email' => array('skipsession' => true),
 	'quickregister' => array('skipsession' => false),
 	'showstates' => array('skipsession' => true),
@@ -68,7 +69,36 @@ if (isset($sheel->GPC['do'])) {
 		http_response_code(200);
 		echo $json;
 		exit();
-	}  else if ($sheel->GPC['do'] == 'check_email') {
+	}  else if ($sheel->GPC['do'] == 'updatebulkmeasurement') { 
+		if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
+			$sheel->db->query("
+				UPDATE " . DB_PREFIX . "bulk_tmp_measurements
+				SET staffcode = '".$sheel->GPC['staffcode']."',
+					measurementcategory = '".$sheel->GPC['measurementcategory']."',
+					positioncode = '".$sheel->GPC['position']."',
+					departmentcode = '".$sheel->GPC['department']."',
+					mvalue = '".$sheel->GPC['mvalue']."',
+					uom = '".$sheel->GPC['uom']."'
+				WHERE id = '" . $sheel->GPC['id'] . "'
+				", 0, null, __FILE__, __LINE__);
+			$result = array(
+				'error' => '0',
+				'message' => 'Record Updated',
+				'timestamp' => ''
+			);
+		}
+		else {
+			$result = array(
+				'error' => '1',
+				'message' => 'No Record ID Provided',
+				'timestamp' => ''
+			);
+		}
+		$json = json_encode($result);
+		http_response_code(200);
+		echo $json;
+		exit();
+	} else if ($sheel->GPC['do'] == 'check_email') {
 		if (isset($sheel->GPC['email_user'])) {
 			$add_customer['status'] = $add_customer['status1'] = true;
 			$sql = $sheel->db->query("
