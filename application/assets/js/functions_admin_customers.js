@@ -8,13 +8,61 @@ function init_bulk_animation()
 		});
 	}
 }
-function display_error_message() {
-	var message = "" + jQuery('#uploaderrormessage').val();
-	jQuery.growl.error({title: phrase['_error'], message: message});
+function display_error_message(id) {
+	var message = "" + jQuery('#uploaderrormessage_'+ id).val();
+	if (message=='[Auto Suggest]') {
+		jQuery.growl.warning({title: phrase['_notice'], message: message});
+	}
+	else {
+		jQuery.growl.error({title: phrase['_error'], message: message});
+	}
+	
 }
 function init_page()
 {
         init_bulk_animation();
+}
+
+function update_uploded_size(uploadid)
+{
+        jQuery('#refreshloading').removeClass('hide');
+        setTimeout(fetch_size_post_form(this.parentNode, uploadid), 500);
+        
+}
+function fetch_size_post_form(obj, id)
+{
+        var parameters = "do=updatebulksize" +
+						"&id=" + jQuery('#uploadedid_'+ id).val() +
+						"&staffcode=" + jQuery('#uploadedstaffcode_'+ id).val() +
+						"&position=" + jQuery('#uploadedpositioncode_'+ id).val() +
+						"&department=" + jQuery('#uploadeddepartmentcode_'+ id).val()+
+						"&fit=" + jQuery('#uploadedfit_'+ id).val()+
+						"&cut=" + jQuery('#uploadedcut_'+ id).val()+
+						"&size=" + jQuery('#uploadedsize_'+ id).val()+
+						"&type=" + jQuery('#uploadedtype_'+ id).val();
+        xhr = new AJAX_Handler(true);
+		xhr.send(iL['AJAXURL'], parameters);
+        xhr.onreadystatechange(function() {
+		if (xhr.handler.readyState == 4 && xhr.handler.status == 200)
+		{
+			if (xhr.handler.responseText != '')
+			{
+				xhr.response = xhr.handler.responseText;
+				var result = JSON.parse(xhr.response);
+				if (result.error == '1')
+				{
+                    jQuery('#refreshloading').addClass('hide');
+					jQuery.growl.error({title: phrase['_error'], message: result.message});
+				}
+				else
+				{
+					jQuery('#refreshloading').addClass('hide');
+					jQuery.growl.notice({title: phrase['_success'], message: result.message});
+				}
+			}
+			xhr.handler.abort();
+		}
+	});
 }
 
 function update_uploded_staff(uploadid)

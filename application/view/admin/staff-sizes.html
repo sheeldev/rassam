@@ -1,4 +1,4 @@
-<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Measurement has been successfully Created.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'addsuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Customer Staff Size has been successfully Created.' });</script></if>
 <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'adderror'"><script>jQuery.growl.error({ title: '{_error}', message: '{errorMessage}'});</script></if>
 <if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidf'"><script>jQuery.growl.error({ title: '{_invalid_bulk_import_file}', message: '{_the_bulk_file_you_uploaded_was_not_correct_please_try_again}' })</script></if>
 <if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidfe'"><script>jQuery.growl.error({ title: '{_invalid_file_extension}', message: '{_the_bulk_file_you_uploaded_did_not_have_the_correct_file_extension}' })</script></if>
@@ -24,7 +24,7 @@
         </div>
     <div class="section overview">
     <div class="section section--no-border tags">
-        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" accept-charset="UTF-8" method="post" onsubmit="return submit_measurement_form()">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" accept-charset="UTF-8" method="post">
             <input type="hidden" name="subcmd" value="add" />
             <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
             <input type="hidden" name="company_id" value="{customercard[company_id]}" />
@@ -42,7 +42,7 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_staff}</label>
+                                        <label class="draw-label">{_staff}</label>
                                         <div class="draw-select__wrapper draw-input--has-content">
                                             {form[staff_pulldown]}
                                         </div>
@@ -50,33 +50,33 @@
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_size}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
+                                        <label class="draw-label">{_size}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
                                             {form[size_pulldown]}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_fit}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
+                                        <label class="draw-label">{_fit}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
                                             {form[fit_pulldown]}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_cut}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
+                                        <label class="draw-label">{_cut}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
                                             {form[cut_pulldown]}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="customer_password2">{_category}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content"  id="measurement-wrapper">
-                                            {form[itemcategory_pulldown]}
+                                        <label class="draw-label">{_type}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[itemtype_pulldown]}
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
 
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-input-wrapper">
-                                    <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff Measurement</button>
+                                    <button name="submit" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff Size</button>
                                 </div>
                             </div>
                         </div>
@@ -95,9 +95,11 @@
         <div class="layout-content">
             <div class="layout-content__sidebar layout-content__first">
                 <div class="section-summary">
-                    <h1>Upload Staffs Measurements.</h1>
-                    <p>Add Bulk Staff Measurements for this customer. </p>
-                    <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/measurements/?subcmd=measurementsample'" /></div>
+                    <h1>Upload Staffs Sizes.</h1>
+                    <p>Add Bulk Staff Sizes for this customer. </p>
+                    <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=sizesample'" /></div>
+                    <p></p>
+                    <div><input type="button" value="{_suggest_sizes}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest'" /></div>
 								
               </div>
             </div>
@@ -106,12 +108,12 @@
                    <div class="draw-card__section">
                    	    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                             <div class="draw-grid__cell">
-                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/measurements/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
+                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/sizes/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
                                 <div class="draw-input-wrapper">
                                     <h2 class="mb-20" id="item-description">{_upload_file}</h2>
-                                    <label class="draw-label" for="vehicle_registration_category">{_measurements_document_format_only}</label>
+                                    <label class="draw-label">{_sizes_document_format_only}</label>
                                     <div class="pb-6"><input type="file" name="xlsx_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/></div>
-                                    <div class="pb-14"><label for="containsheader"><input type="checkbox" name="containsheader" id="containsheader" value="1" checked="checked" /> {_my_xlsx_file_contains_title_header_columns}</label></div>
+                                    <div class="pb-14"><label><input type="checkbox" name="containsheader" id="containsheader" value="1" checked="checked" /> {_my_xlsx_file_contains_title_header_columns}</label></div>
                                     <div class="clear"></div>
                                     <div class="clear"></div>
                                     <div class="clear"></div>
@@ -129,49 +131,51 @@
                    <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
                    <div class="draw-card">
                     <div class="draw-card__section">
-                        <form action="customers/org/{customercard[customer_id]}/measurements/" name="formuploadedmeasurement" accept-charset="UTF-8" id="formuploadedmeasurement" autocomplete="off"> 
+                        <form action="customers/org/{customercard[customer_id]}/sizes/" name="formuploadedsizes" accept-charset="UTF-8" id="formuploadedsizes" method="POST"> 
                         <div class="table-wrapper">
                             <table class="table-hover expanded">
                             <thead>
                             <tr>
                                 <th width="17%"><label>Staff Code</label> </th>
-                                <th width="35%"><label>Measurement Category</label></th> 
                                 <th width="15%"><label>Position Code</label></th> 
                                 <th width="17%"><label>Department Code</label></th> 
-                                <th width="17%"><label>Value</label></th> 
-                                <th width="10%"><label>UOM</label></th>
-                                <th width="100%"><label>Error</label></th> 
+                                <th width="5%"><label>Fit</label></th> 
+                                <th width="5%"><label>Cut</label></th>
+                                <th width="15%"><label>Size</label></th>
+                                <th width="15%"><label>Type</label></th>
+                                <th><label>Error</label></th> 
                                 <th>{_action}</span></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <loop name="uploadedmeaasurements">
+                            <loop name="uploadedsizes">
                                 <tr valign="top">
                                 
                                         <input name="subcmd" value="bulkupload" type="hidden" />
                                         <input name="do" value="assign" type="hidden" />
                                         <input name="uploadid_{id}" id="uploadedid_{id}" value="{id}" type="hidden" />
-                                        <td width="17%" nowrap="nowrap"><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input" disabled/></td>
-                                        <td width="35%" align="left"><input name="uploadedmeasurementcategory_{id}" id="uploadedmeasurementcategory_{id}" value="{measurementcategory}" class="draw-input" /></td> 
+                                        <td width="17%" nowrap="nowrap"><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input"/></td>
                                         <td width="15%" align="left"><input name="uploadedpositioncode_{id}" id="uploadedpositioncode_{id}" value="{positioncode}" class="draw-input" /></td> 
                                         <td width="17%" align="left"><input name="uploadeddepartmentcode_{id}" id="uploadeddepartmentcode_{id}" value="{departmentcode}" class="draw-input" /></td> 
-                                        <td width="17%" align="left"><input name="uploadedvalue_{id}" id="uploadedvalue_{id}" value="{mvalue}" class="draw-input" /></td> 
-                                        <td width="10%" align="left"><input name="uploadeduom_{id}" id="uploadeduom_{id}" value="{uom}" class="draw-input" /></td> 
-                                        <td width="100%" align="left"><input name="uploaderrormessage" id="uploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
+                                        <td width="5%" align="left"><input name="uploadedfit_{id}" id="uploadedfit_{id}" value="{fit}" class="draw-input" /></td> 
+                                        <td width="5%" align="left"><input name="uploadedcut_{id}" id="uploadedcut_{id}" value="{cut}" class="draw-input" /></td> 
+                                        <td width="15%" align="left"><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input" /></td> 
+                                        <td width="15%" align="left"><input name="uploadedtype_{id}" id="uploadedtype_{id}" value="{type}" class="draw-input" /></td> 
+                                        <td><input name="uploaderrormessage_{id}" id="uploaderrormessage_{id}" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message({id});">{_show_error}</a></td> 
                                         <td >
-                                            <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_measurement({id});"/>
+                                            <input type="button" name="update" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_size({id});"/>
                                         </td>
                                     
                                 </tr>
-                            </loop name="uploadedmeaasurements"> 
+                            </loop name="uploadedsizes"> 
                             </tbody>
                             </table>
                         </div>
                         <div class="hr-20-0-20-0"></div>
                     
                             <div class="draw-input-wrapper">
-                                <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_add}</button>
-                                <a href="javascript:;" data-bind-event-click="acp_confirm_simple('cancel', 'Cancel upload customer staff?', 'Are you sure you want to cancel the upload of staffs measurements in error?', 'customers/org/{customercard[customer_id]}/measurements/?subcmd=bulkupload&cancel=cancel')" class="btn" title="{_cancel}">{_cancel}</a>
+                                <button name="add" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_add}</button>
+                                <a href="javascript:;" data-bind-event-click="acp_confirm_simple('cancel', 'Cancel upload staff sizes?', 'Are you sure you want to cancel the upload of staffs sizes in error?', 'customers/org/{customercard[customer_id]}/sizes/?subcmd=bulkupload&cancel=cancel')" class="btn" title="{_cancel}">{_cancel}</a>
                             </div>
                         </form>
                       
@@ -195,7 +199,7 @@
                                                         {form[filter_pulldown]}
                                                     </div>
                                                 </div>
-                                                    <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
+                                                    <label class="draw-label helper--visually-hidden">{_keywords}</label>
                                                     <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
                                                         <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
                                                     </div>
@@ -211,7 +215,7 @@
                         <div class="draw-card__section">
           
                                 <div class="table-wrapper">
-                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" id="formmeasurements" accept-charset="UTF-8" method="get">
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" id="formsizes" accept-charset="UTF-8" method="get">
                                     <table class="table-hover expanded">
                                     <thead>
                                     <tr>
@@ -227,7 +231,7 @@
                                                     <li>
                                                         <a class="btn btn-slim btn-disabled btn--selection">
                                                             <span class="selection-count">
-                                                              <span id="selectedcount"></span> {_selected_measurements}
+                                                              <span id="selectedcount"></span> {_selected_sizes}
                                                             </span> 
                                                         </a>
                                                     </li>
@@ -242,7 +246,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', 'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/')">Delete</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Staffs sizes?', 'Are you sure you want to delete selected Staffs sizes?', 'zezssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/sizes/')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -259,11 +263,12 @@
                                             </span>
                                         </th>
                                         <th width="10%"><label>Staff Code</label></th>
-                                        <th width="15%"><label>Size</label></th> 
-                                        <th width="15%"><label>Fit</label></th> 
-                                        <th width="15%"><label>Cut</label></th> 
+                                        <th width="15%"><label>Staff Name</label></th>
                                         <th width="15%"><label>Position</label></th> 
                                         <th width="15%"><label>Department</label></th> 
+                                        <th width="5%"><label>Fit</label></th> 
+                                        <th width="5%"><label>Cut</label></th> 
+                                        <th width="10%"><label>Size</label></th> 
                                         <th width="100%"><label>Type</label></th> 
                                         <th>{_action}</span></th>
                                     </tr>
@@ -271,18 +276,19 @@
                                     <tbody>
                                     <loop name="staffsizes">
                                         <tr id="tr_selected_{systemId}" valign="top">
-                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="memssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="zezssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{staffCode}</td>
-                                            <td width="15%" align="left">{sizeCode}</td> 
-                                            <td width="15%" align="left">{fitCode}</td> 
-                                            <td width="15%" align="left">{cutCode}</td> 
+                                            <td width="15%" align="left">{staffName}</td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="15%" align="left">{departmentName}</td> 
+                                            <td width="5%" align="left">{fitCode}</td> 
+                                            <td width="5%" align="left">{cutCode}</td> 
+                                            <td width="10%" align="left">{sizeCode}</td> 
                                             <td width="100%" align="left">{sizeType}</td> 
 
                                             <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff measurement?', 'Are you sure you want to delete the selected staff measurement?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff size?', 'Are you sure you want to delete the selected staff size?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/sizes/?systemid={systemId}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
                                     </loop name="staffsizes"> 
@@ -290,7 +296,7 @@
                                     </table>
                                 </form>
                                     <script type="text/javascript">
-                                        inlineCB = new iL_Inline('inlineCB', 'memssss', 'formmeasurements', '{_go}'); 
+                                        inlineCB = new iL_Inline('inlineCB', 'zezssss', 'formsizes', '{_go}'); 
                                     </script>
                                 </div>
                             </div>

@@ -18,8 +18,9 @@ $sheel->template->meta['cssinclude'] = array(
 );
 // only skip session if method doesn't change active session in any way
 $methods = array(
-	'updatebulkstaff' => array('skipsession' => true),
-	'updatebulkmeasurement' => array('skipsession' => true),
+	'updatebulkstaff' => array('skipsession' => false),
+	'updatebulkmeasurement' => array('skipsession' => false),
+	'updatebulksize' => array('skipsession' => false),
 	'check_email' => array('skipsession' => true),
 	'quickregister' => array('skipsession' => false),
 	'showstates' => array('skipsession' => true),
@@ -42,26 +43,33 @@ if (isset($sheel->GPC['do'])) {
 	} else {
 		define('SKIP_SESSION', false);
 	}
-	if ($sheel->GPC['do'] == 'updatebulkstaff') { 
-		if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
-			$sheel->db->query("
-				UPDATE " . DB_PREFIX . "bulk_tmp_staffs
-				SET name = '".$sheel->GPC['name']."',
-					gender = '".$sheel->GPC['gender']."',
-					positioncode = '".$sheel->GPC['position']."',
-					departmentcode = '".$sheel->GPC['department']."'
-				WHERE id = '" . $sheel->GPC['id'] . "'
-				", 0, null, __FILE__, __LINE__);
-			$result = array(
-				'error' => '0',
-				'message' => 'Record Updated',
-				'timestamp' => ''
-			);
-		}
-		else {
+	if ($sheel->GPC['do'] == 'updatebulkstaff') {
+		if (!empty($_SESSION['ilancedata']['user']['userid']) and $_SESSION['ilancedata']['user']['userid'] > 0) {
+			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
+				$sheel->db->query("
+					UPDATE " . DB_PREFIX . "bulk_tmp_staffs
+					SET name = '" . $sheel->GPC['name'] . "',
+						gender = '" . $sheel->GPC['gender'] . "',
+						positioncode = '" . $sheel->GPC['position'] . "',
+						departmentcode = '" . $sheel->GPC['department'] . "'
+					WHERE id = '" . $sheel->GPC['id'] . "'
+					", 0, null, __FILE__, __LINE__);
+				$result = array(
+					'error' => '0',
+					'message' => 'Record Updated',
+					'timestamp' => ''
+				);
+			} else {
+				$result = array(
+					'error' => '1',
+					'message' => 'No Record ID Provided',
+					'timestamp' => ''
+				);
+			}
+		} else {
 			$result = array(
 				'error' => '1',
-				'message' => 'No Record ID Provided',
+				'message' => 'Session expired. Please login.',
 				'timestamp' => ''
 			);
 		}
@@ -69,28 +77,72 @@ if (isset($sheel->GPC['do'])) {
 		http_response_code(200);
 		echo $json;
 		exit();
-	}  else if ($sheel->GPC['do'] == 'updatebulkmeasurement') { 
-		if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
-			$sheel->db->query("
+	} else if ($sheel->GPC['do'] == 'updatebulkmeasurement') {
+		if (!empty($_SESSION['ilancedata']['user']['userid']) and $_SESSION['ilancedata']['user']['userid'] > 0) {
+			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
+				$sheel->db->query("
 				UPDATE " . DB_PREFIX . "bulk_tmp_measurements
-				SET staffcode = '".$sheel->GPC['staffcode']."',
-					measurementcategory = '".$sheel->GPC['measurementcategory']."',
-					positioncode = '".$sheel->GPC['position']."',
-					departmentcode = '".$sheel->GPC['department']."',
-					mvalue = '".$sheel->GPC['mvalue']."',
-					uom = '".$sheel->GPC['uom']."'
+				SET staffcode = '" . $sheel->GPC['staffcode'] . "',
+					measurementcategory = '" . $sheel->GPC['measurementcategory'] . "',
+					positioncode = '" . $sheel->GPC['position'] . "',
+					departmentcode = '" . $sheel->GPC['department'] . "',
+					mvalue = '" . $sheel->GPC['mvalue'] . "',
+					uom = '" . $sheel->GPC['uom'] . "'
 				WHERE id = '" . $sheel->GPC['id'] . "'
 				", 0, null, __FILE__, __LINE__);
+				$result = array(
+					'error' => '0',
+					'message' => 'Record Updated',
+					'timestamp' => ''
+				);
+			} else {
+				$result = array(
+					'error' => '1',
+					'message' => 'No Record ID Provided',
+					'timestamp' => ''
+				);
+			}
+		} else {
 			$result = array(
-				'error' => '0',
-				'message' => 'Record Updated',
+				'error' => '1',
+				'message' => 'Session expired. Please login.',
 				'timestamp' => ''
 			);
 		}
-		else {
+		$json = json_encode($result);
+		http_response_code(200);
+		echo $json;
+		exit();
+	} else if ($sheel->GPC['do'] == 'updatebulksize') {
+		if (!empty($_SESSION['ilancedata']['user']['userid']) and $_SESSION['ilancedata']['user']['userid'] > 0) {
+			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
+				$sheel->db->query("
+				UPDATE " . DB_PREFIX . "bulk_tmp_sizes
+				SET staffcode = '" . $sheel->GPC['staffcode'] . "',
+					positioncode = '" . $sheel->GPC['position'] . "',
+					departmentcode = '" . $sheel->GPC['department'] . "',
+					fit = '" . $sheel->GPC['fit'] . "',
+					cut = '" . $sheel->GPC['cut'] . "',
+					size = '" . $sheel->GPC['size'] . "',
+					type = '" . $sheel->GPC['type'] . "'
+				WHERE id = '" . $sheel->GPC['id'] . "'
+				", 0, null, __FILE__, __LINE__);
+				$result = array(
+					'error' => '0',
+					'message' => 'Record Updated',
+					'timestamp' => ''
+				);
+			} else {
+				$result = array(
+					'error' => '1',
+					'message' => 'No Record ID Provided',
+					'timestamp' => ''
+				);
+			}
+		} else {
 			$result = array(
 				'error' => '1',
-				'message' => 'No Record ID Provided',
+				'message' => 'Session expired. Please login.',
 				'timestamp' => ''
 			);
 		}
@@ -181,7 +233,7 @@ if (isset($sheel->GPC['do'])) {
 			echo $sheel->template->parse_template_phrases('quickregister_notice');
 			exit();
 		}
-	}  else if ($sheel->GPC['do'] == 'showstates') { // show states based on selected country
+	} else if ($sheel->GPC['do'] == 'showstates') { // show states based on selected country
 		if (isset($sheel->GPC['countryname']) and !empty($sheel->GPC['countryname']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname'])) {
 			if ($sheel->GPC['countryname'] > 0) {
 				$locationid = intval($sheel->GPC['countryname']);

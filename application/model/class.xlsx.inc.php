@@ -14,6 +14,57 @@ class xlsx
 	{
 	$this->sheel = $sheel;
 	}
+	function size_xlsx_to_db($data, $staffs,  $customer_ref, $userid = 0, $bulk_id = 0)
+	{
+		if ($bulk_id > 0) {
+			foreach ($data as $t) {
+				$staffdetails = explode('|',$staffs[$t[0]]);
+				$this->sheel->db->query("
+							INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
+							(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+							VALUES (
+							NULL,
+							'" . $t[0] . "',
+							'" . $staffdetails[0] . "',
+							'" . $staffdetails[1] . "',
+							'" . $t[1] . "',
+							'" . $t[2] . "',
+							'" . $t[3] . "',
+							'" . $t[4] . "',
+							'" . $customer_ref . "',
+							'',
+							'" . $this->sheel->db->escape_string(DATETODAY) . "',
+							'0',
+							'" . $userid . "',
+							'" . $bulk_id . "')
+						", 0, null, __FILE__, __LINE__);
+			}
+		}
+		else {
+			foreach ($data as $t) {
+				$this->sheel->db->query("
+							INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
+							(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+							VALUES (
+							NULL,
+							'" . $t['staffcode'] . "',
+							'" . $t['positioncode']  . "',
+							'" . $t['departmentcode']  . "',
+							'" . $t['fit']  . "',
+							'" . $t['cut']  . "',
+							'" . $t['size']  . "',
+							'" . $t['type']  . "',
+							'" . $customer_ref . "',
+							'[Auto Suggest]',
+							'" . $this->sheel->db->escape_string(DATETODAY) . "',
+							'0',
+							'" . $userid . "',
+							'" . $bulk_id . "')
+						", 0, null, __FILE__, __LINE__);
+			}
+		}
+		
+	}
 	function measurement_xlsx_to_db($data, $staffs,  $customer_ref, $userid = 0, $bulk_id = 0)
 	{
 		foreach ($data as $t) {
