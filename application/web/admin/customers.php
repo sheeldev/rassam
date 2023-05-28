@@ -1189,6 +1189,33 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
             $suggestdata = array();
             foreach ($custstaffs as $keycust => $valuecust) {
+                $tempsm = array();
+                $sm = array();
+                $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
+                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $valuecust['code'] . '\'';
+                $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                if ($apiResponse->isSuccess()) {
+                    $tempsm = $apiResponse->getData();
+                } else {
+                    $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                    die($sheel->template->parse_template_phrases('message'));
+                }
+
+                foreach ($tempsm as $key => $value) {
+                    foreach ($value as $key1 => $value1) {
+                        if ($key1 == 'measurementCode') {
+                            $code = $value1;
+                        }
+                        if ($key1 == 'value') {
+                            $name['value'] = $value1;
+                        }
+                        if ($key1 == 'uomCode') {
+                            $name['uomCode'] = $value1;
+                        }
+                    }
+                    $sm += [$code => $name];
+                }
+
                 $sqlupd = $sheel->db->query("
                     SELECT id, code, gender
                         FROM " . DB_PREFIX . "size_types
@@ -1196,18 +1223,28 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     ORDER BY code
                 ");
                 while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
+                    $res['error'] = '[Auto Suggest]';
                     $res['staffcode'] =  $valuecust['code'];
                     $res['positioncode'] =  $valuecust['positionCode'];
                     $res['departmentcode'] =  $valuecust['departmentCode'];
-                    $res['fit'] = '';
+                    $isfit = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], 'fit', $res['code']);
+                    if ($isfit == '0') {
+                        $res['fit'] = 'R';
+                    }
+                    else {
+                        $res['fit'] = '';
+                        $res['error'] = $isfit;
+                    }
                     $res['cut'] = '';
                     $res['size'] = '';
                     $res['type'] = $res['code'];
                     $suggestdata[] = $res;
+                  
 
                 }
             }
             $sheel->xlsx->size_xlsx_to_db($suggestdata, $custstaffs, $customer['customer_ref'], $_SESSION['sheeldata']['user']['userid'], 0);
+
 
         } 
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'bulkupload') {

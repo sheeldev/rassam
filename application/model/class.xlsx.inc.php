@@ -55,7 +55,7 @@ class xlsx
 							'" . $t['size']  . "',
 							'" . $t['type']  . "',
 							'" . $customer_ref . "',
-							'[Auto Suggest]',
+							'" . $t['error']  . "',
 							'" . $this->sheel->db->escape_string(DATETODAY) . "',
 							'0',
 							'" . $userid . "',

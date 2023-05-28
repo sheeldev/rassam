@@ -310,11 +310,11 @@ class admincp_customers extends admincp
     {
         $returnedc = '';
         $sql = $this->sheel->db->query("
-				SELECT name, bc_code
-				FROM " . DB_PREFIX . "companies
-				WHERE company_id = '" . $companyid . "'
-				LIMIT 1
-			", 0, null, __FILE__, __LINE__);
+                    SELECT name, bc_code
+                    FROM " . DB_PREFIX . "companies
+                    WHERE company_id = '" . $companyid . "'
+                    LIMIT 1
+			    ", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0) {
             $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
             if ($code) {
@@ -328,6 +328,47 @@ class admincp_customers extends admincp
         return $returnedc;
     }
 
+    function is_staff_measurements_available($companycode, $customerno, $staffcode, $measurements, $gender, $sizetype, $type)
+    {
+        $return = '0';
+
+        switch ($sizetype) {
+            case 'fit': {
+                    $sql = $this->sheel->db->query("
+                    SELECT distinct mccode, uom
+                    FROM " . DB_PREFIX . "size_rules
+                    WHERE impact = 'Fit' AND iscalculated = '0' AND gender = '". $gender . "' AND type = '" . $type . "'
+			    ", 0, null, __FILE__, __LINE__);
+                    if ($this->sheel->db->num_rows($sql) > 0) {
+                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+                                $sm =  $measurements[$res['mccode']];
+                                if (is_array($sm)) {
+                                    if ($sm['value'] == '0') {
+                                        $return = '[Required Measurement ' . $res['mccode'] . ' cannot be 0]';
+                                    }
+                                    if ($sm['uomCode'] != $res['uom']) {
+                                        $return = $return . '<br>[Required Measurement ' . $res['mccode'] . ' UOM cannot be in ' . $sm['uomCode'] . ']';
+                                    }
+                                }
+                                else {
+                                    $return = '[Measurement Code not Found]';
+                                }  
+                        }
+                    }
+                    else {
+                        $return = '[No Rule Specified]';
+                    }
+                    break;
+                }
+            default:
+                $return = '[No Size Type Specified]';
+        }
+        return $return;
+    }
+    function calculate_staff_fit()
+    {
+
+    }
 
 }
 ?>
