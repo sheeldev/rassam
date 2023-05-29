@@ -328,46 +328,80 @@ class admincp_customers extends admincp
         return $returnedc;
     }
 
-    function is_staff_measurements_available($companycode, $customerno, $staffcode, $measurements, $gender, $sizetype, $type)
+    function is_staff_measurements_available($companycode, $customerno, $staffcode, $measurements, $gender, $type)
     {
         $return = '0';
-
-        switch ($sizetype) {
-            case 'fit': {
-                    $sql = $this->sheel->db->query("
+        $sql = $this->sheel->db->query("
                     SELECT distinct mccode, uom
                     FROM " . DB_PREFIX . "size_rules
-                    WHERE impact = 'Fit' AND iscalculated = '0' AND gender = '". $gender . "' AND type = '" . $type . "'
+                    WHERE iscalculated = '0' AND active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
 			    ", 0, null, __FILE__, __LINE__);
-                    if ($this->sheel->db->num_rows($sql) > 0) {
-                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-                                $sm =  $measurements[$res['mccode']];
-                                if (is_array($sm)) {
-                                    if ($sm['value'] == '0') {
-                                        $return = '[Required Measurement ' . $res['mccode'] . ' cannot be 0]';
-                                    }
-                                    if ($sm['uomCode'] != $res['uom']) {
-                                        $return = $return . '<br>[Required Measurement ' . $res['mccode'] . ' UOM cannot be in ' . $sm['uomCode'] . ']';
-                                    }
-                                }
-                                else {
-                                    $return = '[Measurement Code not Found]';
-                                }  
-                        }
+        if ($this->sheel->db->num_rows($sql) > 0) {
+            while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $sm = $measurements[$res['mccode']];
+                if (is_array($sm)) {
+                    if ($sm['value'] == '0') {
+                        $return = '[Required Measurement ' . $res['mccode'] . ' cannot be 0]<br>';
                     }
-                    else {
-                        $return = '[No Rule Specified]';
+                    if ($sm['uomCode'] != $res['uom']) {
+                        $return = $return . '[Required Measurement ' . $res['mccode'] . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
                     }
-                    break;
+                } else {
+                    $return = '[Measurement Code not Found]<br>';
                 }
-            default:
-                $return = '[No Size Type Specified]';
+            }
+        } else {
+            $return = '[No Rule Specified]<br>';
         }
         return $return;
     }
-    function calculate_staff_fit()
+    function calculate_staff_size($measurements, $gender, $type)
     {
+        $sql = $this->sheel->db->query("
+                    SELECT code, iscalculated, mcformula, mccode, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, 'rank', priority
+                    FROM " . DB_PREFIX . "size_rules
+                    WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
+			    ", 0, null, __FILE__, __LINE__);
+        $sizearray = $temparray = $finalsizes = array();
+        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+            $sm = $measurements[$res['mccode']];
+            if ($res['iscalculated'] == '1') {
 
+            } else {
+                if ($sm['value'] >= $res['mvaluelow'] and $sm['value'] <= $res['mvaluehigh']) {
+                    $temparray['rulecode'] = $res['code'];
+                    $temparray['mccode'] = $res['mccode'];
+                    $temparray['impact'] = $res['impact'];
+                    $temparray['impactvalue'] = $res['impactvalue'];
+                    $temparray['rank'] = $res['rank'];
+                    $temparray['priority'] = $res['priority'];
+                    $sizearray[] = $temparray;
+
+                } else {
+
+                }
+            }
+        }
+        foreach ($sizearray as $d1) {
+            $add = 0;
+            foreach ($sizearray as $d2) {
+                if ($d1['impact'] == $d2['impact']) {
+                    if ($d1['priority'] <= $d2['priority']) {
+                        $add = 1;
+                    } else {
+                        $add = 0;
+                    }
+                }
+                else {
+                    $add = 1;
+                }
+            }
+            if ($add == 1) {
+                $finalsizes[$d1['impact']] = $d1['impactvalue'];
+            }
+            
+        }
+        return $finalsizes;
     }
 
 }

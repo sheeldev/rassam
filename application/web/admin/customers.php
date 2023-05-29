@@ -1227,22 +1227,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $res['staffcode'] =  $valuecust['code'];
                     $res['positioncode'] =  $valuecust['positionCode'];
                     $res['departmentcode'] =  $valuecust['departmentCode'];
-                    $isfit = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], 'fit', $res['code']);
-                    if ($isfit == '0') {
-                        $res['fit'] = 'R';
+                    $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
+                    $autosizearray = array();
+                    if ($ismavailable == '0') {
+                        $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
+                        $res['fit'] = $autosizearray['Fit'];
+                        $res['cut'] = $autosizearray['Cut'];
+                        $res['size'] = $autosizearray['Size'];
                     }
                     else {
                         $res['fit'] = '';
-                        $res['error'] = $isfit;
+                        $res['cut'] = '';
+                        $res['size'] = '';
+                        $res['error'] = $ismavailable;
                     }
-                    $res['cut'] = '';
-                    $res['size'] = '';
+                   
                     $res['type'] = $res['code'];
                     $suggestdata[] = $res;
-                  
-
                 }
             }
+
             $sheel->xlsx->size_xlsx_to_db($suggestdata, $custstaffs, $customer['customer_ref'], $_SESSION['sheeldata']['user']['userid'], 0);
 
 
@@ -1683,7 +1687,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             SELECT id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors
                 FROM " . DB_PREFIX . "bulk_tmp_sizes
             WHERE customerno = '" . $customer['customer_ref']. "' AND uploaded = '0'
-            ORDER BY staffcode
+            ORDER BY staffcode, type
         ");
 
         while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {

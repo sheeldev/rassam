@@ -44,7 +44,7 @@ if (isset($sheel->GPC['do'])) {
 		define('SKIP_SESSION', false);
 	}
 	if ($sheel->GPC['do'] == 'updatebulkstaff') {
-		if (!empty($_SESSION['ilancedata']['user']['userid']) and $_SESSION['ilancedata']['user']['userid'] > 0) {
+		if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) {
 			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
 				$sheel->db->query("
 					UPDATE " . DB_PREFIX . "bulk_tmp_staffs
@@ -78,7 +78,7 @@ if (isset($sheel->GPC['do'])) {
 		echo $json;
 		exit();
 	} else if ($sheel->GPC['do'] == 'updatebulkmeasurement') {
-		if (!empty($_SESSION['ilancedata']['user']['userid']) and $_SESSION['ilancedata']['user']['userid'] > 0) {
+		if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) {
 			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
 				$sheel->db->query("
 				UPDATE " . DB_PREFIX . "bulk_tmp_measurements
@@ -114,7 +114,7 @@ if (isset($sheel->GPC['do'])) {
 		echo $json;
 		exit();
 	} else if ($sheel->GPC['do'] == 'updatebulksize') {
-		if (!empty($_SESSION['ilancedata']['user']['userid']) and $_SESSION['ilancedata']['user']['userid'] > 0) {
+		if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) {
 			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
 				$sheel->db->query("
 				UPDATE " . DB_PREFIX . "bulk_tmp_sizes
