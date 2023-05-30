@@ -1246,7 +1246,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $suggestdata[] = $res;
                 }
             }
-
             $sheel->xlsx->size_xlsx_to_db($suggestdata, $custstaffs, $customer['customer_ref'], $_SESSION['sheeldata']['user']['userid'], 0);
 
 

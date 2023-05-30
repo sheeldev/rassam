@@ -332,23 +332,47 @@ class admincp_customers extends admincp
     {
         $return = '0';
         $sql = $this->sheel->db->query("
-                    SELECT distinct mccode, uom
+                    SELECT distinct mccode, uom, iscalculated, mcformula
                     FROM " . DB_PREFIX . "size_rules
-                    WHERE iscalculated = '0' AND active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
+                    WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
 			    ", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0) {
             while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-                $sm = $measurements[$res['mccode']];
-                if (is_array($sm)) {
-                    if ($sm['value'] == '0') {
-                        $return = '[Required Measurement ' . $res['mccode'] . ' cannot be 0]<br>';
+                if ($res['iscalculated'] == '1') {
+                    
+                    $formula = $res['mcformula'];
+                    foreach ($measurements as $keysm => $valuesm) {
+                        if (strpos($formula, $keysm) !== false) {
+                            $sm = $measurements[$keysm];
+                            if (is_array($sm)) {
+                                if ($sm['value'] == '0') {
+                                    $return = '[Required Measurement ' . $keysm . ' cannot be 0]<br>';
+                                }
+                                if ($sm['uomCode'] != $res['uom']) {
+                                    $return = $return . '[Required Measurement ' . $keysm . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
+                                }
+                            } else {
+                                $return = '[Measurement Code not Found]<br>';
+                            }
+                            
+                        }
                     }
-                    if ($sm['uomCode'] != $res['uom']) {
-                        $return = $return . '[Required Measurement ' . $res['mccode'] . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
-                    }
-                } else {
-                    $return = '[Measurement Code not Found]<br>';
+                    
                 }
+                else {
+                    $sm = $measurements[$res['mccode']];
+                    if (is_array($sm)) {
+                        if ($sm['value'] == '0') {
+                            $return = '[Required Measurement ' . $res['mccode'] . ' cannot be 0]<br>';
+                        }
+                        if ($sm['uomCode'] != $res['uom']) {
+                            $return = $return . '[Required Measurement ' . $res['mccode'] . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
+                        }
+                    } else {
+                        $return = '[Measurement Code not Found]<br>';
+                    }
+                }
+                
             }
         } else {
             $return = '[No Rule Specified]<br>';
@@ -364,10 +388,35 @@ class admincp_customers extends admincp
 			    ", 0, null, __FILE__, __LINE__);
         $sizearray = $temparray = $finalsizes = array();
         while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-            $sm = $measurements[$res['mccode']];
+            
             if ($res['iscalculated'] == '1') {
+                //echo $res['code'] . '<br>';;
+                $formula = $res['mcformula'];
+                foreach ($measurements as $keysm => $valuesm) {
+                    //echo $keysm . ' ' . $formula . '<br>';
+                    //echo $keysm. ' ' . $formula. '<br>';
+                    if (strpos($formula, $keysm) !== false) {
+                        $formula = str_replace($keysm, $valuesm['value'], $formula);
+                    }
+                   
+                }
+                //echo  $formula. '<br>';
+                $result = eval("return $formula;");
+                if ($result >= $res['mvaluelow'] and $result <= $res['mvaluehigh']) {
+                    $temparray['rulecode'] = $res['code'];
+                    $temparray['mccode'] = $res['mccode'];
+                    $temparray['impact'] = $res['impact'];
+                    $temparray['impactvalue'] = $res['impactvalue'];
+                    $temparray['rank'] = $res['rank'];
+                    $temparray['priority'] = $res['priority'];
+                    $sizearray[] = $temparray;
+
+                } else {
+
+                }
 
             } else {
+                $sm = $measurements[$res['mccode']];
                 if ($sm['value'] >= $res['mvaluelow'] and $sm['value'] <= $res['mvaluehigh']) {
                     $temparray['rulecode'] = $res['code'];
                     $temparray['mccode'] = $res['mccode'];
