@@ -332,50 +332,66 @@ class admincp_customers extends admincp
     {
         $return = '0';
         $sql = $this->sheel->db->query("
-                    SELECT distinct mccode, uom, iscalculated, mcformula
+                    SELECT mccode, uom, iscalculated, mcformula, mvaluelow, mvaluehigh
                     FROM " . DB_PREFIX . "size_rules
                     WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
 			    ", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0) {
+            $withininterval = '0';
+            $prevmccode = '';
             while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $currentmccode = $res['mccode'];
+                //echo $currentmccode . ' - ' . $prevmccode . '<br>';
                 if ($res['iscalculated'] == '1') {
-                    
-                    $formula = $res['mcformula'];
-                    foreach ($measurements as $keysm => $valuesm) {
-                        if (strpos($formula, $keysm) !== false) {
-                            $sm = $measurements[$keysm];
-                            if (is_array($sm)) {
-                                if ($sm['value'] == '0') {
-                                    $return = '[Required Measurement ' . $keysm . ' cannot be 0]<br>';
+                    if ($currentmccode != $prevmccode) {
+                        $formula = $res['mcformula'];
+                        foreach ($measurements as $keysm => $valuesm) {
+                            if (strpos($formula, $keysm) !== false) {
+                                $sm = $measurements[$keysm];
+                                if (is_array($sm)) {
+                                    if ($sm['value'] == '0') {
+                                        $return = ($return == '0' ? '' : $return) . '[Required Measurement ' . $keysm . ' cannot be 0]<br>';
+                                    } else {
+                                        if ($sm['value'] >= $res['mvaluelow'] and $sm['value'] <= $res['mvaluehigh']) {
+                                            $withininterval = '1';
+                                        }
+                                    }
+                                } else {
+                                    $return = ($return == '0' ? '' : $return) . '[Measurement Code not Found]<br>';
                                 }
-                                if ($sm['uomCode'] != $res['uom']) {
-                                    $return = $return . '[Required Measurement ' . $keysm . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
-                                }
-                            } else {
-                                $return = '[Measurement Code not Found]<br>';
+
                             }
-                            
                         }
                     }
-                    
-                }
-                else {
-                    $sm = $measurements[$res['mccode']];
-                    if (is_array($sm)) {
-                        if ($sm['value'] == '0') {
-                            $return = '[Required Measurement ' . $res['mccode'] . ' cannot be 0]<br>';
+                    $prevmccode = $currentmccode;
+
+                } else {
+                    if ($currentmccode != $prevmccode) {
+                        $sm = $measurements[$currentmccode];
+                        if (is_array($sm)) {
+                            if ($sm['value'] == '0') {
+                                $return = ($return == '0' ? '' : $return) . '[Required Measurement ' . $currentmccode . ' cannot be 0]<br>';
+                            } else {
+                                if (floatval($sm['value']) >= floatval($res['mvaluelow']) or floatval($sm['value']) <= floatval($res['mvaluehigh'])) {
+                                    $withininterval = '1';
+                                }
+                            }
+                            if ($sm['uomCode'] != $res['uom']) {
+                                $return = ($return == '0' ? '' : $return) . '[Required Measurement ' . $currentmccode . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
+                            }
+
+                        } else {
+                            $return = ($return == '0' ? '' : $return) . '[Measurement Code not Found]<br>';
                         }
-                        if ($sm['uomCode'] != $res['uom']) {
-                            $return = $return . '[Required Measurement ' . $res['mccode'] . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
-                        }
-                    } else {
-                        $return = '[Measurement Code not Found]<br>';
                     }
+                    $prevmccode = $currentmccode;
                 }
-                
+            }
+            if ($withininterval == '0') {
+                $return = ($return == '0' ? '' : $return) . '[Required Measurement cannot be smaller or greater than fixed rules]<br>';
             }
         } else {
-            $return = '[No Rule Specified]<br>';
+            $return = ($return == '0' ? '' : $return) . '[No Rule Specified]<br>';
         }
         return $return;
     }
@@ -388,7 +404,7 @@ class admincp_customers extends admincp
 			    ", 0, null, __FILE__, __LINE__);
         $sizearray = $temparray = $finalsizes = array();
         while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-            
+
             if ($res['iscalculated'] == '1') {
                 //echo $res['code'] . '<br>';;
                 $formula = $res['mcformula'];
@@ -398,7 +414,7 @@ class admincp_customers extends admincp
                     if (strpos($formula, $keysm) !== false) {
                         $formula = str_replace($keysm, $valuesm['value'], $formula);
                     }
-                   
+
                 }
                 //echo  $formula. '<br>';
                 $result = eval("return $formula;");
@@ -440,15 +456,14 @@ class admincp_customers extends admincp
                     } else {
                         $add = 0;
                     }
-                }
-                else {
+                } else {
                     $add = 1;
                 }
             }
             if ($add == 1) {
                 $finalsizes[$d1['impact']] = $d1['impactvalue'];
             }
-            
+
         }
         return $finalsizes;
     }

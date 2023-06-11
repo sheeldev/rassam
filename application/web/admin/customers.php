@@ -880,7 +880,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                             "positionCode" => $res['positioncode'],
                             "departmentCode" => $res['departmentcode'],
                             "measurementCode" => $res['measurementcategory'],
-                            "value" => intval($res['value']),
+                            "value" => intval($res['mvalue']),
                             "uomCode" => $res['uom']
                         )
                     );
@@ -1223,7 +1223,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     ORDER BY code
                 ");
                 while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
-                    $res['error'] = '[Auto Suggest]';
                     $res['staffcode'] =  $valuecust['code'];
                     $res['positioncode'] =  $valuecust['positionCode'];
                     $res['departmentcode'] =  $valuecust['departmentCode'];
@@ -1234,6 +1233,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $res['fit'] = $autosizearray['Fit'];
                         $res['cut'] = $autosizearray['Cut'];
                         $res['size'] = $autosizearray['Size'];
+                        $res['error'] = '[Auto Suggest]';
                     }
                     else {
                         $res['fit'] = '';
@@ -1246,6 +1246,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $suggestdata[] = $res;
                 }
             }
+            //die ('test');
             $sheel->xlsx->size_xlsx_to_db($suggestdata, $custstaffs, $customer['customer_ref'], $_SESSION['sheeldata']['user']['userid'], 0);
 
 
