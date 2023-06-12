@@ -23,6 +23,11 @@ function init_page()
         init_bulk_animation();
 }
 
+function suggest_sizes(url) {
+	jQuery('#refreshloading').removeClass('hide');
+	location.href=url;
+
+}
 function update_uploded_size(uploadid)
 {
         jQuery('#refreshloading').removeClass('hide');

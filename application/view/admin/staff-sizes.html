@@ -99,7 +99,7 @@
                     <p>Add Bulk Staff Sizes for this customer. </p>
                     <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=sizesample'" /></div>
                     <p></p>
-                    <div><input type="button" value="{_suggest_sizes}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest'" /></div>
+                    <div><input type="button" value="{_suggest_sizes}" class="btn large" onclick="return suggest_sizes('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest');" /></div>
 								
               </div>
             </div>

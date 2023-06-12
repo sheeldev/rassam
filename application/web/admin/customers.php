@@ -1980,6 +1980,81 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $staff = $apiResponse->getData();
+            foreach ($staff as $keystaff => $valuestaff) {
+                $tempsm = array();
+                $sm = array();
+                $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
+                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $valuestaff['code'] . '\'';
+                $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                if ($apiResponse->isSuccess()) {
+                    $tempsm = $apiResponse->getData();
+                } else {
+                    $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                    die($sheel->template->parse_template_phrases('message'));
+                }
+                foreach ($tempsm as $key => $value) {
+                    foreach ($value as $key1 => $value1) {
+                        if ($key1 == 'measurementCode') {
+                            $code = $value1;
+                        }
+                        if ($key1 == 'value') {
+                            $name = $value1;
+                        }
+                    }
+                    $sm += [$code => $name];
+                }
+
+                $mandatorymeasurements = explode(',', $sheel->config['mandatorymeasurements']);
+                foreach ($mandatorymeasurements as $value) {
+                    if ($sm[$value] =='' OR $sm[$value] == '0') {
+                        $staff[$keystaff]['meetmeasurements']='<span class="badge badge--critical">{_not_met}</span>';
+                        break;
+                    }
+                    else {
+                        $staff[$keystaff]['meetmeasurements']='<span class="badge badge--success">{_available}</span>';
+                    }   
+                }
+
+
+                $tempss = array();
+                $ss = array();
+                $sheel->dynamics->init_dynamics('erStaffSizes', $companycode);
+                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $valuestaff['code'] . '\'';
+                $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                if ($apiResponse->isSuccess()) {
+                    $tempss = $apiResponse->getData();
+                } else {
+                    $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                    die($sheel->template->parse_template_phrases('message'));
+                }
+                foreach ($tempss as $key => $value) {
+                    foreach ($value as $key1 => $value1) {
+                        if ($key1 == 'sizeType') {
+                            $code = $value1;
+                        }
+                        if ($key1 == 'sizeCode') {
+                            $name = $value1;
+                        }
+                    }
+                    $ss += [$code => $name];
+                }
+                $sql = $sheel->db->query("
+                    SELECT code
+                    FROM " . DB_PREFIX . "size_types 
+                    WHERE  (gender = '" . substr($valuestaff['gender'], 0, 1) . "' OR gender='U') AND needsize = '1'
+                ");
+                while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                    if ($ss[$res['code']] == '') {
+                        $staff[$keystaff]['meetsizes']='<span class="badge badge--critical">{_not_met}</span>';
+                        break;
+                    }
+                    else {
+                        $staff[$keystaff]['meetsizes']='<span class="badge badge--success">{_available}</span>';
+                    }   
+                }
+
+
+            }
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             die(
