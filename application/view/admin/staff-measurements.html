@@ -96,7 +96,7 @@
                    <div class="draw-card__section">
                    	    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                             <div class="draw-grid__cell">
-                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/measurements/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
+                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/measurements/" onsubmit="forward_with_loading_nourl();" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
                                 <div class="draw-input-wrapper">
                                     <h2 class="mb-20" id="item-description">{_upload_file}</h2>
                                     <label class="draw-label">{_measurements_document_format_only}</label>
@@ -105,10 +105,10 @@
                                     <div class="clear"></div>
                                     <div class="clear"></div>
                                     <div class="clear"></div>
-                                    <div><input type="button" id="upload" value="{_upload}" class="btn large"/></div>
                                     <input name="subcmd" value="bulkupload" type="hidden" />
                                     <input name="do" value="assign" type="hidden" />
                                     <input name="mode" value="bulk" type="hidden" />
+                                    <div><input type="submit" value="{_upload}" class="btn large"/></div>
                                     <div class="hr-20-0-20-0"></div>
                                 </div>
                                 </form>
@@ -119,7 +119,7 @@
                    <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
                    <div class="draw-card">
                     <div class="draw-card__section">
-                        <form action="customers/org/{customercard[customer_id]}/measurements/" name="formuploadedmeasurement" accept-charset="UTF-8" id="formuploadedmeasurement" method="POST"> 
+                        <form action="customers/org/{customercard[customer_id]}/measurements/" name="formuploadedmeasurement" onsubmit="forward_with_loading_nourl();" accept-charset="UTF-8" id="formuploadedmeasurement" method="POST"> 
                         <div class="table-wrapper">
                             <table class="table-hover expanded">
                             <thead>

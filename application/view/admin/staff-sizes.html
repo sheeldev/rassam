@@ -99,7 +99,7 @@
                     <p>Add Bulk Staff Sizes for this customer. </p>
                     <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=sizesample'" /></div>
                     <p></p>
-                    <div><input type="button" value="{_suggest_sizes}" class="btn large" onclick="return suggest_sizes('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest');" /></div>
+                    <div><input type="button" value="{_suggest_sizes}" class="btn large" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest');" /></div>
 								
               </div>
             </div>
@@ -108,7 +108,7 @@
                    <div class="draw-card__section">
                    	    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                             <div class="draw-grid__cell">
-                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/sizes/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
+                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/sizes/" onsubmit="forward_with_loading_nourl();" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
                                 <div class="draw-input-wrapper">
                                     <h2 class="mb-20" id="item-description">{_upload_file}</h2>
                                     <label class="draw-label">{_sizes_document_format_only}</label>
@@ -117,10 +117,10 @@
                                     <div class="clear"></div>
                                     <div class="clear"></div>
                                     <div class="clear"></div>
-                                    <div><input type="button" id="upload" value="{_upload}" class="btn large"/></div>
                                     <input name="subcmd" value="bulkupload" type="hidden" />
                                     <input name="do" value="assign" type="hidden" />
                                     <input name="mode" value="bulk" type="hidden" />
+                                    <div><input type="submit" value="{_upload}" class="btn large"/></div>
                                     <div class="hr-20-0-20-0"></div>
                                 </div>
                                 </form>
@@ -131,7 +131,7 @@
                    <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
                    <div class="draw-card">
                     <div class="draw-card__section">
-                        <form action="customers/org/{customercard[customer_id]}/sizes/" name="formuploadedsizes" accept-charset="UTF-8" id="formuploadedsizes" method="POST"> 
+                        <form action="customers/org/{customercard[customer_id]}/sizes/" name="formuploadedsizes" onsubmit="forward_with_loading_nourl();" accept-charset="UTF-8" id="formuploadedsizes" method="POST"> 
                         <div class="table-wrapper">
                             <table class="table-hover expanded">
                             <thead>
@@ -246,7 +246,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Staffs sizes?', 'Are you sure you want to delete selected Staffs sizes?', 'zezssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/sizes/')">Delete</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Staffs sizes?', 'Are you sure you want to delete selected Staffs sizes?', 'zesssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/sizes/')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -264,6 +264,7 @@
                                         </th>
                                         <th width="10%"><label>Staff Code</label></th>
                                         <th width="15%"><label>Staff Name</label></th>
+                                        <th width="15%"><label>Gender</label></th>
                                         <th width="15%"><label>Position</label></th> 
                                         <th width="15%"><label>Department</label></th> 
                                         <th width="5%"><label>Fit</label></th> 
@@ -276,10 +277,11 @@
                                     <tbody>
                                     <loop name="staffsizes">
                                         <tr id="tr_selected_{systemId}" valign="top">
-                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="zezssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="zesssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{staffCode}</td>
                                             <td width="15%" align="left">{staffName}</td> 
+                                            <td width="15%" align="left">{gender}</td>
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="15%" align="left">{departmentName}</td> 
                                             <td width="5%" align="left">{fitCode}</td> 
@@ -296,7 +298,7 @@
                                     </table>
                                 </form>
                                     <script type="text/javascript">
-                                        inlineCB = new iL_Inline('inlineCB', 'zezssss', 'formsizes', '{_go}'); 
+                                        inlineCB = new iL_Inline('inlineCB', 'zesssss', 'formsizes', '{_go}'); 
                                     </script>
                                 </div>
                             </div>

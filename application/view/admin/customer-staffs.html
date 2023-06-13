@@ -102,7 +102,7 @@
                    <div class="draw-card__section">
                    	    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                             <div class="draw-grid__cell">
-                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/staffs/" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
+                                <form enctype="multipart/form-data" action="customers/org/{customercard[customer_id]}/staffs/" onsubmit="forward_with_loading_nourl();" name="form" id="formbulkupload" accept-charset="UTF-8" method="post">
                                 <div class="draw-input-wrapper">
                                     <h2 class="mb-20" id="item-description">{_upload_file}</h2>
                                     <label class="draw-label">{_staff_document_format_only}</label>
@@ -111,11 +111,12 @@
                                     <div class="clear"></div>
                                     <div class="clear"></div>
                                     <div class="clear"></div>
-                                    <div><input type="button" id="upload" value="{_upload}" class="btn large"/></div>
+                                    
                                     <input name="subcmd" value="bulkupload" type="hidden" />
                                     <input name="do" value="assign" type="hidden" />
                                     <input name="mode" value="bulk" type="hidden" />
                                     <input name="nextstaffid" value="{form[staffid]}" type="hidden" />
+                                    <div><input type="submit" value="{_upload}" class="btn large"/></div>
                                     <div class="hr-20-0-20-0"></div>
                                 </div>
                                 </form>
@@ -126,7 +127,7 @@
                    <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
                    <div class="draw-card">
                     <div class="draw-card__section">
-                        <form action="customers/org/{customercard[customer_id]}/staffs/" name="formuploadedstaff" accept-charset="UTF-8" id="formuploadedstaff" autocomplete="off"> 
+                        <form action="customers/org/{customercard[customer_id]}/staffs/" name="formuploadedstaff" onsubmit="forward_with_loading_nourl();" accept-charset="UTF-8" id="formuploadedstaff" autocomplete="off"> 
                         <div class="table-wrapper">
                             <table class="table-hover expanded">
                             <thead>
@@ -153,7 +154,7 @@
                                         <td width="17%" align="left"><input name="uploadedposition_{id}" id="uploadedposition_{id}" value="{positioncode}" class="draw-input" /></td> 
                                         <td width="17%" align="left"><input name="uploadeddepartment_{id}" id="uploadeddepartment_{id}" value="{departmentcode}" class="draw-input" /></td> 
                                         
-                                        <td width="100%" align="left"><input name="uploaderrormessage" id="uploaderrormessage" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message();">{_show_error}</a></td> 
+                                        <td width="100%" align="left"><input name="uploaderrormessage_{id}" id="uploaderrormessage_{id}" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message({id});">{_show_error}</a></td> 
                                         <td >
                                             <input type="button" name="button" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_staff({id});"/>
                                         </td>

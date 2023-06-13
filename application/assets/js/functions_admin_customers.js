@@ -1,4 +1,4 @@
-function init_bulk_animation()
+/* function init_bulk_animation()
 {
         if (jQuery('#upload').length && jQuery('#refreshloading').length && jQuery('#formbulkupload').length) {
 		jQuery('#upload').click(function(e){
@@ -7,7 +7,7 @@ function init_bulk_animation()
                      setTimeout("jQuery('#formbulkupload').submit();", 500);
 		});
 	}
-}
+} */
 function display_error_message(id) {
 	var message = "" + jQuery('#uploaderrormessage_'+ id).val();
 	if (message=='[Auto Suggest]') {
@@ -20,13 +20,16 @@ function display_error_message(id) {
 }
 function init_page()
 {
-        init_bulk_animation();
+        //init_bulk_animation();
 }
 
-function suggest_sizes(url) {
+function forward_with_loading(url) {
 	jQuery('#refreshloading').removeClass('hide');
 	location.href=url;
 
+}
+function forward_with_loading_nourl() {
+	jQuery('#refreshloading').removeClass('hide');
 }
 function update_uploded_size(uploadid)
 {
