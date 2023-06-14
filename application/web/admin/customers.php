@@ -1085,6 +1085,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
         $sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode);
+        $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
+        
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'staff': {
@@ -1109,14 +1111,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $ordercondition = '&$orderby=staffCode asc';
-        $apiResponse = $sheel->dynamics->select('?' . $searchcondition . $ordercondition);
+        $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition . $ordercondition . $pagination);
         if ($apiResponse->isSuccess()) {
             $staffmeasurements = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             die($sheel->template->parse_template_phrases('message'));
         }
-
+        $pageurl = PAGEURL;
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+        
         $uploadedmeaasurements = array();
         $sqlupd = $sheel->db->query("
             SELECT id, staffcode, measurementcategory, positioncode, departmentcode, mvalue, uom, customerno, errors
@@ -1496,7 +1500,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
         $form['q'] = (isset($sheel->GPC['q']) ? $sheel->GPC['q'] : '');
         unset($filter_options);
-
         $staffsizes = array();
 
         $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
@@ -1650,6 +1653,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
         $sheel->dynamics->init_dynamics('erStaffSizes', $companycode);
+        $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
+        
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'staff': {
@@ -1678,14 +1683,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $ordercondition = '&$orderby=staffCode asc';
-        $apiResponse = $sheel->dynamics->select('?' . $searchcondition . $ordercondition);
+        $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition . $ordercondition . $pagination);
         if ($apiResponse->isSuccess()) {
             $staffsizes = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             die($sheel->template->parse_template_phrases('message'));
         }
-
+        $pageurl = PAGEURL;
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+        
         $uploadedsizes = array();
         $sqlupd = $sheel->db->query("
             SELECT id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors

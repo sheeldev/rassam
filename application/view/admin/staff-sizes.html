@@ -194,7 +194,9 @@
                                         <div class="draw-input-wrapper">
                                             <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" id="formsearch" accept-charset="UTF-8" method="get">
                                             <div class="draw-field__connected-wrapper">
+
                                                 <div class="draw-field--connected--no-flex">
+                                                    
                                                     <div class="draw-select__wrapper">
                                                         {form[filter_pulldown]}
                                                     </div>
@@ -203,8 +205,8 @@
                                                     <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
                                                         <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
                                                     </div>
-                                                
-                                                <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                            
+
                                             </div>
                                             </form>
                                             
@@ -212,8 +214,11 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         <div class="draw-card__section">
-          
+                            <div class="right"> 
+                                {prevnext}
+                            </div>
                                 <div class="table-wrapper">
                                     <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" id="formsizes" accept-charset="UTF-8" method="get">
                                     <table class="table-hover expanded">

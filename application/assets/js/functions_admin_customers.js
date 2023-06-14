@@ -8,6 +8,9 @@
 		});
 	}
 } */
+
+
+
 function display_error_message(id) {
 	var message = "" + jQuery('#uploaderrormessage_'+ id).val();
 	if (message=='[Auto Suggest]') {

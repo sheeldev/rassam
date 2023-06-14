@@ -43,6 +43,8 @@ $router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/
 $router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_bc_list');
 $router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_org');
 $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
+$router->map('GET|POST', '/admin/staffs/', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs');
+$router->map('GET|POST', '/admin/staffs/[view:cmd]/[*:staffno]', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs_view');
 
 
 

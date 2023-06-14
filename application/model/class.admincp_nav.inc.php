@@ -274,6 +274,7 @@ class admincp_nav extends admincp
                                         <h2 class="draw-heading--callout">Customers</h2>
                                 </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_customers" bind-event-click="" allow-default="1" href="customers/">{_customers}</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_staffs" bind-event-click="" allow-default="1" href="staffs/">{_staffs}</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_bc" bind-event-click="" allow-default="1" href="customers/bc/">{_bc_customers_list}</a> </li>
                         </ol>
                         <!-- customers subnav -->

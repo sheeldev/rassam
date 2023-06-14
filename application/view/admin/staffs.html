@@ -1,4 +1,4 @@
-<if condition="$sheel->GPC['cmd'] == 'bcview'">
+<if condition="$sheel->GPC['cmd'] == 'view'">
 <if condition="$sheel->GPC['activate'] == 'yes'">
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'extension'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be .png, .jpg or .gif.' });</script></if>
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'size'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be under 250kb in file size.' });</script></if>
@@ -10,7 +10,7 @@
     <script type="text/javascript">
         Page();
     </script>
-     <form autocomplete="off" class="address-form" id="new_customer" action="{https_server_admin}customers/bcview/{form[no]}/" method="post" accept-charset="UTF-8" enctype="multipart/form-data" onsubmit="return submit_bc_form()">
+     <form autocomplete="off" class="address-form" id="new_customer" action="{https_server_admin}staffs/bcview/{form[no]}/" method="post" accept-charset="UTF-8" enctype="multipart/form-data" onsubmit="return submit_bc_form()">
     <input type="hidden" name="activate" value="yes">
     <input type="hidden" name="no" value="{form[no]}">
     <input type="hidden" name="company" value="{form[company]}">
@@ -19,13 +19,13 @@
 			<header class="header">
 				<h1 class="header__main">
 					<span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
-					<span class="breadcrumb"><a href="{https_server_admin}customers/bc/">{_customers}</a> / </span> {currentarea}
+					<span class="breadcrumb"><a href="{https_server_admin}staffs/bc/">{_staffs}</a> / </span> {currentarea}
 				</h1>
 				<div class="header__primary-actions">
                     <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">btn-disabled</if>" >{_activate}</button>
                 </div>
                 
-                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/bc/">{_cancel}</a> </div>
+                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}staffs/bc/">{_cancel}</a> </div>
 			</header>
 		</div>
         <div class="layout-content">
@@ -225,7 +225,7 @@
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">
-                                            <div class="ssb"><img src="{config[imguploadscdn]}customers/{customercard[logo]}" width="100"></div>
+                                            <div class="ssb"><img src="{config[imguploadscdn]}staffs/{customercard[logo]}" width="100"></div>
                                         <else />
                                             <label class="draw-label" for="form_imagename">Upload Image <span class="type--subdued"></span></label>
                                             <div class="styled-file-input">
@@ -249,19 +249,19 @@
         </div>
     </div>
     </form>
-    <div define="iLNav.setPage(['customers','customers_bc']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['staffs','staffs_bc']), iLPage.close()"></div>
 </section>
 <else />
 <section>
     <script type="text/javascript">
         Page();
     </script>
-    <div id="customers-index" class="page has-contextual-help customers-page">
+    <div id="staffs-index" class="page has-contextual-help staffs-page">
         <div class="header-row">
-            <header id="customers-index-header" class="header">
+            <header id="staffs-index-header" class="header">
                 <h1 class="header__main">
                     <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
-                    {_customers}
+                    {_staffs}
               	</h1>
                 <div class="header__primary-actions"> 
                     {prevnext}
@@ -283,7 +283,7 @@
                         <div class="draw-card__section draw-card__section--no-bottom-spacing">
                             <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
                                 <div class="draw-input-wrapper">
-                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/bc/" id="formsearch" accept-charset="UTF-8" method="get">
+                                    <form class="draw-form draw-form--full-width" action="{https_server_admin}staffs/" id="formsearch" accept-charset="UTF-8" method="get">
                                     <div class="draw-field__connected-wrapper">
                                         <div class="draw-field--connected--no-flex">
                                             <div class="draw-select__wrapper">
@@ -310,41 +310,43 @@
                             </div>
                         </div>
                     </div>
-                    <div id="customers-results">
+                    <div id="staffs-results">
                         <div class="draw-card__section">
                             <div class="table-wrapper">
                             	
                                 <table class="table-hover expanded">
                                     <thead>
                                         <tr>
-                                                <th class="is-sortable "> <span>{_account}</span> </th>
-                                                <th class="customer is-sortable "> <span>{_name}</span> </th>
-                                                <th class="customer"> <span>{_name2}</span> </th>
-                                                <th class="customer is-sortable "> <span>{_country}</span> </th>
-                                                <th> <span>{_contact}</span> </th>
-                                                <th> <span>{_phone}</span> </th>
-                                                <th class="is-sortable"> <span>{_blocked}</span> </th>
-                                                <th>{_action}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        	<loop name="customers">
-                            <tr id="tr_selected_{No}" valign="top">
-                               <td class="no-wrap"><a href="customers/bcview/{number}/?company={form[company]}">{number}</a></td>
-                                <td class="date draw-table__cell--full-width-when-condensed type--subdued"> <span>{name}</span></td>
-                                <td class="status type--subdued">{name2}</td>
-                                <td class="status no-wrap type--subdued">{country}</td>
-                                <td class="status no-wrap">{contact}</td>
-                                <td class="status no-wrap">{phoneNumber}</td>
-                                <td class="status no-wrap">{blocked}</td>
-                                <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
-                                <else />
-                                <td class="last_order type--subdued"><a href="customers/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>
-                                </if>
-                            </tr>
-                            </loop name="customers">
-                        </tbody>
-                        </table>
+                                            <th width="10%"> <label>{_code}</splabelan> </th>
+                                            <th width="20%"> <label>{_name}</label> </th>
+                                            <th width="10%"> <label>{_gender}</label> </th>
+                                            <th width="10%"> <label>{_position_code}</label> </th>
+                                            <th width="10%"> <label>{_position_name}</label> </th>
+                                            <th width="10%"> <label>{_department_code}</label> </th>
+                                            <th width="10%"> <label>{_department_name}</label> </th>
+                                            <th width="100%"> <label>{_customer}</label> </th>
+                                            <th>{_action}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <loop name="staffs">
+                                        <tr id="tr_selected_{No}" valign="top">
+                                        <td class="no-wrap"><a href="staffs/view/{code}/">{code}</a></td>
+                                            <td class=" draw-table__cell--full-width-when-condensed type--subdued"> <span>{name}</span></td>
+                                            <td class="status type--subdued">{gender}</td>
+                                            <td class="status no-wrap type--subdued">{positionCode}</td>
+                                            <td class="status no-wrap">{positionName}</td>
+                                            <td class="status no-wrap">{departmentCode}</td>
+                                            <td class="status no-wrap">{departmentName}</td>
+                                            <td class="status no-wrap">{customerNo}</td>
+                                            <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
+                                            <else />
+                                            <td class="last_order type--subdued"><a href="staffs/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>
+                                            </if>
+                                        </tr>
+                                        </loop name="staffs">
+                                    </tbody>
+                                </table>
 
                     </div>
                 </div>
@@ -356,7 +358,7 @@
     
     
     </div>
-    <div define="iLNav.setPage(['customers','customers_bc']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['customers','customers_staffs']), iLPage.close()"></div>
 </section>
 </if>
 
