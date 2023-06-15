@@ -62,10 +62,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     }
 
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'view' and isset($sheel->GPC['staffno']) and $sheel->GPC['staffno'] != '') {
-        die('test');
-        $areanav = 'customers_bc';
+        $areanav = 'customers_staffs';
         $vars['areanav'] = $areanav;
-        $sheel->template->fetch('main', 'customers-bc.html', 1);
+        $currentarea = $sheel->GPC['staffno'];
+        $vars['currentarea'] = $currentarea;
+        $sheel->template->fetch('main', 'staffs.html', 1);
         $sheel->template->parse_loop(
             'main',
             array(
@@ -82,6 +83,52 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else {
+        if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
+            if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
+
+                $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
+                $response = array();
+                $response = $sheel->dynamics_activities->bulkdelete($ids, 'erCustomerStaffs', $sheel->GPC['company_id']);
+                unset($ids);
+                $sheel->template->templateregistry['success'] = $response['success'];
+                $sheel->template->templateregistry['errors'] = $response['errors'];
+                die(
+                    json_encode(
+                        array(
+                            'response' => '2',
+                            'success' => $sheel->template->parse_template_phrases('success'),
+                            'errors' => $sheel->template->parse_template_phrases('errors'),
+                            'ids' => $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']],
+                            'successids' => $response['successids'],
+                            'failedids' => $response['failedids']
+                        )
+                    )
+                );
+            } else if (isset($sheel->GPC['systemid']) and $sheel->GPC['systemid'] != '') {
+                $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
+                $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
+                $deleteResponse = $sheel->dynamics->delete($sheel->GPC['systemid']);
+                $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Staff Memeber deleted', 'A customer staff member has been successfully deleted.');
+                if ($deleteResponse->isSuccess()) {
+                    $sheel->template->templateregistry['message'] = 'A Customer Staff Member has been successfully deleted.';
+                    die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+                } else {
+                    $sheel->template->templateregistry['message'] = $deleteResponse->getErrorMessage();
+                    die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+                }
+            } else {
+                $sheel->template->templateregistry['message'] = '{_no_record_selected}';
+                die(
+                    json_encode(
+                        array(
+                            'response' => '0',
+                            'message' => $sheel->template->parse_template_phrases('message')
+                        )
+                    )
+                );
+            }
+        }
+
         $staffs = array();
         $searchcondition = '\'&$orderby=code asc';
         $searchfilters = array(
@@ -164,7 +211,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         exit();
     }
 } else {
-    refresh(HTTPS_SERVER_ADMIN . 'signin/?redirect=' . urlencode(PAGEURL));
+    refresh('signin/?redirect=' . urlencode(SCRIPT_URI));
     exit();
 }
 ?>

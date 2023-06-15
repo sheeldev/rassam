@@ -44,6 +44,8 @@ define('HTTP_TMP', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "ht
 define('HTTP_TMP_CSS', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/".'application/uploads/cache/css/');
 define('DIR_XML', __DIR__.'/assets/xml/');
 define('PAGEURL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+define('SCRIPT_URI' , str_replace(HTTPS_SERVER,"", PAGEURL));
+
 require_once(__DIR__ . '/model/class.sheel.inc.php');
 $sheel = new sheel($sheel);
 require_once (__DIR__ . '/model/class.timer.inc.php');
@@ -78,11 +80,6 @@ $sheel->language = new language($sheel);
 
 require_once(__DIR__ . '/model/class.styles.inc.php');
 $sheel->styles = new styles($sheel);
-
-
-if (!$sheel->sessions->session_get_key(session_id())) {
-    $sheel->sessions->generateToken();	
-}
 
 define('TOKEN', $_SESSION['token']);
 $sheel->sessions->session_write(session_id(),'sheeldata|'.serialize($_SESSION['sheeldata']));

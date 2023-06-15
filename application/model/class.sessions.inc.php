@@ -43,8 +43,9 @@ class sessions
 				session_start($this->sheel->GPC['sessid']);
 			} else { // web visitor
 				session_start();
+				
 			}
-			
+			$this->generateToken();
 			$this->handle_language_style_changes();
 			$this->init_remembered_session();
 		} else {
@@ -602,13 +603,20 @@ class sessions
 	}
 
 	function generateToken() {
-		$characters = '0123456789abcdef';
-		$charactersLength = strlen($characters);
-		$token = '';
-		for ($i = 0; $i < 32; ++$i) {
-			$token .= $characters[rand(0, $charactersLength - 1)];
+		if ($_COOKIE[COOKIE_PREFIX .'token'] == '')  {
+			$characters = '0123456789abcdef';
+			$charactersLength = strlen($characters);
+			$token = '';
+			for ($i = 0; $i < 32; ++$i) {
+				$token .= $characters[rand(0, $charactersLength - 1)];
+			}
+			set_cookie('token', $token);
+			$_SESSION['token'] = $token;
 		}
-		$_SESSION['token'] = $token;
+		else {
+			$_SESSION['token'] = $_COOKIE[COOKIE_PREFIX .'token'];
+		}
+
 	}
 
 	/**

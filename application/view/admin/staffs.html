@@ -1,31 +1,17 @@
 <if condition="$sheel->GPC['cmd'] == 'view'">
-<if condition="$sheel->GPC['activate'] == 'yes'">
-    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'extension'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be .png, .jpg or .gif.' });</script></if>
-    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'size'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be under 250kb in file size.' });</script></if>
-    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'wh'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be at least 150 x 150 dimension.' });</script></if>
-    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'error'"><script>jQuery.growl.error({ title: '{_error}', message: 'Error in activating selected customer. Please contact administrator.' });</script></if>
-    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'exist'"><script>jQuery.growl.error({ title: '{_error}', message: 'The selected customer is already activated.' });</script></if>
-</if>
 <section>
     <script type="text/javascript">
         Page();
     </script>
-     <form autocomplete="off" class="address-form" id="new_customer" action="{https_server_admin}staffs/bcview/{form[no]}/" method="post" accept-charset="UTF-8" enctype="multipart/form-data" onsubmit="return submit_bc_form()">
-    <input type="hidden" name="activate" value="yes">
-    <input type="hidden" name="no" value="{form[no]}">
     <input type="hidden" name="company" value="{form[company]}">
     <div class="section account-overview">
         <div class="header-row">
 			<header class="header">
 				<h1 class="header__main">
 					<span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
-					<span class="breadcrumb"><a href="{https_server_admin}staffs/bc/">{_staffs}</a> / </span> {currentarea}
-				</h1>
-				<div class="header__primary-actions">
-                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">btn-disabled</if>" >{_activate}</button>
-                </div>
-                
-                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}staffs/bc/">{_cancel}</a> </div>
+					<span class="breadcrumb"><a href="{https_server_admin}staffs/">{_staffs}</a> / </span> {currentarea}
+				</h1> 
+                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}staffs/">{_staffs_list}</a> </div>
 			</header>
 		</div>
         <div class="layout-content">
@@ -248,8 +234,7 @@
             </div>
         </div>
     </div>
-    </form>
-    <div define="iLNav.setPage(['staffs','staffs_bc']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['customers','customers_staffs']), iLPage.close()"></div>
 </section>
 <else />
 <section>
@@ -313,10 +298,53 @@
                     <div id="staffs-results">
                         <div class="draw-card__section">
                             <div class="table-wrapper">
-                            	
+                            	<form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" id="formstaffs" accept-charset="UTF-8" method="get">
                                 <table class="table-hover expanded">
                                     <thead>
                                         <tr>
+                                            <th class="select">
+                                                <span id="bulkOperations">
+                                                <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                    <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                    <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="bulk-actions">
+                                                    <ul class="segmented">
+                                                        <li>
+                                                            <a class="btn btn-slim btn-disabled btn--selection">
+                                                                <span class="selection-count">
+                                                                  <span id="selectedcount"></span> {_selected_staffs}
+                                                                </span> 
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                            <div class="draw-popover__container">
+                                                                
+                                                                <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                                <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                    <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                    <div class="draw-popover__content-wrapper">
+                                                                        <div class="draw-popover__content" style="max-height: 637px;">
+                                                                            <div class="draw-popover__pane">
+                                                                                <ul class="draw-list draw-list--compact">
+                                                                                     <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', '<label>This will delete all Staff Measurements and Sizes for Selected Staffs!</label> <br>Are you sure you want to delete selected Staffs?', 'empssss', 'selectedcount', '1', '1', '{https_server_admin}staffs/?company_id={form[company]}')">Delete</a></li>
+                                                                                </ul> 
+                                                
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <span class="bulk-select-all">
+                                                        <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
+                                                    </span>
+                                                </div>
+                                                </span>
+                                            </th>
                                             <th width="10%"> <label>{_code}</splabelan> </th>
                                             <th width="20%"> <label>{_name}</label> </th>
                                             <th width="10%"> <label>{_gender}</label> </th>
@@ -330,8 +358,9 @@
                                     </thead>
                                     <tbody>
                                         <loop name="staffs">
-                                        <tr id="tr_selected_{No}" valign="top">
-                                        <td class="no-wrap"><a href="staffs/view/{code}/">{code}</a></td>
+                                            <tr id="tr_selected_{systemId}" valign="top">
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="empssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                            <td class="no-wrap"><a href="staffs/view/{code}">{code}</a></td>
                                             <td class=" draw-table__cell--full-width-when-condensed type--subdued"> <span>{name}</span></td>
                                             <td class="status type--subdued">{gender}</td>
                                             <td class="status no-wrap type--subdued">{positionCode}</td>
@@ -339,15 +368,17 @@
                                             <td class="status no-wrap">{departmentCode}</td>
                                             <td class="status no-wrap">{departmentName}</td>
                                             <td class="status no-wrap">{customerNo}</td>
-                                            <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
-                                            <else />
-                                            <td class="last_order type--subdued"><a href="staffs/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>
-                                            </if>
+                                            <td >
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff?', '<label>This will delete all Staff Measurements and Sizes!</label> <br>Are you sure you want to delete the selected staff?', '{systemId}', 1, '', '{https_server_admin}staffs/?systemid={systemId}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                            </td>
                                         </tr>
                                         </loop name="staffs">
                                     </tbody>
                                 </table>
-
+                            </form>
+                            <script type="text/javascript">
+                                inlineCB = new iL_Inline('inlineCB', 'empssss', 'formstaffs', '{_go}'); 
+                            </script>
                     </div>
                 </div>
             </div>
