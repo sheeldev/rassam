@@ -108,14 +108,14 @@ if (isset($sheel->GPC['login_process']) and $sheel->GPC['login_process'] > 0) { 
 
 				// create valid user session
 				$sheel->sessions->build_user_session($userinfo);
-				if (isset($sheel->GPC['remember']) and $sheel->GPC['remember']) { // user has chosen the marketplace to remember them for 24 hours
+				if (isset($sheel->GPC['remember']) and $sheel->GPC['remember']) { // user has chosen the system to remember them for 24 hours
 					set_cookie('userid', $sheel->crypt->encrypt($userinfo['user_id']), false, true, false, 1);
 					set_cookie('password', $sheel->crypt->encrypt($userinfo['password']), false, true, false, 1);
 					set_cookie('username', $sheel->crypt->encrypt($userinfo['username']), false, true, false, 1);
 				}
 				// remember users last visit and last hit activity regardless of remember me preference
-				set_cookie('lastvisit', DATETIME24H);
-				set_cookie('lastactivity', DATETIME24H);
+				set_cookie('lastvisit', time());
+				set_cookie('lastactivity', time());
 				set_cookie('radiuszip', o($sheel->format_zipcode($userinfo['zip_code'])));
 				$sheel->log_event($userinfo['user_id'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), $userinfo['username'] . ' just signed in', $userinfo['username'] . ' just signed into the marketplace.');
 				if (!empty($redirect)) {

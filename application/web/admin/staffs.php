@@ -32,6 +32,7 @@ $sheel->template->meta['cssinclude'] = array(
         'balloon'
     )
 );
+
 $sheel->template->meta['areatitle'] = 'Admin CP | Staffs';
 $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Staffs';
 
@@ -211,7 +212,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         exit();
     }
 } else {
-    refresh('signin/?redirect=' . urlencode(SCRIPT_URI));
+    refresh(HTTPS_SERVER_ADMIN . 'signin/?redirect=' . urlencode(SCRIPT_URI));
     exit();
 }
 ?>

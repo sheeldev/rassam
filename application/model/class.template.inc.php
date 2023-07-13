@@ -1025,7 +1025,6 @@ class template
 			$this->templatebits['themelinks'] = $this->sheel->styles->print_links();
 			$this->templatebits['login_include'] = ((isset($this->meta['loginclient'])) ? $this->meta['loginclient'] : '');
 			$this->templatebits['q'] = (isset($this->sheel->GPC['q']) ? o(urldecode($this->sheel->GPC['q'])) : '');
-			$this->templatebits['cid'] = $cid;
 			//$this->templatebits['cartcount'] = $this->sheel->cart->count();
 
 			if (in_array($this->templateregistry["currentview"], $this->sheelpages)) {
@@ -1114,11 +1113,7 @@ class template
 		$this->templatebits['footerdebug'] = (((!$this->forcenodebugbar)) ? $this->sheel->template_debug->print($node) : '');
 		$this->templatebits['js_phrases_content'] = $this->init_js_phrase_array($node);
 		$this->init_js_phrase_array($node);
-
-		$this->templatebits['accountbalance'] = $accountbalance;
-		$this->templatebits['balanceowing'] = $balanceowing;
 		$this->templatebits['membershipstatus'] = $membershipstatus;
-		$this->templatebits['pointsavailable'] = $pointsavailable;
 		$this->templatebits['attachgauge'] = $attachgauge;
 
 
@@ -1185,9 +1180,11 @@ class template
 				}
 			}
 			if (!empty($querystr)) {
+				$slng = (isset($_SESSION['sheeldata']['user']['slng']) and !empty($_SESSION['sheeldata']['user']['slng'])) ? $_SESSION['sheeldata']['user']['slng'] : 'eng';
+		
 				$querystr = 'p.varname IN (' . $querystr . ')';
 				$query = $this->sheel->db->query("
-					SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "p.varname, p.text_" . $_SESSION['sheeldata']['user']['slng'] . " AS text
+					SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "p.varname, p.text_" . $slng . " AS text
 					FROM " . DB_PREFIX . "language_phrases p
 					WHERE $querystr
 				", 0, null, __FILE__, __LINE__);

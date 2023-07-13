@@ -44,7 +44,7 @@ define('HTTP_TMP', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "ht
 define('HTTP_TMP_CSS', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/".'application/uploads/cache/css/');
 define('DIR_XML', __DIR__.'/assets/xml/');
 define('PAGEURL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-define('SCRIPT_URI' , str_replace(HTTPS_SERVER,"", PAGEURL));
+define('SCRIPT_URI' , '/'. str_replace(HTTPS_SERVER,"", PAGEURL));
 
 require_once(__DIR__ . '/model/class.sheel.inc.php');
 $sheel = new sheel($sheel);
@@ -59,21 +59,29 @@ require_once(__DIR__ . '/model/class.coredatabase.inc.php');
 require_once(__DIR__ . '/model/class.database.inc.php');
 require_once(__DIR__ . '/model/class.security.inc.php');
 require_once(__DIR__ . '/model/class.common.inc.php');
+
 $sheel->sheel_database = new sheel_database($sheel);
 $sheel->db = new database($sheel);
 $sheel->cache = new cache($sheel);
 $sheel->cachecore = new cache($sheel);
+require_once(__DIR__ . '/model/class.configuration.inc.php');
+$sheel->configuration = new configuration($sheel);
+require_once(__DIR__ . '/model/class.sessions.inc.php');
+
+@ini_set("session.name", 's');
+$sheel->sessions = new sessions($sheel);
+set_cookie('history', '1');
+define('TOKEN', $_SESSION['token']);
+$sheel->sessions->session_write(session_id(),'sheeldata|'.serialize($_SESSION['sheeldata']));
 
 require_once(__DIR__ . '/model/class.template.inc.php');
 $sheel->template = new template($sheel);
 require_once(__DIR__ . '/model/class.template_debug.inc.php');
 $sheel->template_debug = new template_debug($sheel);
 
-require_once(__DIR__ . '/model/class.configuration.inc.php');
-$sheel->configuration = new configuration($sheel);
 
-require_once(__DIR__ . '/model/class.sessions.inc.php');
-$sheel->sessions = new sessions($sheel);
+
+
 
 require_once(__DIR__ . '/model/class.language.inc.php');
 $sheel->language = new language($sheel);
@@ -81,6 +89,7 @@ $sheel->language = new language($sheel);
 require_once(__DIR__ . '/model/class.styles.inc.php');
 $sheel->styles = new styles($sheel);
 
-define('TOKEN', $_SESSION['token']);
-$sheel->sessions->session_write(session_id(),'sheeldata|'.serialize($_SESSION['sheeldata']));
+
+
+
 ?>

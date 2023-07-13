@@ -186,7 +186,6 @@ class sessions
 		$session['sheeldata']['user']['url'] = $scriptname; // . $querystring;
 
 		$session['sheeldata']['user']['area_title'] = !empty($this->sheel->template->meta['areatitle']) ? $this->sheel->template->meta['areatitle'] : '{_unknown}';
-		$storeid = "'" . ((!empty($this->sheel->template->meta['area']) and $this->sheel->template->meta['area'] == 'main_store' and isset($this->sheel->template->meta['storeid'])) ? intval($this->sheel->template->meta['storeid']) : '0') . "',";
 		
 		if (isset($this->sheel->show['searchengine']) and $this->sheel->show['searchengine']) { // search bots and crawlers
 			$expiry = "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_crawlertimeout'] * 60)) . "',";
@@ -235,14 +234,12 @@ class sessions
 				isadmin = $isadmin
 				isrobot = $isrobot
 				iserror = $iserror
-				storeid = $storeid
 				languageid = '" . intval($session['sheeldata']['user']['languageid']) . "',
 				styleid = '" . intval($session['sheeldata']['user']['styleid']) . "',
 				agent = '" . $this->sheel->db->escape_string(USERAGENT) . "',
 				lastclick = '" . $this->sheel->db->escape_string($lastclick) . "',
 				ipaddress = '" . $this->sheel->db->escape_string(IPADDRESS) . "',
 				firstclick = '" . $this->sheel->db->escape_string($firstclick) . "',
-
 				browser ='" . ($session['sheeldata']['user']['ismobile'] == '1' ? $session['sheeldata']['user']['devicetoken'] : $this->sheel->db->escape_string($this->sheel->common->fetch_browser_name())) . "',
 				token = '" . $this->sheel->db->escape_string(TOKEN) . "',
 				siteid = '" . $this->sheel->db->escape_string(SITE_ID) . "'
@@ -251,7 +248,7 @@ class sessions
 		} else {
 			$this->sheel->db->query("
 				REPLACE " . DB_PREFIX . "sessions
-				(sesskey, expiry, value, userid, isuser, isadmin, isrobot, iserror, storeid, languageid, styleid, agent, lastclick, ipaddress, url, title, firstclick, browser, token, siteid)
+				(sesskey, expiry, value, userid, isuser, isadmin, isrobot, iserror,  languageid, styleid, agent, lastclick, ipaddress, url, title, firstclick, browser, token, siteid)
 				VALUES(
 				'" . $this->sheel->db->escape_string($sessionkey) . "',
 				$expiry
@@ -261,7 +258,6 @@ class sessions
 				$isadmin
 				$isrobot
 				$iserror
-				$storeid
 				'" . intval($session['sheeldata']['user']['languageid']) . "',
 				'" . intval($session['sheeldata']['user']['styleid']) . "',
 				'" . $this->sheel->db->escape_string(USERAGENT) . "',
@@ -507,7 +503,6 @@ class sessions
 				'currencysymbol' => (isset($userinfo['currencyid']) and !empty($userinfo['currencyid'])) ? $this->sheel->currency->currencies[$userinfo['currencyid']]['symbol_left'] : '$',
 				'currencyabbrev' => o(mb_strtoupper($userinfo['currency_abbrev'])),
 				'searchoptions' => isset($userinfo['searchoptions']) ? $userinfo['searchoptions'] : '',
-				'storeid' => isset($userinfo['storeid']) ? $userinfo['storeid'] : '',
 				'storeseourl' => isset($userinfo['seourl']) ? $userinfo['seourl'] : '',
 				// <-- json_encoded()
 				'token' => TOKEN,

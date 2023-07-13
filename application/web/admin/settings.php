@@ -1046,7 +1046,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	$sheel->template->pprint('main', $vars);
 	exit();
 } else {
-	refresh('signin/?redirect=' . urlencode(SCRIPT_URI));
+	refresh(HTTPS_SERVER_ADMIN . 'signin/?redirect=' . urlencode(SCRIPT_URI));
 	exit();
 }
 ?>
