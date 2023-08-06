@@ -10,22 +10,16 @@ define('SESSIONHOST', mb_substr(IPADDRESS, 0, 15));
  * Session class to perform the majority of session functionality in sheel.
  *
  * @package      sheel\Sessions
- * @version      6.0.0.622
+ * @version      1.0.0.0
  * @author       sheel
  */
 class sessions
 {
 	protected $sheel;
 	private $sessionencrypt = false;
-	/**
-	 * Constructor
-	 *
-	 * @param       $registry	sheel registry object
-	 */
 	function __construct($sheel)
 	{
 		$this->sheel = $sheel;
-		$this->start();
 		session_set_save_handler(
 			array(&$this, 'session_open'),
 			array(&$this, 'session_close'),
@@ -45,19 +39,13 @@ class sessions
 				session_start();
 				
 			}
-			$this->generateToken();
 			$this->handle_language_style_changes();
 			$this->init_remembered_session();
 		} else {
 			die('Fatal: The application must have ownership of the very first session_start().  A previously created session was detected');
 		}
 	}
-	/**
-	 * Encrypt and compress the serailized session data
-	 *
-	 * @param       array        session data
-	 * @return      string       Encrypted session data
-	 */
+
 	function encrypt($data = '')
 	{
 		if ($this->sessionencrypt) {
@@ -66,12 +54,7 @@ class sessions
 		return $data;
 	}
 
-	/**
-	 * Decrypt and return the encrypted or serialized session data
-	 *
-	 * @param       string       encrypted session data
-	 * @return      array        Session data
-	 */
+
 	function decrypt($data = '')
 	{
 		if ($this->sessionencrypt) {
@@ -80,13 +63,7 @@ class sessions
 		return $data;
 	}
 
-	/**
-	 * Fetch session first click if applicable
-	 *
-	 * @param       string       session key
-	 *
-	 * @return      string       Returns first click timestamp
-	 */
+
 	function session_firstclick($sessionkey = '')
 	{
 		$sql = $this->sheel->db->query("
@@ -101,34 +78,17 @@ class sessions
 		return TIMESTAMPNOW;
 	}
 
-	/**
-	 * Session open handler
-	 *
-	 * @return      bool         true if session data could be opened
-	 */
+
 	function session_open($savepath = '', $sessioname = '')
 	{
 		return true;
 	}
 
-	/**
-	 * Session close handler
-	 *
-	 * @return      bool         true if session data could be closed
-	 */
 	function session_close()
 	{
 		$this->session_gc();
 		return true;
 	}
-
-	/**
-	 * Session read handler is called once the script is loaded
-	 *
-	 * @param       string       session key
-	 *
-	 * @return      string       value from the session table
-	 */
 
 
 	function session_read($sessionkey)
@@ -157,13 +117,6 @@ class sessions
 		}
 		return false;
 	}
-
-	/**
-	 * Session write handler is called once the script is finished executing
-	 *
-	 * @param       string       session key
-	 * @param       string       session data we would like to update
-	 */
 	function session_write($sessionkey = '', $sessiondata = '')
 	{
 		$session = array();
@@ -273,13 +226,6 @@ class sessions
 		}
 		return true;
 	}
-
-	/**
-	 * Session destroy handler
-	 *
-	 * @param       string       session key
-	 * @return      void
-	 */
 	function session_destroy($sessionkey = '')
 	{
 		$this->sheel->db->query("
@@ -289,11 +235,6 @@ class sessions
 		return true;
 	}
 
-	/**
-	 * Session garbage collection handler
-	 *
-	 * @return      void
-	 */
 	function session_gc($maxlifetime = '')
 	{
 		$this->sheel->db->query("
@@ -308,12 +249,6 @@ class sessions
 		);
 		return true;
 	}
-
-	/**
-	 * Function to handle remembering a user by automatically initializing their session based on valid cookies and them wanting to be remembered.
-	 *
-	 * @return      void
-	 */
 	function init_remembered_session()
 	{
 		$session = array();
@@ -353,12 +288,6 @@ class sessions
 			}
 		}
 	}
-	/**
-	 * Function to handle a user language or style switch within the marketplace.  Additionally, will update their account within the db if the user is active and logged in.  This is called from global.php.
-	 * Additionally, this function is responsible for setting the user's initial languageid and styleid for the active session.
-	 *
-	 * @return      void
-	 */
 	function handle_language_style_changes()
 	{
 		if (isset($this->sheel->GPC['language']) and !empty($this->sheel->GPC['language'])) {
@@ -423,15 +352,6 @@ class sessions
 		}
 	}
 
-	/**
-	 * Function to build a valid user session after successful sign-in.  This function was created because we've implemented the new admin user switcher
-	 * and it's pointless to handle 2 large pieces of code for session building- so this was created.
-	 *
-	 * @param       array          $userinfo array of user from the database
-	 * @param       boolean        only return array (default false, builds $_SESSION['sheeldata'])
-	 * @param       boolean        only return valid csrf token for RPC sessions
-	 *
-	 */
 	function build_user_session($userinfo = array(), $returnonlyarray = false, $returnonlycsrf = false, $forcebuildsession = false, $rememberuser = false, $ismobile = false, $devicetoken = '0')
 	{
 		// #### empty inline cookie ############################################
@@ -474,16 +394,10 @@ class sessions
 				'lastseen' => $userinfo['lastseen'],
 				'ipaddress' => $userinfo['ipaddress'],
 				'iprestrict' => isset($userinfo['iprestrict']) ? $userinfo['iprestrict'] : 0,
-				'auctiondelists' => isset($userinfo['auctiondelists']) ? intval($userinfo['auctiondelists']) : 0,
-				'bidretracts' => isset($userinfo['bidretracts']) ? intval($userinfo['bidretracts']) : 0,
-				'ridcode' => isset($userinfo['rid']) ? $userinfo['rid'] : '',
 				'dob' => o($userinfo['dob']),
 				'browseragent' => o(USERAGENT),
 				'browserhistory' => intval($userinfo['browserhistory']),
 				'failedlogins' => isset($userinfo['failedlogins']) ? intval($userinfo['failedlogins']) : 0,
-				'productawards' => isset($userinfo['productawards']) ? intval($userinfo['productawards']) : 0,
-				'rewardpoints' => isset($userinfo['rewardpoints']) ? intval($userinfo['rewardpoints']) : 0,
-				'productsold' => isset($userinfo['productsold']) ? intval($userinfo['productsold']) : 0,
 				'rating' => isset($userinfo['rating']) ? $userinfo['rating'] : 0,
 				'languageid' => intval($userinfo['languageid']),
 				'languagecode' => $userinfo['languagecode'],
@@ -502,9 +416,6 @@ class sessions
 				'currencyname' => o(stripslashes($userinfo['currency_name'])),
 				'currencysymbol' => (isset($userinfo['currencyid']) and !empty($userinfo['currencyid'])) ? $this->sheel->currency->currencies[$userinfo['currencyid']]['symbol_left'] : '$',
 				'currencyabbrev' => o(mb_strtoupper($userinfo['currency_abbrev'])),
-				'searchoptions' => isset($userinfo['searchoptions']) ? $userinfo['searchoptions'] : '',
-				'storeseourl' => isset($userinfo['seourl']) ? $userinfo['seourl'] : '',
-				// <-- json_encoded()
 				'token' => TOKEN,
 				'siteid' => SITE_ID,
 				'csrf' => $csrf
@@ -596,29 +507,6 @@ class sessions
 		}
 		return 0;
 	}
-
-	function generateToken() {
-		if ($_COOKIE[COOKIE_PREFIX .'token'] == '')  {
-			$characters = '0123456789abcdef';
-			$charactersLength = strlen($characters);
-			$token = '';
-			for ($i = 0; $i < 32; ++$i) {
-				$token .= $characters[rand(0, $charactersLength - 1)];
-			}
-			set_cookie('token', $token);
-			$_SESSION['token'] = $token;
-		}
-		else {
-			$_SESSION['token'] = $_COOKIE[COOKIE_PREFIX .'token'];
-		}
-
-	}
-
-	/**
-	 * Ensure session data is written out before classes are destroyed
-	 *
-	 * @return      void
-	 */
 	function __destruct()
 	{
 		@session_write_close();
