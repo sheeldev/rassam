@@ -77,7 +77,7 @@ class role
 			$sql = "
 				SELECT roleid, purpose_$slng AS purpose, title_$slng AS title, custom, roletype, roleusertype, active
 				FROM " . DB_PREFIX . "roles
-				WHERE active = '1' AND isadmin='0'
+				WHERE active = '1' 
 			";
 		}
 		if (isset($shownoneselected) AND $shownoneselected)
@@ -117,6 +117,21 @@ class role
 			return $roles['roleid'];
 		}
 		return 0;
+	}
+
+	function is_role_admin($roleid = 0)
+	{
+		$sqlroles = $this->sheel->db->query("
+			SELECT isadmin
+			FROM " . DB_PREFIX . "roles
+			WHERE roleid = '" . intval($roleid) . "'
+		", 0, null, __FILE__, __LINE__);
+		if ($this->sheel->db->num_rows($sqlroles) > 0)
+		{
+			$roles = $this->sheel->db->fetch_array($sqlroles, DB_ASSOC);
+			return $roles['isadmin'];
+		}
+		return '0';
 	}
 }
 ?>

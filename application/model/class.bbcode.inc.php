@@ -32,8 +32,6 @@ class bbcode
                         $replace[] = '&amp;';
                 }
 
-                ($apihook = $this->sheel->api('bbcode_to_html_start')) ? eval($apihook) : false;
-
                 if ($replaceltgt) {
                         $pattern[] = "#<#";
                         $replace[] = '&lt;';
@@ -172,8 +170,6 @@ class bbcode
                 $output = str_replace("</ul>", "</li></ul>", $output);
                 $output = str_replace("</ol>", "</li></ol>", $output);
                 $this->bbcode_quote_handler($output);
-
-                ($apihook = $this->sheel->api('bbcode_to_html_end')) ? eval($apihook) : false;
 
                 return $output;
         }
@@ -338,8 +334,6 @@ class bbcode
                         "[P][B]$2[/B][/P]",
                 );
 
-                ($apihook = $this->sheel->api('html_to_bbcode_start')) ? eval($apihook) : false;
-
                 $text = preg_replace($search, $replace, $text);
                 unset($search, $replace);
                 $search = array(
@@ -368,8 +362,6 @@ class bbcode
                         "",
                         "",
                 );
-
-                ($apihook = $this->sheel->api('html_to_bbcode_end')) ? eval($apihook) : false;
 
                 $text = str_replace($search, $replace, $text);
                 unset($search, $replace);

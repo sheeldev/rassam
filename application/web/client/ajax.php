@@ -34,7 +34,9 @@ $methods = array(
 	'smtplog' => array('skipsession' => true),
 	'forceautoupdate' => array('skipsession' => true),
 	'consent' => array('skipsession' => false),
-	'tzoffset' => array('skipsession' => true)
+	'tzoffset' => array('skipsession' => true),
+	'acpcheckusername' => array('skipsession' => true),
+	'acpcheckemail' => array('skipsession' => true)
 );
 
 if (isset($sheel->GPC['do'])) {
@@ -270,9 +272,6 @@ if (isset($sheel->GPC['do'])) {
 		die(VERSION . '.' . ((SVNVERSION == '001') ? '0' : SVNVERSION));
 	} else if ($sheel->GPC['do'] == 'bulkmailer') { // admin panel bulk mailer
 		if (isset($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and isset($_SESSION['sheeldata']['user']['isadmin']) and $_SESSION['sheeldata']['user']['isadmin']) {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				die(json_encode(array('response' => '0')));
-			}
 			$sheel->template->meta['areatitle'] = '{_sending_bulk_email}';
 			$sheel->template->meta['pagetitle'] = SITE_NAME . ' - {_sending_bulk_email}';
 			$from = trim($sheel->GPC['from']);
@@ -460,6 +459,64 @@ if (isset($sheel->GPC['do'])) {
 			set_cookie('tzoffset', $sheel->datetimes->fetch_timezone_offset($sheel->config['globalserverlocale_sitetimezone'], $sheel->GPC['ctz']));
 			set_cookie('timezone', $sheel->GPC['ctz']);
 		}
+	}
+	else if ($sheel->GPC['do'] == 'acpcheckusername')
+	{
+		$sheel->template->templateregistry['error'] = '';
+		$response = '0';
+		if ($sheel->common->is_username_banned($sheel->GPC['username']))
+		{
+			$sheel->template->templateregistry['error'] = ((!empty($sheel->common->username_errors[0])) ? $sheel->common->username_errors[0] : '{_sorry_that_username_has_been_blocked}');
+			$response = '1';
+		}
+		else if (empty($sheel->GPC['username']) OR !isset($sheel->GPC['username']))
+		{
+			$sheel->template->templateregistry['error'] = '{_please_enter_correct_username}';
+			$response = '1';
+		}
+		// make sure username doesn't conflict with another user
+		$sqlusercheck = $sheel->db->query("
+			SELECT user_id
+			FROM " . DB_PREFIX . "users
+			WHERE username IN ('" . $sheel->db->escape_string($sheel->GPC['username']) . "')
+			LIMIT 1
+		", 0, null, __FILE__, __LINE__);
+		if ($sheel->db->num_rows($sqlusercheck) > 0)
+		{ // woops! change username for new user automatically.
+			$sheel->template->templateregistry['error'] = '{_that_username_already_exists_in_our_system}';
+			$response = '1';
+		}
+		$html = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'error' => $html)));
+	}
+	else if ($sheel->GPC['do'] == 'acpcheckemail')
+	{
+		$sheel->template->templateregistry['error'] = '';
+		$response = '0';
+		if (!isset($sheel->GPC['email']) OR empty($sheel->GPC['email']))
+		{
+			$sheel->template->templateregistry['error'] = '{_please_enter_correct_email}';
+			$response = '1';
+		}
+		if (!$sheel->common->is_email_valid($sheel->GPC['email']))
+		{
+			$sheel->template->templateregistry['error'] = '{_please_enter_correct_email}';
+			$response = '1';
+		}
+		// make sure email doesn't conflict with another user
+		$sqlusercheck = $sheel->db->query("
+			SELECT user_id
+			FROM " . DB_PREFIX . "users
+			WHERE email IN ('" . $sheel->db->escape_string($sheel->GPC['email']) . "')
+			LIMIT 1
+		", 0, null, __FILE__, __LINE__);
+		if ($sheel->db->num_rows($sqlusercheck) > 0)
+		{ // woops! can't use same email!
+			$sheel->template->templateregistry['error'] = '{_that_email_address_already_exists_in_our_system}';
+			$response = '1';
+		}
+		$html = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'error' => $html)));
 	}
 }
 ?>

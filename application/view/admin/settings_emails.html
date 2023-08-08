@@ -1,0 +1,256 @@
+<section>
+    <script>
+        Page();
+    </script>
+    <div id="settings-notifications" class="page">
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+        <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+        <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+        {_email_templates}
+      </h1> </header>
+        </div>
+        
+        <div class="draw-grid draw-grid--channel-grid">
+            <div class="draw-grid__cell">
+                <div class="draw-card dashboard-card dashboard-card--graph">
+                    <div class="dashboard__empty js-empty-message hide"> </div>
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">Email Information</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued"></div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--channel-cell">
+                            <div class="draw-grid__cell dashboard-multi-time">
+                              <div id="DashboardOnlineKpiVisitors" class="ssb dashboard-widget">
+                                <p class="channel-stat__heading">Total emails</p>
+                                  <h2 class="channel-stat__number  channel-stat--blue channel-stat__number--large">
+  {form[totalemails]}
+</h2> </div>
+                                <div id="DashboardOnlineKpiUniqueVisitors" class="dashboard-widget">
+                                    <p class="channel-stat__heading">Total segments</p>
+                                    <h2 class="channel-stat__number  channel-stat__number--large">
+  {form[totalgroups]}
+</h2> </div>
+
+                            </div>
+                            <div class="draw-grid__cell">
+                                
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="draw-grid__cell">
+                
+                <div class="draw-card dashboard-card dashboard-card--graph">
+                    <div class="dashboard__empty js-empty-message hide"> </div>
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">Mail Server</h2> 
+                          </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued"></div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--channel-cell">
+                            <div class="draw-grid__cell dashboard-multi-time">
+                                <div id="DashboardOnlineKpiVisitors" class="ssb dashboard-widget">
+                                    <p class="channel-stat__heading">SMTP</p>
+                                    <h2 class="channel-stat__number  channel-stat--blue channel-stat__number--large">
+  {config[globalserversmtp_host]}
+</h2> </div>
+                                <div id="DashboardOnlineKpiVisitors" class="ssb dashboard-widget">
+                                    <p class="channel-stat__heading">Port</p>
+                                    <h2 class="channel-stat__number  channel-stat--blue channel-stat__number--large">
+  {config[globalserversmtp_port]}
+</h2> </div>
+								<div id="DashboardOnlineKpiVisitors" class="ssb dashboard-widget">
+                                    <p class="channel-stat__heading"><a href="{https_server_admin}settings/mail/" class="btn">Configure SMTP</a></p>
+                                     </div>
+								
+                            </div>
+                            
+                        </div>
+                    </section>
+                </div>
+                
+            </div>
+        </div>
+        
+        <loop name="groups">
+        <div class="section email-templates">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>{title}</h1>
+                        <p>{help}</p>
+                   		
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                        <thead>
+                                            <tr>
+                                                <th>Template</th>
+                                                <th class="customer no-wrap">Sends to</th>
+                                                <th class="no-wrap">Plain text</th>
+                                                <th>HTML</th>
+                                                <th>BCC</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        	<loop name="emails{group}">
+                                            <tr>
+                                                <td><a href="{https_server_admin}settings/emails/update/{varname}/">{name}</a> </td>
+                                                <td class="customer">{type}</td>
+                                                <td>{plaintext} </td>
+                                                <td>{html}</td>
+                                                <td>{bccc}</td>
+                                            </tr>
+                                            </loop name="emails{group}">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </loop name="groups">
+    </div>
+</section>
+
+<section>
+	<form method="post" action="{https_server_admin}settings/emails/import/" accept-charset="UTF-8" enctype="multipart/form-data">
+    <div class="section login-services">
+		<div class="layout-content">
+			<div class="layout-content__sidebar layout-content__first">
+				<div class="section-summary">
+					<h1>Import Email Templates</h1>
+					<p>Import a valid XML email language package.  This language should already exist before import.</p>
+					
+				</div>
+			</div>
+			<div class="layout-content__main">
+				<div class="draw-card">
+					<div class="section-content">
+						<div class="draw-card__section">
+							<div class="table-wrapper">
+                            	<div class="draw-input-wrapper">
+                            	<div class="styled-file-input">
+                                    <div class="btn"> <span>{_browse}</span>
+                                        <input type="file" name="xml_file" class="js-no-dirty"> </div>
+                                </div>
+								</div>
+                                <div class="draw-input-wrapper">
+                                    <div><label for="noversioncheck" class="type--subdued"><input type="checkbox" name="noversioncheck" id="noversioncheck" value="1" /> {_check_this_box_if_you_would_like_to_disable_the_import_version_checker}</label></div>
+                                    <div><label for="overwrite" class="type--subdued"><input type="checkbox" name="overwrite" value="1" /> {_check_this_box_if_you_would_like_to_overwrite_email}</label></div>
+                                	<div><label for="compress" class="type--subdued"><input type="checkbox" name="compress" id="compress" value="1" /> Check this box to compress &amp; minify HTML email templates being imported</label></div>
+                                </div>
+							</div>
+                            
+						</div>
+                        <div class="draw-card__section">
+                        	<div><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_upload}</button></div>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    </form>
+	
+</section>
+
+<section>
+	
+    <div class="section login-services hide">
+		<div class="layout-content">
+			<div class="layout-content__sidebar layout-content__first">
+				<div class="section-summary">
+					<h1>Find Orphan Email Templates</h1>
+					<p>Use this tool to scan all email templates that are no longer associated in the application.</p>
+					
+				</div>
+			</div>
+			<div class="layout-content__main">
+				<div class="draw-card">
+					<div class="section-content">
+                    	<div class="draw-card__section">
+                    	
+                        <if condition="isset($sheel->show['results']) AND $sheel->show['results']">
+                            <if condition="isset($sheel->show['can_delete']) AND $sheel->show['can_delete']">
+                            
+                            <textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="orphan_phrases_txt" id="orphan_phrases_txt" style="height: 500px;" placeholder="{language}">{orphan_phrases_text_area}</textarea>
+                            <div style="padding-top:12px">{orphan_phrases_table}</div>
+                               
+                            <else />
+                            {_no_results_found}
+                            </if>
+                    <else />
+                        <form action="{https_server_admin}settings/emails/" method="get" accept-charset="UTF-8">
+                        <input type="hidden" name="do" value="findorphans" />
+                        <div class="draw-card__section">
+                        	<p><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_find}</button></p>
+                        </div>
+                        
+                        </form>
+                    </if>
+                       
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+   </div> 
+	
+</section>
+
+<section>  
+	<form method="post" action="{https_server_admin}settings/emails/export/" accept-charset="UTF-8">
+	<div class="section login-services">
+		<div class="layout-content">
+			<div class="layout-content__sidebar layout-content__first">
+				<div class="section-summary">
+					<h1>Export Email Templates</h1>
+					<p>Export an email language package as XML. You can translate this file offline and re import when ready.</p>
+					
+				</div>
+			</div>
+			<div class="layout-content__main">
+				<div class="draw-card">
+					<div class="section-content">
+						<div class="draw-card__section">
+							<div class="table-wrapper">
+                            	<div class="draw-input-wrapper">
+									<div class="draw-select__wrapper draw-input--has-content">{language_pulldown}</div>
+                                </div>
+								
+							</div>
+						</div>
+                        <div class="draw-card__section">
+                        	<p><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_download}</button></p>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+    
+</section>
+
+
+
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

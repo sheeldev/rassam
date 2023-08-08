@@ -1,0 +1,125 @@
+<section>
+    <script>
+        Page();
+    </script>
+    <form id="edit_email_template" autocomplete="off" class="update_template" action="{https_server_admin}settings/emails/save/" accept-charset="UTF-8" method="post">
+       	<input type="hidden" name="do" value="process"> 
+        <input type="hidden" name="varname" value="{varname}">
+    <div id="settings-notifications">
+    	<div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+        <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+        <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / <a href="{https_server_admin}settings/emails/">{_email_templates}</a> / </span>
+        {currentarea}
+      </h1>
+      	<div class="header__primary-actions">
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                </div>
+                
+                <div class="header__secondary-actions"> <a class="btn" href="{https_server_admin}settings/emails/">{_cancel}</a> </div>
+      
+       </header>
+        </div>
+        
+        
+        
+
+            <div data-modal-context-ref-for="preview_modal"></div>
+            <div class="ui-layout">
+                <div class="ui-layout__sections">
+                    <div class="ui-layout__section ui-layout__section--primary">
+                        <div class="ui-layout__item">
+                            <div class="draw-card">
+                                <section class="draw-card__section">
+                                   
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="title">{_email_template_name}</label>
+                                        <loop name="languages">
+                                        <div class="sb"><input class="draw-input with-add-on" size="30" type="text" value="{form[name_{slng}]}" name="form[name][{slng}]" id="title_{slng}" placeholder="{language}" dir="{form[textdirection_{slng}]}"><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{slng}]}</span></div>
+                                    	</loop name="languages">
+                                    </div>
+                                </section>
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="subject">{_email_subject}</label>
+                                        <loop name="languages">
+                                        <div class="sb"><noparse><input class="draw-input with-add-on" size="30" type="text" value="{form[subject_{slng}]}" name="form[subject][{slng}]" id="subject_{slng}" placeholder="{language}" dir="{form[textdirection_{slng}]}"></noparse><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{slng}]}</span></div>
+                                        </loop name="languages">
+                                    </div>
+                                </section>
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="body">{_email_message_body}</label>
+                                        <loop name="languages">
+                                       <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="form[body][{slng}]" id="body_{slng}" style="height: 500px;" placeholder="{language}" dir="{form[textdirection_{slng}]}">{form[body_{slng}]}</textarea><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{slng}]}</span></noparse></div>
+                                        </loop name="languages">
+                                    </div>
+                                </section>
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="body_html">{_html_email_message_body}</label>
+                                        <loop name="languages">
+                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="form[body_html][{slng}]" id="body_html_{slng}" style="height: 500px;" placeholder="{language}">{form[bodyhtml_{slng}]}</textarea><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{slng}]}</span></noparse></div>
+                                        </loop name="languages">
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-layout__section ui-layout__section--secondary">
+                        <div class="ui-layout__item">
+                            <div class="draw-card draw-card--aside">
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">Template variables</h2>
+                                </div>
+                                <div class="draw-card__section">
+                                    <p class="type--half-margin">You can use template {{variables}} to output different information and assets within templates. </p>
+                                    <ul class="type--half-margin">
+                                        {emailobjects}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="draw-card draw-card--aside">
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">Email Properties</h2>
+                                </div>
+                                <div class="draw-card__section">
+                                    <p class="type--half-margin">Email properties allow you to define who would typically receive this email.</p>
+                                    <div class="type--half-margin">
+                                        
+                                      <div style="padding-bottom:6px"><label for="everyone"><input type="radio" value="everyone" name="form[who]"{form[rbeveryone]} id="everyone"> <span class="badge badge--subdued">Everyone</span></label></div>
+                                      <div><label for="staff"><input type="radio" value="staff" name="form[who]"{form[rbstaff]} id="staff"> <span class="badge badge--attention">Staff</span></label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-card draw-card--aside">
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">Blind Carbon Copy</h2>
+                                </div>
+                              <div class="draw-card__section">
+                                    <p class="type--half-margin">To send this template to additional email addresses when triggered, enter emails separated by a comma.</p>
+                                <div class="type--half-margin">
+                                  <textarea class="draw-textarea" cols="3" name="form[bcc]">{form[bcc]}</textarea>
+                                  </div>
+                                  <p class="type--half-margin">Format: <code>one@domain.com, two@domain.com</code></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="ui-page-actions">
+                <div class="ui-page-actions__primary">
+                    <div class="button-group button-group--right-aligned">
+                       <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+</form>
+</section>
+
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

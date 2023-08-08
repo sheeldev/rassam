@@ -272,22 +272,31 @@ class admincp_customers extends admincp
     }
 
 
-    function get_user_id($rid)
+    function get_customer_details($custid)
     {
         $uid = 0;
         $sql = $this->sheel->db->query("
-				SELECT customer_id
+				SELECT customer_ref, customername, subscriptionid
 				FROM " . DB_PREFIX . "customers
-				WHERE customer_id = '" . $rid . "'
+				WHERE customer_id = '" . $custid . "'
 				LIMIT 1
 			", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0) {
             $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
-            $uid = $res['customer_id'];
-        } else {
-            $uid = 0;
+            return array(
+                'customer_ref' => $res['customer_ref'],
+                'customername' => $res['customername'],
+                'subscriptionid' => $res['subscriptionid']
+            );
+        } 
+        else {
+            return array(
+                'customer_ref' => '{_staff}',
+                'customername' => '{_staff}',
+                'subcriptionid' => '0'
+            );
         }
-        return $uid;
+        
     }
     function get_company_id($code)
     {
@@ -468,5 +477,34 @@ class admincp_customers extends admincp
         return $finalsizes;
     }
 
+    function print_customer_pulldown($selected = '', $shownoneselected = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_customerid', $fieldname = 'form[customerid]', $disabled = false)
+	{
+		if (empty($slng))
+		{
+			$slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : $this->sheel->language->fetch_site_slng();
+		}
+		$arr = array();
+        $sql = "
+				SELECT customer_id, customer_ref, customername
+				FROM " . DB_PREFIX . "customers
+				WHERE status = 'active' 
+			";
+
+		if (isset($shownoneselected) AND $shownoneselected)
+		{
+			$selected = ((empty($selected)) ? '-1' : $selected);
+			$arr['-1'] = '{_select}';
+		}
+		$sqlcustomers = $this->sheel->db->query($sql, 0, null, __FILE__, __LINE__);
+		if ($this->sheel->db->num_rows($sqlcustomers) > 0)
+		{
+			while ($customers = $this->sheel->db->fetch_array($sqlcustomers, DB_ASSOC))
+			{
+				$arr[$customers['customer_id']] = stripslashes($customers['customer_ref']) . ' - ' . stripslashes($customers['customername']);
+			}
+		}
+		$extradisabled = (($disabled) ? ' disabled="disabled"' : '');
+		return $this->sheel->construct_pulldown($id, $fieldname, $arr, $selected, 'class="' . $class . '"' . $extradisabled . ' ' . $js);
+	}
 }
 ?>

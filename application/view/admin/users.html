@@ -1,0 +1,1242 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'transactions' OR $sheel->GPC['view'] == 'transactions/points')">
+    <div class="header-row">
+        <header class="header">
+            <h1 class="header__main">
+                <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
+                <span class="breadcrumb"><a href="{https_server_admin}users/">{_users}</a> / </span>
+                <span class="breadcrumb"><a href="{https_server_admin}users/update/{form[userid]}/">{form[first_name]} {form[last_name]}</a> / </span> <if condition="$sheel->GPC['view'] == 'transactions/points'">{_points_transactions}<else />{_transactions}</if>
+            </h1>
+            <div class="header__primary-actions">
+                
+            </div>
+            
+            <div class="header__secondary-actions"> <a class="btn" href="{https_server_admin}users/update/{form[userid]}/">{_cancel}</a> </div>
+        </header>
+    </div>
+    <!-- transactions -->
+    <div class="section overview">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">All Points Transactions<else />All Transactions</if></h1>
+                        <p>View marketplace transactions associated with {form[first_name]} {form[last_name]}.</p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                        <div class="table-wrapper">
+                            <table class="expanded">
+                            <thead>
+                            <tr>
+                                <th width="6%">{_date}</th>
+                                <th>{_description}</th> 
+                                <th width="6%" align="right" nowrap="nowrap"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">{_debit_points}<else />{_debit} {currencysymbol}</if></th>
+                                <th width="6%" align="right" nowrap="nowrap"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">{_credit_points}<else />{_credit} {currencysymbol}</if></th>
+                                <th width="6%" align="right" nowrap="nowrap"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">{_balance}<else />{_balance} {currencysymbol}</if></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            
+                            <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">
+                            <loop name="pointstransactions"><tr class="{class}" valign="top">
+                                <td nowrap="nowrap" class="uc">{datepaid}</td>
+                                <td><div>{description}</div>{staffnotes}</td> 
+                                <td nowrap="nowrap" align="right">{debit}</td>
+                                <td nowrap="nowrap" align="right">{credit}</td>
+                                <td nowrap="nowrap" align="right">{balance}</td>
+                              </tr></loop name="pointstransactions">
+                            <else />
+                            <loop name="transactions"><tr class="{class}" valign="top">
+                                <td nowrap="nowrap" class="uc">{datepaid}</td>
+                                <td><div>{description}</div>{staffnotes}</td> 
+                                <td nowrap="nowrap" align="right">{debit}</td>
+                                <td nowrap="nowrap" align="right">{credit}</td>
+                                <td nowrap="nowrap" align="right">{balance}</td>
+                              </tr></loop name="transactions">
+                            </if>
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+    <!-- transactions -->
+    <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
+    <else />
+    <if condition="isset($sheel->GPC['cmd']) AND ($sheel->GPC['cmd'] == 'add' OR $sheel->GPC['cmd'] == 'update')">
+    <div id="users-new" class="page">
+            <form autocomplete="off" class="address-form" id="new_user" action="{https_server_admin}users/<if condition="$sheel->GPC['cmd'] == 'add'">add<else />update/{form[userid]}</if>/" accept-charset="UTF-8" onsubmit="return verify_acp_user('<if condition="$sheel->GPC['cmd'] == 'add'">add<else />update</if>')" method="post">
+            <input type="hidden" name="do" value="save" />
+            <div class="header-row">
+                <header class="header">
+                    <h1 class="header__main">
+                        <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
+                        <span class="breadcrumb"><a href="{https_server_admin}users/">{_users}</a> / </span>
+                            <if condition="$sheel->GPC['cmd'] == 'add'">{_add_user}<else />{_update}</if>
+                    </h1>
+                    <div class="header__primary-actions">
+                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                    </div>
+                    
+                    <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}users/add/">{_add_user}</a> <a class="btn" href="{https_server_admin}users/">{_cancel}</a> </div>
+                </header>
+            </div>
+            <if condition="$sheel->GPC['cmd'] == 'update'">
+            <div class="section account-overview">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Account overview</h1>
+                            <p> The marketplace account details for this user. </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="section-content">
+                                <div class="draw-card__section">
+                                
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <label for="member-since">{_account_number}</label> 
+                                            <span id="member-since">{form[account_number]}</span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="current-plan">{_registration_date}</label> 
+                                            <span id="current-plan">{form[added]}</span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="account-status">{_registration_source}</label> 
+                                            <span id="current-plan">{form[registersource]} </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_balance_owing_nc}</label> 
+                                            <span id="creditcard-rate"><a href="{https_server_admin}accounting/invoices/?filter=userusername&amp;q={form[username]}">{form[balance_owing]}</a></span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_available_balance}</label> 
+                                            <span id="creditcard-rate">
+                                              {form[available_balance]}
+                                            </span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_total_balance}</label> 
+                                            <span id="creditcard-rate">
+                                              <a href="{https_server_admin}users/update/{form[userid]}/transactions/">{form[total_balance]}</a>
+                                            </span> 
+                                        </div>
+                                    </div>
+                                    
+                                    <if condition="isset($sheel->config['pointsystem']) AND $sheel->config['pointsystem']">
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_available_points_balance}</label> 
+                                            <span id="creditcard-rate">{form[points_available]}</span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_points_pending_balance}</label> 
+                                            <span id="creditcard-rate">
+                                              {form[points_pending]}
+                                            </span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_next_points_release_date}</label> 
+                                            <span id="creditcard-rate">
+                                              {form[points_nextreleasedate]}
+                                            </span> 
+                                        </div>
+                                    </div>
+                                    </if>
+                                   
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_last_seen}</label> 
+                                            <span id="creditcard-rate">{form[lastseen]}</span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_last_known_location}</label> 
+                                            <span id="creditcard-rate">{form[lastlocation]} </span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_local_time}</label> 
+                                            <span id="creditcard-rate">
+                                              {form[localtime]}
+                                            </span> 
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Infractions</label> 
+                                            <span id="creditcard-rate">
+                                              {form[infractions]}
+                                            </span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Last known purchase</label> 
+                                            <span id="creditcard-rate">
+                                              {form[lastknownpurchasedate]}
+                                            </span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Last known bid</label> 
+                                            <span id="creditcard-rate">
+                                              {form[lastknownbiddate]}
+                                            </span> 
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <if condition="isset($sheel->show['usernamehistory']) AND $sheel->show['usernamehistory']">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_username_history}</label> 
+                                            <span id="creditcard-rate">
+                                              {form[usernamehistory]}
+                                            </span> 
+                                        </div></if>
+                                        <if condition="isset($sheel->show['referredby']) AND $sheel->show['referredby']">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_referred_by}</label> 
+                                            <span id="creditcard-rate">
+                                              {form[referredby]}
+                                            </span> 
+                                        </div></if>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section account-overview">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Purchases overview</h1>
+                            <p> The marketplace purchases activity details for this user. </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="section-content">
+                                <div class="draw-card__section">
+                                
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <label for="member-since">{_purchases}</label> 
+                                            <span id="member-since"><a href="{https_server_admin}orders/?filter=userusername&amp;q={form[username]}">{form[purchases]}</a></span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="current-plan">{_cancels}</label> 
+                                            <span id="current-plan"><a href="{https_server_admin}orders/?view=cancelled&amp;filter=userusername&amp;q={form[username]}">{form[cancels]}</a></span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="account-status">{_returns}</label> 
+                                            <span id="current-plan"><a href="{https_server_admin}orders/returns/?filter=userusername&amp;q={form[username]}">{form[returns]}</a></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_total_purchased}</label> 
+                                            <span id="creditcard-rate">{form[totalpurchased]}</span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Order claims filed</label> 
+                                            <span id="creditcard-rate"><a href="{https_server_admin}orders/claims/?filter=userusername&amp;q={form[username]}">{form[orderclaimsfiled]}</a></span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Non payment violations</label> 
+                                            <span id="creditcard-rate"><a href="{https_server_admin}users/violations/?view=nonpayment&amp;filter=username&amp;q={form[username]}">{form[nonpaymentviolations]}</a></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">{_total_bids}</label> 
+                                            <span id="creditcard-rate"><a href="{https_server_admin}marketplace/bids/?filter=bidder&amp;q={form[username]}">{form[totalbids]}</a></span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Total proxy bids</label> 
+                                            <span id="creditcard-rate"><a href="{https_server_admin}marketplace/bids/?view=proxy&amp;filter=bidder&amp;q={form[username]}">{form[totalproxybids]}</a></span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Total winning bids</label> 
+                                            <span id="creditcard-rate"><a href="{https_server_admin}marketplace/bids/?view=won&amp;filter=bidder&amp;q={form[username]}">{form[totalwinningbids]}</a></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding sst">
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Shopping cart</label> 
+                                            <span id="creditcard-rate">{form[cart]}</span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Cart saved for later</label> 
+                                            <span id="creditcard-rate">{form[cartsaved]}</span>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="creditcard-rate">Deleted from cart</label> 
+                                            <span id="creditcard-rate">{form[cartdelete]}</span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section account-overview">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Selling overview</h1>
+                            <p> The marketplace selling activity details for this user. </div>
+                    </div>
+                    <div class="layout-content__main">
+                        <div class="draw-card">
+                            <div class="section-content">
+                                <div class="draw-card__section">
+                                
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <label for="member-since">{_orders}</label> 
+                                            <span id="member-since"><a href="{https_server_admin}marketplace/listings/?filter=sellerusername&amp;q={form[username]}">{form[soldorders]}</a></span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="current-plan">Total sales</label> 
+                                            <span id="current-plan">{form[totalsales]}</span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="account-status">Inventory count</label> 
+                                            <span id="current-plan"><a href="{https_server_admin}marketplace/listings/?filter=seller&amp;q={form[username]}">{form[inventorycount]}</a></span>
+                                        </div>
+                                    </div>
+                                    
+                                   <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                     <div class="draw-grid__cell">
+                                       <label for="member-since">Non shipment violations</label> 
+                                         <span id="member-since">{form[nonshipmentviolations]}</span> 
+                                       </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="current-plan">Order claims responded</label> 
+                                            <span id="current-plan">{form[orderclaimsresponded]}</span> 
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <label for="account-status">Store front name</label> 
+                                            <span id="current-plan">{form[storename]}</span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </if>
+                
+            <div class="section overview">
+                <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>User overview</h1>
+                                <p>Some details about this user. You can allow or prevent the user from signing in by changing the status from here.</p>
+                            </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_username">{_username}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[username]" id="user_username" value="{form[username]}">
+                                                <if condition="$sheel->GPC['cmd'] == 'update'"><input type="hidden" name="form[oldusername]" value="{form[username]}" id="oldusername" /></if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_first_name">{_first_name}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[firstname]" id="user_first_name" value="{form[first_name]}">
+                                            </div>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_last_name">{_last_name}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[lastname]" id="user_last_name" value="{form[last_name]}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_dob">{_date_of_birth} <span class="type--subdued">(YYYY-MM-DD)</span></label>
+                                                <input class="draw-input" size="30" type="text" name="form[dob]" id="user_dob" placeholder="YYYY-MM-DD" value="{form[dob]}">
+                                            </div>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_last_name">{_gender}</label>
+                                                <div class="draw-select__wrapper draw-input--has-content" id="gender-wrapper">
+                                                    {form[gender_pulldown]}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_email">{_email}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[email]" id="user_email" value="{form[email]}">
+                                                <if condition="$sheel->GPC['cmd'] == 'update'"><input type="hidden" name="form[oldemail]" value="{form[email]}" id="oldemail" /></if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_last_name">{_status}</label>
+                                                <div class="draw-select__wrapper draw-input--has-content">
+                                                    {form[userstatus]}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                    <label class="draw-label" for="user_province">{_role}</label>
+                                                    <div class="draw-select__wrapper" id="role-wrapper">
+                                                        {form[role_pulldown]}
+                                                    </div>
+                                                    <input type="hidden" name="form[oldroleid]" value="{form[oldroleid]}" id="oldroleid" />
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section address">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>Address</h1>
+                                <p>The primary address of this user.</p>
+                            </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_last_name">{_company_name}</label>
+                                                <div class="draw-select__wrapper draw-input--has-content" id="customer-wrapper">
+                                                    {form[customer_pulldown]}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_phone">{_phone}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[phone]" id="user_phone" placeholder="xxx-xxx-xxxx" value="{form[phone]}">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_address1">{_address}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[address]" id="user_address1" value="{form[address]}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_address2">{_address} 2</label>
+                                                <input class="draw-input" size="30" type="text" name="form[address2]" id="user_address2" value="{form[address2]}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                            <div class="draw-grid__cell">
+                                                <div class="country-wrapper">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="user_country">{_country}</label>
+                                                        <div class="draw-select__wrapper draw-input--has-content" id="country-wrapper">
+                                                            {form[country_pulldown]}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="draw-grid__cell">
+                                                <div class="province-wrapper">
+                                                    <div>
+                                                        <div class="draw-input-wrapper">
+                                                            <label class="draw-label" for="user_province">{_state}</label>
+                                                            <div class="draw-select__wrapper" id="state-wrapper">
+                                                                {form[state_pulldown]}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_city">{_city}</label>
+                                                    {form[city_pulldown]}
+                                            </div>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_zip">{_zip_code}</label>
+                                                <input class="draw-input" size="30" type="text" name="form[zipcode]" id="user_zip" value="{form[zip_code]}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section notes">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>{_locale}</h1>
+                                <p>Define time zone, language and currency details for the user.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="layout-content__main">
+                            
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                    <div>
+                                        <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                            <div class="draw-grid__cell">
+                                                <div class="country-wrapper">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="user_country">{_time_zone}</label>
+                                                        <div class="draw-select__wrapper draw-input--has-content">
+                                                            {form[timezone_pulldown]}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="draw-grid__cell">
+                                                <div class="province-wrapper">
+                                                    <div>
+                                                        <div class="draw-input-wrapper">
+                                                            <label class="draw-label" for="user_province">{_currency}</label>
+                                                            <div class="draw-select__wrapper">
+                                                                {form[currency_pulldown]}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <br />
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="user_language">{_language}</label>
+                                            
+                                                {form[language_pulldown]}
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="section tags">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>{_account_security}</h1>
+                                <p>Details such as the users password, secret question, IP login restriction and referral code can be found here.</p>
+                            </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_password"><if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'add'">{_password}<else />{_new_password}</if></label>
+                                                <input class="draw-input" size="30" type="password" name="form[password]" id="user_password"<if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'update'"> placeholder="Leave blank to not change password."</if>>
+                                            </div>
+                                        </div>
+                                        <if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'add'"><div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_password2">{_verify_password}</label>
+                                                <input class="draw-input" size="30" type="password" name="form[password2]" id="user_password2">
+                                            </div>
+                                        </div>
+                                        </if>
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_ipaddress">{_ip_address} <span class="type--subdued">(Last known)</span></label>
+                                                <input class="draw-input" size="30" type="text" name="form[ipaddress]" id="user_ipaddress" value="{form[ipaddress]}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_apikey">API Key <span class="type--subdued">(Required to make API requests)</span></label>
+                                                <input class="draw-input" size="30" type="text" name="form[apikey]" id="user_apikey" value="{form[apikey]}">
+                                                
+                                                <div class="draw-input-wrapper st">
+                                                    <label class="draw-label draw-label--switch" for="user_apikeycb" onclick="newapikey()">Click to generate or renew API key for this user</label>
+                                                        <span class="draw-checkbox--styled" onclick="newapikey()"></span>
+                                                </div>
+                                                   
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section section--no-border tags">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>{_other}</h1>
+                                <p>Define other advanced options for this user.</p>
+                            </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+ 
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label draw-label--switch" for="user_notifyregister">{_notify_user_via_email_regarding_new_account_creation} (<a href="{https_server_admin}settings/emails/update/register_welcome_email_admincp/" target="_blank">{_view}</a>)</label>
+                                                <input class="draw-checkbox" type="checkbox" value="1" name="form[notifyregister]" id="user_notifyregister" {form[notifyregister]}><span class="draw-checkbox--styled"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label draw-label--switch" for="user_notifywelcome">{_notify_administrator_via_email_regarding_new_account_creation} (<a href="{https_server_admin}settings/emails/update/register_welcome_email_admin_admincp/" target="_blank">{_view}</a>)</label>
+                                                <input class="draw-checkbox" type="checkbox" value="1" name="form[notifywelcome]" id="user_notifywelcome"><span class="draw-checkbox--styled"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label draw-label--switch" for="user_emailuser">{_dispatch_email_to_user_with_new_password}</label>
+                                                <input class="draw-checkbox" type="checkbox" value="1" name="form[emailuser]" id="user_emailuser" {form[emailuser]}><span class="draw-checkbox--styled"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label draw-label--switch" for="user_iprestrict">{_restrict_ip_address_to_user_account} <span class="type--subdued">(last known IP: {form[ipaddress]})</span></label>
+                                                <input class="draw-checkbox" type="checkbox" value="1" name="form[iprestrict]" id="user_iprestrict" {form[iprestrict]}><span class="draw-checkbox--styled"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label draw-label--switch" for="user_api">Grant API access authentication <span class="type--subdued">(can use the API if enabled)</span> (<a href="{https_server_admin}settings/api/" target="_blank">{_learn_more}</a>)</label>
+                                                <input class="draw-checkbox" type="checkbox" value="1" name="form[useapi]" id="user_api" {form[useapi]}><span class="draw-checkbox--styled"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label draw-label--switch" for="user_emailnotify">Customer accepts marketing</label>
+                                                <input class="draw-checkbox" type="checkbox" value="1" name="form[emailnotify]" id="user_emailnotify" {form[emailnotify]}><span class="draw-checkbox--styled"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+               
+               
+            </form>
+            <if condition="$sheel->GPC['cmd'] == 'add'"><script>new_user_listener();</script><else /><script>update_user_listener();</script></if>
+            <!-- user overview -->
+               </div>
+            
+            <if condition="$sheel->GPC['cmd'] == 'update'">
+            <!-- create transaction -->
+            <form autocomplete="off" class="address-form" id="new_user_transaction" action="{https_server_admin}users/update/{form[userid]}/" accept-charset="UTF-8" method="post" onsubmit="return verify_acp_user_txn()">
+            <input type="hidden" name="do" value="transaction" />
+            <div class="section overview">
+            <div class="section section--no-border tags">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>{_account_balance_transaction}</h1>
+                                <p>Received cash or offline funds? Credit or debit a users account balance from here. </p>
+                                <p class="type--subdued">You can also create a points credit or debit transaction by changing type to "Points" instead of "Money".</p>
+                          </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_password"><if condition="$sheel->config['pointsystem']">{_money_or_points_amount}<else />{_amount}</if></label>
+                                                <input class="draw-input" size="30" type="text" name="form[amount]" id="user_amount" placeholder="<if condition="$sheel->config['pointsystem']">10.50 or 10 (for points)<else />10.00</if>">
+                                            </div>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_password2">{_transaction_type}</label>
+                                                <div class="draw-select__wrapper draw-input--has-content">
+                                                    {form[transaction_type_pulldown]}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_secret_answer">{_transaction_description} <span class="type--subdued">(Only user can see)</span></label>
+                                                <input class="draw-input" size="30" type="text" name="form[transaction_description]" id="user_transaction_description" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="draw-grid__cell">
+                                            <div class="draw-input-wrapper">
+                                                <label class="draw-label" for="user_secret_answer">{_notes} <span class="type--subdued">(Only staff can see)</span></label>
+                                                <input class="draw-input" size="30" type="text" name="form[transaction_notes]" id="user_transaction_notes" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                        <div class="draw-input-wrapper">
+                                            <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Create Transaction</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+            <!-- create transaction -->
+            </if>
+        
+            <if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'update'">
+            <!-- transactions -->
+            <div class="section overview">
+            <div class="section section--no-border tags">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>{_latest_transactions}</h1>
+                                <p>View the latest transactions for this user.</p>
+                            </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="6%">{_date}</th>
+                                        <th colspan="2">{_description}</th> 
+                                        <th width="6%" align="right" nowrap="nowrap">{_debit} {currencysymbol}</th>
+                                        <th width="6%" align="right" nowrap="nowrap">{_credit} {currencysymbol}</th>
+                                        <th width="6%" align="right" nowrap="nowrap">{_balance} {currencysymbol}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="transactions"><tr class="{class}" valign="top">
+                                        <td nowrap="nowrap" class="uc">{datepaid}</td>
+                                        <td colspan="2"><div class="pb-4">{description}</div><!--<div class="type--subdued">{staffnotes}</div>--></td> 
+                                        <td nowrap="nowrap" align="right">{debit}</td>
+                                        <td nowrap="nowrap" align="right">{credit}<!--<div class="smaller black" style="padding-top:4px">{_due}: <span class="gray">{duedate}</span></div>--></td>
+                                        <td nowrap="nowrap" align="right">{balance}<!--<div class="smaller black" style="padding-top:4px">{_paid}: <span class="gray">{paiddate}</span></div>--></td>
+                                      </tr></loop name="transactions"> 
+                                      </tbody>
+                                    </table>
+                                </div>
+                                <div class="draw-grid draw-grid--outside-padding draw-grid--inner-grid">
+                                    <div class="draw-input-wrapper">
+                                       <a href="{https_server_admin}users/update/{form[userid]}/transactions/"><button name="button" type="submit" class="btn js-btn-primary js-btn-loadable has-loading">View all transactions</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                            
+                            <if condition="$sheel->config['pointsystem']">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="6%">{_date}</th>
+                                        <th colspan="2">{_description}</th> 
+                                        <th width="6%" align="right" nowrap="nowrap">{_debit_points}</th>
+                                        <th width="6%" align="right" nowrap="nowrap">{_credit_points}</th>
+                                        <th width="6%" align="right" nowrap="nowrap">{_balance}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="pointstransactions"><tr class="{class}" valign="top">
+                                        <td nowrap="nowrap" class="uc">{datepaid}</td>
+                                        <td colspan="2"><div class="pb-4">{description}</div></td> 
+                                        <td nowrap="nowrap" align="right">{debit}</td>
+                                        <td nowrap="nowrap" align="right">{credit}</td>
+                                        <td nowrap="nowrap" align="right">{balance}</td>
+                                      </tr></loop name="pointstransactions"> 
+                                      </tbody>
+                                    </table>
+                                </div>
+                                <div class="draw-grid draw-grid--outside-padding draw-grid--inner-grid">
+                                    <div class="draw-input-wrapper">
+                                       <a href="{https_server_admin}users/update/{form[userid]}/transactions/points/"><button name="button" type="submit" class="btn js-btn-primary js-btn-loadable has-loading">View all points transactions</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                            </if>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- transactions -->
+            
+            <!-- audit -->
+            <div class="section overview">
+            <div class="section section--no-border tags">
+                    <div class="layout-content">
+                        <div class="layout-content__sidebar layout-content__first">
+                            <div class="section-summary">
+                                <h1>Audit / Consent Log</h1>
+                                <p>View the latest audits &amp; consents this user has accepted or agreed to.  Manage <a href="{https_server_admin}marketplace/pages/">terms or privacy policy</a> to force consent.</p>
+                            </div>
+                        </div>
+                        <div class="layout-content__main">
+                            <div class="draw-card">
+                                <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="6%">{_date}</th>
+                                        <th width="94%">{_description}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="consentlog"><tr class="{class}" valign="top">
+                                        <td nowrap="nowrap" class="uc">{datetime}</td>
+                                        <td>{description}</td>
+                                      </tr></loop name="consentlog"> 
+                                      </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- audit -->
+            
+            <div class="section notes">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Shipping Address Profiles</h1>
+                            <p>View shipping address profiles setup and managed by this user.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="layout-content__main">
+                        
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+                                
+                                
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="user_shippingprofiles"></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[shipping_profiles_pulldown]}
+                                        </div>
+                                    </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section notes">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Billing Address Profiles</h1>
+                            <p>View billing address profiles setup and managed by this user.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="layout-content__main">
+                        
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+                                
+                                
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="user_billingprofiles"></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[billing_profiles_pulldown]}
+                                        </div>
+                                    </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <if condition="isset($sheel->config['save_credit_cards']) AND $sheel->config['save_credit_cards']">
+            <div class="section notes">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Credit Card Profiles</h1>
+                            <p>View credit card profiles setup and managed by this user.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="layout-content__main">
+                        
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+                                
+                               
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="user_billingprofiles"></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[creditcard_profiles_pulldown]}
+                                        </div>
+                                    </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </if>
+            
+            <if condition="isset($sheel->config['enable_bank_deposit_support']) AND $sheel->config['enable_bank_deposit_support']">
+            <div class="section notes">
+                <div class="layout-content">
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Bank Account Profiles</h1>
+                            <p>View bank account profiles setup and managed by this user.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="layout-content__main">
+                        
+                        <div class="draw-card">
+                            <div class="draw-card__section">
+                                
+                               
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="user_billingprofiles"></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[bank_profiles_pulldown]}
+                                        </div>
+                                    </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </if>
+            </if>
+        
+            <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
+            
+    <else />
+    
+        <div id="products-index" refresh="products-index" class="page products-page has-contextual-help">
+            <div class="header-row">
+                <header class="header">
+                  <h1 class="header__main">
+                    <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
+                    {_users}
+                  </h1>
+                    <div class="header__primary-actions"> 
+                       <a class="btn btn-primary" href="{https_server_admin}users/add/">{_add_user}</a>    
+                    </div>
+                        
+                    <div class="header__secondary-actions">
+                        <div id="header-action-pagination" class="header-action"> {prevnext} </div>
+                        <ul class="segmented import-export-actions">
+                            <li id="export-products-modal" refresh="products">
+                                 <a class="btn" bind-event-click="show_modal('', '', jQuery('#modal_export').html());">{_export}</a></li>
+                        </ul>   
+                    </div>
+                </header>
+            </div>
+            
+            
+            <div class="draw-grid draw-grid--outer-grid">
+                <div class="draw-grid__cell">
+                    <div class="draw-card">
+                        <div class="has-bulk-actions">
+                            <div>
+                                <div>
+                                    <ul class="draw-tab__list" role="tablist">
+                                    
+                                        <li role="presentation"><a class="draw-tab<if condition="$sheel->GPC['view'] == ''"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="users/">All Users<if condition="$sheel->GPC['view'] == ''">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        <if condition="$sheel->config['registrationdisplay_moderation']"><li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel2" aria-selected="false" href="users/?view=moderated">Moderated<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li></if>
+                                        <if condition="$sheel->config['registrationdisplay_emailverification']"><li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'unverified'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="users/?view=unverified">Email Unverified<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'unverified'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li></if>
+                                        <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'suspended'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel4" aria-selected="false" href="users/?view=suspended">Suspended<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'suspended'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'banned'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel5" aria-selected="false" href="users/?view=banned">Banned<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'banned'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'staff'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel6" aria-selected="false" href="users/?view=staff">Staff<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'staff'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleterequests'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel7" aria-selected="false" href="users/?view=deleterequests">Delete Requests<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleterequests'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        
+                                        <li class="draw-tab__list__disclosure-item dropdown-container">
+                                            <span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true">
+                                                <i class="ico ico-16-svg ico-chevron-down-blue"></i>
+                                            </span>
+                                            <div class="dropdown">
+                                                <ul class="draw-tab__list--vertical" role="tablist"></ul>
+                                            </div>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                                <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                                    <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                        <form class="draw-form draw-form--full-width"  action="{https_server_admin}users/" accept-charset="UTF-8" method="get">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label"></label>
+                                            <div class="draw-field__connected-wrapper">
+                                                <div class="draw-field--connected--no-flex">
+                                                    <div class="draw-select__wrapper">
+                                                        {form[filter_pulldown]}
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="draw-field--connected--no-flex">
+                                                    <div class="draw-select__wrapper">
+                                                        {form[pp_pulldown]}
+                                                    </div>
+                                                    
+                                                </div>
+                                                    
+                                                    <label class="draw-label helper--visually-hidden" for="query">Query</label>
+                                                    <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search draw-icon--16" aria-hidden="true"></span></span>
+                                                        <input type="text" name="q" id="query" placeholder="Enter keyword" class="draw-input draw-input--invisible" value="{form[q]}" />
+                                                    </div>
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <form id="formusers" class="draw-form draw-form--full-width" action="{https_server_admin}users/" accept-charset="UTF-8" method="post">
+                            <div id="user-results" refresh="users">
+                                <div class="draw-card__section">
+                                    <div class="table-wrapper">
+                                        <table class="table-hover expanded" >
+                                      <thead>
+                                        <tr id="user-search">
+                                          <th class="select"><span id="bulkOperations">
+                                                
+                                                    <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                        <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                        <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                        </div>
+                                                    </div>
+    
+                                                    <div class="bulk-actions">
+                                                        <ul class="segmented">
+                                                            
+                                                            <li>
+                                                                <a class="btn btn-slim btn-disabled btn--selection">
+                                                                    <span class="selection-count">
+                                                                      <span id="selectedcount"></span> {_selected_users}
+                                                                    </span> 
+                                                                </a>
+                                                            </li>
+                                                    
+                                                            <li>
+                                                                <a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                                <div class="draw-popover__container">
+                                                                    <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                                    <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                        <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                        <div class="draw-popover__content-wrapper">
+                                                                            <div class="draw-popover__content" style="max-height: 637px;">
+                                                                                <div class="draw-popover__pane">
+                                                                                    <ul class="draw-list draw-list--compact">
+                                                                                        
+                                                                                        <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'deleterequests'">
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('canceldeleterequest', 'Cancel & reject [x] user deletion requests?', 'Are you sure you want to cancel & reject the selected users request to be deleted? Additionally, the selected users will not receive an email informing them that their delete request was rejected.', 'clients', 'selectedcount', '1', '1', '')">Cancel and reject delete requests (no email)</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('deleteusers', 'Delete [x] selected users?', 'Are you sure you want to delete selected users? Additionally, the selected users will receive an email that their account has been deleted.', 'clients', 'selectedcount', '1', '1', '')">{_delete} {_selected_users} (email)</a></li>
+                                                                                        <else />
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('activateusers', 'Activate [x] selected users?', 'Are you sure you want to activate selected users?', 'clients', 'selectedcount', '1', '0', '')">{_activate} {_selected_users}</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('suspendusers', 'Suspend [x] selected users?', 'Are you sure you want to suspend selected users?', 'clients', 'selectedcount', '1', '0', '')">{_suspend} {_selected_users}</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('unsuspendusers', 'Unsuspend [x] selected users?', 'Are you sure you want to unsuspend selected users?', 'clients', 'selectedcount', '1', '0', '')">{_unsuspend} {_selected_users}</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('banusers', 'Ban [x] selected users?', 'Are you sure you want to ban selected users?', 'clients', 'selectedcount', '1', '0', '')">{_ban} {_selected_users}</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('unbanusers', 'Unban [x] selected users?', 'Are you sure you want to unban selected users?', 'clients', 'selectedcount', '1', '0', '')">{_unban} {_selected_users}</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('deleteusers', 'Delete [x] selected users?', 'Are you sure you want to delete selected users? Additionally, the selected users will receive an email that their account has been deleted.', 'clients', 'selectedcount', '1', '1', '')">{_delete} {_selected_users} (email)</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('deleteusersnoemail', 'Delete [x] selected users?', 'Are you sure you want to delete selected users? Additionally, the selected users will not receive an email that their account has been deleted.', 'clients', 'selectedcount', '1', '1', '')">{_delete} {_selected_users} (no email)</a></li>
+                                                                                        </if>
+                                                                                        
+                                                                                    </ul>
+                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    
+                                                        <span class="bulk-select-all">
+                                                                <p class="bulk-action-all-selector"></p>
+                                                        </span>
+                                                    </div>
+                                                    </span>
+                                          
+                                          </th>
+                                          <th class="name is-sortable ">&nbsp;</th>
+                                          <th class="name is-sortable "><span><label>{_name} / {_username}</label></span></th>
+                                          <th class="name is-sortable ">&nbsp;</th>
+                                          <th class="name is-sortable "><span><label>{_customer} / {_name}</label></span></th>
+                                          <th class="location is-sortable "><span><label>{_last_seen}</label></span></th>
+                                          <th class="name is-sortable no-wrap"><span><label>{_email}</label></span></th>
+                                          <th class="money_spent is-sortable "><span><label>{_role}</label></span></th>
+                                          <th class="money_spent "><span><label>{_subscription}</label></span></th>
+                                          <th class="money_spent tr right-aligned is-sortable "><label>{_source}</label></th>
+                                          <th class="orders tc is-sortable" nowrap="nowrap"><span title="Single Sign-On"><label>SSO</label></span></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <loop name="users">
+                                        <tr valign="top" id="tr_selected_{user_id}">
+                                              <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="user_id[]" id="clients_{user_id}" value="{user_id}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                              <td class="name no-wrap" width="50"><span title="{state}, {country}">{icon}</span></td>
+                                              <td class="name"><a href="{https_server_admin}users/update/{user_id}/">{first_name} {last_name}</a><div class="type--subdued">{username}</div></td>
+                                              <td class="name no-wrap">{flags}</td>
+                                              <td class="name">{customer_ref}<div class="type--subdued">{customername}</div></td>
+                                              <td class="location type--subdued no-wrap">{lastseen}</td>
+                                              <td class="email">{email}</td>
+                                              <td class="money_spent type--subdued"><span class="badge badge--complete" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">{role}</span></td>
+                                              <td class="money_spent type--subdued"><span class="badge badge--complete" style="max-width:100px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">{plan}</span></td>
+                                              <td class="tr"><span class="badge badge--complete">{registersource}</span></td>
+                                              <td class="last_order tc type--subdued"><span class="badge badge--info">{switch}</span></td>
+                                        </tr>
+                                        </loop name="users">
+                                      </tbody>
+                                    </table>
+                                    <script type="text/javascript">
+                                    inlineCB = new iL_Inline('inlineCB', 'clients', 'formusers', '{_go}');
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal_export" style="display:none">
+        <form action="{https_server_admin}users/bulkmailer/export/" method="post" onsubmit="return close_modal()">
+        <header>
+            <h2>Bulk Export Users</h2>
+            <a href="javascript:;" onclick="close_modal()" class="close-modal" role="button" aria-label="{_close}">×</a>
+        </header>
+        <div class="body" id="modal_confirm_body">
+           <p class="sb">Export user email addresses:</p>
+           <div class="type--half-margin">
+              <div class="sb"><label for="newline"><input type="radio" value="newline" name="form[method]" id="newline" checked="checked"> New lines</label></div>
+              <div class="sb"><label for="csv"><input type="radio" value="csv" name="form[method]" id="csv"> CSV</label></div>
+            </div>
+        </div>
+        <div class="buttons">
+            <a class="btn close-modal" href="javascript:;" onclick="close_modal()">{_cancel}</a>
+            <button class="btn btn-primary" type="submit">{_download}</button>
+        </div>
+        </form>
+    </div>
+    <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
+    </if>
+    </if>
+    </section>

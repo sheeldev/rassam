@@ -13,7 +13,7 @@ Page();
 					<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
 				</h1>
 				<div class="header__primary-actions">
-					<if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+					<button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
 				</div>
 			</header>
 		</div>
@@ -23,7 +23,7 @@ Page();
         <div class="section">
             <div class="draw-grid draw-grid--right-aligned">
                 <div class="draw-grid__cell draw-grid__cell--no-flex">
-                    <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                 </div>
             </div>
         </div>

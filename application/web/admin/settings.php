@@ -544,10 +544,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$ldap = $sheel->admincp->construct_admin_input('registrationldap', HTTPS_SERVER_ADMIN . 'settings/registration/', '', $buttons);
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'attachments') {
 		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'attachment-manage-storagetype' and isset($sheel->GPC['form']['action'])) {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				$sheel->admincp->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'settings/attachments/');
-				exit();
-			}
 			$sheel->template->meta['areatitle'] = '{_managing_attachment_storage_type}';
 			$sheel->template->meta['pagetitle'] = SITE_NAME . ' - {_managing_attachment_storage_type}';
 			if ($sheel->GPC['form']['action'] == 'rebuildpictures') {
@@ -571,10 +567,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$limits = $sheel->admincp->construct_admin_input('attachmentlimit', HTTPS_SERVER_ADMIN . 'settings/attachments/');
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'shipping') {
 		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				$sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-			}
 			if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
 				$sheel->db->query("
 					DELETE FROM " . DB_PREFIX . "shippers
@@ -588,10 +580,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
 			}
 		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				$sheel->admincp->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'settings/shipping/');
-				exit();
-			}
 			$sheel->GPC['title'] = isset($sheel->GPC['title']) ? $sheel->GPC['title'] : '';
 			$sheel->GPC['shipcode'] = isset($sheel->GPC['shipcode']) ? $sheel->GPC['shipcode'] : '';
 			$sheel->GPC['domestic'] = isset($sheel->GPC['domestic']) ? intval($sheel->GPC['domestic']) : 0;
@@ -614,10 +602,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			refresh(HTTPS_SERVER_ADMIN . 'settings/shipping/');
 			exit();
 		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
-			if ($sheel->show['ADMINCP_TEST_MODE']) {
-				$sheel->admincp->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'settings/shipping/');
-				exit();
-			}
 			$sheel->GPC['international'] = isset($sheel->GPC['international']) ? $sheel->GPC['international'] : array();
 			$sheel->GPC['title'] = isset($sheel->GPC['title']) ? $sheel->GPC['title'] : array();
 			$sheel->GPC['domestic'] = isset($sheel->GPC['domestic']) ? $sheel->GPC['domestic'] : array();

@@ -2302,23 +2302,6 @@ class sheel
         return $body;
     }
 
-    function fetch_earn_points($price = 0, $sellerid = 0, $formatted = true)
-    {
-        $this->show['canearnpoints'] = false;
-        $earnpoints = '';
-        if ($this->config['pointsystem'] and $this->config['pointsystemuserids'] != '' and $price != '') {
-            $pnttmp = explode(',', $this->config['pointsystemuserids']);
-            foreach ($pnttmp as $accepteduserid) {
-                $accepteduserid = intval(trim($accepteduserid));
-                if ($accepteduserid == $sellerid and $this->config['pointsystemlimit'] != '') {
-                    $this->show['canearnpoints'] = true;
-                    $earnpoints = (($formatted) ? number_format(floor(($price / $this->config['pointsystemlimit']))) : floor(($price / $this->config['pointsystemlimit'])));
-                    break;
-                }
-            }
-        }
-        return $earnpoints;
-    }
 
     function is_valid_csrf_token($token = '', $uid = 0, $strict = false)
     {

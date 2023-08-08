@@ -278,6 +278,18 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_bc" bind-event-click="" allow-default="1" href="customers/bc/">{_bc_customers_list}</a> </li>
                         </ol>
                         <!-- customers subnav -->
+                        <!-- users subnav -->
+                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="users" id="iLNav_Users">
+                                <li class="draw-nav__item draw-nav__item--header">
+                                        <h2 class="draw-heading--callout">Users</h2>
+                                </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users" bind-event-click="" allow-default="1" href="users/">Users</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_bulkmailer" bind-event-click="" allow-default="1" href="users/bulkmailer/">Bulk Mailer</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_violation" bind-event-click="" allow-default="1" href="users/violations/">Violation Reports</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_questions" bind-event-click="" allow-default="1" href="users/questions/">Profile Questions</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_audit" bind-event-click="" allow-default="1" href="users/audit/">Audit Log</a> </li>
+                        </ol>
+                        <!-- customers subnav -->
                         <!-- products subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="products" id="iLNav_Products">
                                 <li class="draw-nav__item draw-nav__item--header">
@@ -398,6 +410,7 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locale" bind-event-click="" allow-default="1" href="settings/locale/">Locale</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_mail" bind-event-click="" allow-default="1" href="settings/mail/">Mail / SMTP</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_currency" bind-event-click="" allow-default="1" href="settings/currency/">Currency</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_emails" bind-event-click="" allow-default="1" href="settings/emails/">Email Templates</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_invoice" bind-event-click="" allow-default="1" href="settings/invoice/">Invoice &amp; Transaction</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_payment" bind-event-click="" allow-default="1" href="settings/payment/">Payments &amp; APIs</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_tax" bind-event-click="" allow-default="1" href="settings/tax/">Taxes</a> </li>

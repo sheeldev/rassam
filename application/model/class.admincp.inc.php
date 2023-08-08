@@ -95,9 +95,6 @@ class admincp
                 $details = "success\n" . $this->sheel->array2string($this->sheel->GPC);
                 $this->sheel->log_event($userid, basename(__FILE__), $details);
                 $this->sheel->template->meta['jsinclude'] = array('header' => array('functions', 'admin'), 'footer' => array());
-
-                ($apihook = $this->sheel->api('print_action_success')) ? eval($apihook) : false;
-
                 $this->sheel->template->fetch('main', 'action_success.html', 1);
                 $this->sheel->template->parse_hash('main', array('ilpage' => $this->sheel->ilpage));
                 $this->sheel->template->pprint('main', array('notice' => $notice, 'admurl' => $admurl, 'sidenav' => $sidenav));
@@ -477,10 +474,7 @@ class admincp
          */
         function update_registration_question($form = array())
         {
-                if ($this->sheel->show['ADMINCP_TEST_MODE']) {
-                        $this->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'customers/questions/');
-                        exit();
-                }
+
                 $visible = isset($form['form']['visible']) ? intval($form['form']['visible']) : 0;
                 $required = isset($form['form']['required']) ? intval($form['form']['required']) : 0;
                 $profile = isset($form['form']['public']) ? intval($form['form']['public']) : 0;
@@ -532,10 +526,6 @@ class admincp
          */
         function insert_registration_question($form = array())
         {
-                if ($this->sheel->show['ADMINCP_TEST_MODE']) {
-                        $this->print_action_failed('{_demo_mode_only}', HTTPS_SERVER_ADMIN . 'customers/questions/');
-                        exit();
-                }
                 $visible = isset($form['form']['visible']) ? intval($form['form']['visible']) : 0;
                 $required = isset($form['form']['required']) ? intval($form['form']['required']) : 0;
                 $profile = isset($form['form']['public']) ? intval($form['form']['public']) : 0;

@@ -282,6 +282,100 @@ class language
 		return $result;
 	}
 
+	function print_language_pulldown($selected = '', $autosubmit = '', $selectname = '', $optgrouptitle = '', $class = 'draw-select')
+	{
+			$html = '';
+			$sql = $this->sheel->db->query("
+					SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "languageid, languagecode, title, canselect
+					FROM " . DB_PREFIX . "language
+			", 0, null, __FILE__, __LINE__);
+			if ($autosubmit)
+			{
+					$html = '<div class="draw-select__wrapper inlineblock w-150"><select name="language" id="language" onchange="urlswitch(this, \'dolanguage\')" class="' . $class . '">';
+					$html .= '<optgroup label="{_choose_language}">';
+					$languagecount = 0;
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
+					{
+							if ($res['canselect'] OR !empty($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'])
+							{
+									$html .= (isset($selected) AND $selected == $res['languageid']) ? '<option value="' . $res['languagecode'] . '" selected="selected">' . stripslashes($res['title']) . '</option>' : '<option value="' . $res['languagecode'] . '">' . stripslashes($res['title']) . '</option>';
+									$languagecount++;
+							}
+					}
+					unset($res);
+					$html .= '</optgroup></select></div>';
+			}
+			else
+			{
+					// custom select name title
+					$html = (isset($selectname) AND !empty($selectname)) ? '<div class="draw-select__wrapper inlineblock w-150"><select name="' . $selectname . '" id="' . $selectname . '" class="' . $class . '">' : '<select name="languageid" id="languageid" class="' . $class . '">';
+					$html .= (isset($optgrouptitle) AND !empty($optgrouptitle)) ? '<optgroup label="' . $optgrouptitle . '">' : '<optgroup label="' . '{_choose_language}' . '">';
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
+					{
+							$html .= (isset($selected) AND $selected == $res['languageid']) ? '<option value="' . $res['languageid'] . '" selected="selected">' . stripslashes($res['title']) . '</option>' : '<option value="' . $res['languageid'] . '">' . stripslashes($res['title']) . '</option>';
+					}
+					$html .= '</optgroup></select></div>';
+			}
+			// if we're viewing this pulldown menu from the footer page, and have only 1 language, hide the pulldown menu
+			if ($autosubmit AND $languagecount == 1 AND defined('LOCATION') AND (LOCATION != 'admin' OR LOCATION != 'registration'))
+			{
+					$html = '';
+			}
+			return $html;
+	}
+
+	function construct_language_pulldown($fieldname = 'languageid', $selected = 0, $class = 'draw-select', $formfieldname = 'languageid')
+	{
+			$html = '<div class="draw-select__wrapper inlineblock w-150"><select name="' . $formfieldname . '" id="' . $fieldname . '" class="' . $class . '">';
+			$sql = $this->sheel->db->query("
+					SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "languageid, title
+					FROM " . DB_PREFIX . "language
+			", 0, null, __FILE__, __LINE__);
+			if ($this->sheel->db->num_rows($sql) > 0)
+			{
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
+					{
+			if (defined('LOCATION') AND LOCATION == 'admin' AND $selected > 0 AND !empty($_SESSION['sheeldata']['user']['isadmin']) AND $_SESSION['sheeldata']['user']['isadmin'] > 0)
+							{
+				// update user profile admin form
+									$html .= '<option value="' . $res['languageid'] . '"';
+									if ($res['languageid'] == $selected)
+									{
+											$html .= ' selected="selected"';
+									}
+									$html .= '>' . stripslashes($res['title']) . '</option>';
+			}
+							else if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0)
+							{
+									$sql2 = $this->sheel->db->query("
+											SELECT " . (MYSQL_QUERYCACHE ? "SQL_CACHE " : "") . "languageid
+											FROM " . DB_PREFIX . "users
+											WHERE user_id = '" . $_SESSION['sheeldata']['user']['userid'] . "'
+									", 0, null, __FILE__, __LINE__);
+									$res2 = $this->sheel->db->fetch_array($sql2, DB_ASSOC);
+									$html .= '<option value="' . $res['languageid'] . '"';
+									if ($res['languageid'] == $res2['languageid'])
+									{
+											$html .= ' selected="selected"';
+									}
+									$html .= '>' . stripslashes($res['title']) . '</option>';
+							}
+							else
+							{
+									// register form
+									$html .= '<option value="' . $res['languageid'] . '"';
+									if ($res['languageid'] == $this->sheel->config['globalserverlanguage_defaultlanguage'])
+									{
+											$html .= ' selected="selected"';
+									}
+									$html .= '>' . stripslashes($res['title']) . '</option>';
+							}
+					}
+			}
+			$html .= '</select></div>';
+			return $html;
+	}
+
 	/**
 	 * @return      array
 	 */

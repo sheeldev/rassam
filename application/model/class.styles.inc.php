@@ -188,7 +188,7 @@ class styles
         $js .= "CURRENCY: \"" . $this->sheel->currency->currencies[$this->sheel->config['globalserverlocale_defaultcurrency']]['currency_abbrev'] . "\", ";
         $js .= "CURRENCYSYMBOL: \"" . $this->sheel->currency->currencies[$this->sheel->config['globalserverlocale_defaultcurrency']]['symbol_left'] . "\", ";
         $js .= "CURRENCYSYMBOLRIGHT: \"" . $this->sheel->currency->currencies[$this->sheel->config['globalserverlocale_defaultcurrency']]['symbol_right'] . "\", ";
-        $js .= "TM: \"" . (($this->sheel->show['ADMINCP_TEST_MODE']) ? "1" : "0") . "\", ";
+        $js .= "TM: \"" . ("0") . "\", ";
         $js .= "MSS: \"" . (int) $this->sheel->config['maxshipservices'] . "\", ";
         $js .= "FP: \"" . (int) $this->sheel->config['enablefixedpricetab'] . "\", ";
         $js .= "MV: \"" . (int) $this->sheel->config['maxvariants'] . "\", ";

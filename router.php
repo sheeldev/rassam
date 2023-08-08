@@ -45,7 +45,8 @@ $router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]/', __DIR__ .
 $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
 $router->map('GET|POST', '/admin/staffs/', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs');
 $router->map('GET|POST', '/admin/staffs/[view:cmd]/[*:staffno]', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs_view');
-
+$router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/users.php', 'admin_users');
+$router->map('GET|POST', '/admin/users/[add|bulkmailer|bulkmailer/export|verifications|violations|audit:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_add');
 
 
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
@@ -53,10 +54,12 @@ $router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|curren
 $router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
-
 $router->map('GET|POST', '/admin/[currency:cmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_cmd');
 $router->map('POST',     '/admin/[currency:cmd]/[save:subcmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_save');
 $router->map('GET|POST', '/admin/[currency:cmd]/[default|defaultusers|delete:subcmd]/[*:currencyid]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_defaults');
+$router->map('GET|POST', '/admin/settings/emails/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates');
+$router->map('GET|POST', '/admin/settings/[emails:cmd]/[update:subcmd]/[*:varname]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_action');
+$router->map('GET|POST', '/admin/settings/[emails:cmd]/[import|export|add|save:subcmd]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_impex');
 
 if (file_exists(__DIR__ . '/router_custom.php'))
 {

@@ -73,77 +73,85 @@
                         <div class="draw-card__section">
                             <div class="table-wrapper">
                             	<form class="draw-form draw-form--full-width" action="{https_server_admin}customers/" id="formcustomers" accept-charset="UTF-8" method="get">
-                                <table class="table-hover expanded">
-                                    <thead>
-                                        <tr>
-                                            <th class="select"><span id="bulkOperations">
-                                                <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
-                                                    <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
-                                                    <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="bulk-actions">
-                                                    <ul class="segmented">
-                                                        <li>
-                                                            <a class="btn btn-slim btn-disabled btn--selection">
-                                                                <span class="selection-count">
-                                                                  <span id="selectedcount"></span> {_selected_customers}
-                                                                </span> 
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                        	<a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
-                                                            <div class="draw-popover__container">
-                                                            	
-                                                                <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
-                                                                <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
-                                                                    <div class="draw-popover__tooltip" style="left: 111px;"></div>
-                                                                    <div class="draw-popover__content-wrapper">
-                                                                        <div class="draw-popover__content" style="max-height: 637px;">
-                                                                            <div class="draw-popover__pane">
-                                                                                <ul class="draw-list draw-list--compact">
-                                                                                 	<li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markactive', 'Mark [x] selected customers as ready?', 'Are you sure you want to mark selected customers as active?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers active</a></li>
-                                                                                    <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markinactive', 'Mark [x] selected customers as inactive?', 'Are you sure you want to mark selected customers as inactive?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers inactive</a></li>
-                                                                                </ul> 
+                                    <table class="table-hover expanded">
+                                        <thead>
+                                            <tr>
+                                                <th class="select"><span id="bulkOperations">
                                                 
+                                                    <div class="tooltip tooltip-left-align tooltip-bottom bulk-actions__select-all-tooltip">
+                                                        <div class="draw-input-wrapper bulk-actions__select-all btn--select-all bulk-actions__select-all--has-selected-items">
+                                                        <input type="checkbox" onclick="inlineCB.check_all('invert')" class="draw-checkbox" id="checkboxall"><span class="draw-checkbox--styled"></span>
+                                                        </div>
+                                                    </div>
+    
+                                                    <div class="bulk-actions">
+                                                        <ul class="segmented">
+                                                        
+                                                            <li>
+                                                                <a class="btn btn-slim btn-disabled btn--selection">
+                                                                    <span class="selection-count">
+                                                                      <span id="selectedcount"></span> {_selected_customers}
+                                                                    </span> 
+                                                                </a>
+                                                            </li>
+                                                    
+                                                            <li>
+                                                                <a class="btn btn-slim hide" id="unselectalllink" aria-expanded="false" aria-haspopup="false" aria-owns="" onclick="inlineCB.check_all()">{_unselect_all}</a>
+                                                                <div class="draw-popover__container">
+                                                                    
+                                                                    <a class="btn btn-slim" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">{_bulk_actions}</a>
+                                                                    <div class="draw-popover draw-popover--full-height draw-popover--is-positioned-beneath" data-popover-css-vertical-margin="15" data-popover-css-horizontal-margin="20" data-popover-css-max-height="10000" data-popover-css-max-width="500" id="draw-popover--1" aria-labelledby="draw-popover-activator--1" aria-expanded="false" role="dialog" style="max-width: none; margin-right: 0px; margin-left: 0px; transform-origin: 111px -5px; left: -54px;">
+                                                                        <div class="draw-popover__tooltip" style="left: 111px;"></div>
+                                                                        <div class="draw-popover__content-wrapper">
+                                                                            <div class="draw-popover__content" style="max-height: 637px;">
+                                                                                <div class="draw-popover__pane">
+                                                                                    <ul class="draw-list draw-list--compact">
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markactive', 'Mark [x] selected customers as ready?', 'Are you sure you want to mark selected customers as active?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers active</a></li>
+                                                                                        <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('markinactive', 'Mark [x] selected customers as inactive?', 'Are you sure you want to mark selected customers as inactive?', 'reqssss', 'selectedcount', '1', '0', '')">Mark selected customers inactive</a></li>
+                                                                                    </ul> 
+                                                    
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                    <span class="bulk-select-all">
-                                                        <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
-                                                    </span>
-                                                </div>
-                                                </span></th>
-                                            <th class="is-sortable"> <span>{_account}</span> </th>
-                                            <th> <span>{_name}</span> </th>
-                                            <th> <span>{_name2}</span> </th>
-                                            <th > <span>{_about}</span> </th>
-                                            <th> <span>{_description}</span> </th>
-                                            <th> <span>{_available_balance}</span> </th>
-                                            <th> <span>{_total_balance}</span> </th>
-                                            <th class="is-sortable"> <span>{_subscription}</span> </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        	<loop name="customers">
-                            <tr id="tr_selected_{customer_id}" valign="top">
-                                <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="customerid[]" id="reqssss_{customer_id}" value="{customer_id}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
-                                <td class="no-wrap"><a href="customers/view/{customer_id}/">{account_number}</a></td>
-                                <td class="no-wrap"> <span>{customername}</span></td>
-                                <td class="no-wrap"> <span>{customername2}</span></td>
-                                <td class="no-wrap"> <span>{customerabout}</span></td>
-                                <td class="status type--subdued">{customerdescription}</td>
-                                <td class="status no-wrap">{available_balance}</td>
-                                <td class="status no-wrap">{total_balance}</td>
-                                <td class="status no-wrap">{title_eng}</td>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    
+                                                        <span class="bulk-select-all">
+                                                                <p class="bulk-action-all-selector hide" id="refreshpagelink"><a href="javascript:;" onclick="window.location.reload(true)"><span data-balloon="Click refresh when you're ready" data-balloon-pos="right"><img src="{imgcdn}v5/ico_refresh.png" height="13"></span></a></p>
+                                                                
+                                                                
+                                                        </span>
+                                                    </div>
+                                                    </span></th>
+                                              <th class="is-sortable"> <span><label>{_account}</label></span> </th>
+                                              <th> <span><label>{_name}</label></span> </th>
+                                              <th> <span><label>{_name2}</label></span> </th>
+                                              <th > <span><label>{_about}</label></span> </th>
+                                              <th> <span><label>{_description}</label></span> </th>
+                                              <th> <span><label>{_available_balance}</label></span> </th>
+                                              <th> <span><label>{_total_balance}</label></span> </th>
+                                              <th class="is-sortable"> <span><label>{_subscription}</label></span> </th>
                             </tr>
-                            </loop name="customers">
-                        </tbody>
-                        </table>
+                            </thead>
+                            <tbody>
+                                <loop name="customers">
+                                <tr id="tr_selected_{customer_id}" valign="top">
+                                    <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="customerid[]" id="reqssss_{customer_id}" value="{customer_id}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                    <td class="no-wrap"><a href="customers/view/{customer_id}/">{account_number}</a></td>
+                                    <td class="no-wrap"> <span>{customername}</span></td>
+                                    <td class="no-wrap"> <span>{customername2}</span></td>
+                                    <td class="no-wrap"> <span>{customerabout}</span></td>
+                                    <td class="status type--subdued">{customerdescription}</td>
+                                    <td class="status no-wrap">{available_balance}</td>
+                                    <td class="status no-wrap">{total_balance}</td>
+                                    <td class="status no-wrap">{title_eng}</td>
+                                </tr>
+                                </loop name="customers">
+                            </tbody>
+                            </table>
                         <script type="text/javascript">
 						inlineCB = new iL_Inline('inlineCB', 'reqssss', 'formcustomers', '{_go}'); 
 						</script>
@@ -616,14 +624,14 @@
                                                     </span>
                                                 </div>
                                                 </span></th>
-                                          <th class="is-sortable"> <span>{_account}</span> </th>
-                                          <th> <span>{_name}</span> </th>
-                                          <th> <span>{_name2}</span> </th>
-                                          <th > <span>{_about}</span> </th>
-                                          <th> <span>{_description}</span> </th>
-                                          <th> <span>{_available_balance}</span> </th>
-                                          <th> <span>{_total_balance}</span> </th>
-                                          <th class="is-sortable"> <span>{_subscription}</span> </th>
+                                          <th class="is-sortable"> <span><label>{_account}</label></span> </th>
+                                          <th> <span><label>{_name}</label></span> </th>
+                                          <th> <span><label>{_name2}</label></span> </th>
+                                          <th > <span><label>{_about}</label></span> </th>
+                                          <th> <span><label>{_description}</label></span> </th>
+                                          <th> <span><label>{_available_balance}</label></span> </th>
+                                          <th> <span><label>{_total_balance}</label></span> </th>
+                                          <th class="is-sortable"> <span><label>{_subscription}</label></span> </th>
                         </tr>
                         </thead>
                         <tbody>

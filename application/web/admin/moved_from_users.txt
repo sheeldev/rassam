@@ -156,8 +156,6 @@
                 if ($this->sheel->db->num_rows($sql) > 0) {
                         $subscription_plan_result = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 
-                        ($apihook = $this->sheel->api('registration_build_user_subscription_start')) ? eval($apihook) : false;
-
                         $subscription_plan_cost = sprintf('%01.2f', $subscription_plan_result['cost']);
                         $subscription_length = $this->sheel->subscription->subscription_length($subscription_plan_result['units'], $subscription_plan_result['length']);
                         $subscription_renew_date = $this->sheel->subscription->print_subscription_renewal_datetime($subscription_length);
@@ -245,8 +243,6 @@
                                                         LIMIT 1
                                                 ", 0, null, __FILE__, __LINE__);
                                         }
-
-                                        ($apihook = $this->sheel->api('registration_build_user_subscription_end')) ? eval($apihook) : false;
 
                                         $this->sheel->db->query("
                                                 UPDATE " . DB_PREFIX . "subscription_user
