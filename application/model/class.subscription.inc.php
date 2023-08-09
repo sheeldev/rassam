@@ -204,6 +204,136 @@ class subscription
                 }
                 return $name;
         }
+        function status_count($status = '')
+        {
+                switch ($status)
+                {
+                        case 'everyone':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                        
+                        case 'active':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE status = 'active'
+                                                AND emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                        case 'suspended':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE status = 'suspended'
+                                                AND emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                        case 'cancelled':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE status = 'cancelled'
+                                                AND emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                        case 'unverified':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE status = 'unverified'
+                                                AND emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                        case 'banned':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE status = 'banned'
+                                                AND emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                        case 'moderated':
+                        {
+                                $sql = $this->sheel->db->query("
+                                        SELECT COUNT(user_id) AS count
+                                        FROM " . DB_PREFIX . "users
+                                        WHERE status = 'moderated'
+                                                AND emailnotify = '1'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+                                return $res['count'];
+                                break;
+                        }
+                }
+        }
+        function admincp_subscription_radios($formname = 'form_who', $showcounts = 1)
+        {
+                $html = '';
+                $sql = $this->sheel->db->query("
+                        SELECT subscriptionid, title_" . $_SESSION['sheeldata']['user']['slng'] . " AS title
+                        FROM " . DB_PREFIX . "subscription
+                        WHERE type = 'product'
+                        ORDER BY sort ASC
+                ", 0, null, __FILE__, __LINE__);
+                if ($this->sheel->db->num_rows($sql) > 0)
+                {
+                        $html .= '';
+                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
+                        {
+                                $sql2 = $this->sheel->db->query("
+                                        SELECT COUNT(sc.customerid) AS count
+                                        FROM " . DB_PREFIX . "subscription_customer sc
+                                        LEFT JOIN " . DB_PREFIX . "customers c ON (sc.customerid = c.customer_id)
+                                        WHERE sc.active = 'yes'
+                                                AND sc.subscriptionid = '" . $res['subscriptionid'] . "'
+                                                AND c.status = 'active'
+                                ", 0, null, __FILE__, __LINE__);
+                                $res2 = $this->sheel->db->fetch_array($sql2, DB_ASSOC);
+                                $html .= '<div class="sb"><label for="plan_' . $res['subscriptionid'] . '"><input type="radio" value="' . $res['subscriptionid'] . '" name="' . $formname . '" id="plan_' . $res['subscriptionid'] . '"> <span class="badge badge--subdued">' . o(stripslashes($res['title'])) . ' (' . number_format($res2['count']) . ')</span></label></div>';
+                        }
+                       
+                }
+                return $html;
+        }
+        function admincp_status_radios($formname = 'form_who', $showcounts = 1)
+        {
+                $html = '<div class="sb"><label for="everyone"><input type="radio" value="-1" name="' . $formname . '" id="everyone" checked="checked"> <span class="badge badge--success">{_everyone} (' . number_format($this->status_count('everyone')) . ')</span></label></div>';
+                $html .= '<div class="sb"><label for="active"><input type="radio" value="active" name="' . $formname . '" id="active"> <span class="badge badge--subdued">{_active} (' . number_format($this->status_count('active')) . ')</span></label></div>';
+                $html .= '<div class="sb"><label for="suspended"><input type="radio" value="suspended" name="' . $formname . '" id="suspended"> <span class="badge badge--subdued">{_suspended} (' . number_format($this->status_count('suspended')) . ')</span></label></div>';
+                $html .= '<div class="sb"><label for="cancelled"><input type="radio" value="cancelled" name="' . $formname . '" id="cancelled"> <span class="badge badge--subdued">{_cancelled} (' . number_format($this->status_count('cancelled')) . ')</span></label></div>';
+                $html .= '<div class="sb"><label for="unverified"><input type="radio" value="unverified" name="' . $formname . '" id="unverified"> <span class="badge badge--subdued">{_email} {_unverified} (' . number_format($this->status_count('unverified')) . ')</span></label></div>';
+                $html .= '<div class="sb"><label for="banned"><input type="radio" value="banned" name="' . $formname . '" id="banned"> <span class="badge badge--subdued">{_banned} (' . number_format($this->status_count('banned')) . ')</span></label></div>';
+                $html .= '<div class="sb"><label for="moderated"><input type="radio" value="moderated" name="' . $formname . '" id="moderated"> <span class="badge badge--subdued">{_moderated} (' . number_format($this->status_count('moderated')) . ')</span></label></div>';
+                return $html;
+        }
         /**
          * Function to fetch a duration unit
          *

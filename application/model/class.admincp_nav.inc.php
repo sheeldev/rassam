@@ -285,9 +285,6 @@ class admincp_nav extends admincp
                                 </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users" bind-event-click="" allow-default="1" href="users/">Users</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_bulkmailer" bind-event-click="" allow-default="1" href="users/bulkmailer/">Bulk Mailer</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_violation" bind-event-click="" allow-default="1" href="users/violations/">Violation Reports</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_questions" bind-event-click="" allow-default="1" href="users/questions/">Profile Questions</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_audit" bind-event-click="" allow-default="1" href="users/audit/">Audit Log</a> </li>
                         </ol>
                         <!-- customers subnav -->
                         <!-- products subnav -->

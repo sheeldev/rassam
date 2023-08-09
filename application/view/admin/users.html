@@ -17,58 +17,6 @@
             <div class="header__secondary-actions"> <a class="btn" href="{https_server_admin}users/update/{form[userid]}/">{_cancel}</a> </div>
         </header>
     </div>
-    <!-- transactions -->
-    <div class="section overview">
-            <div class="layout-content">
-                <div class="layout-content__sidebar layout-content__first">
-                    <div class="section-summary">
-                        <h1><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">All Points Transactions<else />All Transactions</if></h1>
-                        <p>View marketplace transactions associated with {form[first_name]} {form[last_name]}.</p>
-                    </div>
-                </div>
-                <div class="layout-content__main">
-                    <div class="draw-card">
-                        <div class="draw-card__section">
-                        <div class="table-wrapper">
-                            <table class="expanded">
-                            <thead>
-                            <tr>
-                                <th width="6%">{_date}</th>
-                                <th>{_description}</th> 
-                                <th width="6%" align="right" nowrap="nowrap"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">{_debit_points}<else />{_debit} {currencysymbol}</if></th>
-                                <th width="6%" align="right" nowrap="nowrap"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">{_credit_points}<else />{_credit} {currencysymbol}</if></th>
-                                <th width="6%" align="right" nowrap="nowrap"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">{_balance}<else />{_balance} {currencysymbol}</if></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            
-                            <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'transactions/points'">
-                            <loop name="pointstransactions"><tr class="{class}" valign="top">
-                                <td nowrap="nowrap" class="uc">{datepaid}</td>
-                                <td><div>{description}</div>{staffnotes}</td> 
-                                <td nowrap="nowrap" align="right">{debit}</td>
-                                <td nowrap="nowrap" align="right">{credit}</td>
-                                <td nowrap="nowrap" align="right">{balance}</td>
-                              </tr></loop name="pointstransactions">
-                            <else />
-                            <loop name="transactions"><tr class="{class}" valign="top">
-                                <td nowrap="nowrap" class="uc">{datepaid}</td>
-                                <td><div>{description}</div>{staffnotes}</td> 
-                                <td nowrap="nowrap" align="right">{debit}</td>
-                                <td nowrap="nowrap" align="right">{credit}</td>
-                                <td nowrap="nowrap" align="right">{balance}</td>
-                              </tr></loop name="transactions">
-                            </if>
-                              </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        
-    </div>
-    <!-- transactions -->
     <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
     <else />
     <if condition="isset($sheel->GPC['cmd']) AND ($sheel->GPC['cmd'] == 'add' OR $sheel->GPC['cmd'] == 'update')">
@@ -95,7 +43,7 @@
                     <div class="layout-content__sidebar layout-content__first">
                         <div class="section-summary">
                             <h1>Account overview</h1>
-                            <p> The marketplace account details for this user. </div>
+                            <p> The account details for this user. </div>
                     </div>
                     <div class="layout-content__main">
                         <div class="draw-card">
@@ -104,10 +52,6 @@
                                 
                                     <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                         <div class="draw-grid__cell">
-                                            <label for="member-since">{_account_number}</label> 
-                                            <span id="member-since">{form[account_number]}</span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
                                             <label for="current-plan">{_registration_date}</label> 
                                             <span id="current-plan">{form[added]}</span> 
                                         </div>
@@ -115,49 +59,6 @@
                                             <label for="account-status">{_registration_source}</label> 
                                             <span id="current-plan">{form[registersource]} </span>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_balance_owing_nc}</label> 
-                                            <span id="creditcard-rate"><a href="{https_server_admin}accounting/invoices/?filter=userusername&amp;q={form[username]}">{form[balance_owing]}</a></span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_available_balance}</label> 
-                                            <span id="creditcard-rate">
-                                              {form[available_balance]}
-                                            </span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_total_balance}</label> 
-                                            <span id="creditcard-rate">
-                                              <a href="{https_server_admin}users/update/{form[userid]}/transactions/">{form[total_balance]}</a>
-                                            </span> 
-                                        </div>
-                                    </div>
-                                    
-                                    <if condition="isset($sheel->config['pointsystem']) AND $sheel->config['pointsystem']">
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_available_points_balance}</label> 
-                                            <span id="creditcard-rate">{form[points_available]}</span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_points_pending_balance}</label> 
-                                            <span id="creditcard-rate">
-                                              {form[points_pending]}
-                                            </span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_next_points_release_date}</label> 
-                                            <span id="creditcard-rate">
-                                              {form[points_nextreleasedate]}
-                                            </span> 
-                                        </div>
-                                    </div>
-                                    </if>
-                                   
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
                                         <div class="draw-grid__cell">
                                             <label for="creditcard-rate">{_last_seen}</label> 
                                             <span id="creditcard-rate">{form[lastseen]}</span> 
@@ -172,29 +73,8 @@
                                               {form[localtime]}
                                             </span> 
                                         </div>
-                                        
                                     </div>
                                     
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Infractions</label> 
-                                            <span id="creditcard-rate">
-                                              {form[infractions]}
-                                            </span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Last known purchase</label> 
-                                            <span id="creditcard-rate">
-                                              {form[lastknownpurchasedate]}
-                                            </span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Last known bid</label> 
-                                            <span id="creditcard-rate">
-                                              {form[lastknownbiddate]}
-                                            </span> 
-                                        </div>
-                                    </div>
                                     <div class="draw-grid draw-grid--no-outside-padding sst">
                                         <if condition="isset($sheel->show['usernamehistory']) AND $sheel->show['usernamehistory']">
                                         <div class="draw-grid__cell">
@@ -203,143 +83,8 @@
                                               {form[usernamehistory]}
                                             </span> 
                                         </div></if>
-                                        <if condition="isset($sheel->show['referredby']) AND $sheel->show['referredby']">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_referred_by}</label> 
-                                            <span id="creditcard-rate">
-                                              {form[referredby]}
-                                            </span> 
-                                        </div></if>
                                     </div>
                                     
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section account-overview">
-                <div class="layout-content">
-                    <div class="layout-content__sidebar layout-content__first">
-                        <div class="section-summary">
-                            <h1>Purchases overview</h1>
-                            <p> The marketplace purchases activity details for this user. </div>
-                    </div>
-                    <div class="layout-content__main">
-                        <div class="draw-card">
-                            <div class="section-content">
-                                <div class="draw-card__section">
-                                
-                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                        <div class="draw-grid__cell">
-                                            <label for="member-since">{_purchases}</label> 
-                                            <span id="member-since"><a href="{https_server_admin}orders/?filter=userusername&amp;q={form[username]}">{form[purchases]}</a></span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="current-plan">{_cancels}</label> 
-                                            <span id="current-plan"><a href="{https_server_admin}orders/?view=cancelled&amp;filter=userusername&amp;q={form[username]}">{form[cancels]}</a></span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="account-status">{_returns}</label> 
-                                            <span id="current-plan"><a href="{https_server_admin}orders/returns/?filter=userusername&amp;q={form[username]}">{form[returns]}</a></span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_total_purchased}</label> 
-                                            <span id="creditcard-rate">{form[totalpurchased]}</span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Order claims filed</label> 
-                                            <span id="creditcard-rate"><a href="{https_server_admin}orders/claims/?filter=userusername&amp;q={form[username]}">{form[orderclaimsfiled]}</a></span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Non payment violations</label> 
-                                            <span id="creditcard-rate"><a href="{https_server_admin}users/violations/?view=nonpayment&amp;filter=username&amp;q={form[username]}">{form[nonpaymentviolations]}</a></span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">{_total_bids}</label> 
-                                            <span id="creditcard-rate"><a href="{https_server_admin}marketplace/bids/?filter=bidder&amp;q={form[username]}">{form[totalbids]}</a></span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Total proxy bids</label> 
-                                            <span id="creditcard-rate"><a href="{https_server_admin}marketplace/bids/?view=proxy&amp;filter=bidder&amp;q={form[username]}">{form[totalproxybids]}</a></span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Total winning bids</label> 
-                                            <span id="creditcard-rate"><a href="{https_server_admin}marketplace/bids/?view=won&amp;filter=bidder&amp;q={form[username]}">{form[totalwinningbids]}</a></span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="draw-grid draw-grid--no-outside-padding sst">
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Shopping cart</label> 
-                                            <span id="creditcard-rate">{form[cart]}</span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Cart saved for later</label> 
-                                            <span id="creditcard-rate">{form[cartsaved]}</span>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="creditcard-rate">Deleted from cart</label> 
-                                            <span id="creditcard-rate">{form[cartdelete]}</span>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section account-overview">
-                <div class="layout-content">
-                    <div class="layout-content__sidebar layout-content__first">
-                        <div class="section-summary">
-                            <h1>Selling overview</h1>
-                            <p> The marketplace selling activity details for this user. </div>
-                    </div>
-                    <div class="layout-content__main">
-                        <div class="draw-card">
-                            <div class="section-content">
-                                <div class="draw-card__section">
-                                
-                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                        <div class="draw-grid__cell">
-                                            <label for="member-since">{_orders}</label> 
-                                            <span id="member-since"><a href="{https_server_admin}marketplace/listings/?filter=sellerusername&amp;q={form[username]}">{form[soldorders]}</a></span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="current-plan">Total sales</label> 
-                                            <span id="current-plan">{form[totalsales]}</span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="account-status">Inventory count</label> 
-                                            <span id="current-plan"><a href="{https_server_admin}marketplace/listings/?filter=seller&amp;q={form[username]}">{form[inventorycount]}</a></span>
-                                        </div>
-                                    </div>
-                                    
-                                   <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                     <div class="draw-grid__cell">
-                                       <label for="member-since">Non shipment violations</label> 
-                                         <span id="member-since">{form[nonshipmentviolations]}</span> 
-                                       </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="current-plan">Order claims responded</label> 
-                                            <span id="current-plan">{form[orderclaimsresponded]}</span> 
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <label for="account-status">Store front name</label> 
-                                            <span id="current-plan">{form[storename]}</span>
-                                        </div>
-                                    </div>
                                     
                                 </div>
                             </div>
@@ -716,151 +461,10 @@
             <if condition="$sheel->GPC['cmd'] == 'add'"><script>new_user_listener();</script><else /><script>update_user_listener();</script></if>
             <!-- user overview -->
                </div>
-            
-            <if condition="$sheel->GPC['cmd'] == 'update'">
-            <!-- create transaction -->
-            <form autocomplete="off" class="address-form" id="new_user_transaction" action="{https_server_admin}users/update/{form[userid]}/" accept-charset="UTF-8" method="post" onsubmit="return verify_acp_user_txn()">
-            <input type="hidden" name="do" value="transaction" />
-            <div class="section overview">
-            <div class="section section--no-border tags">
-                    <div class="layout-content">
-                        <div class="layout-content__sidebar layout-content__first">
-                            <div class="section-summary">
-                                <h1>{_account_balance_transaction}</h1>
-                                <p>Received cash or offline funds? Credit or debit a users account balance from here. </p>
-                                <p class="type--subdued">You can also create a points credit or debit transaction by changing type to "Points" instead of "Money".</p>
-                          </div>
-                        </div>
-                        <div class="layout-content__main">
-                            <div class="draw-card">
-                                <div class="draw-card__section">
-                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label class="draw-label" for="user_password"><if condition="$sheel->config['pointsystem']">{_money_or_points_amount}<else />{_amount}</if></label>
-                                                <input class="draw-input" size="30" type="text" name="form[amount]" id="user_amount" placeholder="<if condition="$sheel->config['pointsystem']">10.50 or 10 (for points)<else />10.00</if>">
-                                            </div>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label class="draw-label" for="user_password2">{_transaction_type}</label>
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[transaction_type_pulldown]}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label class="draw-label" for="user_secret_answer">{_transaction_description} <span class="type--subdued">(Only user can see)</span></label>
-                                                <input class="draw-input" size="30" type="text" name="form[transaction_description]" id="user_transaction_description" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label class="draw-label" for="user_secret_answer">{_notes} <span class="type--subdued">(Only staff can see)</span></label>
-                                                <input class="draw-input" size="30" type="text" name="form[transaction_notes]" id="user_transaction_notes" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                        <div class="draw-input-wrapper">
-                                            <button name="button" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Create Transaction</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </form>
-            <!-- create transaction -->
-            </if>
+ 
         
             <if condition="isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'update'">
-            <!-- transactions -->
-            <div class="section overview">
-            <div class="section section--no-border tags">
-                    <div class="layout-content">
-                        <div class="layout-content__sidebar layout-content__first">
-                            <div class="section-summary">
-                                <h1>{_latest_transactions}</h1>
-                                <p>View the latest transactions for this user.</p>
-                            </div>
-                        </div>
-                        <div class="layout-content__main">
-                            <div class="draw-card">
-                                <div class="draw-card__section">
-                                <div class="table-wrapper">
-                                    <table class="expanded">
-                                    <thead>
-                                    <tr>
-                                        <th width="6%">{_date}</th>
-                                        <th colspan="2">{_description}</th> 
-                                        <th width="6%" align="right" nowrap="nowrap">{_debit} {currencysymbol}</th>
-                                        <th width="6%" align="right" nowrap="nowrap">{_credit} {currencysymbol}</th>
-                                        <th width="6%" align="right" nowrap="nowrap">{_balance} {currencysymbol}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <loop name="transactions"><tr class="{class}" valign="top">
-                                        <td nowrap="nowrap" class="uc">{datepaid}</td>
-                                        <td colspan="2"><div class="pb-4">{description}</div><!--<div class="type--subdued">{staffnotes}</div>--></td> 
-                                        <td nowrap="nowrap" align="right">{debit}</td>
-                                        <td nowrap="nowrap" align="right">{credit}<!--<div class="smaller black" style="padding-top:4px">{_due}: <span class="gray">{duedate}</span></div>--></td>
-                                        <td nowrap="nowrap" align="right">{balance}<!--<div class="smaller black" style="padding-top:4px">{_paid}: <span class="gray">{paiddate}</span></div>--></td>
-                                      </tr></loop name="transactions"> 
-                                      </tbody>
-                                    </table>
-                                </div>
-                                <div class="draw-grid draw-grid--outside-padding draw-grid--inner-grid">
-                                    <div class="draw-input-wrapper">
-                                       <a href="{https_server_admin}users/update/{form[userid]}/transactions/"><button name="button" type="submit" class="btn js-btn-primary js-btn-loadable has-loading">View all transactions</button></a>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                            
-                            <if condition="$sheel->config['pointsystem']">
-                            <div class="draw-card">
-                                <div class="draw-card__section">
-                                <div class="table-wrapper">
-                                    <table class="expanded">
-                                    <thead>
-                                    <tr>
-                                        <th width="6%">{_date}</th>
-                                        <th colspan="2">{_description}</th> 
-                                        <th width="6%" align="right" nowrap="nowrap">{_debit_points}</th>
-                                        <th width="6%" align="right" nowrap="nowrap">{_credit_points}</th>
-                                        <th width="6%" align="right" nowrap="nowrap">{_balance}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <loop name="pointstransactions"><tr class="{class}" valign="top">
-                                        <td nowrap="nowrap" class="uc">{datepaid}</td>
-                                        <td colspan="2"><div class="pb-4">{description}</div></td> 
-                                        <td nowrap="nowrap" align="right">{debit}</td>
-                                        <td nowrap="nowrap" align="right">{credit}</td>
-                                        <td nowrap="nowrap" align="right">{balance}</td>
-                                      </tr></loop name="pointstransactions"> 
-                                      </tbody>
-                                    </table>
-                                </div>
-                                <div class="draw-grid draw-grid--outside-padding draw-grid--inner-grid">
-                                    <div class="draw-input-wrapper">
-                                       <a href="{https_server_admin}users/update/{form[userid]}/transactions/points/"><button name="button" type="submit" class="btn js-btn-primary js-btn-loadable has-loading">View all points transactions</button></a>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                            </if>                        
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- transactions -->
+            
             
             <!-- audit -->
             <div class="section overview">
@@ -869,7 +473,7 @@
                         <div class="layout-content__sidebar layout-content__first">
                             <div class="section-summary">
                                 <h1>Audit / Consent Log</h1>
-                                <p>View the latest audits &amp; consents this user has accepted or agreed to.  Manage <a href="{https_server_admin}marketplace/pages/">terms or privacy policy</a> to force consent.</p>
+                                <p>View the latest audits &amp; consents this user has accepted or agreed to.  Manage <a href="{https_server_admin}settings/pages/">terms or privacy policy</a> to force consent.</p>
                             </div>
                         </div>
                         <div class="layout-content__main">
@@ -900,128 +504,7 @@
                 </div>
             </div>
             <!-- audit -->
-            
-            <div class="section notes">
-                <div class="layout-content">
-                    <div class="layout-content__sidebar layout-content__first">
-                        <div class="section-summary">
-                            <h1>Shipping Address Profiles</h1>
-                            <p>View shipping address profiles setup and managed by this user.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="layout-content__main">
-                        
-                        <div class="draw-card">
-                            <div class="draw-card__section">
-                                
-                                
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="user_shippingprofiles"></label>
-                                        <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[shipping_profiles_pulldown]}
-                                        </div>
-                                    </div>
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section notes">
-                <div class="layout-content">
-                    <div class="layout-content__sidebar layout-content__first">
-                        <div class="section-summary">
-                            <h1>Billing Address Profiles</h1>
-                            <p>View billing address profiles setup and managed by this user.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="layout-content__main">
-                        
-                        <div class="draw-card">
-                            <div class="draw-card__section">
-                                
-                                
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="user_billingprofiles"></label>
-                                        <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[billing_profiles_pulldown]}
-                                        </div>
-                                    </div>
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <if condition="isset($sheel->config['save_credit_cards']) AND $sheel->config['save_credit_cards']">
-            <div class="section notes">
-                <div class="layout-content">
-                    <div class="layout-content__sidebar layout-content__first">
-                        <div class="section-summary">
-                            <h1>Credit Card Profiles</h1>
-                            <p>View credit card profiles setup and managed by this user.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="layout-content__main">
-                        
-                        <div class="draw-card">
-                            <div class="draw-card__section">
-                                
-                               
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="user_billingprofiles"></label>
-                                        <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[creditcard_profiles_pulldown]}
-                                        </div>
-                                    </div>
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             </if>
-            
-            <if condition="isset($sheel->config['enable_bank_deposit_support']) AND $sheel->config['enable_bank_deposit_support']">
-            <div class="section notes">
-                <div class="layout-content">
-                    <div class="layout-content__sidebar layout-content__first">
-                        <div class="section-summary">
-                            <h1>Bank Account Profiles</h1>
-                            <p>View bank account profiles setup and managed by this user.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="layout-content__main">
-                        
-                        <div class="draw-card">
-                            <div class="draw-card__section">
-                                
-                               
-                                    <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="user_billingprofiles"></label>
-                                        <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[bank_profiles_pulldown]}
-                                        </div>
-                                    </div>
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </if>
-            </if>
-        
             <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
             
     <else />

@@ -1,0 +1,211 @@
+<section>
+    <script>
+        Page();
+    </script>
+    <form id="send_bulk_mail" autocomplete="off" class="update_template" accept-charset="UTF-8">
+       	<input type="hidden" name="do" value="process"> 
+        
+    <div id="settings-notifications">
+    	<div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+        <span class="glyphicons glyphicons-globe draw-icon" aria-hidden="true"></span>
+        <span class="breadcrumb"><a href="{https_server_admin}users/">{_users}</a> / </span>
+        {currentarea}
+      </h1>
+      	<div class="header__primary-actions">
+            <button type="button" class="btn btn-primary js-btn-primary js-btn-loadable has-loading" bind-event-click="verify_email_bulksend()">{_send}</button>
+        </div>
+                
+      <div class="header__secondary-actions">
+            <div id="header-action-pagination" class="header-action"> </div>
+            <ul class="segmented import-export-actions">
+                <li id="export-products-modal" refresh="products">
+                     <a class="btn" bind-event-click="show_modal('', '', jQuery('#modal_export').html())">{_export}</a></li>
+                <li> </li>
+            </ul>
+        </div>
+      
+       </header>
+        </div>
+        <!--<div class="row s-none box notice header-notice header-inline has-ico plan-upsell">
+          <div class="fl notice-message">
+            <h3>Upgrade your plan to support saving bulk email campaigns</h3>
+            <p>To start saving bulk email campaigns including email tracking, upgrade to the <span class="dashed-text">Business</span> plan!</p>
+          </div>
+          <a href="{https_server_admin}settings/license/" class="btn btn-primary fr">Upgrade my plan</a>
+    	</div>-->
+        
+            <div data-modal-context-ref-for="preview_modal"></div>
+            <div class="ui-layout">
+                <div class="ui-layout__sections">
+                    <div class="ui-layout__section ui-layout__section--primary">
+                        <div class="ui-layout__item">
+                            <div class="draw-card">
+                                
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="subject">{_from}</label>
+                                        
+                                        <div style="padding-bottom:6px"><noparse><input class="draw-input" size="30" type="text" value="{config[globalserversettings_siteemail]}" name="form[from]" id="from" placeholder=""></noparse></div>
+                                        <div class="type--subdued">Based on your <a href="{https_server_admin}settings/mail/">SMTP settings</a>.  Changing this email may not work (or) may not reach 100% of users.</div>
+                                    </div>
+                                </section>
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="subject">{_email_subject}</label>
+                                        
+                                        <div style="padding-bottom:6px"><noparse><input class="draw-input" size="30" type="text" value="" name="form[subject]" id="subject"></noparse></div>
+                                        
+                                    </div>
+                                </section>
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="body">{_email_message_body}</label>
+                                       
+                                       <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea" name="form[body]" id="body_plain" style="height: 300px;"></textarea></noparse></div>
+                                       
+                                    </div>
+                                </section>
+                                <section class="draw-card__section">
+                                    <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="body_html">{_html_email_message_body} <span class="type--subdued">({_optional})</span></label>
+                                        
+                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea" name="form[body_html]" id="body_html" style="height: 300px;"></textarea></noparse></div>
+                                        
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-layout__section ui-layout__section--secondary">
+                        <div class="ui-layout__item">
+                            <div class="draw-card draw-card--aside">
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">Template variables</h2>
+                                </div>
+                                <div class="draw-card__section">
+                                    <p class="type--half-margin">You can use template {{variables}} to output different information and assets within templates. </p>
+                                    <ul class="type--half-margin">
+                                        
+                                        <li><code>{{username}}</code></li>
+                                        <li><code>{{firstname}}</code></li>
+                                        <li><code>{{lastname}}</code></li>
+                                       
+                                    </ul>
+                                    <!--<a href="https://docs.sheel.com/email-template-variables/" target="_blank" rel="noopener noreferrer">Read more about bulk email template variables</a>-->
+                                </div>
+                            </div>
+                            <div class="draw-card draw-card--aside">
+                                
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">Customer status</h2>
+                                </div>
+                                <div class="draw-card__section">
+                                    <p class="type--half-margin">Dispatch email to users that inherit a specific user status, whom accept marketing.</p>
+                                    <div class="type--half-margin">
+                                        {statuses}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-card draw-card--aside">
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">Membership plan</h2>
+                                </div>
+                                <div class="draw-card__section">
+                                    <p class="type--half-margin">Dispatch email to users based on their membership plan, whom accept marketing.</p>
+                                    <div class="type--half-margin">
+                                        {plans}
+                                    </div>
+                              </div>
+                            </div>
+                            
+                            <div class="draw-card draw-card--aside">
+                                <div class="draw-card__header">
+                                    <h2 class="draw-heading">{_test_mode}</h2>
+                                </div>
+                                <div class="draw-card__section">
+                                    <p class="type--half-margin">Send a test email to yourself.</p>
+                                    <div class="type--half-margin">
+                                        <!--<li><code>{{shop.email_logo_url}}</code></li>-->
+                                      <div class="sb"><label for="testno"><input type="radio" value="0" name="form[testmode]" id="testno" checked="checked" onclick="toggle_hide('testemailinput')"> <span class="badge badge--success">Send real email</span></label></div>
+                                      <div class="sb"><label for="testyes"><input type="radio" value="1" name="form[testmode]" id="testyes" onclick="toggle_show('testemailinput')"> <span class="badge badge--subdued">Send a test email</span></label></div>
+                                      <div style="display:none" id="testemailinput"><noparse><input class="draw-input" size="30" type="text" value="{user[email]}" name="form[testemail]" id="testemail"></noparse></div>
+                                      
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="ui-page-actions">
+                <div class="ui-page-actions__secondary">
+                   
+                </div>
+                <div class="ui-page-actions__primary">
+                    <div class="button-group button-group--right-aligned">
+                        <if condition="$sheel->show['ADMINCP_TEST_MODE']"><input type="button" value="{_send}" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })" class="btn btn-primary"><else /><input type="button" value="{_send}" class="btn btn-primary" bind-event-click="verify_email_bulksend();"></if>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+</form>
+</section>
+<!-- modals --><div id="modal_dispatch" style="display:none">
+	
+    <header>
+        <h2>Sending Bulk Email</h2>
+        <a href="javascript:;" onclick="close_modal()" class="close-modal" role="button" aria-label="{_close}">×</a>
+    </header>
+    <div class="body" id="modal_confirm_body">
+       
+       <div id="sending" class="email-is--sending"><div id="floatingCirclesG">
+            <div class="f_circleG" id="frotateG_01"></div>
+            <div class="f_circleG" id="frotateG_02"></div>
+            <div class="f_circleG" id="frotateG_03"></div>
+            <div class="f_circleG" id="frotateG_04"></div>
+            <div class="f_circleG" id="frotateG_05"></div>
+            <div class="f_circleG" id="frotateG_06"></div>
+            <div class="f_circleG" id="frotateG_07"></div>
+            <div class="f_circleG" id="frotateG_08"></div>
+        </div></div>
+       <div class="email-is--completed hide" id="completed"><div align="center">
+        	<div class="ssb"><img src="{imgcdn}v5/img_checkmark.png"></div>
+            <h2>All email sent successfully!</h2>
+        </div></div>
+        <div class="email-is--failed hide" id="failed"><div align="center">
+        	<div class="ssb"><img src="{imgcdn}v5/img_attention.png"></div>
+            <h2>There was a problem sending email.</h2>
+        </div></div>
+       
+    </div>
+    <div class="buttons">
+    	<a class="btn btn-primary close-modal" href="javascript:;" onclick="close_modal()">{_close}</a>
+    </div>
+    
+</div>
+<div id="modal_export" style="display:none">
+	<form action="{https_server_admin}users/bulkmailer/export/" method="post" onsubmit="return close_modal()">
+    <header>
+        <h2>Bulk Export Customer Email Addresses</h2>
+        <a href="javascript:;" onclick="close_modal()" class="close-modal" role="button" aria-label="{_close}">×</a>
+    </header>
+    <div class="body" id="modal_confirm_body">
+       <p class="sb">Export {emailcount} user email addresses:</p>
+       <div class="type--half-margin">
+          <div class="sb"><label for="newline"><input type="radio" value="newline" name="form[method]" id="newline" checked="checked"> New lines</label></div>
+          <div class="sb"><label for="csv"><input type="radio" value="csv" name="form[method]" id="csv"> CSV</label></div>
+        </div>
+    </div>
+    <div class="buttons">
+    	<a class="btn close-modal" href="javascript:;" onclick="close_modal()">{_cancel}</a>
+    	<button class="btn btn-primary" type="submit">{_download}</button>
+    </div>
+    </form>
+</div><!-- modals -->
+
+<div define="iLNav.setPage(['users','users_bulkmailer']), iLPage.close()"></div>

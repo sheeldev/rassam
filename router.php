@@ -46,6 +46,8 @@ $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', _
 $router->map('GET|POST', '/admin/staffs/', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs');
 $router->map('GET|POST', '/admin/staffs/[view:cmd]/[*:staffno]', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs_view');
 $router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/users.php', 'admin_users');
+$router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer_view');
+$router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer');
 $router->map('GET|POST', '/admin/users/[add|bulkmailer|bulkmailer/export|verifications|violations|audit:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_add');
 
 
@@ -60,6 +62,9 @@ $router->map('GET|POST', '/admin/[currency:cmd]/[default|defaultusers|delete:sub
 $router->map('GET|POST', '/admin/settings/emails/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates');
 $router->map('GET|POST', '/admin/settings/[emails:cmd]/[update:subcmd]/[*:varname]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_action');
 $router->map('GET|POST', '/admin/settings/[emails:cmd]/[import|export|add|save:subcmd]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_impex');
+$router->map('GET|POST', '/admin/settings/pages/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_pages');
+$router->map('GET|POST', '/admin/marketplace/[pages:cmd]/[add|add/link:subcmd]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_add_cmd');
+$router->map('GET|POST', '/admin/marketplace/[pages:cmd]/[update|update/link|delete|add|add/link:subcmd]/[*:seourl]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_cmd');
 
 if (file_exists(__DIR__ . '/router_custom.php'))
 {

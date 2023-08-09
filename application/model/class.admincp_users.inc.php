@@ -14,7 +14,7 @@ class admincp_users extends admincp
 	*
 	* @return       string          Returns HTML string of users removed separated by a comma for display purposes
 	*/
-	function remove_user($ids = array(), $removeinvoices = true, $removelistings = true, $removeescrow = true, $removebuynoworders = true, $removebids = true, $silentmode = false)
+	function remove_user($ids = array(), $silentmode = false)
 	{
 		$errors = $allerrors = $removedusers = $successids = $failedids = '';
 		$removeduserscount = 0;
@@ -50,83 +50,17 @@ class admincp_users extends admincp
 				{
 					$removedusers .= $res['username'] . ', ';
 					$removeduserscount++;
-					if ($removelistings)
-					{ // items
-						$sqlx = $this->sheel->db->query("
-							SELECT cid
-							FROM " . DB_PREFIX . "projects
-							WHERE user_id = '" . intval($userid) . "'
-								AND status = 'open'
-						", 0, null, __FILE__, __LINE__);
-						if ($this->sheel->db->num_rows($sqlx) > 0)
-						{
-							while ($resx = $this->sheel->db->fetch_array($sqlx, DB_ASSOC))
-							{
-								$this->sheel->categories->build_category_count($resx['cid'], 'subtract', "admin removing users from admincp: subtracting increment count category id " . $resx['cid']);
-							}
-						}
-						$sqly = $this->sheel->db->query("
-							SELECT project_id
-							FROM " . DB_PREFIX . "projects
-							WHERE user_id = '" . intval($userid) . "'
-						", 0, null, __FILE__, __LINE__);
-						if ($this->sheel->db->num_rows($sqly) > 0)
-						{
-							while ($resy = $this->sheel->db->fetch_array($sqly, DB_ASSOC))
-							{
-								$this->sheel->common_listing->physically_remove_listing($resy['project_id']);
-							}
-						}
-					}
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "bulk_tmp WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
+					
 					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "attachment WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
 					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "audit WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "bankaccounts WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "creditcards WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
 					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "emaillog WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "invoicelog WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "messages WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "register_answers WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "project_bid_retracts WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "project_invitations WHERE buyer_user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "project_invitations WHERE seller_user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "referral_data WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
 					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "sessions WHERE userid = '" . intval($userid) . "' AND isuser = '1'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "subscriptionlog WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "subscription_user WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "subscription_user_exempt WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
 					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "users WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "watchlist WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "watchlist WHERE watching_user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "search_users WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "search_favorites WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "sessions WHERE userid = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "feedback_ratings WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
 					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "email_optout WHERE email = '" . $this->sheel->db->escape_string($res['email']) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "shipping_profiles WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "projects_shipping_profiles WHERE userid = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					if ($removeinvoices)
-					{ // invoices
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "invoices WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "invoices WHERE p2b_user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "transactions WHERE userid = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					}
-					if ($removeescrow)
-					{ // escrow
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "escrow WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "escrow WHERE seller_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					}
-					if ($removebuynoworders)
-					{ // orders
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "buynow_orders WHERE owner_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "buynow_orders WHERE buyer_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					}
-					if ($removebids)
-					{ // bids
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "project_bids WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "project_bid_retracts WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-						$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "proxybid WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
-					}
+					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "bulk_sessions WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
+					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "bulk_tmp_measurements WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
+					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "bulk_tmp_sizes WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
+					$this->sheel->db->query("DELETE FROM " . DB_PREFIX . "bulk_tmp_staffs WHERE user_id = '" . intval($userid) . "'", 0, null, __FILE__, __LINE__);
 					$successids .= "$userid~";
 					if (!$silentmode)
 					{
@@ -147,11 +81,11 @@ class admincp_users extends admincp
 		}
 		$action = '{_removed_lc}';
 		$this->sheel->template->templateregistry['action'] = $action;
-		$actionplural = (($removeduserscount == 1) ? '{_customer_lc}' : '{_customers_lc}');
+		$actionplural = (($removeduserscount == 1) ? '{_users_lc}' : '{_users_lc}');
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $removeduserscount . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($removeduserscount > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($removeduserscount > 0) ? 'Customers removed successfully' : 'Failure removing customers'), (($removeduserscount > 0) ? $this->sheel->template->parse_template_phrases('success') : $allerrors));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($removeduserscount > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($removeduserscount > 0) ? 'User(s) removed successfully' : 'Failure removing user(s)'), (($removeduserscount > 0) ? $this->sheel->template->parse_template_phrases('success') : $allerrors));
 		return array('success' => (($removeduserscount > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => $allerrors, 'successids' => $successids, 'failedids' => $failedids);
 	}
 	/**
@@ -214,12 +148,12 @@ class admincp_users extends admincp
 		}
 		$action = '{_suspended_lc}';
 		$this->sheel->template->templateregistry['action'] = $action;
-		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_customers_were_selected_for_removal_please_try_again}' : '');
-		$actionplural = (($count == 1) ? '{_customer_lc}' : '{_customers_lc}');
+		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_users_were_selected_for_removal_please_try_again}' : '');
+		$actionplural = (($count == 1) ? '{_users_lc}' : '{_users_lc}');
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Customers suspended successfully' : 'Failure suspending customers'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'User(s) suspended successfully' : 'Failure suspending user(s)'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
 		return array('success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => (($count <= 0) ? $this->sheel->template->parse_template_phrases('errors') : ''), 'successids' => $successids, 'failedids' => $failedids);
 	}
 	/**
@@ -282,22 +216,15 @@ class admincp_users extends admincp
 		}
 		$action = '{_unsuspended_lc}';
 		$this->sheel->template->templateregistry['action'] = $action;
-		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_customers_were_selected_for_removal_please_try_again}' : '');
+		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_users_were_selected_for_removal_please_try_again}' : '');
 		$actionplural = (($count == 1) ? '{_customer_lc}' : '{_customers_lc}');
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Customers unsuspended successfully' : 'Failure unsuspending customers'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Users unsuspended successfully' : 'Failure unsuspending users'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
 		return array('success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => (($count <= 0) ? $this->sheel->template->parse_template_phrases('errors') : ''), 'successids' => $successids, 'failedids' => $failedids);
 	}
-	/**
-	* Function to activate single or multiple users from the marketplace
-	*
-	* @param	array	        array with user ids flagged for activation
-	* @param        boolean         decide if sign-up bonus should be paid to customer (default false)
-	*
-	* @return       string          Returns HTML string of users activated separated by a comma for display purposes
-	*/
+
 	function activate_user($ids = array(), $givesignupbonus = false)
 	{
 		$activatedusers = $successids = $failedids = '';
@@ -382,12 +309,12 @@ class admincp_users extends admincp
 		}
 		$action = '{_activated_lc}';
 		$this->sheel->template->templateregistry['action'] = $action;
-		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_customers_were_selected_for_removal_please_try_again}' : '');
-		$actionplural = (($count == 1) ? '{_customer_lc}' : '{_customers_lc}');
+		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_users_were_selected_for_removal_please_try_again}' : '');
+		$actionplural = (($count == 1) ? '{_users_lc}' : '{_users_lc}');
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Customers activated successfully' : 'Failure activating customers'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Users activated successfully' : 'Failure activating users'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
 		return array('success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => (($count <= 0) ? $this->sheel->template->parse_template_phrases('errors') : ''), 'successids' => $successids, 'failedids' => $failedids);
 	}
 	/**
@@ -449,12 +376,12 @@ class admincp_users extends admincp
 		}
 		$action = '{_banned_lc}';
 		$this->sheel->template->templateregistry['action'] = $action;
-		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_customers_were_selected_for_removal_please_try_again}' : '');
-		$actionplural = (($count == 1) ? '{_customer_lc}' : '{_customers_lc}');
+		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_users_were_selected_for_removal_please_try_again}' : '');
+		$actionplural = (($count == 1) ? '{_users_lc}' : '{_users_lc}');
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Customers banned successfully' : 'Failure banning customers'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Users banned successfully' : 'Failure banning users'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
 		return array('success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => (($count <= 0) ? $this->sheel->template->parse_template_phrases('errors') : ''), 'successids' => $successids, 'failedids' => $failedids);
 	}
 	/**
@@ -516,12 +443,12 @@ class admincp_users extends admincp
 		}
 		$action = '{_unbanned_lc}';
 		$this->sheel->template->templateregistry['action'] = $action;
-		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_customers_were_selected_for_removal_please_try_again}' : '');
-		$actionplural = (($count == 1) ? '{_customer_lc}' : '{_customers_lc}');
+		$this->sheel->template->templateregistry['errors'] = (($count <= 0) ? '{_no_users_were_selected_for_removal_please_try_again}' : '');
+		$actionplural = (($count == 1) ? '{_users_lc}' : '{_users_lc}');
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Customers unbanned successfully' : 'Failure unbanning customers'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($count > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($count > 0) ? 'Users unbanned successfully' : 'Failure unbanning users'), (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : $this->sheel->template->parse_template_phrases('errors')));
 		return array('success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => (($count <= 0) ? $this->sheel->template->parse_template_phrases('errors') : ''), 'successids' => $successids, 'failedids' => $failedids);
 	}
 
@@ -566,7 +493,7 @@ class admincp_users extends admincp
 		", 0, null, __FILE__, __LINE__);
 		unset($unh);
 		$user_id = $this->sheel->db->insert_id();
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'Customer created successfully', "A new customer '$first $last' was created successfully.");
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), 'User created successfully', "A new user '$first $last' was created successfully.");
 		return $user_id;
 	}
 	/**
@@ -599,7 +526,7 @@ class admincp_users extends admincp
 		$this->sheel->template->templateregistry['actionplural'] = $actionplural;
 		$success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $rejecteduserscount . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
 		$this->sheel->template->templateregistry['success'] = $success;
-		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($rejecteduserscount > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($rejecteduserscount > 0) ? 'Customer deletion requests rejected successfully' : 'Failure rejecting customer deletion requests'), (($rejecteduserscount > 0) ? $this->sheel->template->parse_template_phrases('success') : $allerrors));
+		$this->sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), (($rejecteduserscount > 0) ? 'success' : 'failure') . "\n" . $this->sheel->array2string($this->sheel->GPC), (($rejecteduserscount > 0) ? 'User deletion requests rejected successfully' : 'Failure rejecting user deletion requests'), (($rejecteduserscount > 0) ? $this->sheel->template->parse_template_phrases('success') : $allerrors));
 		return array('success' => (($rejecteduserscount > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => $allerrors, 'successids' => $successids, 'failedids' => $failedids);
 	}
 	/**
