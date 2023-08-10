@@ -337,7 +337,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$sheel->template->fetch('main', 'settings.html', 1);
 		$areanav = 'settings_currency';
 		$currentarea = '{_currency}';
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'currency/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_currency_manager}</button></a></p>';
+		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/currencymanager/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_currency_manager}</button></a></p>';
 		$settings = $sheel->admincp->construct_admin_input('globalserverlocalecurrency', HTTPS_SERVER_ADMIN . 'settings/currency/', '', $buttons);
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'invoice') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Invoice &amp; Transactions';
@@ -795,79 +795,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$areanav = 'settings_session';
 		$currentarea = '{_session}';
 		$settings = $sheel->admincp->construct_admin_input('globalserversession', HTTPS_SERVER_ADMIN . 'settings/session/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'license') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; License';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; License';
-		$sheel->template->fetch('main', 'settings_license.html', 1);
-		$areanav = 'settings_license';
-		$currentarea = '{_license}';
-		$license['title'] = $sheel->config['license_tier'] . ' (' . $sheel->config['license_type'] . ')';
-		$license['status'] = (($sheel->show['EXPIRED_LICENSE']) ? '{_expired}' : '{_active}');
-		if ($sheel->config['license_suspended']) {
-			$license['status'] = '<span class="type--danger">{_suspended}</span>';
-		}
-		if ($sheel->config['license_payment_in_process']) {
-			$license['status'] = 'Processing Payment';
-		}
-		$license['expiredate'] = $sheel->common->print_date($sheel->config['license_expiry'], 'F j, Y', 0, 0);
-		$license['licensekey'] = LICENSEKEY;
-		$license['platformtype'] = '{_' . $sheel->config['platform_type'] . '}';
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'license/renewal') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; License';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; License';
-		$sheel->template->fetch('main', 'settings_license_renewal.html', 1);
-		$areanav = 'settings_license_renewal';
-		$currentarea = '{_license_renewal}';
-		$license['title'] = $sheel->config['license_tier'] . ' (' . $sheel->config['license_type'] . ')';
-		$license['status'] = (($sheel->show['EXPIRED_LICENSE']) ? '{_expired}' : '{_active}');
-		$license['expiredate'] = $sheel->common->print_date($sheel->config['license_expiry'], 'F j, Y', 0, 0);
-		$license['licensekey'] = LICENSEKEY;
-		$license['platformtype'] = '{_' . $sheel->config['platform_type'] . '}';
-		$license['tier'] = strtolower($sheel->config['license_tier']);
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'billing/create') { // trial user create new billing cycle
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; License';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; License';
-		$sheel->template->fetch('main', 'settings_license_billing_update.html', 1);
-		$areanav = 'settings_license_renewal';
-		$currentarea = 'Billing Creation';
-		$form['license'] = ((isset($sheel->GPC['license']) and !empty($sheel->GPC['license'])) ? $sheel->GPC['license'] : '1GB');
-		$form['platform'] = ((isset($sheel->GPC['platform']) and !empty($sheel->GPC['platform'])) ? $sheel->GPC['platform'] : 'singleseller');
-		$license['licensekey'] = LICENSEKEY;
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'billing/update') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; License';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; License';
-		$sheel->template->fetch('main', 'settings_license_billing_update.html', 1);
-		$areanav = 'settings_license_renewal';
-		$currentarea = 'Billing Update';
-		$form['license'] = ((isset($sheel->GPC['license']) and !empty($sheel->GPC['license'])) ? $sheel->GPC['license'] : '1GB');
-		$form['platform'] = ((isset($sheel->GPC['platform']) and !empty($sheel->GPC['platform'])) ? $sheel->GPC['platform'] : 'singleseller');
-		$form['profileid'] = ((isset($sheel->GPC['profileid']) and !empty($sheel->GPC['profileid'])) ? $sheel->GPC['profileid'] : '');
-		$license['licensekey'] = LICENSEKEY;
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'license/plans') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; License';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; License';
-		$sheel->template->fetch('main', 'settings_license_plans.html', 1);
-		$areanav = 'settings_license_plans';
-		$currentarea = 'Choose a plan';
-		$license['title'] = $sheel->config['license_tier'] . ' (' . $sheel->config['license_type'] . ')';
-		$license['status'] = (($sheel->show['EXPIRED_LICENSE']) ? '{_expired}' : '{_active}');
-		$license['expiredate'] = $sheel->common->print_date($sheel->config['license_expiry'], 'F j, Y', 0, 0);
-		$license['licensekey'] = LICENSEKEY;
-		$license['platformtype'] = '{_' . $sheel->config['platform_type'] . '}';
-		$form['profileid'] = ((isset($sheel->GPC['profileid']) and !empty($sheel->GPC['profileid'])) ? $sheel->GPC['profileid'] : '');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'updates') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Updates';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Updates';
-		$sheel->template->meta['jsinclude']['footer'][] = 'admin_updates';
-		$sheel->template->fetch('main', 'settings_updates.html', 1);
-		$areanav = 'settings_updates';
-		$currentarea = '{_updates}';
-		$form['latestversion'] = $sheel->latest_version($sheel->config['versionsurl'] . '/sheel/');
-		$form['lastupdate'] = ((empty($sheel->config['last_automatic_update'])) ? '{_never}' : $sheel->common->print_date($sheel->config['last_automatic_update'], 'l F j, Y g:i A', 0, 0));
-		$form['lastbackup'] = ((empty($sheel->config['last_automatic_backup'])) ? '{_never}' : $sheel->common->print_date($sheel->config['last_automatic_backup'], 'l F j, Y g:i A', 0, 0));
-		$form['lastupdateattempt'] = ((empty($sheel->config['last_automatic_update_attempt'])) ? '{_never}' : $sheel->common->print_date($sheel->config['last_automatic_update_attempt'], 'l F j, Y g:i A', 0, 0));
-		$form['lastupdateresponse'] = ((empty($sheel->config['last_automatic_update_response'])) ? '{_not_available}' : o($sheel->config['last_automatic_update_response']));
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'serverinfo') {
+	}  else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'serverinfo') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Server Info';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Server Info';
 		$sheel->template->fetch('main', 'settings_serverinfo.html', 1);

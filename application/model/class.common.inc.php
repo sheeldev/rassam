@@ -1310,7 +1310,7 @@ class common
 					AND device = '" . $this->sheel->db->escape_string($device) . "'
 				LIMIT 1
 			", 0, null, __FILE__, __LINE__);
-			
+
 			if ($this->sheel->db->num_rows($sql) > 0) {
 				$res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 				if ($res['pageviews'] <= 100) {
@@ -2394,6 +2394,8 @@ class common
 				// default shipping & billing profile
 				$userinfo['shipprofileid'] = $this->sheel->shipping->fetch_default_ship_profileid($userinfo['user_id']);
 				$userinfo['billprofileid'] = $this->sheel->shipping->fetch_default_bill_profileid($userinfo['user_id']);
+				$customer = $this->sheel->customers->get_customer_details($userinfo['customerid']);
+				$userinfo['subscriptionid'] = $customer['subscriptionid'];
 				$csrf = $this->sheel->sessions->build_user_session($userinfo, false, true, $forcebuildsession, $rememberuser, $ismobile, $devicetoken);
 				$this->sheel->log_event($userinfo['user_id'], basename(__FILE__), "success\n" . $this->sheel->array2string($this->sheel->GPC), $userinfo['username'] . ' just signed in (XMLRPC)', $userinfo['username'] . ' just signed into the marketplace (XMLRPC).');
 				return $csrf;
@@ -2463,13 +2465,13 @@ class common
 						if (basename($file) == 'images') {
 							// loop through images folder
 							/*$valid_imgfiles = $this->get_files($file);
-							if (count($valid_imgfiles))
-							{
-							foreach ($valid_imgfiles AS $imgfile)
-							{
-							$zip->addFile($imgfile, basename($imgfile) . '/' . basename($imgfile));
-							}
-							}*/
+												 if (count($valid_imgfiles))
+												 {
+												 foreach ($valid_imgfiles AS $imgfile)
+												 {
+												 $zip->addFile($imgfile, basename($imgfile) . '/' . basename($imgfile));
+												 }
+												 }*/
 						} else {
 							$zip->addFile($file . '/data.xml', basename($file) . '/' . basename($file) . '.xml');
 						}
@@ -2789,6 +2791,60 @@ class common
 				}
 		}
 		return $data;
+	}
+
+	function print_wysiwyg_editor($fieldname = '', $text = '', $instanceid = '1', $enablewysiwyg = 1, $showswitchmode = 1, $ishtml = false, $width = '595', $height = '250', $js = '', $type = 'textarea', $toolbar = '', $tabindex = 2, $mime = 'text/html')
+	{
+		$html = '';
+		$slng = ((isset($_SESSION['sheeldata']['user']['slng'])) ? $_SESSION['sheeldata']['user']['slng'] : $this->sheel->language->fetch_site_slng());
+		$slng = mb_substr($slng, 0, 2);
+		$inadmincp = ((defined('LOCATION') and LOCATION == 'admin' and isset($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) ? true : false);
+		$canposthtml = ((isset($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) ? $this->sheel->permissions->can_post_html($_SESSION['sheeldata']['user']['userid']) : 0);
+		$subscriptionid = ((isset($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and isset($_SESSION['sheeldata']['user']['subscriptionid']) and $_SESSION['sheeldata']['user']['subscriptionid'] > 0) ? $_SESSION['sheeldata']['user']['subscriptionid'] : 0);
+		if ($type == 'textarea' or $enablewysiwyg <= 0) {
+			$this->sheel->template->meta['headinclude'] .= '<script data-turbolinks-track="true" type="text/javascript">var activeeditor = \'textarea\';</script>';
+			$html = '<textarea name="' . $fieldname . '" id="' . $fieldname . '_id" tabindex="' . $tabindex . '" class="textarea input w-100pct requiredfield" style="height:' . $height . 'px">' . htmlentities($text, ENT_QUOTES, "UTF-8") . '</textarea><div class="pt-3 smaller litegray right">5,000 {_characters_max}&nbsp;&nbsp;&middot;&nbsp;&nbsp;{_html_is} ' . (($canposthtml) ? '{_enabled_lc}' : '{_disabled_lc}') . '</div>';
+		} else if ($type == 'codemirror') {
+			$this->load_codemirror_js();
+			$html = '<noparse><textarea name="' . $fieldname . '" id="' . $fieldname . '_id" tabindex="' . $tabindex . '">' . htmlentities($text, ENT_QUOTES, "UTF-8") . '</textarea></noparse>';
+			$html .= '<script>var editor = CodeMirror.fromTextArea(fetch_js_object(\'' . $fieldname . '_id\'),{mode: "' . $mime . '",' . (($mime == 'css') ? 'colorpicker: {mode : "edit"},' : '') . 'lineNumbers: true,lineWrapping: false,extraKeys: {"Ctrl-Q": function(cm, event){cm.foldCode(cm.getCursor());},"Ctrl-K": function(cm, event){cm.state.colorpicker.popup_color_picker();}},foldGutter: true,gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]});editor.setOption(\'id\', \'' . $instanceid . '\');editor.on("change", editor_onchange);</script>';
+		} else if ($type == 'froala') {
+			$extracode = $this->sheel->permissions->check_access(0, 'posthtml_froala_tags', $subscriptionid);
+			if (empty($extracode) or $extracode == '') {
+				$extracode = "htmlAllowedTags: ['.*'], htmlRemoveTags: []";
+			}
+			$toolbar_options = "toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', " . (($inadmincp) ? "'insertImage', " : '') . "'inlineStyle', 'paragraphStyle', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'help', 'html', '|', 'undo', 'redo'], ";
+			$this->sheel->template->meta['headinclude'] .= '<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['jscdn'] . 'vendor/froala/css/froala_editor.pkgd.min.css" type="text/css" />
+<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['jscdn'] . 'vendor/froala/css/froala_style.min.css" type="text/css" />
+<link data-turbolinks-track="true" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.css">
+<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['jscdn'] . 'vendor/froala/css/plugins/code_view.min.css">
+<script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/froala/js/froala_editor.pkgd.min.js"></script>
+<script type="text/javascript" data-turbolinks-track="true" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.js"></script>
+<script type="text/javascript" data-turbolinks-track="true" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/mode/xml/xml.min.js"></script>
+<script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/froala/js/plugins/code_view.min.js"></script>
+<script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/froala/js/third_party/image_aviary.min.js"></script>
+<script type="text/javascript">jQuery(function() {$(\'#' . $fieldname . '_id\').froalaEditor({' . ((!empty($extracode)) ? $extracode . ", " : "") . 'inlineMode: false, ' . $toolbar_options . 'height: ' . $height . ', ' . (($inadmincp) ? "imageUploadURL: '" . HTTPS_SERVER . "ajax?do=wysiwygupload', imageUploadParams: {id: 'wysiwygupload'}, imageUploadRemoteUrls: true, imageUpload: true, imageMaxSize: 3 * 1024 * 1024, imageAllowedTypes: ['jpeg', 'jpg', 'png'], imageManagerDeleteURL: '" . HTTPS_SERVER . "ajax?do=wysiwygdelete', imageManagerDeleteMethod: 'POST', imageManagerLoadMethod: 'POST', imageManagerLoadParams: {userid: " . $_SESSION['sheeldata']['user']['userid'] . "}, imageManagerLoadURL: '" . HTTPS_SERVER . "ajax?do=wysiwygmanage', imageManagerPageSize: 12, imageManagerDeleteParams: {userid: " . $_SESSION['sheeldata']['user']['userid'] . "}, " : "imageUploadRemoteUrls: true, imageUpload: false, ") . 'codeMirrorOptions: {indentWithTabs: true,lineNumbers: true,lineWrapping: true,mode: \'text/html\',tabMode: \'indent\',tabSize: 4}});})' . (($inadmincp) ? ".on('froalaEditor.image.uploaded', function (e, editor, response) {});" : "") . ';var activeeditor = \'froala\';</script>';
+			$html = '<noparse><textarea name="' . $fieldname . '" id="' . $fieldname . '_id" tabindex="' . $tabindex . '" class="textarea input w-100pct requiredfield">' . htmlentities($text, ENT_QUOTES, "UTF-8") . '</textarea></noparse><div class="froala-view hide"></div><div class="pt-5 smaller litegray right' . (($inadmincp) ? ' hide' : '') . '">5,000 {_characters_max}&nbsp;&nbsp;&middot;&nbsp;&nbsp;{_html_is} ' . (($canposthtml) ? '{_enabled_lc}' : '{_disabled_lc}') . '</div>';
+		} else if ($type == 'ckeditor') {
+			$this->sheel->template->meta['jsinclude']['header'][] = 'vendor/ckeditor';
+			$extracode = $this->sheel->permissions->check_access(0, 'posthtml_ckeditor_tags', $subscriptionid);
+			if (empty($extracode) or $extracode == '') {
+				$extracode = "allowedContent: {script: true, div: true, $1: {elements: CKEDITOR.dtd, attributes: true, styles: true, classes: true}}";
+			}
+			$config = "language: '$slng', enterMode: CKEDITOR.ENTER_BR, shiftEnterMode: CKEDITOR.ENTER_P, " . ((!empty($this->sheel->config['wysiwyg_toolbar'])) ? "toolbar: [" . $this->remove_newline($this->sheel->config['wysiwyg_toolbar']) . "]," : '') . " width: 'auto', height: 'auto'";
+			$config .= ((!empty($extracode)) ? ", " . $extracode : "");
+			$this->sheel->template->meta['footinclude'] .= '<script type="text/javascript">var editor = CKEDITOR.replace(\'' . $fieldname . '_id\'' . (!empty($config) ? ', {' . $config . '}' : '') . ');var activeeditor = \'ckeditor\';</script>';
+			$html = '<noparse><textarea name="' . $fieldname . '" id="' . $fieldname . '_id" tabindex="' . $tabindex . '" class="textarea input w-100pct requiredfield">' . htmlentities($text, ENT_QUOTES, "UTF-8") . '</textarea></noparse><div class="pt-5 smaller litegray right">5,000 {_characters_max}&nbsp;&nbsp;&middot;&nbsp;&nbsp;{_html_is} ' . (($canposthtml) ? '{_enabled_lc}' : '{_disabled_lc}') . '</div>';
+		}
+
+
+
+		return $html;
+	}
+	function load_codemirror_js()
+	{
+		$this->ilance->template->meta['headinclude'] .= ((!$this->codemirror_loaded) ? '<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/codemirror' . (($this->ilance->config['globalfilters_jsminify']) ? '.min.css' : '.css') . '"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/dialog/dialog.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/search/matchesonscrollbar.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/fold/foldgutter.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/colorpicker/colorpicker.css"><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/codemirror' . (($this->ilance->config['globalfilters_jsminify']) ? '.min.js' : '.js') . '"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/foldcode.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/foldgutter.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/brace-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/xml-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/indent-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/markdown-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/comment-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/dialog/dialog.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/searchcursor.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/search.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/scroll/annotatescrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/matchesonscrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/jump-to-line.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorpicker.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorview.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/javascript/javascript.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/xml/xml.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/css/css.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/php/php.js"></script><script>function editor_onchange(editor, editorchangeobj){console.log("content changed for " + editor.getOption(\'id\'));var filename = jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html();filename = filename.replace(\'*\', \'\');jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html(filename + \'*\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'btn-disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'is--disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).addClass(\'btn-primary\');}</script><style>.CodeMirror{height:545px}</style>' : '');
+		$this->codemirror_loaded = true;
 	}
 }
 ?>

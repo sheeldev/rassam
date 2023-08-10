@@ -124,6 +124,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			");
 			if ($sheel->db->num_rows($sql) > 0) {
 				$userinfo = $sheel->db->fetch_array($sql, DB_ASSOC);
+				$customer = $sheel->customers->get_customer_details($userinfo['customerid']);
+				$userinfo['subscriptionid'] = $customer['subscriptionid'];
 				$sheel->sessions->build_user_session($userinfo);
 				$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Users account switched into', 'A staff person has successfully switched into a users account successfully.');
 				refresh(HTTPS_SERVER . '?note=sw:ac');

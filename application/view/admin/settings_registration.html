@@ -1,0 +1,127 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="settings-registration" class="page">
+        
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+                </h1> 
+            </header>
+        </div>
+       
+        <form autocomplete="off" action="{https_server_admin}settings/globalupdate/" accept-charset="UTF-8" method="post">
+        <input type="hidden" name="subcmd" value="_update-config-settings" />
+        <input type="hidden" name="return" value="{pageurl_urlencoded}" />
+        {settings}
+        {upsell}
+        {api}
+        {ldap}
+            
+        <div class="section">
+            <div class="draw-grid draw-grid--right-aligned">
+                <div class="draw-grid__cell draw-grid__cell--no-flex">
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                </div>
+            </div>
+        </div>
+        </form>
+        
+        <div class="section customer-accounts" id="settings-customer-accounts">
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>LDAP Authentication Log</h1>
+                    <p>Each time a customer attempts to login that information will be presented in realtime.</p>
+                </div>
+            </div>
+            <div class="layout-content__main">
+                <div class="draw-card">
+                    <div class="section-content">
+                        <div class="draw-card__section">
+                            <div define="">
+                                <div>
+                                    <textarea expanding="true" class="draw-textarea log" name="form[log]" id="log"></textarea>
+                                </div>
+                                <!--<div id="scrollLock" class="st"> <button type="button" class="btn disableScrollLock js-btn-loadable has-loading btn-primary">Disable Scroll Lock</button> <button type="button" class="btn enableScrollLock js-btn-loadable has-loading btn-primary" style="display:none">Enable Scroll Lock</button></div>-->
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    var $xhr;
+    if ($xhr != null){ 
+        $xhr.abort();
+        $xhr = null;
+    }
+    function waitForMsg()
+    {
+        $xhr = $.ajax({
+        type: "GET",
+        url: iL['AJAXURL'] + '?do=ldaplog',
+        async: true,
+        cache: false,
+        success: function(data){
+                var json=eval('(' + data + ')');
+                if (json['log'] != '') {
+                    $("#log").empty();
+                    $("#log").append(json['log']);
+                }
+                var $textarea = $("#log");
+                $textarea.scrollTop($textarea[0].scrollHeight);
+                setTimeout("waitForMsg()", 15000);
+        },
+        error: function(XMLHttpRequest,textStatus,errorThrown) {
+            setTimeout("waitForMsg()", 15000);
+        }});
+    }
+    $(document).ready(function()
+    {
+        waitForMsg();
+        var $textarea = $("#log");
+        $textarea.scrollTop($textarea[0].scrollHeight);
+    });
+    </script>
+        
+    </div>
+    </section>
+    <!-- modals for this section -->
+    <div id="modal_ldap" class="hide">
+        <div id="complete_update">
+            <header>
+                <h2 id="ModalTitle">Testing your LDAP settings</h2>
+                <a href="javascript:;" onclick="close_modal()" class="close-modal" role="button" aria-label="Close dialog">×</a>
+            </header>
+            
+            <div class="body" id="processingupdate">
+            
+                <div id="floatingCirclesG">
+                    <div class="f_circleG" id="frotateG_01"></div>
+                    <div class="f_circleG" id="frotateG_02"></div>
+                    <div class="f_circleG" id="frotateG_03"></div>
+                    <div class="f_circleG" id="frotateG_04"></div>
+                    <div class="f_circleG" id="frotateG_05"></div>
+                    <div class="f_circleG" id="frotateG_06"></div>
+                    <div class="f_circleG" id="frotateG_07"></div>
+                    <div class="f_circleG" id="frotateG_08"></div>
+                </div>
+              
+            </div>
+            
+          
+        </div>
+        <div class="buttons">
+            <a class="btn btn-primary close-modal" href="javascript:;" onclick="close_modal();">{_close}</a>
+            
+          </div>
+    </div>
+    <!-- modals for this section -->
+    
+    <div define="iLNav.setPage(['settings','settings_registration']), iLPage.close()"></div>

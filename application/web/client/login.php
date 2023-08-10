@@ -105,7 +105,8 @@ if (isset($sheel->GPC['login_process']) and $sheel->GPC['login_process'] > 0) { 
 				// default shipping & billing profile
 				$userinfo['shipprofileid'] = $sheel->user->fetch_default_ship_profileid($userinfo['user_id']);
 				$userinfo['billprofileid'] = $sheel->user->fetch_default_bill_profileid($userinfo['user_id']);
-
+				$customer = $sheel->customers->get_customer_details($userinfo['customerid']);
+				$userinfo['subscriptionid'] = $customer['subscriptionid'];
 				// create valid user session
 				$sheel->sessions->build_user_session($userinfo);
 				if (isset($sheel->GPC['remember']) and $sheel->GPC['remember']) { // user has chosen the system to remember them for 24 hours

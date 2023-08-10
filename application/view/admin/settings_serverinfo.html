@@ -1,0 +1,326 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="settings-general" class="page">
+        
+            <div class="header-row">
+                <header class="header">
+                    <h1 class="header__main">
+                        <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                        <span class="breadcrumb"><a href="settings/general/">Settings</a> / </span>
+                        {currentarea}
+                    </h1>
+                    
+                </header>
+            </div>
+            
+            <div class="section">
+            
+                <div class="layout-content">
+                
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>CPU.</h1>
+                            <p>Learn information about this server's central processing unit.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        
+                            <div class="draw-card draw-card--primary">
+                                <section class="draw-card__section">
+                                   <table class="expanded st">
+                                    
+                                    <tbody>
+                                        
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">CPU</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[cpu]}</span>%</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">CPU Model</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[cpu_model]}</span></div>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                </section>
+                            </div>
+                    </div>
+                    
+                                    
+                  </div>
+                  
+                  <div class="layout-content">
+                
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Memory.</h1>
+                            <p>Learn how much memory is installed, available and in use.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        
+                            <div class="draw-card draw-card--primary">
+                                <section class="draw-card__section">
+                                   <table class="expanded st">
+                                    
+                                    <tbody>
+                                        
+                                        
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Memory %</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[mem_percent]}%</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Memory Total</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[mem_total]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Memory Free</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[mem_free]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Memory Used</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[mem_used]}</span></div>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                </section>
+                            </div>
+                    </div>
+                    
+                                    
+                  </div>
+                  
+                  <div class="layout-content">
+                
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>HDD.</h1>
+                            <p>Learn how much free space is available and in use.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        
+                            <div class="draw-card draw-card--primary">
+                                <section class="draw-card__section">
+                                   <table class="expanded st">
+                                    
+                                    <tbody>
+                                        
+                                        
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">HDD Free</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[hdd_free]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">HDD Used</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[hdd_used]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">HDD %</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{hardware[hdd_percent]}%</span></div>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                </section>
+                            </div>
+                    </div>
+                    
+                                    
+                  </div>
+                  
+                  
+                  
+            </div>
+            
+            <div class="section">
+            
+                <div class="layout-content">
+                
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Software.</h1>
+                            <p>Learn more about the software technology stack powering your marketplace application.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        
+                            <div class="draw-card draw-card--primary">
+                                <section class="draw-card__section">
+                                    <table class="expanded st">
+                                    
+                                    <tbody>
+                                        
+                                        
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">System</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[System]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable no-wrap"><a class="value">Web Server</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[webserver]}</span></div>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Server API</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[serverapi]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">PHP</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[0]}</span></div>
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Database</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[database]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;" valign="top">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable no-wrap"><a class="value">PHP Extensions</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content">
+                                                    <span class="value">{software[extensions]}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                </section>
+                            </div>
+                    </div>
+                    
+                                    
+                  </div>
+                  
+            </div>
+            
+            <div class="section">
+            
+                <div class="layout-content">
+                
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Application.</h1>
+                            <p>Learn more about the software application itself.</p>
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        
+                            <div class="draw-card draw-card--primary">
+                                <section class="draw-card__section">
+                                    <table class="expanded st">
+                                    
+                                    <tbody>
+                                        
+                                        
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Name</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{site_name}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Version</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[current_version]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Build</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[current_build]}</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr class="data-row" style="opacity: 1;">
+                                            <td class="reports-property">
+                                                <div class="reports-property-content--drillable"><a class="value">Database Schema</a></div>
+                                            </td>
+                                            <td class="reports-measure">
+                                                <div class="reports-measure-content"><span class="value">{software[current_sql_version]}</span></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </section>
+                            </div>
+                    </div>
+                    
+                                    
+                  </div>
+                  
+            </div>
+            
+            
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>
+    

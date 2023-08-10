@@ -19,6 +19,7 @@ require_once(__DIR__ . '/application/model/class.router.inc.php');
 $router = new router();
 $router->setBasePath(''); // <-- SUB_FOLDER
 
+$router->map('GET|POST', '/rpc/', __DIR__ . '/application/web/client/rpc.php', 'rpc');
 $router->map('GET',      '/', __DIR__ . '/application/web/client/main.php', 'main');
 $router->map('GET',      '/javascript/', __DIR__ . '/application/web/client/javascript.php', 'javascript');
 $router->map('GET|POST', '/signin/', __DIR__ . '/application/web/client/login.php', 'login');
@@ -52,20 +53,22 @@ $router->map('GET|POST', '/admin/users/[add|bulkmailer|bulkmailer/export|verific
 
 
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
-$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|invoice|payment|registration|escrow|feedback|shipping|listings|bidding|pmb|privacy|censor|blacklist|categories|seo|search|security|distance|cache|session|attachments|license|license/plans|license/renewal|billing/update|billing/create|billing/cancel|updates|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
+$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|registration|security|distance|cache|session|attachments|diagnosis|serverinfo|:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
 $router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
-$router->map('GET|POST', '/admin/[currency:cmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_cmd');
-$router->map('POST',     '/admin/[currency:cmd]/[save:subcmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_save');
-$router->map('GET|POST', '/admin/[currency:cmd]/[default|defaultusers|delete:subcmd]/[*:currencyid]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_defaults');
+$router->map('GET|POST', '/admin/settings/[currencymanager:cmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_cmd');
+$router->map('POST',     '/admin/settings/[currencymanager:cmd]/[save:subcmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_save');
+$router->map('GET|POST', '/admin/settings/[currencymanager:cmd]/[default|defaultusers|delete:subcmd]/[*:currencyid]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_defaults');
+
+
 $router->map('GET|POST', '/admin/settings/emails/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates');
 $router->map('GET|POST', '/admin/settings/[emails:cmd]/[update:subcmd]/[*:varname]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_action');
 $router->map('GET|POST', '/admin/settings/[emails:cmd]/[import|export|add|save:subcmd]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_impex');
-$router->map('GET|POST', '/admin/settings/pages/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_pages');
-$router->map('GET|POST', '/admin/marketplace/[pages:cmd]/[add|add/link:subcmd]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_add_cmd');
-$router->map('GET|POST', '/admin/marketplace/[pages:cmd]/[update|update/link|delete|add|add/link:subcmd]/[*:seourl]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_cmd');
-
+$router->map('GET|POST', '/admin/settings/pages/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages');
+$router->map('GET|POST', '/admin/settings/[pages:cmd]/[add|add/link:subcmd]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_add_cmd');
+$router->map('GET|POST', '/admin/settings/[pages:cmd]/[update|update/link|delete:subcmd]/[*:seourl]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_cmd');
+$router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');
 if (file_exists(__DIR__ . '/router_custom.php'))
 {
 	require_once(__DIR__ . '/router_custom.php');

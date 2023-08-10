@@ -40,7 +40,7 @@ class admincp_importexport extends admincp
 						$result = $this->sheel->xml->process_email_xml($data, $xml_encoding);
 						if ($result['ilversion'] != $this->sheel->config['ilversion'] and $noversioncheck == 0) {
 							if ($slientmode == false) {
-								$this->print_action_failed('{_the_version_of_the_this_email_package_is_different_than} <strong>' . $this->sheel->config['ilversion'] . '</strong>.  {_the_operation_has_aborted_due_to_a_version_conflict}', HTTPS_SERVER_ADMIN . 'marketplace/emails/');
+								$this->print_action_failed('{_the_version_of_the_this_email_package_is_different_than} <strong>' . $this->sheel->config['ilversion'] . '</strong>.  {_the_operation_has_aborted_due_to_a_version_conflict}', HTTPS_SERVER_ADMIN . 'settings/emails/');
 								exit();
 							} else {
 								return false;
@@ -54,7 +54,7 @@ class admincp_importexport extends admincp
 					", 0, null, __FILE__, __LINE__);
 						if ($this->sheel->db->num_rows($query) == 0) {
 							if ($slientmode == false) {
-								$this->print_action_failed('{_were_sorry_email_pack_uploading_requires_the_actual_language_to_already_exist}', HTTPS_SERVER_ADMIN . 'marketplace/emails/');
+								$this->print_action_failed('{_were_sorry_email_pack_uploading_requires_the_actual_language_to_already_exist}', HTTPS_SERVER_ADMIN . 'settings/emails/');
 								exit();
 							} else {
 								return false;
@@ -166,7 +166,7 @@ class admincp_importexport extends admincp
 					} else {
 						$error_string = xml_error_string($error_code);
 						if ($slientmode == false) {
-							$this->print_action_failed('{_were_sorry_there_was_an_error_with_the_formatting}' . ' <strong>' . $error_string . '</strong>.', HTTPS_SERVER_ADMIN . 'marketplace/emails/');
+							$this->print_action_failed('{_were_sorry_there_was_an_error_with_the_formatting}' . ' <strong>' . $error_string . '</strong>.', HTTPS_SERVER_ADMIN . 'settings/emails/');
 							exit();
 						} else {
 							return false;
@@ -190,7 +190,7 @@ class admincp_importexport extends admincp
 						$result = $this->sheel->xml->process_lang_xml($data, $xml_encoding);
 						if ($result['illang_version'] != $this->sheel->config['ilversion'] and $noversioncheck == 0) {
 							if ($slientmode == false) {
-								$this->print_action_failed('{_the_version_of_the_this_language_xml_package_is_different_than_the_currently_installed_version} <strong>' . $this->sheel->config['ilversion'] . '</strong>.  {_the_operation_has_aborted_due_to_a_language_version_conflict}<br /><br />{_tip_you_can_click_the_checkbox_on_the_previous_page_to_ignore_language_version_conflicts_which_will_ultimately_bypass_this_version_checker}', HTTPS_SERVER_ADMIN . 'marketplace/languages/');
+								$this->print_action_failed('{_the_version_of_the_this_language_xml_package_is_different_than_the_currently_installed_version} <strong>' . $this->sheel->config['ilversion'] . '</strong>.  {_the_operation_has_aborted_due_to_a_language_version_conflict}<br /><br />{_tip_you_can_click_the_checkbox_on_the_previous_page_to_ignore_language_version_conflicts_which_will_ultimately_bypass_this_version_checker}', HTTPS_SERVER_ADMIN . 'settings/languages/');
 								exit();
 							} else {
 								return false;
@@ -205,7 +205,7 @@ class admincp_importexport extends admincp
 					", 0, null, __FILE__, __LINE__);
 						if ($this->sheel->db->num_rows($query) == 0) {
 							if ($slientmode == false) {
-								$this->print_action_failed('{_were_sorry_the_language_package_being_uploaded_requires}', HTTPS_SERVER_ADMIN . 'marketplace/languages/');
+								$this->print_action_failed('{_were_sorry_the_language_package_being_uploaded_requires}', HTTPS_SERVER_ADMIN . 'settings/languages/');
 								exit();
 							} else {
 								return false;
@@ -318,7 +318,7 @@ class admincp_importexport extends admincp
 							}
 
 							if ($slientmode == false) {
-								$this->print_action_success('{_language_import_successful}', HTTPS_SERVER_ADMIN . 'marketplace/languages/');
+								$this->print_action_success('{_language_import_successful}', HTTPS_SERVER_ADMIN . 'settings/languages/');
 								exit();
 							} else {
 								return true;
@@ -326,7 +326,7 @@ class admincp_importexport extends admincp
 						}
 					} else {
 						if ($slientmode == false) {
-							$this->print_action_failed('{_were_sorry_there_was_an_error_with_the_formatting_of_the_language_file}', HTTPS_SERVER_ADMIN . 'marketplace/languages/');
+							$this->print_action_failed('{_were_sorry_there_was_an_error_with_the_formatting_of_the_language_file}', HTTPS_SERVER_ADMIN . 'settings/languages/');
 							exit();
 						} else {
 							return false;

@@ -147,7 +147,7 @@
                 </div>
                 <div class="ui-page-actions__primary">
                     <div class="button-group button-group--right-aligned">
-                        <if condition="$sheel->show['ADMINCP_TEST_MODE']"><input type="button" value="{_send}" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })" class="btn btn-primary"><else /><input type="button" value="{_send}" class="btn btn-primary" bind-event-click="verify_email_bulksend();"></if>
+                        <input type="button" value="{_send}" class="btn btn-primary" bind-event-click="verify_email_bulksend();">
                     </div>
                 </div>
             </div>

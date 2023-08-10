@@ -1,11 +1,4 @@
 <?php
-/**
- * Permissions class to perform the majority of permissions functionality in Sheel.
- *
- * @package      iLance\Permissions
- * @version      1.0.0.0
- * @author       Sheel
- */
 class permissions
 {
 	protected $sheel;
@@ -13,15 +6,6 @@ class permissions
 	{
 		$this->sheel = $sheel;
 	}
-	/**
-	 * Function used to check a user's access when trying to access a certain marketplace resource or area.
-	 *
-	 * @param       integer        user id
-	 * @param       string         access name
-	 * @param       integer        plan id (optional)
-	 *
-	 * @return      bool           Returns [yes] or [no] or will return the actual "value" if other (ie: bid limit per day might return 10)..
-	 */
 	function check_access($customerid = 0, $accessname = '', $subscriptionid = 0)
 	{
 		$value = 'no';

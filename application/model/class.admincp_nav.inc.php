@@ -406,30 +406,18 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_branding" bind-event-click="" allow-default="1" href="settings/branding/">Branding</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locale" bind-event-click="" allow-default="1" href="settings/locale/">Locale</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_mail" bind-event-click="" allow-default="1" href="settings/mail/">Mail / SMTP</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_currency" bind-event-click="" allow-default="1" href="settings/currency/">Currency</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_emails" bind-event-click="" allow-default="1" href="settings/emails/">Email Templates</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_invoice" bind-event-click="" allow-default="1" href="settings/invoice/">Invoice &amp; Transaction</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_payment" bind-event-click="" allow-default="1" href="settings/payment/">Payments &amp; APIs</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_tax" bind-event-click="" allow-default="1" href="settings/tax/">Taxes</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration &amp; SSO</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_escrow" bind-event-click="" allow-default="1" href="settings/escrow/">Escrow</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_listings" bind-event-click="" allow-default="1" href="settings/listings/">Selling &amp; Bulk CSV</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_bidding" bind-event-click="" allow-default="1" href="settings/bidding/">Bidding</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_feedback" bind-event-click="" allow-default="1" href="settings/feedback/">Feedback</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_pmb" bind-event-click="" allow-default="1" href="settings/pmb/">Private Message</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_censor" bind-event-click="" allow-default="1" href="settings/censor/">Censor</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_blacklist" bind-event-click="" allow-default="1" href="settings/blacklist/">Blacklist</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_categories" bind-event-click="" allow-default="1" href="settings/categories/">Categories</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_attachments" bind-event-click="" allow-default="1" href="settings/attachments/">Photos &amp; Attachments</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_seo" bind-event-click="" allow-default="1" href="settings/seo/">SEO</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_search" bind-event-click="" allow-default="1" href="settings/search/">Search</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_currency" bind-event-click="" allow-default="1" href="settings/currency/">Currency</a> </li>
+                                
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_pages" bind-event-click="" allow-default="1" href="settings/pages/">Pages &amp; Content</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration</a> </li>
 				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_shipping" bind-event-click="" allow-default="1" href="settings/shipping/">Shipping &amp; APIs</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_security" bind-event-click="" allow-default="1" href="settings/security/">Security</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_distance" bind-event-click="" allow-default="1" href="settings/distance/">Distance &amp; GeoData</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_session" bind-event-click="" allow-default="1" href="settings/session/">Session</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_license" bind-event-click="" allow-default="1" href="settings/license/">License Info</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_updates" bind-event-click="" allow-default="1" href="settings/updates/">Automatic Updates</a> </li>
+                                
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_diagnosis" bind-event-click="" allow-default="1" href="settings/diagnosis/">App Diagnosis</a> </li>
 				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_serverinfo" bind-event-click="" allow-default="1" href="settings/serverinfo/">App &amp; Server Specs</a> </li>
                         </ol>

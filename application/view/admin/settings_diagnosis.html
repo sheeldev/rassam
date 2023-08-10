@@ -1,0 +1,102 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="settings-general" class="page">
+        
+            <form autocomplete="off" action="{https_server_admin}settings/diagnosis/" accept-charset="UTF-8" method="post">
+            <input name="subcmd" type="hidden" value="scan">
+            <div class="header-row">
+                <header class="header">
+                    <h1 class="header__main">
+                        <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                        <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+                        {currentarea}
+                    </h1>
+                    <div class="header__primary-actions">
+                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">Scan now</button>
+                    </div>
+                </header>
+            </div>
+            
+            <div class="section">
+            
+                <div class="layout-content">
+                
+                    <div class="layout-content__sidebar layout-content__first">
+                        <div class="section-summary">
+                            <h1>Application Diagnosis</h1>
+                            <p>This tool will scan all core application files in search for modified files, malware and other popular root kits embedded within HTML templates, PHP or Javascripts.</p>
+                        
+                            <if condition="count($files) > 0">
+                            <p><span class="badge badge--success" style="min-width:30px">Pass</span> File is unchanged.</p>
+                            <p><span class="badge badge--critical" style="min-width:30px">Fail</span> File is modified by unknown source.</p>
+                            </if>
+                        
+                        </div>
+                    </div>
+                    <div class="layout-content__main">
+                        
+                            <div class="draw-card draw-card--primary">
+                                <section class="draw-card__section">
+                                    
+                                    <div id="report-table">
+                                        <table class="expanded st">
+                                            <thead>
+                                                <tr>
+                                                    <th class="reports-property"><span class="field">File</span></th>
+                                                    <th class="reports-measure"><span class="field">Checksum</span></th>
+                                                    <th class="reports-measure"><span class="field">Passed</span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <if condition="count($files) <= 0">
+                                                <tr class="data-row" style="opacity: 1;">
+                                                    <td colspan="3" align="center" class="type--subdued st">Click "Scan now" to run an application file diagnostic to ensure tamper-proof integrity.</td>
+                                                </tr>
+                                                <else />
+                                                <loop name="files">
+                                                <tr class="data-row" style="opacity: 1;">
+                                                    <td class="reports-property">
+                                                        <div class="reports-property-content--drillable type--subdued">{file}</div>
+                                                    </td>
+                                                    <td class="reports-measure">
+                                                        <div class="reports-measure-content"><span class="value type--subdued">{md5}</span></div>
+                                                    </td>
+                                                    <td class="reports-measure">
+                                                        <div class="reports-measure-content"><span class="value">{passed}</span></div>
+                                                    </td>
+                                                </tr>
+                                                </loop name="files">
+                                                </if>
+                                                <if condition="isset($ilance->show['nofile']) AND $ilance->show['nofile']">
+                                                <tr>
+                                                    <td colspan="4" align="center">Cannot run test at this time.</td>
+                                                </tr>
+                                                </if>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+                            </div>
+                            </div>
+                        
+                                    
+                  </div>
+            </div>
+            
+            <div class="section">
+                <div class="draw-grid draw-grid--right-aligned">
+                    <div class="draw-grid__cell draw-grid__cell--no-flex">
+                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">Scan now</button>
+                    </div>
+                </div>
+            </div>
+            
+            </form>
+            
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>
+    
