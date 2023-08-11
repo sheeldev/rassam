@@ -139,8 +139,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 						}
 					} else if ($varname == 'shipping_regions') { // serialize array data
 						$value = serialize($value);
-					} else if ($varname == 'invoicesystem_disputetypes') { // serialize array data
-						$value = serialize($value);
 					} else if ($varname == 'globalfilters_vulgarpostfilterlist') { // remove trailing comma
 						$value = trim($value);
 						if (substr($value, -1) == ',') {
@@ -176,14 +174,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 							WHERE name = '" . $sheel->db->escape_string($varname) . "'
 							LIMIT 1
 						");
-						if ($varname == 'escrowsystem_enabled') {
-							if ($value <= 0) {
-								$sheel->db->query("
-									UPDATE " . DB_PREFIX . "payment_profiles
-									SET filter_escrow = '0'
-								");
-							}
-						}
+						
 						$sql = $sheel->db->query("
 							SELECT value, inputname
 							FROM " . DB_PREFIX . "configuration
@@ -210,104 +201,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 					}
 				}
 			}
-			$sheel->cachecore->delete("ilconfig", array('uid' => false, 'sid' => false, 'rid' => false, 'styleid' => false, 'slng' => false));
 			$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Settings saved', 'Settings were successfully saved.');
 			refresh(urldecode($sheel->GPC['return']));
 			exit();
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == '_update-payment-settings') {
-			foreach ($sheel->GPC['config'] as $key => $value) {
-				if ($key == 'use_internal_gateway') { // we're updating the payment pulldown menu
-					$sql = $sheel->db->query("
-						SELECT id, value, inputname
-						FROM " . DB_PREFIX . "payment_configuration
-						WHERE name = '" . $sheel->db->escape_string($key) . "'
-							AND inputtype = 'pulldown'
-					", 0, null, __FILE__, __LINE__);
-					if ($sheel->db->num_rows($sql) > 0) {
-						$res = $sheel->db->fetch_array($sql, DB_ASSOC);
-						if ($res['inputname'] == 'defaultgateway') {
-							$writepulldown = $sheel->admincp_paymodules->default_gateway_pulldown($value, $key);
-							$sheel->db->query("
-								UPDATE " . DB_PREFIX . "payment_configuration
-								SET inputcode = '" . $sheel->db->escape_string($writepulldown) . "',
-								value = '" . $sheel->db->escape_string($value) . "'
-								WHERE name = '" . $sheel->db->escape_string($key) . "'
-									AND inputtype = 'pulldown'
-								LIMIT 1
-							", 0, null, __FILE__, __LINE__);
-							if ($value == 'none') { // disable credit card payment selling profiles for sellers so new customers don't get confused..
-								$sheel->db->query("
-									UPDATE " . DB_PREFIX . "payment_profiles
-									SET filter_ccgateway = '0'
-								", 0, null, __FILE__, __LINE__);
-							} else { // re enable credit card payment profiles for sellers selling profiles..
-								$sql2 = $sheel->db->query("
-									SELECT id
-									FROM " . DB_PREFIX . "payment_profiles
-									WHERE paymethodcc != ''
-										AND paymethodcc != 'a:0:{}'
-										AND paymethodcc != '" . $sheel->db->escape_string('s:0:"";') . "'
-								", 0, null, __FILE__, __LINE__);
-								if ($sheel->db->num_rows($sql2) > 0) {
-									while ($res2 = $sheel->db->fetch_array($sql2, DB_ASSOC)) {
-										$paymethodcc = array();
-										$paymethodcc[$value] = '1';
-										$paymethodcc = serialize($paymethodcc);
-										$sheel->db->query("
-											UPDATE " . DB_PREFIX . "payment_profiles
-											SET filter_ccgateway = '1',
-											paymethodcc = '" . $sheel->db->escape_string($paymethodcc) . "'
-											WHERE id = '" . $res2['id'] . "'
-											LIMIT 1
-										", 0, null, __FILE__, __LINE__);
-									}
-									// normalize fields
-									$sheel->db->query("
-										UPDATE " . DB_PREFIX . "payment_profiles
-										SET paymethodcc = 'a:0:{}'
-										WHERE paymethodcc = '' OR paymethodcc = '" . $sheel->db->escape_string('s:0:"";') . "'
-									", 0, null, __FILE__, __LINE__);
-								}
-							}
-						}
-					}
-				} else {
-					if ($key != '') {
-						if ($key == 'creditcard_authentication' and $value == 0) {
-							$sheel->db->query("
-								UPDATE " . DB_PREFIX . "creditcards
-								SET authorized = 'yes'
-								WHERE authorized = 'no'
-							", 0, null, __FILE__, __LINE__);
-						}
-						if (isset($sheel->GPC['pass'][$key]) and $sheel->GPC['pass'][$key] != '') { // we're a pass field
-							if ($value != '') { // set new value
-								$sheel->db->query("
-									UPDATE " . DB_PREFIX . "payment_configuration
-									SET `value` = '" . $sheel->db->escape_string(trim($value)) . "',
-									sort = '" . intval($sheel->GPC['sort'][$key]) . "'
-									WHERE name = '" . $sheel->db->escape_string($key) . "'
-										" . ((isset($sheel->GPC['module']) and !empty($sheel->GPC['module'])) ? "AND configgroup = '" . $sheel->db->escape_string($sheel->GPC['module']) . "'" : "") . "
-									LIMIT 1
-								", 0, null, __FILE__, __LINE__);
-							}
-						} else { // regular field
-							$sheel->db->query("
-								UPDATE " . DB_PREFIX . "payment_configuration
-								SET `value` = '" . $sheel->db->escape_string(trim($value)) . "',
-								sort = '" . intval($sheel->GPC['sort'][$key]) . "'
-								WHERE name = '" . $sheel->db->escape_string($key) . "'
-									" . ((isset($sheel->GPC['module']) and !empty($sheel->GPC['module'])) ? "AND configgroup = '" . $sheel->db->escape_string($sheel->GPC['module']) . "'" : "") . "
-								LIMIT 1
-							", 0, null, __FILE__, __LINE__);
-						}
-					}
-				}
-			}
-			$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'System payment settings saved', 'System payment settings were successfully saved.');
-			refresh(HTTPS_SERVER_ADMIN . 'settings/payment/');
-			exit();
-		}
+		} 
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'branding') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Branding';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Branding';
@@ -339,14 +236,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$currentarea = '{_currency}';
 		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/currencymanager/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_currency_manager}</button></a></p>';
 		$settings = $sheel->admincp->construct_admin_input('globalserverlocalecurrency', HTTPS_SERVER_ADMIN . 'settings/currency/', '', $buttons);
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'invoice') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Invoice &amp; Transactions';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Invoice &amp; Transactions';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_invoice';
-		$currentarea = '{_invoice}';
-		$settings = $sheel->admincp->construct_admin_input('invoicesystem', HTTPS_SERVER_ADMIN . 'settings/invoice/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'companies') {
+	}  else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'companies') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Companies';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Companies';
 		$sheel->template->fetch('main', 'settings_companies.html', 1);
@@ -536,10 +426,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$sheel->template->fetch('main', 'settings_registration.html', 1);
 		$areanav = 'settings_registration';
 		$currentarea = 'Registration';
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'customers/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Customer Manager</button></a></p>';
+		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'users/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Users Manager</button></a></p>';
 		$settings = $sheel->admincp->construct_admin_input('registrationdisplay', HTTPS_SERVER_ADMIN . 'settings/registration/', '', $buttons);
-		$upsell = $sheel->admincp->construct_admin_input('registrationupsell', HTTPS_SERVER_ADMIN . 'settings/registration/');
-		$api = $sheel->admincp->construct_admin_input('registrationapi', HTTPS_SERVER_ADMIN . 'settings/registration/');
 		$buttons = '<p><a href="javascript:;" onclick="test_ldap_settings()"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Test LDAP Settings</button></a></p>';
 		$ldap = $sheel->admincp->construct_admin_input('registrationldap', HTTPS_SERVER_ADMIN . 'settings/registration/', '', $buttons);
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'attachments') {
@@ -779,15 +667,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$areanav = 'settings_security';
 		$currentarea = '{_security}';
 		$settings = $sheel->admincp->construct_admin_input('globalsecurity', HTTPS_SERVER_ADMIN . 'settings/security/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'distance') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Distance &amp; GeoData';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Distance &amp; GeoData';
-		$sheel->template->fetch('main', 'settings_distance.html', 1);
-		$areanav = 'settings_distance';
-		$currentarea = '{_distance}';
-		$settings = $sheel->admincp->construct_admin_input('globalserverdistanceapi', HTTPS_SERVER_ADMIN . 'settings/distance/');
-		$installedcountries = $sheel->distance->fetch_installed_countries();
-		$sheel->template->parse_loop('main', array('installedcountries' => $installedcountries), false);
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'session') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Sessions';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Sessions';
@@ -945,9 +824,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		'url' => $_SERVER['REQUEST_URI'],
 		'settings' => (isset($settings) ? $settings : ''),
 		'moderation' => (isset($moderation) ? $moderation : ''),
-		'api' => (isset($api) ? $api : ''),
 		'ldap' => (isset($ldap) ? $ldap : ''),
-		'upsell' => (isset($upsell) ? $upsell : ''),
 		'limits' => (isset($limits) ? $limits : ''),
 		'id' => (isset($sheel->GPC['id']) ? $sheel->GPC['id'] : ''),
 		'error' => ((isset($error) and !empty($error)) ? $error : ''),

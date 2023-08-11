@@ -586,27 +586,12 @@ class admincp
          */
         function products_pulldown($selected = 'sheel', $fieldname = 'product')
         {
-                $sql = $this->sheel->db->query("
-                        SELECT modulename, modulegroup
-                        FROM " . DB_PREFIX . "modules_group
-                ", 0, null, __FILE__, __LINE__);
-                if ($this->sheel->db->num_rows($sql) > 0) {
-                        $html = '<select name="' . $fieldname . '" class="draw-select">';
-                        $html .= '<option value="sheel">sheel</option>';
-                        while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-                                if (mb_strtolower($res['modulename']) == mb_strtolower($selected) or mb_strtolower($res['modulegroup']) == mb_strtolower($selected)) {
-                                        $html .= '<option value="' . mb_strtolower(stripslashes($res['modulegroup'])) . '" selected="selected">' . ucfirst(stripslashes($res['modulename'])) . '</option>';
-                                } else {
-                                        $html .= '<option value="' . mb_strtolower(stripslashes($res['modulegroup'])) . '">' . ucfirst(stripslashes($res['modulename'])) . '</option>';
-                                }
-                        }
-                        $html .= '</select>';
-                }
+
                 if (isset($html)) {
                         return $html;
                 } else {
                         $html = '<select name="' . $fieldname . '" class="draw-select">';
-                        $html .= '<option value="sheel" selected="selected">sheel</option>';
+                        $html .= '<option value="sheel" selected="selected">Sheel</option>';
                         $html .= '</select>';
                 }
                 return $html;

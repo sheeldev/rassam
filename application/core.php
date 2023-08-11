@@ -33,7 +33,7 @@ define('DIR_ATTACHMENTS', __DIR__ . '/uploads/attachments/');
 define('DIR_CSS', __DIR__ . '/assets/css/');
 define('DIR_FONTS', __DIR__ . '/assets/fonts/');
 define('DIR_OTHER', __DIR__ . '/assets/other/');
-
+define('DIR_CRON', __DIR__ . '/scheduler/');
 
 define('DIR_FUNCTIONS', __DIR__ . '/');
 define('DIR_VIEWS', __DIR__ . '/view/');

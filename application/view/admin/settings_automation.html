@@ -1,0 +1,211 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="products-index" refresh="products-index" class="page products-page has-contextual-help">
+        
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                    <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+                    {currentarea}
+                </h1>
+              
+                <div class="header__primary-actions"> <a class="btn btn-primary" href="{https_server_admin}settings/automation/add/task/">{_add_scheduled_task}</a> </div>
+                
+            </header>
+        </div>
+        
+        <div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>{_automated_tasks_and_scheduled_events}</h1>
+                        <p>{_automated_tasks_and_scheduled_events_info}</p>
+                        <p><if condition="!isset($sheel->GPC['subcmd'])"><a href="{https_server_admin}settings/automation/add/task/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_add_task}</button></a><else /><a href="{https_server_admin}settings/automation/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_cancel}</button></a></if></p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <if condition="(isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update'))"><else /><div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">	
+                                    <thead>
+                                    <tr> 
+                                           <th width="5%">{_hour}</th>
+                                        <th width="5%">{_minute}</th>
+                                        
+                                        <th width="5%">{_day}</th>
+                                        <th width="5%" nowrap="nowrap">{_day_of_week}</th>
+                                        <th width="5%" nowrap="nowrap">{_month_of_year}</th>
+                                        
+                                        <th width="27%">{_task}</th>
+                                        <th width="10%">{_next_run}</th>
+                                        <th align="center">{_product}</th>
+                                        <th width="5%"></th>
+                                        <th width="30%">{_action}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="tasks">
+                                    <tr valign="top"> 
+                                           <td width="7%">{hour}</td>
+                                        <td width="8%" nowrap="nowrap">{minute}</td>
+                                        
+                                        <td width="8%">{day}</td>
+                                        <td width="11%">{day_of_week}</td>
+                                        <td width="9%">{month}</td>
+                                        <td width="27%">{job}<div class="type--subdued" title="{_average_time_in_seconds}">~{average}</div></td>
+                                        <td nowrap="nowrap"><div class="type--subdued">{nextrun}</div></td>
+                                        <td  align="center"><div class="type--subdued">{product}</div></td>
+                                        <th width="5%"></th>
+                                        <td width="30%" nowrap="nowrap">{action}</td>
+                                    </tr>
+                                    </loop name="tasks">
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- view mode --></if>
+                    
+                    
+                    <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+                    <form method="post" action="{https_server_admin}settings/automation/" name="ilform" accept-charset="UTF-8">
+                       <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><input type="hidden" name="subcmd" value="add" /><input type="hidden" name="do" value="process" /><else /><input type="hidden" name="subcmd" value="update" /><input type="hidden" name="cronid" value="{form[cronid]}" /><input type="hidden" name="do" value="process" /></if>
+                    <div class="draw-card" id="newrole">
+                        <header class="draw-card__section">
+                            
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_task_id">{_task_identifier_title}</label>
+                                    <input class="draw-input" size="30" type="text" name="form[varname]" id="form_title" value="{form[varname]}" placeholder="my_new_script">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_minutes"><a class="helplink" href="#" onclick="alert_js(phrase['_you_may_specify_what_minutes_past_the_hour_this_task_will_run']); return false;">{_minutes}</a></label>
+                                    <div class="draw-input-wrapper"><div class="draw-select__wrapper draw-input--has-content">{form[minute1]}</div></div>
+                                    <div class="draw-input-wrapper"><div class="draw-select__wrapper draw-input--has-content">{form[minute2]}</div></div>
+                                    <div class="draw-input-wrapper"><div class="draw-select__wrapper draw-input--has-content">{form[minute3]}</div></div>
+                                    <div class="draw-input-wrapper"><div class="draw-select__wrapper draw-input--has-content">{form[minute4]}</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_hour"><a class="helplink" href="#" onclick="alert_js(phrase['_you_may_specify_what_hour_this_task_will_run']); return false;">{_hour}</a></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[hours]}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_user_type"><a class="helplink" href="#" onclick="alert_js(phrase['_you_may_specify_what_day_of_the_week_this_task_will_run']); return false;">{_day_of_the_week}</a></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[dow]}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_user_type"><a class="helplink" href="#" onclick="alert_js(phrase['_you_may_specify_what_day_of_the_month_this_task_will_run']); return false;">{_day_of_the_month}</a></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[dom]}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_user_type"><a class="helplink" href="#" onclick="alert_js(phrase['_you_may_specify_what_month_of_year_this_task_will_run']); return false;">{_month_of_the_year}</a></label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[moy]}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_visible"><a class="helplink" href="#" onclick="alert_js(phrase['_whenever_a_task_you_create_is_executed_at_the_specified_time_the_cron_system_may']); return false;">{_save_logged_tasks_into_the_database}</a></label>
+                                    <label for="rb_1_loglevel"><input type="radio" name="form[loglevel]" id="rb_1_loglevel" value="1" tabindex="1" {form[savelog_1]} />{_yes}</label>
+                                    <label for="rb_0_loglevel"><input type="radio" name="form[loglevel]" id="rb_0_loglevel" value="0" tabindex="1" {form[savelog_0]} />{_no}</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_task_id"><a class="helplink" href="#" onclick="alert_js(phrase['_you_will_enter_the_name_of_the_php_script_you_wish_to_execute']); return false;">{_php_script_filename}</a></label>
+                                    
+                                    <input type="text" class="draw-input" name="form[filename]" id="it_filename" value="{form[filename]}" placeholder="cron.newscript.php" size="35" dir="ltr" tabindex="1" />
+                                    <div class="type--subdued st">{_task_file_exist_in_x::/application/scheduler/}</div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_visible"><a class="helplink" href="#" onclick="alert_js(phrase['_control_task_status']); return false;">{_task_status}</a></label>
+                                    <label for="rb_1_status"><input type="radio" name="form[status]" id="rb_1_status" value="1" tabindex="1" {form[status_1]} />{_active}</label>
+                                    <label for="rb_0_status"><input type="radio" name="form[status]" id="rb_0_status" value="0" tabindex="1" {form[status_0]} />{_inactive}</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <label class="draw-label" for="form_task_id">{_product}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[products_pulldown]}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                        
+                    </div>
+                    <div class="draw-grid draw-grid--right-aligned">
+                        <div class="draw-grid__cell draw-grid__cell--no-flex">
+                            <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                        </div>
+                    </div>
+                    </form>
+                    </if>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    </section>
+    
+    
+    <div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

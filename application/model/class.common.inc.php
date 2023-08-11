@@ -934,289 +934,289 @@ class common
 		if (isset($readname) and $readname != '') {
 			if ($readname == 'ie') {
 				$name = 'Internet Explorer';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/ie.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/ie.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'opera') {
 				$name = 'Opera';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/opera.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/opera.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'firefox' or $readname == 'firebird' or $readname == 'phoenix') {
 				$name = 'FireFox';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/firefox.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/firefox.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'camino') {
 				$name = 'Camino';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/camino.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/camino.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'konqueror') {
 				$name = 'Konqueror';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/konqueror.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/konqueror.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'chrome') {
 				$name = 'Chrome';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/chrome.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/chrome.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'safari') {
 				$name = 'Safari';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/safari.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/safari.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'netscape') {
 				$name = 'Netscape';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/netscape.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/netscape.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'maxthon') {
 				$name = 'Maxthon';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/maxthon.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/maxthon.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'webtv') {
 				$name = 'WebTV';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/webtv.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/webtv.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'lynx') {
 				$name = 'Lynx';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/lynx.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/lynx.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'omniweb') {
 				$name = 'Omniweb';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/omniweb.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/omniweb.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'icab') {
 				$name = 'iCab';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/icab.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/icab.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'mspie') {
 				$name = 'mspie';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/mspie.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/mspie.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'netpositive') {
 				$name = 'NetPositive';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/netpositive.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/netpositive.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'galeon') {
 				$name = 'Galeon';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/galeon.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/galeon.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'iphone') {
 				$name = 'iPhone';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/iphone.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/iphone.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'ipad') {
 				$name = 'iPad';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/ipad.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/ipad.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'blackberry') {
 				$name = 'BlackBerry';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/blackberry.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/blackberry.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'android') {
 				$name = 'Android';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/android.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/android.gif" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'tor') {
 				$name = 'Tor';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/tor.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/tor.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'edge') {
 				$name = 'Edge';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/edge.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/edge.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'ucbrowser') {
 				$name = 'UC Browser';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/ucbrowser.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/ucbrowser.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'vivaldi') {
 				$name = 'Vivaldi';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/vivaldi.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/vivaldi.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'aviator') {
 				$name = 'Aviator';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/aviator.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/aviator.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'aviator') {
 				$name = 'Aviator';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/aviator.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/aviator.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'coc_') {
 				$name = 'coc_';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/coc_.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/coc_.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'dragon') {
 				$name = 'Dragon';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/dragon.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/dragon.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'flock') {
 				$name = 'Flock';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/flock.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/flock.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'iron') {
 				$name = 'Iron';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/iron.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/iron.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'kinza') {
 				$name = 'Kinza';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/kinza.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/kinza.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'mxnitro') {
 				$name = 'MXnitro';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/mxnitro.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/mxnitro.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'nichrome') {
 				$name = 'Nichrome';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/nichrome.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/nichrome.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'perk') {
 				$name = 'Perk';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/perk.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/perk.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'rockmelt') {
 				$name = 'Rockmelt';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/rockmelt.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/rockmelt.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'seznam') {
 				$name = 'Seznam';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/seznam.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/seznam.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'sleipnir') {
 				$name = 'Sleipnir';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/sleipnir.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/sleipnir.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'sparkr') {
 				$name = 'Spark';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/spark.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/spark.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'webexplorer') {
 				$name = 'Webexplorer';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/webexplorer.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/webexplorer.png" border="0" alt="' . $name . '" />';
 			} else if ($readname == 'yabrowser') {
 				$name = 'Yandex Browser';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/yabrowser.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/yabrowser.png" border="0" alt="' . $name . '" />';
 			} else {
 				$name = '{_unknown}';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/unknown.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/unknown.gif" border="0" alt="' . $name . '" />';
 			}
 		} else {
 			if ($this->is_webbrowser('ie')) {
 				$name = 'ie';
 				$real = 'Internet Explorer';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/ie.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/ie.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('opera')) {
 				$name = 'opera';
 				$real = 'Opera';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/opera.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/opera.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('firefox') or $this->is_webbrowser('firebird') or $this->is_webbrowser('phoenix')) {
 				$name = 'firefox';
 				$real = 'FireFox';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/firefox.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/firefox.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('camino')) {
 				$name = 'camino';
 				$real = 'Camino';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/camino.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/camino.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('konqueror')) {
 				$name = 'konqueror';
 				$real = 'Konqueror';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/konqueror.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/konqueror.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('chrome')) {
 				$name = 'chrome';
 				$real = 'Chrome';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/chrome.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/chrome.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('safari')) {
 				$name = 'safari';
 				$real = 'Safari';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/safari.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/safari.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('netscape')) {
 				$name = 'netscape';
 				$real = 'Netscape';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/netscape.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/netscape.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('maxthon')) {
 				$name = 'maxthon';
 				$real = 'Maxthon';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/maxthon.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/maxthon.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('webtv')) {
 				$name = 'webtv';
 				$real = 'WebTV';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/webtv.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/webtv.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('lynx')) {
 				$name = 'lynx';
 				$real = 'Lynx';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/lynx.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/lynx.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('omniweb')) {
 				$name = 'omniweb';
 				$real = 'Omniweb';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/omniweb.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/omniweb.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('icab')) {
 				$name = 'icab';
 				$real = 'iCab';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/icab.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/icab.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('mspie')) {
 				$name = 'mspie';
 				$real = 'mspie';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/mspie.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/mspie.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('netpositive')) {
 				$name = 'netpositive';
 				$real = 'NetPositive';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/netpositive.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/netpositive.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('galeon')) {
 				$name = 'galeon';
 				$real = 'Galeon';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/galeon.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/galeon.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('iphone')) {
 				$name = 'iphone';
 				$real = 'iPhone';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/iphone.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/iphone.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('ipad')) {
 				$name = 'ipad';
 				$real = 'iPad';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/ipad.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/ipad.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('blackberry')) {
 				$name = 'blackberry';
 				$real = 'BlackBerry';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/blackberry.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/blackberry.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('android')) {
 				$name = 'android';
 				$real = 'Android';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/android.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/android.gif" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('tor')) {
 				$name = 'tor';
 				$real = 'Tor';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/tor.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/tor.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('edge')) {
 				$name = 'edge';
 				$real = 'Edge';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/edge.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/edge.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('ucbrowser')) {
 				$name = 'ucbrowser';
 				$real = 'UC Browser';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/ucbrowser.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/ucbrowser.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('vivaldi')) {
 				$name = 'vivaldi';
 				$real = 'Vivaldi';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/vivaldi.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/vivaldi.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('aviator')) {
 				$name = 'aviator';
 				$real = 'Aviator';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/aviator.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/aviator.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('coc_')) {
 				$name = 'coc_';
 				$real = 'coc_';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/coc_.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/coc_.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('dragon')) {
 				$name = 'dragon';
 				$real = 'Dragon';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/dragon.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/dragon.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('flock')) {
 				$name = 'flock';
 				$real = 'Flock';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/flock.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/flock.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('iron')) {
 				$name = 'iron';
 				$real = 'Iron';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/iron.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/iron.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('kinza')) {
 				$name = 'kinza';
 				$real = 'Kinza';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/kinza.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/kinza.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('mxnitro')) {
 				$name = 'mxnitro';
 				$real = 'MXnitro';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/mxnitro.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/mxnitro.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('nichrome')) {
 				$name = 'nichrome';
 				$real = 'Nichrome';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/nichrome.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/nichrome.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('perk')) {
 				$name = 'perk';
 				$real = 'Perk';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/perk.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/perk.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('rockmelt')) {
 				$name = 'rockmelt';
 				$real = 'Rockmelt';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/rockmelt.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/rockmelt.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('seznam')) {
 				$name = 'seznam';
 				$real = 'Seznam';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/seznam.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/seznam.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('sleipnir')) {
 				$name = 'sleipnir';
 				$real = 'Sleipnir';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/sleipnir.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/sleipnir.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('spark')) {
 				$name = 'spark';
 				$real = 'Spark';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/spark.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/spark.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('webexplorer')) {
 				$name = 'webexplorer';
 				$real = 'Webexplorer';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/webexplorer.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/webexplorer.png" border="0" alt="' . $real . '" />';
 			} else if ($this->is_webbrowser('yabrowser')) {
 				$name = 'yabrowser';
 				$real = 'Yandex Browser';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/yabrowser.png';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/yabrowser.png" border="0" alt="' . $real . '" />';
 			} else {
 				$name = 'unknown';
 				$real = '{_unknown}';
-				$icon = $this->sheel->config['imgcdn'] . 'browser/unknown.gif';
+				$icon = '<img src="' . $this->sheel->config['imgcdn'] . 'browser/unknown.gif" border="0" alt="' . $real . '" />';
 			}
 		}
 		if (isset($showicon) and $showicon) {
@@ -1416,6 +1416,18 @@ class common
 			}
 		}
 		return $result;
+	}
+	function is_tor_browser($ipaddress = '')
+	{
+		if (empty($ipaddress)) {
+			$reverse_client_ip = implode('.', array_reverse(explode('.', $_SERVER['REMOTE_ADDR'])));
+		} else {
+			$reverse_client_ip = implode('.', array_reverse(explode('.', $ipaddress)));
+		}
+		$reverse_server_ip = implode('.', array_reverse(explode('.', $_SERVER['SERVER_ADDR'])));
+		$hostname = $reverse_client_ip . "." . $_SERVER['SERVER_PORT'] . "." . $reverse_server_ip . ".ip-port.exitlist.torproject.org";
+		return false; //causing delays in sessions activity manager with code below..
+		return gethostbyname($hostname) == '127.0.0.2';
 	}
 	function print_date_verbose($datetime = '')
 	{
@@ -1722,44 +1734,44 @@ class common
 	{
 		if ($forceicon) {
 			$oses = array(
-				$this->sheel->config['imgcdn'] . 'device/android.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windowsvista.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windowsxp.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows95.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/windows.png',
-				$this->sheel->config['imgcdn'] . 'device/openbsd.png',
-				$this->sheel->config['imgcdn'] . 'device/sunos.png',
-				$this->sheel->config['imgcdn'] . 'device/ubuntu.png',
-				$this->sheel->config['imgcdn'] . 'device/linux.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/ios.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/mac.png',
-				$this->sheel->config['imgcdn'] . 'device/qnx.png',
-				$this->sheel->config['imgcdn'] . 'device/beos.png',
-				$this->sheel->config['imgcdn'] . 'device/os2.png'
+				'<span title="Android"><img src="' . $this->sheel->config['imgcdn'] . 'device/android.png" border="0" alt="" /></span>' => 'android',
+				'<span title="Windows 7"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => 'windows nt 6.1',
+				'<span title="Windows Vista"><img src="' . $this->sheel->config['imgcdn'] . 'device/windowsvista.png" border="0" alt="" /></span>' => 'windows nt 6.0',
+				'<span title="Windows Server 2003"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => 'windows nt 5.2',
+				'<span title="Windows XP"><img src="' . $this->sheel->config['imgcdn'] . 'device/windowsxp.png" border="0" alt="" /></span>' => '(windows nt 5.1)|(windows xp)',
+				'<span title="Windows 2000 sp1"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => 'windows nt 5.01',
+				'<span title="Windows 2000"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => '(windows nt 5.0)|(windows 2000)',
+				'<span title="Windows NT"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => '(windows nt 4.0)|(winnt4.0)|(winnt)|(windows nt)',
+				'<span title="Windows Me"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => '(windows 98)|(win 9x 4.90)|(windows me)',
+				'<span title="Windows 98"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => '(windows 98)|(win98)',
+				'<span title="Windows 95"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows95.png" border="0" alt="" /></span>' => '(windows 95)|(win95)|(windows_95)',
+				'<span title="Windows Ce"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => 'windows ce',
+				'<span title="Windows 3.11"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => 'win16',
+				'<span title="Windows (version unknown)"><img src="' . $this->sheel->config['imgcdn'] . 'device/windows.png" border="0" alt="" /></span>' => 'windows',
+				'<span title="OpenBSD"><img src="' . $this->sheel->config['imgcdn'] . 'device/openbsd.png" border="0" alt="" /></span>' => 'openbsd',
+				'<span title="SunOS"><img src="' . $this->sheel->config['imgcdn'] . 'device/sunos.png" border="0" alt="" /></span>' => 'sunos',
+				'<span title="Ubuntu"><img src="' . $this->sheel->config['imgcdn'] . 'device/ubuntu.png" border="0" alt="" /></span>' => 'ubuntu',
+				'<span title="Linux"><img src="' . $this->sheel->config['imgcdn'] . 'device/linux.png" border="0" alt="" /></span>' => '(linux)|(x11)|(red hat)',
+				'<span title="Mac OS X Beta (Kodiak)"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x beta',
+				'<span title="Mac OS X Yosemite 10.10"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.10',
+				'<span title="Mac OS X El Captain 10.11"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.11',
+				'<span title="Mac OS X Sierra 10.12"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.12',
+				'<span title="Mac OS X Cheetah 10.0"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.0',
+				'<span title="Mac OS X Puma 10.1"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.1',
+				'<span title="Mac OS X Jaguar 10.2"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.2',
+				'<span title="Mac OS X Panther 10.3"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.3',
+				'<span title="Mac OS X Tiger 10.4"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.4',
+				'<span title="Mac OS X Leopard 10.5"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.5',
+				'<span title="Mac OS X Snow Leopard 10.6"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.6',
+				'<span title="Mac OS X Lion 10.7"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.7',
+				'<span title="Mac OS X Mountain Lion 10.8"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.8',
+				'<span title="Mac OS X Mavericks 10.9"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x 10.9',
+				'<span title="iPhone iOS"><img src="' . $this->sheel->config['imgcdn'] . 'device/ios.png" border="0" alt="" /></span>' => 'iphone os',
+				'<span title="Mac OS X (version unknown)"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => 'mac os x',
+				'<span title="Mac OS (classic)"><img src="' . $this->sheel->config['imgcdn'] . 'device/mac.png" border="0" alt="" /></span>' => '(mac_powerpc)|(macintosh)',
+				'<span title="QNX"><img src="' . $this->sheel->config['imgcdn'] . 'device/qnx.png" border="0" alt="" /></span>' => 'qnx',
+				'<span title="BeOS"><img src="' . $this->sheel->config['imgcdn'] . 'device/beos.png" border="0" alt="" /></span>' => 'beos',
+				'<span title="OS2"><img src="' . $this->sheel->config['imgcdn'] . 'device/os2.png" border="0" alt="" /></span>' => 'os/2'
 			);
 		} else {
 			$oses = array(
@@ -2465,13 +2477,13 @@ class common
 						if (basename($file) == 'images') {
 							// loop through images folder
 							/*$valid_imgfiles = $this->get_files($file);
-												 if (count($valid_imgfiles))
-												 {
-												 foreach ($valid_imgfiles AS $imgfile)
-												 {
-												 $zip->addFile($imgfile, basename($imgfile) . '/' . basename($imgfile));
-												 }
-												 }*/
+																	  if (count($valid_imgfiles))
+																	  {
+																	  foreach ($valid_imgfiles AS $imgfile)
+																	  {
+																	  $zip->addFile($imgfile, basename($imgfile) . '/' . basename($imgfile));
+																	  }
+																	  }*/
 						} else {
 							$zip->addFile($file . '/data.xml', basename($file) . '/' . basename($file) . '.xml');
 						}
@@ -2843,7 +2855,7 @@ class common
 	}
 	function load_codemirror_js()
 	{
-		$this->ilance->template->meta['headinclude'] .= ((!$this->codemirror_loaded) ? '<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/codemirror' . (($this->ilance->config['globalfilters_jsminify']) ? '.min.css' : '.css') . '"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/dialog/dialog.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/search/matchesonscrollbar.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/fold/foldgutter.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->ilance->config['csscdn'] . $_SESSION['ilancedata']['user']['styleid'] . '/vendor/codemirror/addon/colorpicker/colorpicker.css"><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/codemirror' . (($this->ilance->config['globalfilters_jsminify']) ? '.min.js' : '.js') . '"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/foldcode.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/foldgutter.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/brace-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/xml-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/indent-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/markdown-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/fold/comment-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/dialog/dialog.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/searchcursor.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/search.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/scroll/annotatescrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/matchesonscrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/search/jump-to-line.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorpicker.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorview.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/javascript/javascript.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/xml/xml.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/css/css.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->ilance->config['jscdn'] . 'vendor/codemirror/mode/php/php.js"></script><script>function editor_onchange(editor, editorchangeobj){console.log("content changed for " + editor.getOption(\'id\'));var filename = jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html();filename = filename.replace(\'*\', \'\');jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html(filename + \'*\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'btn-disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'is--disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).addClass(\'btn-primary\');}</script><style>.CodeMirror{height:545px}</style>' : '');
+		$this->sheel->template->meta['headinclude'] .= ((!$this->codemirror_loaded) ? '<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/codemirror' . (($this->sheel->config['globalfilters_jsminify']) ? '.min.css' : '.css') . '"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/dialog/dialog.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/search/matchesonscrollbar.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/fold/foldgutter.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/colorpicker/colorpicker.css"><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/codemirror' . (($this->sheel->config['globalfilters_jsminify']) ? '.min.js' : '.js') . '"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/foldcode.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/foldgutter.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/brace-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/xml-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/indent-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/markdown-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/comment-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/dialog/dialog.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/searchcursor.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/search.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/scroll/annotatescrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/matchesonscrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/jump-to-line.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorpicker.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorview.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/javascript/javascript.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/xml/xml.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/css/css.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/php/php.js"></script><script>function editor_onchange(editor, editorchangeobj){console.log("content changed for " + editor.getOption(\'id\'));var filename = jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html();filename = filename.replace(\'*\', \'\');jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html(filename + \'*\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'btn-disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'is--disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).addClass(\'btn-primary\');}</script><style>.CodeMirror{height:545px}</style>' : '');
 		$this->codemirror_loaded = true;
 	}
 }

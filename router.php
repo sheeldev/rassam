@@ -53,7 +53,7 @@ $router->map('GET|POST', '/admin/users/[add|bulkmailer|bulkmailer/export|verific
 
 
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
-$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|registration|security|distance|cache|session|attachments|diagnosis|serverinfo|:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
+$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|registration|security|distance|cache|session|attachments|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
 $router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
@@ -69,6 +69,12 @@ $router->map('GET|POST', '/admin/settings/pages/', __DIR__ . '/application/web/a
 $router->map('GET|POST', '/admin/settings/[pages:cmd]/[add|add/link:subcmd]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_add_cmd');
 $router->map('GET|POST', '/admin/settings/[pages:cmd]/[update|update/link|delete:subcmd]/[*:seourl]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_cmd');
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');
+$router->map('GET|POST', '/admin/settings/automation/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation');
+$router->map('GET|POST', '/admin/settings/[automation:cmd]/[add:subcmd]/task/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_add');
+$router->map('GET|POST', '/admin/settings/[automation:cmd]/[delete|update|run:subcmd]/task/[*:cronid]/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_cmd');
+
+
+$router->map('GET|POST', '/admin/sessions/', __DIR__ . '/application/web/admin/sessions.php', 'admin_connections');
 if (file_exists(__DIR__ . '/router_custom.php'))
 {
 	require_once(__DIR__ . '/router_custom.php');

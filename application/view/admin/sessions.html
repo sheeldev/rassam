@@ -1,0 +1,233 @@
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    <div id="dashboard-online" class="page" context="dashboard">
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+                    
+                    <span class="glyphicons glyphicons-door draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}sessions/">Sessions</a></span>
+                   
+                </h1>
+               
+            </header>
+        </div>
+        
+        
+        <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+            <div class="draw-grid__cell">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_staff}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued"></div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section channel-stats">
+                        <div class="draw-grid draw-grid--no-padding table-wrapper">
+                            <table class="expanded">
+									<thead>
+										<tr>
+										  <th>&nbsp;</th>
+											<th>{_username}</th>
+											<th nowrap="nowrap">{_location}</th>
+											<th>OS</th>
+                                            <th>{_browser}</th>
+                                            <th nowrap="nowrap">{_last_click}</th>
+                                            <th>{_duration}</th>
+                                            <th>{_expires}</th>
+                                            <th>{_action}</th>
+										</tr>
+									</thead>
+									<tbody>
+                                    	<loop name="admin_connection_results">
+										<tr valign="top">
+										  <td width="2%">{country}</td>
+											<td width="10%" nowrap="nowrap">{username}<div class="type--subdued">{ip_address} ({connects})</div></td>
+											<td width="20%">{location}</td>
+											<td nowrap="nowrap" width="1%">{os}</td>
+                                            <td nowrap="nowrap" width="1%">{browser}</td>
+                                            <td nowrap="nowrap" width="5%">{lastclick}</td>
+                                            <td nowrap="nowrap" width="5%">{duration}</td>
+                                            <td nowrap="nowrap" width="5%">{expiresin}</td>
+                                            <td nowrap="nowrap" width="5%">{checkbox}</td>
+										</tr>
+                                        </loop name="admin_connection_results">
+									</tbody>
+                                    <if condition="isset($sheel->show['noadmins']) AND $sheel->show['noadmins']"><tbody>
+                                    	<tr>
+                                        	<td colspan="9"><h3 class="dashboard__empty__desc">There are no staff online at this time.</h3></td>
+                                        </tr>
+                                    </tbody></if>
+								</table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+        </div>
+        
+        
+        
+        <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+            <div class="draw-grid__cell">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_users}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued"></div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section channel-stats">
+                        <div class="draw-grid draw-grid--no-padding table-wrapper">
+                            <table class="expanded">
+									<thead>
+										<tr>
+										  <th>&nbsp;</th>
+											<th>{_username}</th>
+											<th nowrap="nowrap">{_location}</th>
+											<th>OS</th>
+                                            <th>{_browser}</th>
+                                            <th nowrap="nowrap">{_last_click}</th>
+                                            <th>{_duration}</th>
+                                            <th>{_expires}</th>
+                                            <th>{_action}</th>
+										</tr>
+									</thead>
+									<tbody>
+                                    	<loop name="member_connection_results">
+										<tr valign="top">
+										  <td width="2%">{country}</td>
+											<td width="10%" nowrap="nowrap">{username}<div class="type--subdued">{ip_address} ({connects})</div></td>
+											<td width="20%">{location}</td>
+											<td nowrap="nowrap" width="1%">{os}</td>
+                                            <td nowrap="nowrap" width="1%">{browser}</td>
+                                            <td nowrap="nowrap" width="5%">{lastclick}</td>
+                                            <td nowrap="nowrap" width="5%">{duration}</td>
+                                            <td nowrap="nowrap" width="5%">{expiresin}</td>
+                                            <td nowrap="nowrap" width="5%">{checkbox}</td>
+										</tr>
+                                        </loop name="member_connection_results">
+									</tbody>
+                                    <if condition="isset($sheel->show['nomembers']) AND $sheel->show['nomembers']"><tbody>
+                                    	<tr>
+                                        	<td colspan="9"><h3 class="dashboard__empty__desc">There are no users online at this time.</h3></td>
+                                        </tr>
+                                    </tbody></if>
+								</table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+        </div>
+        <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+            <div class="draw-grid__cell draw-grid__cell--third">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">Search Crawlers</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex"> <span class="type--subdued"></span> </div>
+                        </div>
+                    </header>
+                    <div class="draw-card__section">
+                        <div id="DashboardOnlineCountryTraffic" class="dashboard-widget table-wrapper">
+                            <table class="expanded">
+                                <thead>
+										<tr>
+                                        	<th>&nbsp;</th>
+											<th>{_name}</th>
+											<th nowrap="nowrap">{_location}</th>
+                                            <th nowrap="nowrap">{_last_click}</th>
+                                            <th>{_duration}</th>
+                                            <th>{_expires}</th>
+                                            <th>{_action}</th>
+										</tr>
+									</thead>
+                                <tbody>
+                                	<loop name="crawler_connection_results">
+                                    <tr valign="top">
+                                      <td>{country}</td>
+                                        <td width="90%" nowrap="nowrap">{username}<div class="type--subdued">{ip_address} ({connects})</div></td>
+                                        <td width="10%">{location}</td>
+                                        <td nowrap="nowrap" width="5%">{lastclick}</td>
+                                        <td nowrap="nowrap" width="5%">{duration}</td>
+                                        <td nowrap="nowrap" width="5%">{expiresin}</td>
+                                        <td nowrap="nowrap" width="5%">{checkbox}</td>
+                                    </tr>
+                                    </loop name="crawler_connection_results">
+                                </tbody>
+                                <if condition="isset($sheel->show['nocrawlers']) AND $sheel->show['nocrawlers']"><tbody>
+                                    	<tr>
+                                        	<td colspan="7"><h3 class="dashboard__empty__desc">There are no search bots or crawlers at this time.</h3></td>
+                                        </tr>
+                                    </tbody></if>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="draw-grid__cell">
+                <div class="draw-card">
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading">{_guests}</h2> </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex"> <span class="type--subdued"></span> </div>
+                        </div>
+                    </header>
+                    <section class="draw-card__section channel-stats">
+                        <div id="DashboardOnlineDeviceFormFactors" class="dashboard-widget table-wrapper">
+                            <table class="expanded">
+									<thead>
+										<tr>
+										  <th>&nbsp;</th>
+											<th>{_ip_address}</th>
+											<th nowrap="nowrap">{_location}</th>
+											<th>OS</th>
+                                            <th>{_browser}</th>
+                                            <th nowrap="nowrap">{_last_click}</th>
+                                            <th>{_duration}</th>
+                                            <th>{_expires}</th>
+                                            <th>{_action}</th>
+										</tr>
+									</thead>
+									<tbody>
+                                    	<loop name="guest_connection_results">
+										<tr valign="top">
+										  <td width="3%">{country}</td>
+											<td width="10%" nowrap="nowrap"><div class="type--subdued">{ip_address} ({connects})</div></td>
+											<td width="20%">{location}</td>
+											<td nowrap="nowrap" width="1%">{os}</td>
+                                            <td nowrap="nowrap" width="1%">{browser}</td>
+                                            <td nowrap="nowrap" width="5%">{lastclick}</td>
+                                            <td nowrap="nowrap" width="5%">{duration}</td>
+                                            <td nowrap="nowrap" width="5%">{expiresin}</td>
+                                            <td nowrap="nowrap" width="5%">{checkbox}</td>
+										</tr>
+                                        </loop name="guest_connection_results">
+									</tbody>
+                                    <if condition="isset($sheel->show['noguests']) AND $sheel->show['noguests']"><tbody>
+                                    	<tr>
+                                        	<td colspan="9"><h3 class="dashboard__empty__desc">There are no guest visitors at this time.</h3></td>
+                                        </tr>
+                                    </tbody></if>
+								</table>
+                            
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+</section>
+
+<div define="iLNav.setPage(['whosonline']), iLPage.close()"></div>

@@ -15,10 +15,8 @@
        
         <form autocomplete="off" action="{https_server_admin}settings/globalupdate/" accept-charset="UTF-8" method="post">
         <input type="hidden" name="subcmd" value="_update-config-settings" />
-        <input type="hidden" name="return" value="{pageurl_urlencoded}" />
+        <input type="hidden" name="return" value="{url}" />
         {settings}
-        {upsell}
-        {api}
         {ldap}
             
         <div class="section">

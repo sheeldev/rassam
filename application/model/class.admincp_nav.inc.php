@@ -343,8 +343,6 @@ class admincp_nav extends admincp
 				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_locations" bind-event-click="" allow-default="1" href="marketplace/locations/">Locations Manager</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_nonprofit" bind-event-click="" allow-default="1" href="marketplace/nonprofit/">Nonprofit Manager</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_feedback" bind-event-click="" allow-default="1" href="marketplace/feedback/">Feedback Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_api" bind-event-click="" allow-default="1" href="marketplace/api/">API Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_automation" bind-event-click="" allow-default="1" href="marketplace/automation/">Automation</a> </li>
 				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_maintenance" bind-event-click="" allow-default="1" href="marketplace/maintenance/">Maintenance Mode</a> </li>
                         </ol>
                         <!-- marketplace subnav -->
@@ -411,13 +409,12 @@ class admincp_nav extends admincp
                                 
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_pages" bind-event-click="" allow-default="1" href="settings/pages/">Pages &amp; Content</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_shipping" bind-event-click="" allow-default="1" href="settings/shipping/">Shipping &amp; APIs</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_security" bind-event-click="" allow-default="1" href="settings/security/">Security</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_distance" bind-event-click="" allow-default="1" href="settings/distance/">Distance &amp; GeoData</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_session" bind-event-click="" allow-default="1" href="settings/session/">Session</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_automation" bind-event-click="" allow-default="1" href="settings/automation/">Automation</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_diagnosis" bind-event-click="" allow-default="1" href="settings/diagnosis/">App Diagnosis</a> </li>
 				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_serverinfo" bind-event-click="" allow-default="1" href="settings/serverinfo/">App &amp; Server Specs</a> </li>
                         </ol>
