@@ -128,7 +128,7 @@ function imgmap(config) {
 	 */
 	this.config.mode     = "editor";
 
-	this.config.baseroot    = '/application/assets/javascript/vendor/imap/';
+	this.config.baseroot    = '/application/assets/js/vendor/imap/';
 	this.config.lang        = '';
 	this.config.defaultLang = 'en';
 	this.config.loglevel    = 0;

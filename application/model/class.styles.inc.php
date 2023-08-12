@@ -41,6 +41,7 @@ class styles
      */
     function init_css_replacements()
     {
+        //die ('test'.$_SESSION['sheeldata']['user']['languageid']);
         $this->templatevars = array();
         if (($this->templatevars = $this->sheel->cachecore->fetch('templatevars_' . $this->styleid)) === false) {
             $this->templatevars['imgrel'] = $this->sheel->config['imgrel']; // /application/

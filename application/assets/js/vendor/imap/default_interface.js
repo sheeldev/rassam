@@ -422,7 +422,6 @@ function print_hero_picture_info(src, mode, folder) {
 	xmldata.mode = urlencode(mode);
 	xmldata.folder = urlencode(folder);
 	xmldata.id = urlencode(fetch_js_object('source_url3_id').value);
-	xmldata.cid = urlencode(fetch_js_object('source_url3_cid').value);
 	xmldata.onreadystatechange(function() {
 		if (xmldata.handler.readyState == 4 && xmldata.handler.status == 200)
 		{

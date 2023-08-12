@@ -90,7 +90,7 @@ class sheel_database
 	{
 		$this->connection_write = $this->db_connect();
 		$this->multiserver = false;
-		$this->connection_read = & $this->connection_write;
+		$this->connection_read = &$this->connection_write;
 		$this->database = DB_DATABASE;
 		if ($this->connection_write) {
 			$this->select_db($this->database);
@@ -108,10 +108,10 @@ class sheel_database
 	{
 		$this->database = $database;
 		if ($check_write = @$this->select_db_wrapper($this->database, $this->connection_write)) {
-			$this->connection_link = & $this->connection_write;
+			$this->connection_link = &$this->connection_write;
 			return true;
 		} else {
-			$this->connection_link = & $this->connection_write;
+			$this->connection_link = &$this->connection_write;
 			$this->dberror('Cannot select database ' . ((empty($this->database)) ? '[no database set in config.php]' : $this->database) . ' for usage');
 			return false;
 		}
@@ -161,8 +161,10 @@ class sheel_database
 				");
 			}
 		}
-			echo ('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))));
-			exit();
+		//$this->sheel->admincp->print_action_failed('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))), HTTPS_SERVER_ADMIN . 'settings/membership/');
+		//exit();
+		echo ('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))));
+		exit();
 	}
 	/**
 	 * Function to determine if a field within a table exists
@@ -342,14 +344,14 @@ class sheel_database
 		return $cache;
 	}
 	/*
-	$db->select()->from('users');
-	<<OR>>
-	echo $db->select()->from('users')->result(); display: 'SELECT * FROM users'
-	$db->select()->from('posts')->where('id > 200')->limit(10);
-	echo $db->result(); display: 'SELECT * FROM posts WHERE id > 200 LIMIT 10'
-	$db->select('firstname','email')->from('users')->where('id = 2399');
-	// echo $db->result(); display: 'SELECT firstname, email FROM users WHERE id = 2399'
-	*/
+	   $db->select()->from('users');
+	   <<OR>>
+	   echo $db->select()->from('users')->result(); display: 'SELECT * FROM users'
+	   $db->select()->from('posts')->where('id > 200')->limit(10);
+	   echo $db->result(); display: 'SELECT * FROM posts WHERE id > 200 LIMIT 10'
+	   $db->select('firstname','email')->from('users')->where('id = 2399');
+	   // echo $db->result(); display: 'SELECT firstname, email FROM users WHERE id = 2399'
+	   */
 	public function select()
 	{
 		$this->selectables = func_get_args();

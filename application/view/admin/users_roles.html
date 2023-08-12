@@ -1,0 +1,193 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="membership-index" refresh="membership-index" class="page has-contextual-help">
+    
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                    <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_users}</a> / </span> {currentarea}
+                </h1>
+    
+                <div class="header__primary-actions"></div>
+    
+            </header>
+        </div>
+    
+        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+            <br />
+            <form autocomplete="off" action="{https_server_admin}users/roles/" accept-charset="UTF-8" method="post">
+            <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+                <input type="hidden" name="subcmd" value="add" />
+            <else />
+                <input type="hidden" name="subcmd" value="update" />
+                <input type="hidden" name="roleid" value="{form[roleid]}" />
+            </if>
+            <input type="hidden" name="type" value="role" />
+            <input type="hidden" name="do" value="save" />
+            <div class="draw-card" id="newrole">
+                <div class="draw-card__section">
+
+                    <label class="draw-label" for="form_title">{_title}</label>
+                    <loop name="languages_role">
+                    <div class="draw-grid draw-grid--no-outside-padding">
+                        <div class="draw-grid__cell">
+                            <div class="draw-input-wrapper">
+                                <input class="draw-input with-add-on" size="30" type="text" name="form[title_{languagecode}]" id="form_title_{languagecode}" value="{form[title_{languagecode}]}" placeholder="{language}" dir="{form[textdirection_{languagecode}]}">
+                                <span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{languagecode}]}</span>
+                            </div>
+                        </div>
+                    </div>
+                    </loop name="languages_role">
+                </div>
+
+                 <div class="draw-card__section">
+                    <label class="draw-label" for="form_purpose">{_role_purpose}</label>
+                    <loop name="languages_role">
+                    <div class="draw-grid draw-grid--no-outside-padding">
+                        <div class="draw-grid__cell">
+                            <div class="draw-input-wrapper">
+
+                            <input class="draw-input with-add-on" size="30" type="text" name="form[purpose_{languagecode}]" id="form_purpose_{languagecode}" value="{form[purpose_{languagecode}]}" placeholder="{language}" dir="{form[textdirection_{languagecode}]}"><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{languagecode}]}</span>
+                            </div>
+                        </div>
+                    </div>
+                    </loop name="languages_role">
+                 </div>
+
+                 <div class="draw-card__section draw-card__section--subdued">
+                    <div class="draw-grid draw-grid--no-outside-padding">
+                        <div class="draw-grid__cell">
+                            <div class="draw-input-wrapper">
+                            <label class="draw-label" for="form_custom">{_custom_username_display} <span class="type--subdued">- [fbscore] [fbpercent] [stars] [verified]</span></label>
+                            <input class="draw-input" size="30" type="text" name="form[custom]" id="form_custom" value="{form[custom]}" placeholder="[fbscore] [fbpercent] [fbimport] [stars] [verified] [subscription]">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="draw-grid draw-grid--no-outside-padding">
+                        <div class="draw-grid__cell">
+                            <div class="draw-input-wrapper">
+                            <label class="draw-label" for="form_user_type">{_role_user_type}</label>
+                                <div class="draw-select__wrapper draw-input--has-content">
+                                    {form[roleusertypepulldown]}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                     <div class="draw-grid draw-grid--no-outside-padding">
+                         <div class="draw-grid__cell">
+                             <div class="draw-input-wrapper">
+                                 <label class="draw-label" for="form_visible">{_role_is_active}</label>
+                                 <input type="checkbox" name="form[visible]" id="form_visible" value="1" {form[visible]}> {_yes}
+                             </div>
+                         </div>
+                     </div>
+
+                     <div class="draw-grid draw-grid--no-outside-padding">
+                         <div class="draw-grid__cell">
+                             <div class="draw-input-wrapper">
+                                 <label class="draw-label" for="form_isdefault">Default Role?</label>
+                                 <input type="checkbox" name="form[isdefault]" id="form_isdefault" value="1" {form[isdefault]}> {_yes}
+                             </div>
+                         </div>
+                     </div>
+                     <div class="draw-grid draw-grid--no-outside-padding">
+                        <div class="draw-grid__cell">
+                            <div class="draw-input-wrapper">
+                                <label class="draw-label" for="form_isdefault">Is Admin?</label>
+                                <input type="checkbox" name="form[isadmin]" id="form_isadmin" value="1" {form[isadmin]}> {_yes}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="draw-grid draw-grid--right-aligned">
+                <div class="draw-grid__cell draw-grid__cell--no-flex">
+                    <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                </div>
+            </div>
+            </form>
+        <else />
+        <div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>{_membership_roles}</h1>
+                        <p>When a customer first registers, they choose a role.  That role defines their access permissions on the portal.</p>
+                        <p>From the admin side, roles represent the type of people involved.  For example, &quot;Staff, Employee, Designer, etc&quot;.</p>
+                        <p>
+                            <if condition="!isset($sheel->GPC['subcmd'])">
+                                <a href="{https_server_admin}users/roles/add/">
+                                    <button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">Add new role</button>
+                                </a>
+                            <else />
+                                <a href="{https_server_admin}users/roles/">
+                                    <button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_cancel}</button>
+                                </a>
+                            </if>
+                        </p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <if condition="!isset($sheel->GPC['subcmd']) OR $sheel->GPC['type'] != 'role'"><div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                        <thead>
+                                            <tr>
+    
+                                                <th>{_title}</th>
+                                                <th>{_description}</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <loop name="roles">
+                                            <tr valign="top">
+                                                <td width="20%">{rtitle} <span class="fr">{active}</span></td>
+                                                <td>{rpurpose}
+                                                <div class="type--subdued">{_type}: {roleusertype}</div>
+                                                </td>
+                                                <td class="tr">
+                                                <ul class="segmented">
+                                                  <li>
+                                                      <if condition="isset($sheel->show['canremove_{roleid}']) AND $sheel->show['canremove_{roleid}']">
+                                                    <a href="{https_server_admin}users/roles/delete/{roleid}/" class="btn btn-slim btn--icon" title="{_delete}">
+                                                        <span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span>
+                                                    </a>
+                                                    <else />
+                                                    <a href="javascript:;" class="btn btn-slim btn--icon" title="{_delete}">
+                                                        <span class=" halflings halflings-trash draw-icon--sky-darker" aria-hidden="true"></span>
+                                                    </a>
+                                                    </if>
+                                                  </li>
+                                                </ul></td>
+                                            </tr>
+                                            </loop name="roles">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- view mode -->
+                    </if>
+    
+    
+                </div>
+            </div>
+        </div>
+        </if>
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['users','users_roles']), iLPage.close()"></div>
+    

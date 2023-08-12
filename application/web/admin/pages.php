@@ -31,7 +31,7 @@ $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Pag
 $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Pages';
 
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
-
+    $slng = (isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : 'eng');
     $sheel->template->meta['jsinclude']['header'][] = 'vendor/friendurl';
     $sheel->template->meta['jsinclude']['footer'][] = 'admin_pages';
     if (($sidenav = $sheel->cache->fetch("sidenav_settings")) === false) {

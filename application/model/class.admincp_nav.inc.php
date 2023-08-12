@@ -11,13 +11,8 @@ class admincp_nav extends admincp
     function print($currenturl = '')
     {
         $recentsearches = $this->recent_searches();
-        //$ordercount = $this->sheel->ordercount();
         $customerscount = $this->sheel->customerscount();
-        //$categorycount = $this->sheel->categories->count();
-        //$installedapplinks = $this->sheel->admincp_products->fetch_installed_apps();
-        $ordercount = '0';
-        $categorycount = '0';
-        $installedapplinks = '0';
+
         $html = '<div id="NavDrawer" class="nav-drawer" define="{iLPage: new Sheel.Drawer(this)}">
         <nav role="navigation" class="draw-nav draw-nav--is-expanded" define="{iLNav: new Sheel.Navi(this)}" bind-event-mouseenter="iLNav.onMouseEnter(this)" bind-event-mouseleave="iLNav.onMouseLeave(this)" bind-class="{\'draw-nav--show-overflow\': globalSearch.expanded}">
                 <div class="draw-nav__panel draw-nav__panel--primary" bind-event-mouseenter="iLNav.onMouseEnter(this)">
@@ -123,32 +118,7 @@ class admincp_nav extends admincp
                                                 </svg>
                                         </a>
                                 </li>
-                                s
                                 <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="orders" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Orders" aria-controls="iLNav_Orders" href="' . HTTPS_SERVER_ADMIN . 'orders/">
-                                                <span class="glyphicons glyphicons-credit-card draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">{_orders}</span>
-                                                ' . (($ordercount > 0) ? '<span class="draw-nav__badge green draw-nav__badge--adjacent-chevron" id="iLNav_Orders" title="{_orders}" refresh-always="">
-                                                    <span class="draw-nav__badge-content" id="ordercount">' . $this->custom_number_format($ordercount, 1) . '</span>
-                                                </span>' : '') . '
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>
-
-                            
-                                
-                                <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="accounting" bind-event-click="" allow-default="1" href="' . HTTPS_SERVER_ADMIN . 'accounting/">
-                                                <span class="glyphicons glyphicons-bank draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">{_accounting}</span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>
-                                <!--<li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="reports" bind-event-click="" allow-default="1" href="' . HTTPS_SERVER_ADMIN . 'reports/">
                                                 <span class="glyphicons glyphicons-charts draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">Reports</span>
@@ -156,19 +126,8 @@ class admincp_nav extends admincp
                                                         <use xlink:href="#draw-chevron"></use>
                                                 </svg>
                                         </a>
-                                </li>-->
-                                <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="categories" bind-event-click="" allow-default="1" href="' . HTTPS_SERVER_ADMIN . 'categories/">
-                                                <span class="glyphicons glyphicons-tree-structure draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">{_categories}</span>
-                                                <span class="draw-nav__badge purple draw-nav__badge--adjacent-chevron" id="iLNav_Categories" title="{_categories}" refresh-always="">
-                                                    <span class="draw-nav__badge-content" id="usercount">' . $this->custom_number_format($categorycount, 0) . '</span>
-                                                </span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
                                 </li>
+
                                 <li class="draw-nav__item--spacer"></li>
                                 ' . ((isset($this->sheel->config['stores']) AND $this->sheel->config['stores']) ? '<li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="stores" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Stores" aria-controls="iLNav_Stores" href="' . HTTPS_SERVER_ADMIN . 'stores/">
@@ -188,20 +147,12 @@ class admincp_nav extends admincp
                                                 </svg>
                                         </a>
                                 </li>' : '') . '
-                                <li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="marketplace" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Marketplace" aria-controls="iLNav_Marketplace" href="' . HTTPS_SERVER_ADMIN . 'marketplace/">
-                                                <span class="glyphicons glyphicons-globe draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">Marketplace</span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>
+                                
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="whosonline" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_WhosOnline" aria-controls="iLNav_WhosOnline" href="' . HTTPS_SERVER_ADMIN . 'sessions/">
                                             <span class="glyphicons glyphicons-door draw-icon" aria-hidden="true"></span>
                                             <span class="draw-nav__text">Who\'s Online</span>
-                                            <span class="draw-nav__badge orange draw-nav__badge--adjacent-chevron" id="iLNav_WhosOnline" title="Visitors online" refresh-always="">
+                                            <span class="draw-nav__badge green draw-nav__badge--adjacent-chevron" id="iLNav_WhosOnline" title="Visitors online" refresh-always="">
                                                 <span class="draw-nav__badge-content">' . number_format($this->sheel->admincp->members_online(false)) . '</span>
                                             </span>
                                             <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
@@ -259,15 +210,6 @@ class admincp_nav extends admincp
                         </ol>
                 </div>
                 <div class="draw-nav__panel draw-nav__panel--secondary" bind-event-mouseenter="iLNav.onMouseEnter(this)">
-                        <!-- orders subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="orders" id="iLNav_Orders">
-                                <li class="draw-nav__item draw-nav__item--header">
-                                        <h2 class="draw-heading--callout">Orders</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="orders_orders" bind-event-click="" allow-default="1" href="orders/">Orders</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="orders_pending" bind-event-click="" allow-default="1" href="orders/checkouts/">Checkouts Pending</a> </li>
-                        </ol>
-                        <!-- orders subnav -->
                         <!-- customers subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="customers" id="iLNav_Customers">
                                 <li class="draw-nav__item draw-nav__item--header">
@@ -285,115 +227,9 @@ class admincp_nav extends admincp
                                 </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users" bind-event-click="" allow-default="1" href="users/">Users</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_bulkmailer" bind-event-click="" allow-default="1" href="users/bulkmailer/">Bulk Mailer</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_roles" bind-event-click="" allow-default="1" href="users/roles/">Roles</a> </li>
                         </ol>
                         <!-- customers subnav -->
-                        <!-- products subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="products" id="iLNav_Products">
-                                <li class="draw-nav__item draw-nav__item--header">
-                                        <h2 class="draw-heading--callout">Products</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="products_brand" bind-event-click="" allow-default="1" href="products/brands/">Brands</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="products_addbrand" bind-event-click="" allow-default="1" href="products/brands/add/">Add Brand</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="products_addproduct" bind-event-click="" allow-default="1" href="products/product/add/">Add Product</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="inventory" bind-event-click="" allow-default="1" href="products/inventory/">Inventory</a> </li>
-                        </ol>
-                        <!-- products subnav -->
-                        <!-- accounting subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="accounting" id="iLNav_Accounting">
-                                <li class="draw-nav__item draw-nav__item--header draw-nav__item--view-channel">
-                                        <h2 class="draw-heading--callout">{_accounting}</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_overview" bind-event-click="" allow-default="1" href="accounting/">{_overview}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_currency" bind-event-click="" allow-default="1" href="accounting/currency/">{_currency_manager}</a> </li>
-                                <!--<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_statements" bind-event-click="" allow-default="1" href="accounting/statements/">{_statements_manager}</a> </li>-->
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_invoices" bind-event-click="" allow-default="1" href="accounting/invoices/">{_billing_manager}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_recurring" bind-event-click="" allow-default="1" href="accounting/recurring/">{_recurring_manager}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_escrow" bind-event-click="" allow-default="1" href="accounting/escrow/">{_escrow_manager}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_deposits" bind-event-click="" allow-default="1" href="accounting/deposits/">{_deposits_manager}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_withdraws" bind-event-click="" allow-default="1" href="accounting/withdraws/">{_withdrawal_manager}</a> </li>
-                                <li class="draw-nav__item--spacer"></li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_creditcards" bind-event-click="" allow-default="1" href="accounting/creditcards/">{_credit_cards_manager}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="accounting_bankaccounts" bind-event-click="" allow-default="1" href="accounting/bankaccounts/">{_bank_accounts_manager}</a> </li>
-                        </ol>
-                        <!-- accounting subnav -->
-                        <!-- marketplace subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="marketplace" id="iLNav_Marketplace">
-                                <li class="draw-nav__item draw-nav__item--header draw-nav__item--view-channel">
-                                        <h2 class="draw-heading--callout">Marketplace</h2>
-                                        <a class="btn btn--plain tooltip tooltip-right-align tooltip-bottom tooltip-bottom--light-arrow" target="_blank" title="Front End" href="' . HTTPS_SERVER . '">
-                                                <span class="glyphicons glyphicons-new-window draw-icon" aria-hidden="true"></span>
-                                                <div class="tooltip-container"> <span class="tooltip-label tooltip--view-website tooltip-label--light">View your marketplace</span> </div>
-                                        </a>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_overview" bind-event-click="" allow-default="1" href="marketplace/">Overview</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_pages" bind-event-click="" allow-default="1" href="marketplace/pages/">Pages &amp; Content</a> </li>
-                                <!--<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_blocks" bind-event-click="" allow-default="1" href="marketplace/blocks/">HTML Blocks</a> </li>-->
-                                <li class="draw-nav__item"> <a data-no-turbolink="true" class="draw-nav__link" data-nav-sub-item="marketplace_heros" bind-event-click="" allow-default="1" href="marketplace/heros/">Hero Designer</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_plans" bind-event-click="" allow-default="1" href="marketplace/plans/">Membership Plans</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_fees" bind-event-click="" allow-default="1" href="marketplace/fees/">Fees &amp; Upsell</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_motd" bind-event-click="" allow-default="1" href="marketplace/motd/">Message of the Day</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_announcements" bind-event-click="" allow-default="1" href="marketplace/announcements/">Annoucements</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_listings" bind-event-click="" allow-default="1" href="marketplace/listings/" data-turbolinks-track="reload">Listings Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_attachments" bind-event-click="" allow-default="1" href="marketplace/attachments/">Attachment Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_bids" bind-event-click="" allow-default="1" href="marketplace/bids/">Bids Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_keywords" bind-event-click="" allow-default="1" href="marketplace/keywords/">Popular Keywords</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_themes" bind-event-click="" allow-default="1" href="marketplace/themes/">Theme Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_emails" bind-event-click="" allow-default="1" href="marketplace/emails/">Email Templates</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_languages" bind-event-click="" allow-default="1" href="marketplace/languages/">Language Manager</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_locations" bind-event-click="" allow-default="1" href="marketplace/locations/">Locations Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_nonprofit" bind-event-click="" allow-default="1" href="marketplace/nonprofit/">Nonprofit Manager</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_feedback" bind-event-click="" allow-default="1" href="marketplace/feedback/">Feedback Manager</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="marketplace_maintenance" bind-event-click="" allow-default="1" href="marketplace/maintenance/">Maintenance Mode</a> </li>
-                        </ol>
-                        <!-- marketplace subnav -->
-                        ' . ((isset($this->sheel->config['stores']) AND $this->sheel->config['stores']) ? '<!-- stores subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="stores" id="iLNav_Stores">
-                                <li class="draw-nav__item draw-nav__item--header draw-nav__item--view-channel">
-                                        <h2 class="draw-heading--callout">Stores</h2>
-                                        <a class="btn btn--plain tooltip tooltip-right-align tooltip-bottom tooltip-bottom--light-arrow" target="_blank" title="View Stores Front End" href="' . HTTPS_SERVER . 'stores/">
-                                                <span class="glyphicons glyphicons-new-window draw-icon" aria-hidden="true"></span>
-                                                <div class="tooltip-container"> <span class="tooltip-label tooltip--view-website tooltip-label--light">View stores</span> </div>
-                                        </a>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="stores_overview" bind-event-click="" allow-default="1" href="stores/">Overview</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="stores_listings" bind-event-click="" allow-default="1" href="stores/listings/">Stores</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="stores_promocodes" bind-event-click="" allow-default="1" href="stores/promocodes/">Promotional Codes</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="stores_fees" bind-event-click="" allow-default="1" href="stores/fees/">Fees &amp; Upsell</a> </li>
-                        </ol>
-                        <!-- stores subnav -->' : '') . '
-                        ' . ((isset($this->sheel->config['brands']) AND $this->sheel->config['brands']) ? '<!-- brands subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="brands" id="iLNav_Brands">
-                                <li class="draw-nav__item draw-nav__item--header draw-nav__item--view-channel">
-                                        <h2 class="draw-heading--callout">{_brands}</h2>
-                                        <a class="btn btn--plain tooltip tooltip-right-align tooltip-bottom tooltip-bottom--light-arrow" target="_blank" title="View Brands Front End" href="' . HTTPS_SERVER . 'b/">
-                                                <span class="glyphicons glyphicons-new-window draw-icon" aria-hidden="true"></span>
-                                                <div class="tooltip-container"> <span class="tooltip-label tooltip--view-website tooltip-label--light">View brands</span> </div>
-                                        </a>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_overview" bind-event-click="" allow-default="1" href="brands/">{_overview}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_owners" bind-event-click="" allow-default="1" href="brands/owners/">{_owners}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_listings" bind-event-click="" allow-default="1" href="brands/listings/">{_brands}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_products" bind-event-click="" allow-default="1" href="brands/products/">{_products}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_barcodeimport" bind-event-click="" allow-default="1" href="brands/products/import/">{_products_impex}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_barcodeimportapi" bind-event-click="" allow-default="1" href="brands/products/import/api/">UPC Import API</a> </li>
-                                <!--<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_dropshipimport" bind-event-click="" allow-default="1" href="brands/products/import/dropship/">Dropship Import</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_dropshipimportapi" bind-event-click="" allow-default="1" href="brands/products/import/dropship/api/">Dropship Import API</a> </li>-->
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="brands_suggest" bind-event-click="" allow-default="1" href="' . HTTPS_SERVER . 'b/suggest/" target="_blank">{_suggest_new_brand}</a> </li>
-                        </ol>
-                        <!-- brands subnav -->' : '') . '
-                        <!-- apps subnav -->
-                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="apps" id="iLNav_Settings">
-                                <li class="draw-nav__item draw-nav__item--header">
-                                        <h2 class="draw-heading--callout">Applications</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link draw-nav__link--is-selected" data-nav-sub-item="apps_overview" bind-event-click="" allow-default="1" href="apps/">{_overview}</a> </li>
-                                ' . $installedapplinks . '
-                                <li class="draw-nav__item--spacer"></li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="app_store" bind-event-click="" allow-default="1" href="apps/store/">App Store</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="app_payments" bind-event-click="" allow-default="1" href="apps/payments/">App Payments</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="app_upload" bind-event-click="" allow-default="1" href="apps/upload/">App Install</a> </li>
-                        </ol>
-                        <!-- apps subnav -->
                         <!-- settings subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="settings" id="iLNav_Settings">
                                 <li class="draw-nav__item draw-nav__item--header">
@@ -404,13 +240,15 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_branding" bind-event-click="" allow-default="1" href="settings/branding/">Branding</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locale" bind-event-click="" allow-default="1" href="settings/locale/">Locale</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_mail" bind-event-click="" allow-default="1" href="settings/mail/">Mail / SMTP</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_security" bind-event-click="" allow-default="1" href="settings/security/">Security</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_session" bind-event-click="" allow-default="1" href="settings/session/">Session</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_emails" bind-event-click="" allow-default="1" href="settings/emails/">Email Templates</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_currency" bind-event-click="" allow-default="1" href="settings/currency/">Currency</a> </li>
                                 
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_pages" bind-event-click="" allow-default="1" href="settings/pages/">Pages &amp; Content</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_security" bind-event-click="" allow-default="1" href="settings/security/">Security</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_session" bind-event-click="" allow-default="1" href="settings/session/">Session</a> </li>
+                                <li class="draw-nav__item"> <a data-no-turbolink="true" class="draw-nav__link" data-nav-sub-item="settings_heros" bind-event-click="" allow-default="1" href="settings/heros/">Hero Designer</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_memberships" bind-event-click="" allow-default="1" href="settings/memberships/">Memberships</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>

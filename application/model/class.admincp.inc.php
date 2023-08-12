@@ -866,7 +866,7 @@ class admincp
          */
         function print_roleusertype_pulldown($selected = '', $textonly = false)
         {
-                $roleusertypes = array('productbuyer' => '{_product_buyer}', 'productseller' => '{_product_seller}', 'all' => '{_product_buyer_seller}');
+                $roleusertypes = array('customer' => '{_customer}', 'admin' => '{_admin}');
                 if ($textonly) {
                         return $roleusertypes["$selected"];
                 } else {
@@ -939,6 +939,7 @@ class admincp
                                 " . ((!empty($varname)) ? "GROUP BY g.groupname" : "") . "
                                 ORDER BY g.sort ASC
                         ", 0, null, __FILE__, __LINE__);
+                        
                         if ($this->sheel->db->num_rows($sqlgrp) > 0) {
                                 $i = 0;
                                 while ($resgrpties = $this->sheel->db->fetch_array($sqlgrp, DB_ASSOC)) {
@@ -1119,7 +1120,7 @@ class admincp
                 } else if ($variableinfo == 'globalauctionsettings_endsoondays') {
                         $html .= $this->sheel->construct_pulldown("config[$variableinfo]", "config[$variableinfo]", array('-1' => '{_any_date}', '1' => '1 {_hour}', '2' => '2 {_hours}', '3' => '3 {_hours}', '4' => '4 {_hours}', '5' => '5 {_hours}', '6' => '12 {_hours}', '7' => '24 {_hours}', '8' => '2 {_days}', '9' => '3 {_days}', '10' => '4 {_days}', '11' => '5 {_days}', '12' => '6 {_days}', '13' => '7 {_days}', '14' => '2 {_weeks}', '15' => '1 {_month}'), $this->sheel->config[$variableinfo], 'class="draw-select"');
                 } else if ($variableinfo == 'subscriptions_defaultroleid_product') {
-                        $html .= $this->sheel->subscription_role->print_role_pulldown($this->sheel->config['subscriptions_defaultroleid_product'], 0, 0, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'config_subscriptions_defaultroleid_product', 'config[subscriptions_defaultroleid_product]');
+                        $html .= $this->sheel->role->print_role_pulldown($this->sheel->config['subscriptions_defaultroleid_product'], 0, 0, 0, '', $_SESSION['sheeldata']['user']['slng'], 'draw-select', 'config_subscriptions_defaultroleid_product', 'config[subscriptions_defaultroleid_product]');
                 } else if ($variableinfo == 'subscriptions_defaultplanid_product') {
                         $html .= $this->sheel->subscription->plans_pulldown('draw-select', $this->sheel->config['subscriptions_defaultplanid_product'], '', 'config[subscriptions_defaultplanid_product]', 'config_subscriptions_defaultplanid_product');
                 } else {

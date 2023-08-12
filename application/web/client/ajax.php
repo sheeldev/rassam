@@ -266,6 +266,71 @@ if (isset($sheel->GPC['do'])) {
 			echo $sheel->template->parse_template_phrases('showcities');
 			exit();
 		}
+	} 	else if ($sheel->GPC['do'] == 'heropicture')
+	{ // admin hero picture info
+		if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND $_SESSION['sheeldata']['user']['isadmin'] == '1')
+		{
+			$filename = ((isset($sheel->GPC['filename'])) ? $sheel->GPC['filename'] : '');
+			$mode = ((isset($sheel->GPC['mode'])) ? o($sheel->GPC['mode']) : 'homepage');
+			$folder = ((isset($sheel->GPC['folder'])) ? o($sheel->GPC['folder']) : 'heros');
+			$cid = ((isset($sheel->GPC['cid'])) ? intval($sheel->GPC['cid']) : 0);
+			$id = ((isset($sheel->GPC['id'])) ? intval($sheel->GPC['id']) : 0);
+			if (!empty($filename))
+			{
+				if ($mode == 'load' AND $id > 0)
+				{
+					$sql = $sheel->db->query("
+						SELECT imagemap, mode, filename, sort, width, height, styleid
+						FROM " . DB_PREFIX . "hero
+						WHERE filename = '" . $sheel->db->escape_string($filename) . "'
+							AND id = '" . intval($id) . "'
+						LIMIT 1
+					");
+					if ($sheel->db->num_rows($sql) > 0)
+					{
+						$res = $sheel->db->fetch_array($sql, DB_ASSOC);
+						$themeselect = '<div class="draw-select__wrapper draw-input--has-content">' . $sheel->styles->print_styles_pulldown($res['styleid'], '', 'src_styleid', 'draw-select') . '</div>';
+						$pulldown = '<div class="draw-select__wrapper draw-input--has-content"><select name="src_location" id="src_location" class="draw-select" onchange="((jQuery(\'#src_location option:selected\').attr(\'type\').length > 0) ? jQuery(\'#src_mode\').val(jQuery(\'#src_location option:selected\').attr(\'type\')) : jQuery(\'#src_mode\').val(\'\'))"><optgroup label="{_location}"><option value="homepage" id="0" cid="0"' . (($res['mode'] == 'homepage') ? ' selected="selected"' : '') . ' type="homepage">{_homepage}</option><option value="landingpage" id="0" cid="0"' . (($res['mode'] == 'landingpage') ? ' selected="selected"' : '') . ' type="landingpage">Landing Page</option></optgroup>';
+	
+						$pulldown .= '</select><input type="hidden" name="src_mode" id="src_mode" value="' . $res['mode'] . '" /></div>';
+						$sheel->template->templateregistry['results'] = "$res[sort]|$res[imagemap]|''|$pulldown|$res[width]|$res[height]|$themeselect";
+						die($sheel->template->parse_template_phrases('results'));
+					}
+				}
+				else if ($mode == 'insert')
+				{
+					$sql = $sheel->db->query("
+						SELECT imagemap, mode, filename, sort
+						FROM " . DB_PREFIX . "hero
+						ORDER BY sort DESC
+						LIMIT 1
+					");
+					if ($sheel->db->num_rows($sql) > 0)
+					{
+						$res = $sheel->db->fetch_array($sql, DB_ASSOC);
+						$themeselect = '<div class="draw-select__wrapper draw-input--has-content">' . $sheel->styles->print_styles_pulldown($sheel->config['defaultstyle'], '', 'src_styleid', 'draw-select') . '</div>';
+						$pulldown = '<div class="draw-select__wrapper draw-input--has-content"><select name="src_location" id="src_location" class="draw-select" onchange="((jQuery(\'#src_location option:selected\').attr(\'type\').length > 0) ? jQuery(\'#src_mode\').val(jQuery(\'#src_location option:selected\').attr(\'type\')) : jQuery(\'#src_mode\').val(\'\'))"><option value="">{_select_a_location}</option><optgroup label="{_location}"><option value="homepage" id="0" type="homepage">{_homepage}</option><option value="landingpage" id="0" type="landingpage">Landing Page</option></optgroup>';
+						$pulldown .= '</select><input type="hidden" name="src_mode" id="src_mode" /></div>';
+						$width = $height = '';
+						$targetpath = DIR_ATTACHMENTS . $folder . '/' . $filename;
+						if (file_exists($targetpath)) 
+						{
+							list($width, $height, $type, $attr) = getimagesize($targetpath);
+						}
+						$sheel->template->templateregistry['results'] = "$res[sort]|$res[imagemap]|''|$pulldown|$width|$height|$themeselect";
+						echo $sheel->template->parse_template_phrases('results');
+						exit();
+					}
+					else
+					{
+						echo "10|";
+						exit();
+					}
+				}
+			}
+		}
+		echo '';
+		exit();
 	} else if ($sheel->GPC['do'] == 'build') {
 		die('001');
 	} else if ($sheel->GPC['do'] == 'version') {

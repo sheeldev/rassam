@@ -68,12 +68,10 @@ $sheel->cache = new cache($sheel);
 $sheel->cachecore = new cache($sheel);
 require_once(__DIR__ . '/model/class.configuration.inc.php');
 $sheel->configuration = new configuration($sheel);
+
 require_once(__DIR__ . '/model/class.sessions.inc.php');
-
-
 ini_set("session.name", 's');
 set_cookie('history', '1');
-
 // token start
 $token = '';
 $characters = '0123456789abcdef';
@@ -84,14 +82,11 @@ for ($i = 0; $i < 32; ++$i) {
 set_cookie('token', $token);
 define('TOKEN', $token);
 // token end
-
 $sheel->sessions->start();
+require_once(__DIR__ . '/model/class.language.inc.php');
+$sheel->language = new language($sheel);
+require_once(__DIR__ . '/model/class.styles.inc.php');
+$sheel->styles = new styles($sheel);
 $sheel->language->init_phrases();
 //echo "<script>console.log('Console: " . $_COOKIE['s'].': '.$sheel->sessions->seconds_until_expiry($_COOKIE['s'])['secondsleft']."' );</script>"; 
-
-
-
-
-
-
 ?>

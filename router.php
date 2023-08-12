@@ -50,6 +50,9 @@ $router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/user
 $router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer_view');
 $router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer');
 $router->map('GET|POST', '/admin/users/[add|bulkmailer|bulkmailer/export|verifications|violations|audit:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_add');
+$router->map('GET|POST', '/admin/users/roles/', __DIR__ . '/application/web/admin/roles.php', 'admin_role');
+$router->map('GET|POST', '/admin/users/[roles:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_add');
+$router->map('GET|POST', '/admin/users/[roles:cmd]/[delete|update:subcmd]/[*:roleid]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_cmd');
 
 
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
@@ -68,6 +71,17 @@ $router->map('GET|POST', '/admin/settings/[emails:cmd]/[import|export|add|save:s
 $router->map('GET|POST', '/admin/settings/pages/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages');
 $router->map('GET|POST', '/admin/settings/[pages:cmd]/[add|add/link:subcmd]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_add_cmd');
 $router->map('GET|POST', '/admin/settings/[pages:cmd]/[update|update/link|delete:subcmd]/[*:seourl]/', __DIR__ . '/application/web/admin/pages.php', 'admin_pages_cmd');
+$router->map('GET|POST', '/admin/settings/heros/', __DIR__ . '/application/web/admin/heros.php', 'admin_heros');
+$router->map('GET|POST', '/admin/settings/[heros:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/heros.php', 'admin_heros_upload');
+$router->map('GET|POST', '/admin/settings/memberships/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership');
+$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[add:subcmd]/[role|plan|permission:type]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_add_type_cmd');
+$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[delete|update:subcmd]/[role:type]/[*:roleid]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_delete_role_cmd');
+$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[delete|update:subcmd]/[plan:type]/[*:subscriptionid]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_delete_plan_cmd');
+$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[delete|update:subcmd]/[permission|permissions:type]/[*:subscriptiongroupid]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_delete_group_cmd');
+$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_upload_badge');
+
+
+
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');
 $router->map('GET|POST', '/admin/settings/automation/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation');
 $router->map('GET|POST', '/admin/settings/[automation:cmd]/[add:subcmd]/task/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_add');

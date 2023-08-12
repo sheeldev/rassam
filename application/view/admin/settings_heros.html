@@ -1,0 +1,271 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <form id="img_area_form" autocomplete="off" action="{https_server_admin}settings/heros/" accept-charset="UTF-8" method="post">
+    <input type="hidden" name="do" value="heromanage" />
+    <input type="hidden" name="return" value="{pageurl_urlencoded}" />
+    <div id="navigation-index" class="page">
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+                    {currentarea}
+                </h1>
+            </header>
+        </div>
+        <div class="section section--no-border link-lists">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Hero Designer</h1>
+                        <p>Heros help customers navigate your system offering advanced graphics, clickable hotspots, promos and more.</p>
+                        
+                        
+                        <if condition="isset($show['inactiveheros']) AND $show['inactiveheros']"><else /><fieldset>
+                        <div class="draw-label"><strong>{_available_hero_pictures}</strong></div>
+                        <div class="source_url">
+                            <div class="draw-select__wrapper draw-input--has-content">
+                            <select id="source_url4" name="source_url4" class="draw-select">
+                                <option id="0" value="">{_select_a_picture}</option>
+                                {heropictureoptions}
+                            </select> 
+                            </div>
+                            <div class="st">
+                            
+                                <input type="button" value="{_delete}" name="deletehero" id="deletehero" class="btn sr disabled" bind-event-click="acp_confirm('delete', 'Delete selected graphic ' + jQuery(\'#source_url4\').val() + '?', 'Are you sure you want to delete the selected hero graphic? Please be sure this graphic is not being used by any active heros otherwise it may not show properly on slider views after deletion.', jQuery(\'#source_url4\').val(), 1, '', '')"><input type="button" value="Load in editor" id="loadhero" class="btn btn-primary disabled"> 
+                                
+                                <div class="styled-file-input fl sr">
+                                    <div class="btn"> <span>{_upload} <img src="{imgcdn}v5/ico_working.gif" border="0" alt="" id="uploading" style="display:none" /></span><input type="file" name="hero" class="js-no-dirty" id="uploader"></div>
+                                </div>
+                            
+                            </div>
+                            <div class="st">
+                                <div class="type--subdued">Dimension: {herodimension}</div>
+                            </div>
+                        </div>
+                        </fieldset>
+                        </if>
+                    </div>
+                </div>
+                
+                <div class="layout-content__main layout-content__no-padding">
+                    <div class="section-content">
+                        <div class="draw-grid">
+                            <div class="draw-grid__cell">
+                                <div>
+                                
+                                
+                                    <div class="draw-card" id="heros-active">
+                                        <div class="draw-card__section">
+                                            
+                                                <fieldset>
+                                                    <div class="draw-label"><strong>{_active_hero_pictures}</strong></div>
+                                                    <div class="type--subdued sb">{_hero_pictures_active_homepage}</div>
+                                                    
+                                                    <div class="source_url">
+                                                    
+                                                        <div class="draw-select__wrapper draw-input--has-content">
+                                                        <select id="source_url3" name="source_url3" class="draw-select">
+                                                        <option value="" id="0">{_select_a_picture}</option>
+                                                        {activeheropictureoptions}
+                                                        </select>
+                                                        </div>
+                                                        <input type="hidden" name="source_url3_id" id="source_url3_id" />
+                                                        <input type="hidden" name="source_url3_folder" id="source_url3_folder" />
+                                                        <div class="st">
+                                                            <input type="button" value="Load in editor" class="btn btn-primary disabled" id="loadactivehero"> <input type="button" value="{_inactivate}" name="inactivatehero" id="inactivatehero" class="btn disabled" bind-event-click="acp_confirm('inactivate', 'Inactivate selected hero ' + jQuery(\'#source_url3\').val() + '?', 'Are you sure you want to inactivate the selected hero graphic? This action does not physically delete the graphic file [' + jQuery(\'#source_url3\').val() + '], but removes it from the slider views.', jQuery(\'#source_url3_id\').val(), 1, '', '')">
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </fieldset>
+                                                
+                                                
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-card" id="heros-editor">
+                                        
+                                        <div class="draw-card__section">
+                                        
+                                            <table class="expanded">
+                                            <thead>
+                                                <tr id="button_container" valign="top">
+                                                    <th>
+                                                        <label for="hotspots">Hotspots:</label>
+                                                        <button type="button" class="btn btn-primary" onclick="myimgmap.addNewArea()">{_add}</button>&nbsp;
+                                                           <button type="button" class="btn" onclick="myimgmap.removeArea(myimgmap.currentid)">{_delete}</button>
+                                                       </th>
+                                                    <th><label for="dd_zoom">{_zoom}:</label>
+                                                        
+                                                        <div class="draw-select__wrapper draw-input--has-content">
+                                                        <select onChange="gui_zoom(this)" id="dd_zoom" class="draw-select">
+                                                        <option value='0.25'>25%</option>
+                                                        <option value='0.5'>50%</option>
+                                                        <option value='0.75'>75%</option>
+                                                        <option value='1' selected="1">100%</option>
+                                                        <option value='2'>200%</option>
+                                                        <option value='3'>300%</option>
+                                                        </select>
+                                                        </div></th>
+                                                    <th><label for="dd_output">{_output}:</label> 
+                                                        
+                                                        <div class="draw-select__wrapper draw-input--has-content">
+                                                        <select id="dd_output" onChange="return gui_outputChanged(this)" class="draw-select">
+                                                        <option value='imagemap'>{_standard_image_map}</option>
+                                                        </select>
+                                                        </div>
+                                                        
+                                                        <div class="draw-select__wrapper draw-input--has-content st">
+                                                        <select onChange="changelabeling(this)" class="draw-select">
+                                                        <option value='' selected='1'>{_no_labeling}</option>
+                                                        <option value='%n'>{_label_with_numbers}</option>
+                                                        <option value='%a'>{_label_with_alt_text}</option>
+                                                        <option value='%h'>{_label_with_href}</option>
+                                                        <option value='%c'>{_label_with_coords}</option>
+                                                        </select>
+                                                        </div></th>
+                                                </tr>
+                                            </thead>
+                                            <tr>
+                                            
+                                            </tr>
+                                            </table>
+                                            
+                                            <fieldset>
+                                            
+                                                <!--<legend>
+                                                    <div class="draw-label"><strong><a onclick="toggleFieldset(this.parentNode.parentNode)">{_image_map_editor}</a></strong></div>
+                                                </legend>-->
+    
+                                                <table class="expanded">
+                                                <thead>
+                                                    <tr id="form_container" valign="top"></tr>
+                                                </thead>
+                                                </table>
+    
+                                            </fieldset>
+                                                
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-card" id="heros-picture">
+                                        
+                                        <div class="draw-card__section">
+                                        
+                                            <fieldset>
+                                                    
+                                                    <legend class="ssb w-100pct">
+                                                        <div class="draw-label"><span class="fr type--subdued" id="status_container">Ready</span><strong>{_picture}</strong></div>
+                                                    </legend>
+                                                    
+                                                    <div id="pic_container"></div>			
+                                            </fieldset>
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                     <div class="draw-card" id="heros-map">
+                                        
+                                        <div class="draw-card__section">
+                                        
+                                                <div class="draw-label"><strong>{_image_map}</strong></div>
+                                                <div class="type--subdued">This map is automatically generated based on your generated hotspots.</div>
+                                                <fieldset id="fieldset_html" class="fieldset_off">
+                                                    <textarea id="html_container" name="html_container" class="draw-input"></textarea>
+                                                </fieldset>
+                                                    
+                                            
+                                        
+                                        </div>
+                                        
+                                     </div>
+                                     
+                                     <div class="draw-card" id="heros-location">
+                                        
+                                        <div class="draw-card__section">
+                                        
+                                            <fieldset>
+                                            <legend>
+                                                <div class="draw-label"><strong>{_location}</strong></div>
+                                            </legend>
+                                            <div class="type--subdued">You can set visibility for this picture on the home or landing page </div>
+                                            <div id="pic_categoryid"></div>	
+                                            </fieldset>
+                                        
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-card" id="heros-theme">
+                                        
+                                        <div class="draw-card__section">
+                                        
+                                            <fieldset>
+                                            <legend>
+                                                <div class="draw-label"><strong>{_theme}</strong></div>
+                                            </legend>
+                                            <div class="type--subdued">Please select the theme in which this hero graphic can be used.</div>
+                                            <div id="pic_styleid"></div>	
+                                            </fieldset>
+                                        
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="draw-card" id="heros-displayorder">
+                                        
+                                        <div class="draw-card__section">
+                                        
+                                            <fieldset>
+                                                    <legend>
+                                                        <div class="draw-label"><strong>{_display_order}</strong></div>
+                                                    </legend>
+                                                    <div class="type--subdued">You can decide which picture is shown first or last using display ordering.</div>
+                                                    <div id="pic_displayorder"></div>			
+                                                </fieldset>
+                                                
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                
+                                
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+                      
+    <div class="section">
+        <div class="draw-grid draw-grid--right-aligned">
+            <div class="draw-grid__cell draw-grid__cell--no-flex">
+                <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']">
+                    
+                    <div class="hide" id="savebutton"><button name="updatehero" type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" disabled="disabled">{_save}</button></div>
+                    <div class="hide" id="insertbutton"><button name="activatehero" type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" disabled="disabled">{_activate}</button></div>
+                    
+                    <else />
+                    
+                    <div class="hide" id="savebutton"><button name="updatehero" type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></div>
+                    <div class="hide" id="insertbutton"><button name="activatehero" type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_activate}</button></div>
+                    
+                </if>
+            </div>
+        </div>
+    </div>
+    
+    </form>
+    <script src="{jscdn}vendor/imap/imgmap<if condition="$sheel->config['globalfilters_jsminify']">.min</if>.js"></script>
+    <script src="{jscdn}vendor/imap/default_interface<if condition="$sheel->config['globalfilters_jsminify']">.min</if>.js"></script>
+    <div define="iLNav.setPage(['settings','settings_heros']), iLPage.close()"></div>

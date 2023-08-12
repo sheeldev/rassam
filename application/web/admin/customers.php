@@ -22,7 +22,6 @@ $sheel->template->meta['jsinclude'] = array(
 );
 $sheel->template->meta['cssinclude'] = array(
     'common',
-    'addition',
     'spinner',
     'vendor' => array(
         'font-awesome',
