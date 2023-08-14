@@ -2,13 +2,13 @@
     <script>
     Page();
     </script>
-    <div id="membership-index" refresh="membership-index" class="page has-contextual-help">
+    <div id="role-index" refresh="role-index" class="page has-contextual-help">
     
         <div class="header-row">
             <header class="header">
             <h1 class="header__main">
                     <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
-                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_users}</a> / </span> {currentarea}
+                    <span class="breadcrumb"><a href="{https_server_admin}users/">{_users}</a> / </span> {currentarea}
                 </h1>
     
                 <div class="header__primary-actions"></div>
@@ -110,16 +110,75 @@
             </div>
             <div class="draw-grid draw-grid--right-aligned">
                 <div class="draw-grid__cell draw-grid__cell--no-flex">
-                    <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                 </div>
             </div>
             </form>
         <else />
+        <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'access'">
+            <form autocomplete="off" action="{https_server_admin}users/roles/access/{form[roleid]}/" accept-charset="UTF-8" method="post">
+                <input type="hidden" name="subcmd" value="update" />
+                <input type="hidden" name="roleid" value="{form[roleid]}" />
+                <input type="hidden" name="type" value="permissions" />
+                <input type="hidden" name="do" value="save" />
+                <loop name="access_permission_groups">
+                <div class="section email-templates">
+                        <div class="layout-content">
+                            <div class="layout-content__sidebar layout-content__first">
+                                <div class="section-summary">
+                                    <h1>{title}</h1>
+                                    <p>{help}</p>
+                                </div>
+                            </div>
+                            <div class="layout-content__main">
+                                <div class="draw-card">
+                                    <div class="section-content">
+                                        <div class="draw-card__section">
+                                            <div class="table-wrapper">
+                                                <table class="expanded">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="30%">{_title}</th>
+                                                        <th width="55%">{_description}</th>
+
+                                                        <th width="1%">{_has_access}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <loop name="access_permission_items{accessgroup}">
+                                                    <tr valign="top">
+                                                        <td><a>{accesstext}</a></td>
+                                                        <td><p class="type--subdued">{accessdescription}</p></td>
+                                                        <td>{hasaccess_perm}</td>
+                                                    </tr>
+                                                    </loop name="access_permission_items{accessgroup}">
+                                                </tbody>
+                                                </table>
+            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </loop name="access_permission_groups">
+                    <div class="section">
+                    <div class="draw-grid draw-grid--right-aligned">
+                        <div class="draw-grid__cell draw-grid__cell--no-flex">
+                           <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+        </if>
+        <else />
+        <if condition="!isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == ''">
         <div class="section login-services">
             <div class="layout-content">
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
-                        <h1>{_membership_roles}</h1>
+                        <h1>{_roles}</h1>
                         <p>When a customer first registers, they choose a role.  That role defines their access permissions on the portal.</p>
                         <p>From the admin side, roles represent the type of people involved.  For example, &quot;Staff, Employee, Designer, etc&quot;.</p>
                         <p>
@@ -136,7 +195,7 @@
                     </div>
                 </div>
                 <div class="layout-content__main">
-                    <if condition="!isset($sheel->GPC['subcmd']) OR $sheel->GPC['type'] != 'role'"><div class="draw-card">
+                    <div class="draw-card">
                         <div class="section-content">
                             <div class="draw-card__section">
                                 <div class="table-wrapper">
@@ -158,14 +217,20 @@
                                                 </td>
                                                 <td class="tr">
                                                 <ul class="segmented">
+                                                    <li>
+    
+                                                        <a href="{https_server_admin}users/roles/access/{roleid}/" class="btn btn-slim btn--icon" title="Configure access for this role.">
+                                                          <span class="ico-16-svg halflings halflings-cog draw-icon" aria-hidden="true"></span>
+                                                        </a>
+    
+                                                    </li>
                                                   <li>
                                                       <if condition="isset($sheel->show['canremove_{roleid}']) AND $sheel->show['canremove_{roleid}']">
-                                                    <a href="{https_server_admin}users/roles/delete/{roleid}/" class="btn btn-slim btn--icon" title="{_delete}">
-                                                        <span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span>
-                                                    </a>
+                                                    <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected user role?', 'Are you sure you want to delete the selected user role?', '{roleid}', 1, '', '{https_server_admin}users/roles/delete/{roleid}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+
                                                     <else />
                                                     <a href="javascript:;" class="btn btn-slim btn--icon" title="{_delete}">
-                                                        <span class=" halflings halflings-trash draw-icon--sky-darker" aria-hidden="true"></span>
+                                                        <span class=" ico-16-svg halflings halflings-trash draw-icon--sky-darker" aria-hidden="true"></span>
                                                     </a>
                                                     </if>
                                                   </li>
@@ -178,13 +243,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- view mode -->
-                    </if>
-    
-    
                 </div>
             </div>
         </div>
+        </if>
         </if>
     </div>
     </section>

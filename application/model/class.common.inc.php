@@ -1821,7 +1821,7 @@ class common
 				return $os;
 			}
 		}
-		return (($forceicon) ? $this->sheel->config['imgcdn'] . 'browser/unknown.gif' : 'Unknown');
+		return (($forceicon) ? '<span title="Unknown"><img src="' . $this->sheel->config['imgcdn'] . 'browser/unknown.gif" border="0" alt="" /></span>' : 'Unknown');
 	}
 	/**
 	 * Function to fetch the title of the crawler found within the robot file

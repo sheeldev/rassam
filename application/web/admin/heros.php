@@ -42,10 +42,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $currentarea = 'Hero Manager';
 
     if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'inactivate') { // inactivate hero
-        if ($sheel->show['ADMINCP_TEST_MODE']) {
-            $sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-            die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-        }
         if (isset($sheel->GPC['xid']) and !empty($sheel->GPC['xid'])) {
             $sheel->db->query("
                 DELETE FROM " . DB_PREFIX . "hero

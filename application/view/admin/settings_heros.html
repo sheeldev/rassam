@@ -250,17 +250,7 @@
     <div class="section">
         <div class="draw-grid draw-grid--right-aligned">
             <div class="draw-grid__cell draw-grid__cell--no-flex">
-                <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']">
-                    
-                    <div class="hide" id="savebutton"><button name="updatehero" type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" disabled="disabled">{_save}</button></div>
-                    <div class="hide" id="insertbutton"><button name="activatehero" type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" disabled="disabled">{_activate}</button></div>
-                    
-                    <else />
-                    
-                    <div class="hide" id="savebutton"><button name="updatehero" type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></div>
-                    <div class="hide" id="insertbutton"><button name="activatehero" type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_activate}</button></div>
-                    
-                </if>
+
             </div>
         </div>
     </div>

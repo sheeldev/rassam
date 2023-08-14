@@ -29,7 +29,8 @@
                     </div>
                 </div>
                 <div class="layout-content__main">
-                    <if condition="!isset($sheel->GPC['subcmd']) OR $sheel->GPC['type'] != 'plan'"><div class="draw-card">
+                    <if condition="!isset($sheel->GPC['subcmd']) OR $sheel->GPC['type'] != 'plan'">
+                    <div class="draw-card">
                         <div class="section-content">
                             <div class="draw-card__section">
                                 <div class="table-wrapper">
@@ -55,7 +56,7 @@
                                                 <ul class="segmented">
                                                     <li>
     
-                                                        <a href="{https_server_admin}settings/memberships/update/permissions/{subscriptionid}/" class="btn btn-slim btn--icon" title="Configure permissions for this group.">
+                                                        <a href="{https_server_admin}settings/memberships/update/permissions/{subscriptionid}/" class="btn btn-slim btn--icon" title="Configure permissions for this membership.">
                                                           <span class="ico-16-svg halflings halflings-cog draw-icon" aria-hidden="true"></span>
                                                         </a>
     
@@ -63,9 +64,8 @@
     
                                                   <li>
                                                       <if condition="isset($sheel->show['candelete_{subscriptionid}']) AND $sheel->show['candelete_{subscriptionid}']">
-                                                    <a href="{https_server_admin}settings/memberships/delete/plan/{subscriptionid}/" class="btn btn-slim btn--icon" title="{_delete}">
-                                                      <span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span>
-                                                    </a>
+                                                        <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected membership?', 'Are you sure you want to delete the selected membership?', '{subscriptionid}', 1, '', '{https_server_admin}settings/memberships/delete/plan/{subscriptionid}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                   
                                                     <else />
                                                     <a href="javascript:;" class="btn btn-slim btn--icon" title="{_delete}">
                                                       <span class="ico-16-svg halflings halflings-trash draw-icon--sky-darker" aria-hidden="true"></span>
@@ -203,7 +203,7 @@
                                     </div>
     
                                     <div class="styled-file-input fl sr st">
-                                        <div class="btn"> <span>{_upload} Badge <img src="{imgcdn}v5/ico_working.gif" border="0" alt="" id="uploading" style="display:none" /></span> <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><input type="button" value="{_upload}" class="btn sr" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })"><else /><input type="file" name="badge" class="js-no-dirty" id="uploader"></if></div>
+                                        <div class="btn"> <span>{_upload} Badge <img src="{imgcdn}v5/ico_working.gif" border="0" alt="" id="uploading" style="display:none" /></span><input type="file" name="badge" class="js-no-dirty" id="uploader"></div>
                                     </div>
                                 </div>
     
@@ -224,7 +224,7 @@
                     </div>
                     <div class="draw-grid draw-grid--right-aligned">
                         <div class="draw-grid__cell draw-grid__cell--no-flex">
-                            <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                            <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                         </div>
                     </div>
                     </form>
@@ -244,7 +244,7 @@
         <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'update' AND isset($sheel->GPC['type']) AND $sheel->GPC['type'] == 'permissions'">
         <form autocomplete="off" action="{https_server_admin}settings/memberships/" accept-charset="UTF-8" method="post">
         <input type="hidden" name="subcmd" value="update" />
-        <input type="hidden" name="subscriptiongroupid" value="{form[subscriptiongroupid]}" />
+        <input type="hidden" name="subscriptionid" value="{form[subscriptionid]}" />
         <input type="hidden" name="type" value="permissions" />
         <input type="hidden" name="do" value="save" />
         <loop name="access_permission_groups">
@@ -261,165 +261,6 @@
                             <div class="section-content">
                                 <div class="draw-card__section">
                                     <div class="table-wrapper">
-                                        <if condition="isset($show_admincp_group_{groupid}) AND $show_admincp_group_{groupid}">
-    
-                                        <div class="sb">Common staff / employee permissions:</div>
-                                        <div class="draw-select__wrapper draw-input--has-content ssb">
-                                            <select class="draw-select" id="autoselect">
-                                                <option value="">{_select} &ndash;</option>
-                                                <option value="admin">Full Administrator</option>
-                                                <option value="mod">Moderation Staff</option>
-                                                <option value="ceo">Chief Executive Officer</option>
-                                                <option value="cto">Chief Techincal Officer</option>
-                                                <option value="cfo">Chief Financial Officer</option>
-                                                <option value="mkd">Marketing Director</option>
-                                                <option value="webdesigner">Web &amp; HTML Designer</option>
-                                                <option value="graphicdesigner">Graphic Designer</option>
-                                                <option value="hr">Human Resources</option>
-                                                <option value="translator">Translator</option>
-                                                <option value="srexployee">Senior Employee</option>
-                                                <option value="jrexployee">Junior Employee</option>
-                                                <option value="">----------------------------------------</option>
-                                                <option value="all">{_select_all}</option>
-                                                <option value="none">Deselect all</option>
-                                            </select>
-                                        </div>
-    
-    
-    
-                                        <table class="expanded" id="cb-permissions">
-                                        <tbody>
-                                            <tr valign="top">
-                                                <td>
-                                                    <p class="sb"><strong>{_orders}</strong></p>
-    
-                                                    <div><label for="orders_orders" class="plain"><input type="checkbox" name="acpaccess[]" value="orders_orders" id="orders_orders"> {_orders}</label></div>
-                                                    <div><label for="orders_pending" class="plain"><input type="checkbox" name="acpaccess[]" value="orders_pending" id="orders_pending"> {_checkouts_pending}</label></div>
-    
-                                                    <p class="sb st"><strong>{_customers}</strong></p>
-    
-                                                    <div><label for="customers" class="plain"><input type="checkbox" name="acpaccess[]" value="customers" id="customers"> Customer Manager</label></div>
-                                                    <div><label for="customers_questions" class="plain"><input type="checkbox" name="acpaccess[]" value="customers_questions" id="customers_questions"> Profile Question Manager</label></div>
-                                                    <div><label for="customers_bulkmailer" class="plain"><input type="checkbox" name="acpaccess[]" value="customers_bulkmailer" id="customers_bulkmailer"> Bulk Mailer</label></div>
-                                                    <div><label for="customers_violation" class="plain"><input type="checkbox" name="acpaccess[]" value="customers_violation" id="customers_violation"> Violation Reports</label></div>
-    
-                                                    <p class="sb st"><strong>{_accounting}</strong></p>
-    
-                                                    <div><label for="accounting_overview" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_overview" id="accounting_overview"> {_overview}</label></div>
-                                                    <div><label for="accounting_currency" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_currency" id="accounting_currency"> {_currency_manager}</label></div>
-                                                    <div><label for="accounting_invoices" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_invoices" id="accounting_invoices"> {_billing_manager}</label></div>
-                                                    <div><label for="accounting_escrow" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_escrow" id="accounting_escrow"> {_escrow_manager}</label></div>
-                                                    <div><label for="accounting_deposits" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_deposits" id="accounting_deposits"> {_deposits_manager}</label></div>
-                                                    <div><label for="accounting_withdraws" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_withdraws" id="accounting_withdraws"> {_withdrawal_manager}</label></div>
-                                                    <div><label for="accounting_creditcards" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_creditcards" id="accounting_creditcards"> {_credit_cards_manager}</label></div>
-                                                    <div><label for="accounting_bankaccounts" class="plain"><input type="checkbox" name="acpaccess[]" value="accounting_bankaccounts" id="accounting_bankaccounts"> {_bank_accounts_manager}</label></div>
-    
-                                                      <p class="sb st"><strong>{_categories}</strong></p>
-    
-                                                    <div><label for="categories" class="plain"><input type="checkbox" name="acpaccess[]" value="categories" id="categories"> {_category_manager}</label></div>
-                                                    <div><label for="categories_attributes" class="plain"><input type="checkbox" name="acpaccess[]" value="categories_attributes" id="categories_attributes"> Attributes Manager</label></div>
-    
-                                                    <p class="sb st"><strong>{_stores}</strong></p>
-    
-                                                    <div><label for="stores_overview" class="plain"><input type="checkbox" name="acpaccess[]" value="stores_overview" id="stores_overview"> {_overview}</label></div>
-                                                    <div><label for="stores_listings" class="plain"><input type="checkbox" name="acpaccess[]" value="stores_listings" id="stores_listings"> Stores Manager</label></div>
-                                                    <div><label for="stores_fees" class="plain"><input type="checkbox" name="acpaccess[]" value="stores_fees" id="stores_fees"> Store Fees &amp; Upsell</label></div>
-    
-                                                      <p class="sb st"><strong>Who's Online</strong></p>
-    
-                                                    <div><label for="whosonline" class="plain"><input type="checkbox" name="acpaccess[]" value="whosonline" id="whosonline"> Who's Online / Sessions</label></div>
-    
-                                               </td>
-                                                <td>
-    
-                                                    <p class="sb"><strong>{_brands}</strong></p>
-    
-                                                    <div><label for="brands_overview" class="plain"><input type="checkbox" name="acpaccess[]" value="brands_overview" id="brands_overview"> {_overview}</label></div>
-                                                    <div><label for="brands_owners" class="plain"><input type="checkbox" name="acpaccess[]" value="brands_owners" id="brands_owners"> Brand Owners</label></div>
-                                                    <div><label for="brands_listings" class="plain"><input type="checkbox" name="acpaccess[]" value="brands_listings" id="brands_listings"> Brand Listings</label></div>
-    
-                                                    <p class="sb st"><strong>{_marketplace}</strong></p>
-    
-                                                    <div><label for="marketplace_overview" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_overview" id="marketplace_overview"> Overview</label></div>
-                                                    <div><label for="marketplace_pages" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_pages" id="marketplace_pages"> Pages &amp; Content</label></div>
-                                                    <div><label for="marketplace_heros" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_heros" id="marketplace_heros"> Hero Designer</label></div>
-                                                    <div><label for="marketplace_plans" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_plans" id="marketplace_plans"> Membership Plans</label></div>
-                                                    <div><label for="marketplace_fees" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_fees" id="marketplace_fees"> Fees &amp; Upsell</label></div>
-                                                    <div><label for="marketplace_motd" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_motd" id="marketplace_motd"> Message of the Day</label></div>
-                                                    <div><label for="marketplace_listings" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_listings" id="marketplace_listings"> Listings Manager</label></div>
-                                                    <div><label for="marketplace_attachments" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_attachments" id="marketplace_attachments"> Attachment Manager</label></div>
-                                                    <div><label for="marketplace_bids" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_bids" id="marketplace_bids"> Bids Manager</label></div>
-                                                    <div><label for="marketplace_keywords" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_keywords" id="marketplace_keywords"> Popular Keywords</label></div>
-                                                    <div><label for="marketplace_themes" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_themes" id="marketplace_themes"> Theme Manager</label></div>
-                                                    <div><label for="marketplace_emails" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_emails" id="marketplace_emails"> Email Templates</label></div>
-                                                    <div><label for="marketplace_languages" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_languages" id="marketplace_languages"> Language Manager</label></div>
-                                                    <div><label for="marketplace_locations" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_locations" id="marketplace_locations"> Locations Manager</label></div>
-                                                    <div><label for="marketplace_nonprofit" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_nonprofit" id="marketplace_nonprofit"> Nonprofit Manager</label></div>
-                                                    <div><label for="marketplace_feedback" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_feedback" id="marketplace_feedback"> Feedback Manager</label></div>
-                                                    <div><label for="marketplace_automation" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_automation" id="marketplace_automation"> Automation</label></div>
-                                                    <div><label for="marketplace_maintenance" class="plain"><input type="checkbox" name="acpaccess[]" value="marketplace_maintenance" id="marketplace_maintenance"> Maintenance Mode</label></div>
-    
-                                                    <p class="sb st"><strong>{_apps}</strong></p>
-    
-                                                    <div><label for="apps" class="plain"><input type="checkbox" name="acpaccess[]" value="apps" id="apps"> {_apps}</label></div>
-                                                    <div><label for="app_store" class="plain"><input type="checkbox" name="acpaccess[]" value="app_store" id="app_store"> App Store</label></div>
-                                                    <div><label for="app_payments" class="plain"><input type="checkbox" name="acpaccess[]" value="app_payments" id="app_payments"> App Payments</label></div>
-    
-                                                </td>
-                                                <td>
-    
-                                                    <p class="sb"><strong>{_settings}</strong></p>
-    
-                                                    <div><label for="settings_general" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_general" id="settings_general"> General</label></div>
-                                                    <div><label for="settings_branding" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_branding" id="settings_branding"> Branding</label></div>
-                                                    <div><label for="settings_locale" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_locale" id="settings_locale"> Locale</label></div>
-                                                    <div><label for="settings_mail" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_mail" id="settings_mail"> Mail / SMTP</label></div>
-                                                    <div><label for="settings_currency" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_currency" id="settings_currency"> Currency</label></div>
-                                                    <div><label for="settings_invoice" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_invoice" id="settings_invoice"> Invoice &amp; Transaction</label></div>
-                                                    <div><label for="settings_payment" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_payment" id="settings_payment"> Payments &amp; APIs</label></div>
-                                                    <div><label for="settings_tax" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_tax" id="settings_tax"> Taxes</label></div>
-                                                    <div><label for="settings_registration" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_registration" id="settings_registration"> Registration &amp; SSO</label></div>
-                                                    <div><label for="settings_escrow" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_escrow" id="settings_escrow"> {_escrow}</label></div>
-                                                    <div><label for="settings_listings" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_listings" id="settings_listings"> Selling &amp; Bulk CSV</label></div>
-                                                    <div><label for="settings_bidding" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_bidding" id="settings_bidding"> Bidding</label></div>
-                                                    <div><label for="settings_feedback" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_feedback" id="settings_feedback"> Feedback</label></div>
-                                                    <div><label for="settings_pmb" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_pmb" id="settings_pmb"> Private Message</label></div>
-                                                    <div><label for="settings_censor" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_censor" id="settings_censor"> Censor</label></div>
-                                                    <div><label for="settings_blacklist" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_blacklist" id="settings_blacklist"> Blacklist</label></div>
-                                                    <div><label for="settings_categories" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_categories" id="settings_categories"> {_categories}</label></div>
-                                                    <div><label for="settings_attachments" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_attachments" id="settings_attachments"> Photos &amp; Attachments</label></div>
-                                                    <div><label for="settings_seo" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_seo" id="settings_seo"> SEO</label></div>
-                                                    <div><label for="settings_search" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_search" id="settings_search"> {_search}</label></div>
-                                                    <div><label for="settings_shipping" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_shipping" id="settings_shipping"> Shipping &amp; APIs</label></div>
-                                                    <div><label for="settings_security" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_security" id="settings_security"> Security</label></div>
-                                                    <div><label for="settings_distance" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_distance" id="settings_distance"> Distance &amp; GeoData</label></div>
-                                                    <div><label for="settings_session" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_session" id="settings_session"> Session</label></div>
-                                                    <div><label for="settings_license" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_license" id="settings_license"> License Info</label></div>
-                                                    <div><label for="settings_updates" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_updates" id="settings_updates"> Automatic Updates</label></div>
-                                                    <div><label for="settings_diagnosis" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_diagnosis" id="settings_diagnosis"> App Diagnosis</label></div>
-                                                    <div><label for="settings_serverinfo" class="plain"><input type="checkbox" name="acpaccess[]" value="settings_serverinfo" id="settings_serverinfo"> App &amp; Server Specs</label></div>
-    
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        </table>
-    
-                                        <script>
-                                        // auto-populate checkboxes for admin panel access
-                                        var initValues = {acpaccess_json};
-                                        var myjson = JSON.stringify(initValues);
-                                        var parsed = JSON.parse(myjson);
-                                        var myarray = [];
-                                        $.each(parsed,function(key, value) {
-                                            myarray.push(value);
-                                        });
-                                        $('#cb-permissions').find("input:checkbox[name='acpaccess[]']").each(function() {
-                                            $(this).prop("checked", ($.inArray($(this).val(), myarray) != -1));
-                                        });
-                                        </script>
-    
-                                        <else />
-    
                                         <table class="expanded">
                                         <thead>
                                             <tr>
@@ -441,7 +282,6 @@
                                         </tbody>
                                         </table>
     
-                                        </if>
                                     </div>
                                 </div>
                             </div>
@@ -453,7 +293,7 @@
             <div class="section">
             <div class="draw-grid draw-grid--right-aligned">
                 <div class="draw-grid__cell draw-grid__cell--no-flex">
-                    <if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                 </div>
             </div>
         </div>

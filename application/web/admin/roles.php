@@ -38,20 +38,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sidenav = $sheel->admincp_nav->print('users');
         $sheel->cache->store("sidenav_users", $sidenav);
     }
-    $migrate_count = 0;
+
     $languages_role = $roles = array();
     $sql_lang = $sheel->db->query("
         SELECT languagecode, title, textdirection
         FROM " . DB_PREFIX . "language
     ");
     if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-
+        $sheel->db->query("
+        DELETE FROM " . DB_PREFIX . "roles_access
+        WHERE roleid = '" . intval($sheel->GPC['roleid']) . "'
+    ");
         $sheel->db->query("
                 DELETE FROM " . DB_PREFIX . "roles
                 WHERE roleid = '" . intval($sheel->GPC['roleid']) . "'
                 LIMIT 1
             ");
-        refresh(HTTPS_SERVER_ADMIN . 'users/roles/');
+        $sheel->template->templateregistry['message'] = '{_successfully_deleted_user_role}';
+        die(
+            json_encode(
+                array(
+                    'response' => '1',
+                    'message' => $sheel->template->parse_template_phrases('message')
+                )
+            )
+        );
         exit();
 
 
@@ -135,8 +146,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
-        $sheel->template->meta['areatitle'] = 'Admin CP | Marketplace <div class="type--subdued">Membership Plans - Add Role</div>';
-        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Marketplace - Membership Plans - Add Role';
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Users - Add Role</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Users - Add Role';
         $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'users/roles/">{_roles}</a> / </span> {_add_new_role}';
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
             $field1 = $field2 = '';
@@ -152,7 +163,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     '" . $sheel->db->escape_string($sheel->GPC['form']['purpose_' . $languagecode]) . "',
                     '" . $sheel->db->escape_string($sheel->GPC['form']['title_' . $languagecode]) . "',";
             }
-           
+
             if ($sheel->GPC['form']['isdefault'] == '1') {
                 $sheel->db->query("
                 UPDATE " . DB_PREFIX . "roles
@@ -192,6 +203,143 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $form['visible'] = 'checked="checked"';
         }
 
+    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'access') {
+        $sheel->template->meta['areatitle'] = 'Admin CP | Users - Roles - Update Access';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Users - Roles - Update Access';
+        $access_permission_groups = $r = array();
+        $groupname = $sheel->db->fetch_field(DB_PREFIX . "roles", "roleid = '" . intval($sheel->GPC['roleid']) . "'", "title_" . $_SESSION['sheeldata']['user']['slng']);
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'users/roles/">{_roles}</a> / <a href="' . HTTPS_SERVER_ADMIN . 'users/roles/access/' . intval($sheel->GPC['roleid']) . '/">' . $groupname . '</a> / </span> {_access}';
+        $form['roleid'] = $sheel->GPC['roleid'];
+        if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
+            $sql = $sheel->db->query("
+                    SELECT *
+                    FROM " . DB_PREFIX . "roles_access
+                    WHERE roleid = '" . intval($sheel->GPC['roleid']) . "'
+                    LIMIT 1
+                ");
+            if ($sheel->db->num_rows($sql) > 0) { // update access
+                foreach ($sheel->GPC['form'] as $k => $v) {
+                    $vis = 0;
+                    if (isset($sheel->GPC['hasaccess'][$k]) and $sheel->GPC['hasaccess'][$k] == 'on') {
+
+                        $vis = 1;
+                    }
+                    if (isset($k) and !is_array($v)) {
+                        $sheel->db->query("
+                                UPDATE " . DB_PREFIX . "roles_access
+                                SET hasaccess = '" . $sheel->db->escape_string($vis) . "'
+                                WHERE accessname = '" . $sheel->db->escape_string($k) . "'
+                                    AND roleid = '" . intval($sheel->GPC['roleid']) . "'
+                                LIMIT 1
+                            ");
+                    }
+                }
+            } else { // create new access
+                $sql = $sheel->db->query("
+                        SELECT id, accessname, accessgroup, hasaccess, original, isadmin
+                        FROM " . DB_PREFIX . "roles_access
+                        WHERE original = '1'
+                        GROUP BY accessname
+                        ORDER BY accessgroup ASC
+                    ");
+                if ($sheel->db->num_rows($sql) > 0) {
+                    while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                        $sheel->db->query("
+                                INSERT INTO " . DB_PREFIX . "roles_access
+                                (id, roleid, accessgroup, accessname,   hasaccess, original, isadmin)
+                                VALUES(
+                                NULL,
+                                '" . intval($sheel->GPC['roleid']) . "',
+                                '" . $sheel->db->escape_string($res['accessgroup']) . "',
+                                '" . $sheel->db->escape_string($res['accessname']) . "',
+                                '1',
+                                '" . $res['original'] . "',
+                                '" . $res['isadmin'] . "'
+                                )
+                            ");
+                    }
+                    foreach ($sheel->GPC['form'] as $k => $v) { // update permissions with pre-configured settings the admin may have enabled/disabled
+                        if (isset($sheel->GPC['form'][$v]) and !is_array($sheel->GPC['form'][$v])) {
+                            $sheel->db->query("
+                                    UPDATE " . DB_PREFIX . "roles_access
+                                    SET hasaccess = '" . $sheel->db->escape_string($sheel->GPC['form'][$v]) . "'
+                                    WHERE accessname = '" . $sheel->db->escape_string($sheel->GPC['form'][$k]) . "'
+                                        AND roleid = '" . intval($sheel->GPC['roleid']) . "'
+                                    LIMIT 1
+                                ");
+                        }
+                    }
+                }
+            }
+            refresh(HTTPS_SERVER_ADMIN . 'users/roles/?note=success');
+            exit();
+        } else {
+            $isadmin = $sheel->db->fetch_field(DB_PREFIX . "roles", "roleid = '" . intval($sheel->GPC['roleid']) . "'", 'isadmin');
+            $sqlgroups = $sheel->db->query("
+                    SELECT groupid, accessgroup
+                    FROM " . DB_PREFIX . "roles_access_groups
+                    WHERE visible = '1'
+                    AND isadmin ='" . intval($isadmin) . "'
+                    ORDER BY accessgroup ASC
+                ");
+            if ($sheel->db->num_rows($sqlgroups) > 0) {
+                while ($resgroups = $sheel->db->fetch_array($sqlgroups, DB_ASSOC)) {
+                    $sqlitems = $sheel->db->query("
+                            SELECT id, roleid, accessname, hasaccess, original
+                            FROM " . DB_PREFIX . "roles_access
+                            WHERE roleid = '" . intval($sheel->GPC['roleid']) . "'
+                                AND accessgroup = '" . $sheel->db->escape_string($resgroups['accessgroup']) . "'
+                                AND isadmin ='" . intval($isadmin) . "'
+                            GROUP BY accessname
+                            ORDER BY id ASC
+                        ");
+                    if ($sheel->db->num_rows($sqlitems) > 0) {
+                        while ($resitems = $sheel->db->fetch_array($sqlitems, DB_ASSOC)) {
+                            if ($resitems['hasaccess'] == 1) {
+                                $resitems['hasaccess_perm'] = '<input type="hidden" name="form[' . $resitems['accessname'] . ']" value="' . $resitems['accessname'] . '" /><input type="checkbox" name="hasaccess[' . stripslashes($resitems['accessname']) . ']" checked="checked" />';
+                            } else {
+                                $resitems['hasaccess_perm'] = '<input type="hidden" name="form[' . $resitems['accessname'] . ']" value="' . $resitems['accessname'] . '" /><input type="checkbox" name="hasaccess[' . stripslashes($resitems['accessname']) . ']" />';
+                            }
+                            $resitems['accesstext'] = '<span id="edit_input_' . $resitems['id'] . '">' . stripslashes($resitems['accessname']) . '</span>';
+                            $resitems['accessdescription'] = '{' . stripslashes('_' . $resitems['accessname'] . '_desc') . '}';
+
+                            $r['access_permission_items' . $resgroups['accessgroup']][] = $resitems;
+                        }
+                        $sheel->show['deletebutton'] = 1;
+                    } else {
+                        // this is a entirely new permissions instance.  We must collect all original permissions
+                        // and any "new" custom permissions the admin/staff may have created in his/her venture
+                        // for only 1 given permissions group :-).  collect all original and/or custom created ones
+                        // and group by the unique "accessname" while ordering the sort as ascending
+                        $sqlitems = $sheel->db->query("
+                                SELECT id, roleid, accessname, hasaccess, original
+                                FROM " . DB_PREFIX . "roles_access
+                                WHERE accessgroup = '" . $sheel->db->escape_string($resgroups['accessgroup']) . "'
+                                    AND (original = '1')
+                                    AND isadmin ='" . intval($isadmin) . "'
+                                GROUP BY accessname
+                                ORDER BY id ASC
+                            ");
+                        if ($sheel->db->num_rows($sqlitems) > 0) {
+                            while ($resitems = $sheel->db->fetch_array($sqlitems)) {
+
+                                $resitems['accesstext'] = '<span id="edit_input_' . $resitems['id'] . '">' . stripslashes($resitems['accessname']) . '</span>';
+                                $resitems['accessdescription'] = stripslashes('{_' . $resitems['accessname'] . '_desc}');
+                                $resitems['hasaccess_perm'] = '<input type="checkbox" name="hasaccess[' . stripslashes($resitems['accessname']) . ']" value="1" checked="checked" />';
+                                if ($resgroups['accessgroup'] == 'admincp' and $resitems['accessname'] == 'acpaccess') {
+                                    $acpaccess_json = ((!empty($resitems['value'])) ? $resitems['value'] : "''");
+                                }
+                                $r['access_permission_items' . $resgroups['accessgroup']][] = $resitems;
+                            }
+                        }
+                    }
+                    $resgroups['title'] = '{_' . $resgroups['accessgroup'] . '_role_access_help}';
+                    $resgroups['help'] = '{_' . $resgroups['accessgroup'] . '_role_access_desc}';
+                    $GLOBALS['show_admincp_group_' . $resgroups['groupid']] = (($resgroups['accessgroup'] == 'admincp') ? true : false);
+                    $access_permission_groups[] = $resgroups;
+                }
+            }
+        }
     }
 
     while ($res_lang = $sheel->db->fetch_array($sql_lang, DB_ASSOC)) {
@@ -238,9 +386,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'main',
         array(
             'languages_role' => $languages_role,
-            'roles' => $roles
+            'roles' => $roles,
+            'access_permission_groups' => $access_permission_groups
         )
     );
+    if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'access') {
+        if (isset($access_permission_groups)) {
+            foreach ($access_permission_groups as $key => $value) {
+                $sheel->template->parse_loop('main', array(
+                    'access_permission_items' . $value['accessgroup'] => (isset($r['access_permission_items' . $value['accessgroup']]) ? $r['access_permission_items' . $value['accessgroup']] : array()),
+                ), true);
+            }
+        }
+    }
+
+
     $sheel->template->parse_hash(
         'main',
         array(

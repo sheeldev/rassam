@@ -44,11 +44,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata'][
 	}
 	if (isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'kick' AND !empty($sheel->GPC['xid']))
 	{ // kick or expire session
-		if ($sheel->show['ADMINCP_TEST_MODE'])
-		{
-			$sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-			die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-		}
 		if (isset($sheel->GPC['xid']) AND !empty($sheel->GPC['xid']))
 		{
 			$sheel->db->query("

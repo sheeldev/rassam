@@ -1,0 +1,178 @@
+<section>
+	<script>
+		Page();
+	</script>
+	<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'extension'"><script>jQuery.growl.error({ title: '{_error}', message: 'The announcement image file must be .png, .jpg or .gif.' });</script></if>
+	<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'size'"><script>jQuery.growl.error({ title: '{_error}', message: 'The announcement image file must be under 250kb in file size.' });</script></if>
+	<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'wh'"><script>jQuery.growl.error({ title: '{_error}', message: 'The announcement image file must be at least 150px x 150px dimension.' });</script></if>
+
+	<div id="announcements-index" refresh="products-index" class="page products-page has-contextual-help">
+		<form class="draw-form draw-form--full-width" action="{https_server_admin}settings/announcements/" id="announcements" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_announcement_form()">
+			<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+				<input type="hidden" name="subcmd" value="add" />
+				<input type="hidden" name="do" value="process" />
+			<else />
+				<input type="hidden" name="subcmd" value="update" />
+				<input type="hidden" name="announcementid" value="{form[announcementid]}" />
+				<input type="hidden" name="do" value="process" />
+			</if>
+			<div class="header-row">
+				<header class="header">
+					<h1 class="header__main">
+						<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+						<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+						{currentarea}
+					</h1>
+
+					<div class="header__primary-actions">
+
+						<if condition="isset($sheel->GPC['subcmd'])">
+							<if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+							<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><a class="btn" href="{https_server_admin}settings/announcements/">{_cancel}</a></if>
+						</if>
+					</div>
+
+				</header>
+			</div>
+
+			<div class="section login-services">
+				<div class="layout-content">
+					<div class="layout-content__sidebar layout-content__first">
+						<div class="section-summary">
+							<h1>Announcements</h1>
+							<p>
+								<if condition="!isset($sheel->GPC['subcmd'])">
+									<a href="{https_server_admin}settings/announcements/add/">
+										<button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">Add Announcement</button>
+									</a>
+								<else />
+									<a href="{https_server_admin}settings/announcements/">
+										<button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_cancel}</button>
+									</a>
+								</if>
+							</p>
+						</div>
+					</div>
+					<div class="layout-content__main">
+						<if condition="(isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update'))"><else /><div class="draw-card">
+							<div class="section-content">
+								<div class="draw-card__section">
+									<div class="table-wrapper">
+
+										<table class="table-hover expanded">
+											<thead>
+											<tr>
+												<th>Image</th>
+												<th>{_content}</th>
+												<th>{_date}</th>
+												<th>{_visible}</th>
+												<th>{_action}</th>
+											</tr>
+											</thead>
+											<tbody>
+											<loop name="announcements">
+												<tr id="tr_selected_{announcementid}" valign="top">
+													<td nowrap="nowrap">{imagename}</td>
+													<td>{content}</td>
+													<td>{date}</td>
+													<td>{visible}</td>
+													<td>{action}</td>
+												</tr>
+											</loop name="announcements">
+											</tbody>
+										</table>
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+							<!-- view mode --></if>
+
+
+						<if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+
+							<div class="draw-card" id="newrole">
+								<header class="draw-card__section">
+
+									<div class="draw-grid draw-grid--no-outside-padding">
+										<div class="draw-grid__cell">
+											<div class="draw-input-wrapper">
+												<label class="draw-label" for="form_content">{_content}</label>
+												<textarea name="form[content]" id="form_content" placeholder="Enter content about this announcement">{form[content]}</textarea>
+											</div>
+										</div>
+									</div>
+
+									<div class="draw-grid draw-grid--no-outside-padding">
+										<div class="draw-grid__cell">
+											<div class="draw-input-wrapper">
+												<label class="draw-label" for="form_date">{_date}</label>
+												<input class="draw-input" size="30" type="text" name="form[date]" id="form_date" value="{form[date]}" placeholder="YYYY-MM-DD">
+											</div>
+										</div>
+									</div>
+
+									<div class="draw-grid draw-grid--no-outside-padding">
+										<div class="draw-grid__cell">
+											<div class="draw-input-wrapper">
+
+												<label class="draw-label" for="form_imagename">Upload Image <span class="type--subdued"></span></label>
+
+												<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'update'">
+													<div class="ssb"><img src="{config[imguploadscdn]}announcements/{form[imagename]}" width="100"></div>
+													<input type="hidden" name="form[imagename_old]" id="imagename_old" value="{form[imagename_old]}">
+												</if>
+
+												<div class="styled-file-input">
+													<div class="btn"> <span>{_browse}</span>
+														<input type="file" name="imagename" id="uploadimage" class="js-no-dirty"> </div>
+												</div>
+
+												<div class="st">{_accepted}: <span class="type--subdued">.gif, .jpg, .jpeg, .png</span></div>
+												<div>Dimension: <span class="type--subdued">150 x 150</span></div>
+
+											</div>
+										</div>
+									</div>
+
+
+									<div class="draw-grid draw-grid--no-outside-padding">
+										<div class="draw-grid__cell">
+											<div class="draw-input-wrapper">
+												<label class="draw-label" for="form_visible">{_visible}</label>
+												<label for="rb_1_visible"><input type="radio" name="form[visible]" id="rb_1_visible" value="1" tabindex="1" {form[visible_1]} />{_yes}</label>
+												<label for="rb_0_visible"><input type="radio" name="form[visible]" id="rb_0_visible" value="0" tabindex="1" {form[visible_0]} />{_no}</label>
+											</div>
+										</div>
+
+									</div>
+
+								</header>
+
+							</div>
+						</if>
+
+
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#submitupload').bind("click", function()
+					{
+					<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">var imgval = jQuery('#uploadimage').val();
+						if (imgval == '')
+						{
+							jQuery.growl.error({title: '{_error}', message: 'The announcement image file is missing', duration: 5000, size: 'large', fixed: true});
+							return false;
+						}
+					</if>
+					});
+				});
+			</script>
+		</form>
+
+	</div>
+</section>
+<div define="iLNav.setPage(['settings','{areanav}']), iLPage.close()"></div>

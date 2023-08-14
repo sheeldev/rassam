@@ -249,6 +249,8 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_pages" bind-event-click="" allow-default="1" href="settings/pages/">Pages &amp; Content</a> </li>
                                 <li class="draw-nav__item"> <a data-no-turbolink="true" class="draw-nav__link" data-nav-sub-item="settings_heros" bind-event-click="" allow-default="1" href="settings/heros/">Hero Designer</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_memberships" bind-event-click="" allow-default="1" href="settings/memberships/">Memberships</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_motd" bind-event-click="" allow-default="1" href="settings/motd/">Message of the Day</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_announcements" bind-event-click="" allow-default="1" href="settings/announcements/">Announcements</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>

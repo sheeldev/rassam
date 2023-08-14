@@ -1,0 +1,128 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <form autocomplete="off" action="{https_server_admin}settings/motd/" accept-charset="UTF-8" method="post">
+    <div id="navigation-index" class="page">
+        <div class="header-row">
+            <header class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="settings/">{_settings}</a> / </span>
+                    {currentarea}
+                </h1>
+                <div class="header__primary-actions">
+                
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                    <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><a class="btn" href="{https_server_admin}settings/motd/">{_cancel}</a></if>
+                
+                </div>
+            
+            <div class="header__secondary-actions">  </div>
+            
+            
+            </header>
+            
+        </div>
+        <div class="section section--no-border link-lists">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>{_message_of_the_day}</h1>
+                        <p>Message of the day is shown to customers signing into the portal for the first time that day.</p>
+                        <a class="btn" href="{https_server_admin}settings/motd/add/">Add new message</a> </div>
+                </div>
+                <div class="layout-content__main layout-content__no-padding">
+                    <div class="section-content" id="link_lists" refresh="link_lists">
+                        <div class="draw-grid">
+                            <div class="draw-grid__cell">
+                                <div>
+                                    <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><else /><div class="draw-card">
+                                        <header class="draw-card__section">
+                                            <div class="draw-grid draw-grid--no-outside-padding">
+                                                <div class="draw-grid__cell">
+                                                    <h3>The current message of the days are shown below.</h3> </div>
+                                                
+                                            </div>
+                                        </header>
+                                        
+                                                <input name="subcmd" type="hidden" value="update">
+                                                <input name="do" type="hidden" value="process">
+                                                <loop name="motd">
+                                                <div class="draw-card__section">
+                                                <div class="draw-grid draw-grid--no-outside-padding">
+                                                    <div class="draw-grid__cell">
+                                                    
+                                                            
+                                                        <div class="draw-input-wrapper">
+                                                        
+                                                        <textarea name="form[{motdid}][content]" id="form_{motdid}_content">{content}</textarea>
+                                                        
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                 <div class="draw-grid draw-grid--no-outside-padding">
+                                                    <div class="draw-grid__cell">
+                                                        <span style="margin-left:-36px;margin-top:-92px;float:left">
+                                                            <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected message?', 'Are you sure you want to delete the selected message?', '{motdid}', 1, '', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                        </span>
+                                                        <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="form_publish">Publish date</label>
+                                                        <input class="draw-input" size="30" type="text" name="form[{motdid}][date]" id="form_{motdid}_date" value="{date}" placeholder="YYYY-MM-DD">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                </div>
+                                                </loop name="motd">
+                                                
+                                                
+                                        
+                                    </div></if>
+                                    
+                                    <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+                                    <input name="subcmd" type="hidden" value="add">
+                                    <input name="do" type="hidden" value="process">
+                                    </if>
+                                    <br />
+                                    
+                                    <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+                                    <div class="draw-card" id="editpage_{form[content]}">
+                                        <header class="draw-card__section">
+                                            <div class="draw-grid draw-grid--no-outside-padding">
+                                                <div class="draw-grid__cell">
+                                                    <div class="draw-input-wrapper">
+                                                    <label class="draw-label" for="form_content">{_message}</label>
+                                                    <textarea name="form[content]" id="form_content" placeholder="Enter promotional message or informative news to be displayed.">{form[content]}</textarea>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                             <div class="draw-grid draw-grid--no-outside-padding">
+                                                <div class="draw-grid__cell">
+                                                    <div class="draw-input-wrapper">
+                                                    <label class="draw-label" for="form_publish">Publish date</label>
+                                                    <input class="draw-input" size="30" type="text" name="form[date]" id="form_date" value="{form[date]}" placeholder="YYYY-MM-DD">
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </header>
+                                    </div>
+                                    
+                                    </if>
+                                    
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <div define="iLNav.setPage(['settings','settings_motd']), iLPage.close()"></div>
