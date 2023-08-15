@@ -112,8 +112,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				}
 			}
 			if (!empty($error)) {
-				$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Branding';
-				$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Branding';
+				$sheel->template->meta['areatitle'] = 'Admin CP | Branding';
+				$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Branding';
 				$sheel->template->fetch('main', 'settings_branding.html', 1);
 				$areanav = 'settings_branding';
 				$currentarea = '{_branding}';
@@ -206,8 +206,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			exit();
 		} 
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'branding') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Branding';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Branding';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Branding';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Branding';
 		$sheel->template->meta['jsinclude']['footer'][] = 'admin_branding';
 		$sheel->template->fetch('main', 'settings_branding.html', 1);
 		$areanav = 'settings_branding';
@@ -215,30 +215,30 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$form['currentdomain'] = $_SERVER['SERVER_NAME'];
 		$settings = $sheel->admincp->construct_admin_input('branding', 'settings/branding/');
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'locale') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Locale';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Locale';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Locale';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Locale';
 		$sheel->template->fetch('main', 'settings.html', 1);
 		$areanav = 'settings_locale';
 		$currentarea = '{_locale}';
 		$settings = $sheel->admincp->construct_admin_input('globalserverlocale', HTTPS_SERVER_ADMIN . 'settings/locale/');
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'mail') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Mail &amp; SMTP';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Mail &amp; SMTP';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Mail &amp; SMTP';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Mail &amp; SMTP';
 		$sheel->template->fetch('main', 'settings.html', 1);
 		$areanav = 'settings_mail';
 		$currentarea = '{_mail}';
 		$settings = $sheel->admincp->construct_admin_input('globalserversmtp', HTTPS_SERVER_ADMIN . 'settings/mail/');
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'currency') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Currencies';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Currencies';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Currencies';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Currencies';
 		$sheel->template->fetch('main', 'settings.html', 1);
 		$areanav = 'settings_currency';
 		$currentarea = '{_currency}';
 		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/currencymanager/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_currency_manager}</button></a></p>';
 		$settings = $sheel->admincp->construct_admin_input('globalserverlocalecurrency', HTTPS_SERVER_ADMIN . 'settings/currency/', '', $buttons);
 	}  else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'companies') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Companies';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Companies';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Companies';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Companies';
 		$sheel->template->fetch('main', 'settings_companies.html', 1);
 		$areanav = 'settings_companies';
 		$currentarea = '{_companies}';
@@ -418,8 +418,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$sheel->template->parse_loop('main', array('comps' => $comps));
 
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'registration') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Registration';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Registration';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Registration';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Registration';
 		$sheel->template->meta['areatitle'] = 'Admin CP | Settings - Registration';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings - Registration';
 		$sheel->template->meta['jsinclude']['footer'][] = 'admin_settings';
@@ -430,7 +430,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$settings = $sheel->admincp->construct_admin_input('registrationdisplay', HTTPS_SERVER_ADMIN . 'settings/registration/', '', $buttons);
 		$buttons = '<p><a href="javascript:;" onclick="test_ldap_settings()"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Test LDAP Settings</button></a></p>';
 		$ldap = $sheel->admincp->construct_admin_input('registrationldap', HTTPS_SERVER_ADMIN . 'settings/registration/', '', $buttons);
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'attachments') {
+	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'photos') {
 		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'attachment-manage-storagetype' and isset($sheel->GPC['form']['action'])) {
 			$sheel->template->meta['areatitle'] = '{_managing_attachment_storage_type}';
 			$sheel->template->meta['pagetitle'] = SITE_NAME . ' - {_managing_attachment_storage_type}';
@@ -440,243 +440,29 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				exit();
 			}
 		}
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Photo &amp; Attachments';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Photo &amp; Attachments';
-		$sheel->template->fetch('main', 'settings_attachments.html', 1);
+		$sheel->template->meta['areatitle'] = 'Admin CP | Photo &amp; Attachments';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Photo &amp; Attachments';
+		$sheel->template->fetch('main', 'settings_photos.html', 1);
 		$areanav = 'settings_attachments';
 		$currentarea = 'Photos &amp; Attachments';
 		$form['totalattachments'] = number_format($sheel->attachment->totalattachments());
 		$form['totaldiskspace'] = $sheel->attachment->totaldiskspace();
 		$form['storagetype'] = $sheel->attachment->storagetype('type');
 		$form['storagetypeaction'] = $sheel->attachment->storagetype('formaction');
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'marketplace/attachments/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_attachment_manager}</button></a></p>';
+		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/attachments/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_attachment_manager}</button></a></p>';
 		$settings = $sheel->admincp->construct_admin_input('attachmentsystem', HTTPS_SERVER_ADMIN . 'settings/attachments/', '', $buttons);
 		$moderation = $sheel->admincp->construct_admin_input('attachmentmoderation', HTTPS_SERVER_ADMIN . 'settings/attachments/');
 		$limits = $sheel->admincp->construct_admin_input('attachmentlimit', HTTPS_SERVER_ADMIN . 'settings/attachments/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'shipping') {
-		if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-			if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
-				$sheel->db->query("
-					DELETE FROM " . DB_PREFIX . "shippers
-					WHERE shipperid = '" . intval($sheel->GPC['xid']) . "'
-					LIMIT 1
-				");
-				$sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Shipping service deleted', 'A shipping service has been successfully deleted.');
-				die(json_encode(array('response' => '1', 'message' => 'Shipping service has been successfully deleted.')));
-			} else {
-				$sheel->template->templateregistry['message'] = 'This shipping service could not be deleted.';
-				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-			}
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
-			$sheel->GPC['title'] = isset($sheel->GPC['title']) ? $sheel->GPC['title'] : '';
-			$sheel->GPC['shipcode'] = isset($sheel->GPC['shipcode']) ? $sheel->GPC['shipcode'] : '';
-			$sheel->GPC['domestic'] = isset($sheel->GPC['domestic']) ? intval($sheel->GPC['domestic']) : 0;
-			$sheel->GPC['international'] = isset($sheel->GPC['international']) ? intval($sheel->GPC['international']) : 0;
-			$sheel->GPC['trackurl'] = isset($sheel->GPC['trackurl']) ? $sheel->db->escape_string($sheel->GPC['trackurl']) : '';
-			$sheel->GPC['sort'] = isset($sheel->GPC['sort']) ? $sheel->db->escape_string($sheel->GPC['sort']) : 0;
-			$sheel->db->query("
-				INSERT INTO " . DB_PREFIX . "shippers
-				(shipperid, title, shipcode, domestic, international, carrier, trackurl, sort)
-				VALUES(
-				NULL,
-				'" . $sheel->db->escape_string($sheel->GPC['title']) . "',
-				'" . $sheel->db->escape_string($sheel->GPC['shipcode']) . "',
-				'" . $sheel->GPC['domestic'] . "',
-				'" . $sheel->GPC['international'] . "',
-				'" . $sheel->db->escape_string($sheel->GPC['carrier']) . "',
-				'" . $sheel->GPC['trackurl'] . "',
-				'" . $sheel->GPC['sort'] . "')
-			");
-			refresh(HTTPS_SERVER_ADMIN . 'settings/shipping/');
-			exit();
-		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
-			$sheel->GPC['international'] = isset($sheel->GPC['international']) ? $sheel->GPC['international'] : array();
-			$sheel->GPC['title'] = isset($sheel->GPC['title']) ? $sheel->GPC['title'] : array();
-			$sheel->GPC['domestic'] = isset($sheel->GPC['domestic']) ? $sheel->GPC['domestic'] : array();
-			$sheel->GPC['carrier'] = isset($sheel->GPC['carrier']) ? $sheel->GPC['carrier'] : array();
-			$sheel->GPC['shipcode'] = isset($sheel->GPC['shipcode']) ? $sheel->GPC['shipcode'] : array();
-			$sheel->GPC['trackurl'] = isset($sheel->GPC['trackurl']) ? $sheel->GPC['trackurl'] : array();
-			$sheel->GPC['sort'] = isset($sheel->GPC['sort']) ? $sheel->GPC['sort'] : array();
-			foreach ($sheel->GPC['title'] as $shipperid => $title) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET title = '" . $sheel->db->escape_string($title) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			$sheel->db->query("
-				UPDATE " . DB_PREFIX . "shippers
-				SET domestic = '0', international = '0'
-			");
-			foreach ($sheel->GPC['domestic'] as $shipperid => $value) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET domestic = '" . intval($value) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			foreach ($sheel->GPC['international'] as $shipperid => $value) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET international = '" . intval($value) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			foreach ($sheel->GPC['carrier'] as $shipperid => $title) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET carrier = '" . $sheel->db->escape_string($title) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			foreach ($sheel->GPC['shipcode'] as $shipperid => $title) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET shipcode = '" . $sheel->db->escape_string($title) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			foreach ($sheel->GPC['trackurl'] as $shipperid => $trackurl) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET trackurl = '" . $sheel->db->escape_string($trackurl) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			foreach ($sheel->GPC['sort'] as $shipperid => $sort) {
-				$sheel->db->query("
-					UPDATE " . DB_PREFIX . "shippers
-					SET sort = '" . $sheel->db->escape_string($sort) . "'
-					WHERE shipperid = '" . intval($shipperid) . "'
-				");
-			}
-			refresh(HTTPS_SERVER_ADMIN . 'settings/shipping/');
-			exit();
-		}
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Shipping &amp; APIs';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Shipping &amp; APIs';
-		$sheel->template->fetch('main', 'settings_shipping.html', 1);
-		$areanav = 'settings_shipping';
-		$currentarea = '{_shipping}';
-		$settings = $sheel->admincp->construct_admin_input('shippingsettings', HTTPS_SERVER_ADMIN . 'settings/shipping/');
-		$settings .= $sheel->admincp->construct_admin_input('shippingapiservices', HTTPS_SERVER_ADMIN . 'settings/shipping/');
-		$sql = $sheel->db->query("
-			SELECT shipperid, title, shipcode, domestic, international, carrier, trackurl, sort
-			FROM " . DB_PREFIX . "shippers
-			ORDER BY sort ASC
-		");
-		if ($sheel->db->num_rows($sql) > 0) {
-			$row_count = 0;
-			while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-				$row['title'] = '<input type="text" name="title[' . $row['shipperid'] . ']" value="' . stripslashes(o($row['title'])) . '" class="draw-input" />';
-				$row['shipcode'] = '<input type="text" name="shipcode[' . $row['shipperid'] . ']" value="' . stripslashes(o($row['shipcode'])) . '" class="draw-input" style="text-align:center" />';
-				$row['domestic'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="domestic[' . $row['shipperid'] . ']" value="1" ' . ($row['domestic'] ? 'checked="checked"' : '') . ' class="draw-checkbox" /><span class="draw-checkbox--styled"></span></div>';
-				$row['international'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="international[' . $row['shipperid'] . ']" value="1" ' . ($row['international'] ? 'checked="checked"' : '') . ' class="draw-checkbox" /><span class="draw-checkbox--styled"></span></div>';
-				$row['carrier'] = '<input type="text" name="carrier[' . $row['shipperid'] . ']" value="' . stripslashes(o($row['carrier'])) . '" class="draw-input" />';
-				$row['trackurl'] = '<input type="text" name="trackurl[' . $row['shipperid'] . ']" value="' . stripslashes(o($row['trackurl'])) . '" style="background-color:#ebebeb;color:#555" class="draw-input" />';
-				$row['sort'] = '<input type="text" name="sort[' . $row['shipperid'] . ']" value="' . stripslashes(intval($row['sort'])) . '" class="draw-input" style="text-align:center" />';
-				$shippers[] = $row;
-				$row_count++;
-			}
-		}
-		$row2['title'] = '<input type="text" name="title" value="" class="draw-input" />';
-		$row2['shipcode'] = '<input type="text" name="shipcode" value="" class="draw-input" style="text-align:center" placeholder="{_optional}" />';
-		$row2['domestic'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="domestic" value="1" class="draw-checkbox" checked="checked" /><span class="draw-checkbox--styled"></span></div>';
-		$row2['international'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="international" value="1" class="draw-checkbox" /><span class="draw-checkbox--styled"></span></div>';
-		$row2['carrier'] = '<input type="text" name="carrier" value="" class="draw-input" placeholder="{_optional}" />';
-		$row2['trackurl'] = '<input type="text" name="trackurl" value="" style="background-color:#ebebeb;color:#555" class="draw-input" placeholder="{_optional}" />';
-		$row2['sort'] = '<input type="text" name="sort" value="10" class="draw-input" style="text-align:center" />';
-		$newshipper[] = $row2;
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'escrow') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Escrow';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Escrow';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_escrow';
-		$currentarea = '{_escrow}';
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'accounting/escrow/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Escrow Manager</button></a></p>';
-		$settings = $sheel->admincp->construct_admin_input('escrowsystem', HTTPS_SERVER_ADMIN . 'settings/escrow/', '', $buttons);
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'feedback') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Feedback';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Feedback';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_feedback';
-		$currentarea = '{_feedback}';
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'marketplace/feedback/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">Feedback Manager</button></a></p>';
-		$settings = $sheel->admincp->construct_admin_input('feedback', HTTPS_SERVER_ADMIN . 'settings/feedback/', '', $buttons);
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'listings') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Selling &amp; Bulk CSV';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Selling &amp; Bulk CSV';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_listings';
-		$currentarea = '{_selling_bulk_csv}';
-		$settings = $sheel->admincp->construct_admin_input('globalfiltersrfp', HTTPS_SERVER_ADMIN . 'settings/listings/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bidding') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Bidding';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Bidding';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_bidding';
-		$currentarea = 'Bidding Settings';
-		$settings = $sheel->admincp->construct_admin_input('productbid', HTTPS_SERVER_ADMIN . 'marketplace/bids/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'pmb') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Private Messages';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Private Messages';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_pmb';
-		$currentarea = '{_private_message}';
-		$settings = $sheel->admincp->construct_admin_input('globalfilterspmb', HTTPS_SERVER_ADMIN . 'settings/pmb/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'censor') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Selling &amp; Censor';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Censor';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_censor';
-		$currentarea = '{_censor}';
-		$settings = $sheel->admincp->construct_admin_input('globalcensor', HTTPS_SERVER_ADMIN . 'settings/censor/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'blacklist') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Selling &amp; Blacklist';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Blacklist';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_blacklist';
-		$currentarea = '{_blacklist}';
-		$settings = $sheel->admincp->construct_admin_input('globalblacklist', HTTPS_SERVER_ADMIN . 'settings/blacklist/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'categories') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Categories';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Categories';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_categories';
-		$currentarea = '{_categories}';
-		$buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'categories/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_category_manager}</button></a></p>';
-		$settings = $sheel->admincp->construct_admin_input('globalcategorysettings', HTTPS_SERVER_ADMIN . 'settings/categories/', '', $buttons);
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'seo') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; SEO';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; SEO';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_seo';
-		$currentarea = 'SEO';
-		$settings = $sheel->admincp->construct_admin_input('globalseo', HTTPS_SERVER_ADMIN . 'setttings/seo/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'search') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Selling &amp; Search';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Search';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_search';
-		$currentarea = '{_search}';
-		$settings = $sheel->admincp->construct_admin_input('search', HTTPS_SERVER_ADMIN . 'settings/search/');
-	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'security') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Selling &amp; Security';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Security';
-		$sheel->template->fetch('main', 'settings.html', 1);
-		$areanav = 'settings_security';
-		$currentarea = '{_security}';
-		$settings = $sheel->admincp->construct_admin_input('globalsecurity', HTTPS_SERVER_ADMIN . 'settings/security/');
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'session') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Sessions';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Sessions';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Sessions';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sessions';
 		$sheel->template->fetch('main', 'settings.html', 1);
 		$areanav = 'settings_session';
 		$currentarea = '{_session}';
 		$settings = $sheel->admincp->construct_admin_input('globalserversession', HTTPS_SERVER_ADMIN . 'settings/session/');
 	}  else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'serverinfo') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Server Info';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Server Info';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Server Info';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Server Info';
 		$sheel->template->fetch('main', 'settings_serverinfo.html', 1);
 		$areanav = 'settings_serverinfo';
 		$currentarea = '{_server_info}';
@@ -779,8 +565,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$stat2['phpinfo']['extensions'] .= "</div>";
 		$sheel->template->parse_hash('main', array('hardware' => $stat, 'software' => $stat2['phpinfo']));
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'diagnosis') {
-		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Diagnosis';
-		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Diagnosis';
+		$sheel->template->meta['areatitle'] = 'Admin CP | Diagnosis';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Diagnosis';
 		$sheel->template->fetch('main', 'settings_diagnosis.html', 1);
 		$areanav = 'settings_diagnosis';
 		$currentarea = '{_app_diagnosis}';

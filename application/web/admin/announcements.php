@@ -244,7 +244,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
     }
     $sheel->template->parse_loop('main', array('announcements' => $announcements));
-    $sheel->template->parse_loop('main', array('motd' => $motd));
     $vars['areanav'] = $areanav;
     $vars['currentarea'] = $currentarea;
     $vars['sidenav'] = $sidenav;

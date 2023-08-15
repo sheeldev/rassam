@@ -1,0 +1,184 @@
+<section>
+<script>
+Page();
+</script>
+<div id="attachments-index" refresh="attachments-index" class="page has-contextual-help">
+	<div class="header-row">
+		<header class="header">
+		  <h1 class="header__main">
+			<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+            <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> <span class="breadcrumb"><a href="{https_server_admin}settings/photos/">Photos &amp; Attachments</a> / </span>{_attachment_manager}
+		  </h1>
+          <if condition="$sheel->show['no_attachments'] == false"><div class="header__primary-actions"> 
+          	{prevnext}
+          </div></if>
+		</header>
+	</div>
+	
+	<div class="draw-grid draw-grid--outer-grid">
+		<div class="draw-grid__cell">
+			<div class="draw-card">
+				<div class="has-bulk-actions">
+					<div>
+						<div>
+							<ul class="draw-tab__list" role="tablist">
+							
+								<li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/attachments/">All Attachments<if condition="!isset($sheel->GPC['view'])">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+								<li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel2" aria-selected="false" href="settings/attachments/?view=moderated">Moderated<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'">&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+								<li class="draw-tab__list__disclosure-item dropdown-container">
+									<span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true">
+										<i class="ico ico-16-svg ico-chevron-down-blue"></i>
+									</span>
+									<div class="dropdown">
+										<ul class="draw-tab__list--vertical" role="tablist"></ul>
+									</div>
+								</li>
+								
+							</ul>
+						</div>
+						<div class="draw-card__section draw-card__section--no-bottom-spacing">
+							<div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+								<form id="searchform" class="draw-form draw-form--full-width" action="{https_server_admin}settings/attachments/" accept-charset="UTF-8" method="get">
+                                <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}" /></if>
+                                <div class="draw-input-wrapper">
+									<label class="draw-label"></label>
+									<div class="draw-field__connected-wrapper">
+										<div class="draw-field--connected--no-flex">
+											<div class="draw-select__wrapper">
+                                            	
+                                                <select name="filterby" id="filter-select-1" class="draw-select">
+                                                <option value=""<if condition="!isset($sheel->GPC['filterby'])"> selected="selected"</if>>{_all}</option>
+                                                <option value="filename"<if condition="isset($sheel->GPC['filterby']) AND $sheel->GPC['filterby'] == 'filename'"> selected="selected"</if>>{_attachment_name}</option>
+                                                <option value="attachid"<if condition="isset($sheel->GPC['filterby']) AND $sheel->GPC['filterby'] == 'attachid'"> selected="selected"</if>>{_attachment_id}</option>
+                                                <option value="user_id"<if condition="isset($sheel->GPC['filterby']) AND $sheel->GPC['filterby'] == 'user_id'"> selected="selected"</if>>{_user_id} {_or} {_username}</option>
+                                              	</select>
+											</div>
+											
+										</div>
+                                        <div class="draw-field--connected--no-flex">
+											<div class="draw-select__wrapper">
+                                            	
+                                                <select name="attachtype" id="filter-select-2" class="draw-select">
+                                                <option value=""<if condition="!isset($sheel->GPC['attachtype'])"> selected="selected"</if>>{_all_types}</option>
+                                                <option value="itemphoto"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'itemphoto'"> selected="selected"</if>>Item pictures</option>
+                                                <option value="profile"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'profile'"> selected="selected"</if>>Profile pictures</option>
+                                                <option value="pmb"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'pmb'"> selected="selected"</if>>Private message attachments</option>
+                                                <option value="digital"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'digital'"> selected="selected"</if>>Digital download attachments</option>
+                                                <option value="stores"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'stores'"> selected="selected"</if>>Store logos</option>
+                                                <option value="storesbackground"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'storesbackground'"> selected="selected"</if>>Store billboard pictures</option>
+                                                <option value="customeritemphoto"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'customeritemphoto'"> selected="selected"</if>>Customer item pictures</option>
+                                                <option value="orderclaim"<if condition="isset($sheel->GPC['attachtype']) AND $sheel->GPC['attachtype'] == 'orderclaim'"> selected="selected"</if>>Customer order claim pictures</option>
+                                                </select>
+											</div>
+											
+										</div>
+										<div class="draw-field--connected--no-flex">
+											<div class="draw-select__wrapper">
+                                            	
+                                                <select name="pp" id="filter-pp" class="draw-select">
+                                                <option value="10"<if condition="!isset($sheel->GPC['pp'])"> selected="selected"</if>>10 {_per_page}</option>
+                                                <option value="50"<if condition="isset($sheel->GPC['pp']) AND $sheel->GPC['pp'] == '50'"> selected="selected"</if>>50 {_per_page}</option>
+                                                <option value="75"<if condition="isset($sheel->GPC['pp']) AND $sheel->GPC['pp'] == '75'"> selected="selected"</if>>75 {_per_page}</option>
+                                                <option value="100"<if condition="isset($sheel->GPC['pp']) AND $sheel->GPC['pp'] == '100'"> selected="selected"</if>>100 {_per_page}</option>
+                                                <option value="500"<if condition="isset($sheel->GPC['pp']) AND $sheel->GPC['pp'] == '500'"> selected="selected"</if>>500 {_per_page}</option>
+                                                </select>
+											</div>
+											
+										</div>
+											
+											<label class="draw-label helper--visually-hidden" for="query">Query</label>
+											<div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search draw-icon--16" aria-hidden="true"></span></span>
+												<input type="text" name="q" id="keywords" value="{form[q]}" placeholder="Enter keyword" class="draw-input draw-input--invisible" />
+											</div>
+                                            
+									</div>
+								</div>
+                                </form>
+							</div>
+                        </div>
+					</div>
+					<div id="attachments-results">
+						<div class="draw-card__section">
+							<div class="table-wrapper">
+                            
+                            <form id="formattachments" action="{https_server_admin}settings/attachments/" method="post" accept-charset="UTF-8">
+                            <input type="hidden" name="returnurl" value="{pageurl_urlencoded}" />
+                            <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}" /></if>
+                            <table class="table-hover expanded" >
+                              <thead>
+                                <tr id="customer-search_order">
+                                  <th class="select">
+                                    <div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="" value="" onclick="inlineCB.check_all('invert')" class="draw-checkbox"><span class="draw-checkbox--styled"></span></div>
+                                  </th>
+                                  <th class="name is-sortable ">&nbsp;</th>
+                                  
+                                  <th class="name is-sortable"><span>{_attachment}</span></th>
+                                  <th class="location is-sortable "><span>{_username}</span></th>
+                                  <th class="orders"><span>{_uploaded}</span></th>
+                                  <th class="orders tr is-sortable no-wrap"><span>File size</span></th>
+                                  <th class="orders tr is-sortable no-wrap">Dimension</th>
+                                  <th class="orders tc">Watermark</th>
+                                  <th class="orders tc is-sortable">{_invoice_id}</th>
+                                  
+                                  <th class="money_spent tc right-aligned is-sortable "><span>{_type}</span></th>
+                                  
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <loop name="attachments">
+                                <tr valign="top">
+                                  <td class="select">
+                                    <div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="attachid[]" id="attachm_{attachid}" value="{attachid}" class="draw-checkbox"><span class="draw-checkbox--styled"></span></div>
+                                  </td>
+                                  <td class="icon" width="50">{icon}</td>
+                                  <td class="name"><a href="{url}" target="_blank">{filename}</a><!--<div class="type--subdued">{count} different variations</div>--></td>
+                                  <td class="location type--subdued"><a href="{https_server_admin}customers/update/{user_id}/">{fullname}</a><div class="type--subdued">{subscriber}</div></td>
+                                  <td class="orders">{date}<div class="type--subdued">{ipaddress}</div></td>
+                                  <td class="orders tr nowrap">{filesize}<!--<div class="type--subdued">{filesizeset}</div>--></td>
+                                  <td class="orders tr nowrap type--subdued">{dimension}</td>
+                                  <td class="orders tc icon" align="center">{watermarked}</td>
+                                  <td class="orders tc">{invoiceid}</td>
+                                  <td class="money_spent tc no-wrap"><span class="badge badge--subdued">{attachtype}</span></td>
+                                </tr>
+                                </loop name="attachments">
+                              </tbody>
+                              <if condition="isset($sheel->show['no_attachments']) AND $sheel->show['no_attachments']">
+                                <tr> 					  
+                                    <td colspan="10" align="center">{_no_results_found}</td>
+                                </tr>
+                                </if>
+                                <if condition="$sheel->show['no_attachments'] == false">
+                                <tr> 
+                                  <td colspan="10">
+                                <div class="fr"><if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button name="submit" type="submit" class="btn js-btn-primary js-btn-loadable has-loading" id="inlinebutton">{_submit}</button></if></div>
+                                    <div class="draw-field--connected--no-flex">
+                                        <div class="draw-select__wrapper">
+                                            <select name="subcmd" class="draw-select">
+                                            <option>&ndash;</option>
+                                            <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'moderated'"><option value="verify">{_verify_selected}</option></if>
+                                            <option value="rebuild">{_rebuild_selected}</option>
+                                            <option value="delete">{_delete_selected}</option>
+                                        	</select>
+											<script type="text/javascript">
+                                            inlineCB = new iL_Inline('inlineCB', 'attachm', 'formattachments', '{_go}');
+                                            </script>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                     </td>
+                                </tr>
+                                
+                                </if>
+                            </table>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</section>
+<div define="iLNav.setPage(['settings','settings_attachments']), iLPage.close()"></div>

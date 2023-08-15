@@ -251,6 +251,8 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_memberships" bind-event-click="" allow-default="1" href="settings/memberships/">Memberships</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_motd" bind-event-click="" allow-default="1" href="settings/motd/">Message of the Day</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_announcements" bind-event-click="" allow-default="1" href="settings/announcements/">Announcements</a> </li>
+                                
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_attachments" bind-event-click="" allow-default="1" href="settings/photos/">Photos &amp; Attachments</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>
