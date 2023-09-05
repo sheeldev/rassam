@@ -705,6 +705,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				ORDER BY user_id DESC
 				LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->GPC['pp']) . "," . $sheel->GPC['pp']
 			);
+			
 			$sql2 = $sheel->db->query("
 				SELECT
 				u.user_id

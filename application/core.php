@@ -90,4 +90,5 @@ require_once(__DIR__ . '/model/class.styles.inc.php');
 $sheel->styles = new styles($sheel);
 $sheel->language->init_phrases();
 //echo "<script>console.log('Console: " . $_COOKIE['s'].': '.$sheel->sessions->seconds_until_expiry($_COOKIE['s'])['secondsleft']."' );</script>"; 
+$sheel->GPC['returnurl'] = $_SERVER['HTTP_REFERER'];
 ?>

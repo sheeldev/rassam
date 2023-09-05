@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
 	<style>
 		tspan { white-space:pre }
-		.shp0 { fill: #fdb819 } 
+		.shp0 { fill: #FDB819 } 
 		.shp1 { fill: #ffffff } 
 		.shp2 { fill: #000000 } 
 	</style>

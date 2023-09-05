@@ -192,6 +192,7 @@ class dynamics
   private $entity = null;
   protected $sheel;
   private $config = array(
+    'name' => '',
     'authEndPoint' => '',
     'tokenEndPoint' => '',
     'crmApiEndPoint' => '',
@@ -210,19 +211,28 @@ class dynamics
     $sql = $this->sheel->db->query("
 				SELECT id, apigroup, name, value, tokenendpoint, authendpoint, clientid, clientsecret, params, provides
 				FROM " . DB_PREFIX . "dynamics_api
-				WHERE name = '" . $name . "'
+				WHERE name = '" . $name . "' AND active ='1'
 				LIMIT 1
         ", 0, null, __FILE__, __LINE__);
     if ($this->sheel->db->num_rows($sql) > 0) {
+      $this->sheel->db->query("
+        UPDATE " . DB_PREFIX . "dynamics_api
+        SET hits = hits+1
+        WHERE name = '" . $name . "' AND active ='1'
+        LIMIT 1
+        ", 0, null, __FILE__, __LINE__);
       $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+      $this->config['name'] = $res['name'];
       $this->config['authEndPoint'] = $res['authendpoint'];
       $this->config['tokenEndPoint'] = $res['tokenendpoint'];
       $this->config['clientID'] = $res['clientid'];
       $this->config['clientSecret'] = $res['clientsecret'];
-      $this->config['crmApiEndPoint'] = $res['value'].'companies('.$company.')/'.$res['name'];
+      $this->config['crmApiEndPoint'] = $res['value'] . 'companies(' . $company . ')/' . $res['name'];
+      return true;
     } else {
-
+      return false;
     }
+    return false;
   }
 
   private function fetchToken()
@@ -347,8 +357,20 @@ class dynamics
       $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
       $responseHeaders = substr($response, 0, $headerSize);
       $responseBody = substr($response, $headerSize);
+      $this->sheel->db->query("
+        UPDATE " . DB_PREFIX . "dynamics_api
+        SET success = success+1
+        WHERE name = '" . $this->config["name"] . "' AND active ='1'
+        LIMIT 1
+        ", 0, null, __FILE__, __LINE__);
       return new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
     } catch (Exception $e) {
+      $this->sheel->db->query("
+        UPDATE " . DB_PREFIX . "dynamics_api
+        SET failed = failed+1
+        WHERE name = '" . $this->config["name"] . "' AND active ='1'
+        LIMIT 1
+        ", 0, null, __FILE__, __LINE__);
       return false;
     }
   }

@@ -68,7 +68,7 @@ class admincp_nav extends admincp
                                                         <div class="global-search__body global-search__blank-slate">
                                                                 <div class="global-search__blank-slate-message">
                                                                         <h1>Enter your search terms above.</h1>
-                                                                        <h2>You can search for anything � products, orders, customers and more.</h2>
+                                                                        <h2>You can search for anything � settings, customers and more.</h2>
                                                                 </div>
                                                                 <!-- recent keywords -->
                                                                 ' . $recentsearches . '
@@ -242,6 +242,7 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_mail" bind-event-click="" allow-default="1" href="settings/mail/">Mail / SMTP</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_security" bind-event-click="" allow-default="1" href="settings/security/">Security</a> </li>
+				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_optimization" bind-event-click="" allow-default="1" href="settings/optimization/">Optimization</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_session" bind-event-click="" allow-default="1" href="settings/session/">Session</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_emails" bind-event-click="" allow-default="1" href="settings/emails/">Email Templates</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_currency" bind-event-click="" allow-default="1" href="settings/currency/">Currency</a> </li>
@@ -251,10 +252,12 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_memberships" bind-event-click="" allow-default="1" href="settings/memberships/">Memberships</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_motd" bind-event-click="" allow-default="1" href="settings/motd/">Message of the Day</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_announcements" bind-event-click="" allow-default="1" href="settings/announcements/">Announcements</a> </li>
-                                
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_attachments" bind-event-click="" allow-default="1" href="settings/photos/">Photos &amp; Attachments</a> </li>
-                                <li class="draw-nav__item--spacer"></li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_languages" bind-event-click="" allow-default="1" href="settings/languages/">Language Manager</a> </li>
+				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locations" bind-event-click="" allow-default="1" href="settings/locations/">Locations Manager</a> </li>
                                 
+                                <li class="draw-nav__item--spacer"></li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_bc" bind-event-click="" allow-default="1" href="settings/bc/">Business Central</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_automation" bind-event-click="" allow-default="1" href="settings/automation/">Automation</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_diagnosis" bind-event-click="" allow-default="1" href="settings/diagnosis/">App Diagnosis</a> </li>

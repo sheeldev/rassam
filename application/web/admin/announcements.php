@@ -183,11 +183,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     }
     else if (isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'delete')
     {
-        if ($sheel->show['ADMINCP_TEST_MODE'])
-        {
-            $sheel->template->templateregistry['message'] = '{_demo_mode_only}';
-            die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
-        }
         if (isset($sheel->GPC['xid']) AND !empty($sheel->GPC['xid']))
         {
             $sql = $sheel->db->query("

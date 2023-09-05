@@ -107,7 +107,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 );
             } else if (isset($sheel->GPC['systemid']) and $sheel->GPC['systemid'] != '') {
                 $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-                $sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode);
+                if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
+                    $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                    exit();
+                }
                 $deleteResponse = $sheel->dynamics->delete($sheel->GPC['systemid']);
                 $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Staff Memeber deleted', 'A customer staff member has been successfully deleted.');
                 if ($deleteResponse->isSuccess()) {
@@ -149,7 +152,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
-        $sheel->dynamics->init_dynamics('erCustomerStaffs', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany));
+        if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany))) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {

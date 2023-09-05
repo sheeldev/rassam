@@ -361,7 +361,7 @@ class email
 			"Return-Path: " . $from . $delimiter .
 			'Message-ID: <' . date('YmdHs') . '.' . mb_substr(md5($message . microtime()), 0, 6) . rand(100000, 999999) . '@' . HTTPS_SERVER . '>' . $delimiter .
 			"X-Priority: 3" . $delimiter .
-			"X-Mailer: sheel " . $this->sheel->config['ilversion'] . "." . $this->sheel->config['ilbuild'] . $delimiter .
+			"X-Mailer: sheel " . $this->sheel->config['version'] . "." . $this->sheel->config['build'] . $delimiter .
 			"MIME-Version: 1.0" . $delimiter .
 			"X-Sender-IP: $_SERVER[SERVER_ADDR]" . $delimiter .
 			'Date: ' . date('r') . $delimiter . ((!empty($messagehtml))

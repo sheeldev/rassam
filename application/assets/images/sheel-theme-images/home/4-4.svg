@@ -5,7 +5,7 @@
 		.shp1 { fill: #333333 } 
 		.shp2 { fill: #13cb77 } 
 		.shp3 { fill: #ffffff;stroke: #333333;stroke-width: 15 } 
-		.shp4 { fill: #fdb819 } 
+		.shp4 { fill: #FDB819 } 
 	</style>
 	<g id="Layer">
 		<g id="Layer">

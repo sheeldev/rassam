@@ -405,7 +405,7 @@ class ldap
         function open_log()
         {
                 $this->log[] = "----------------------------------------------------------------------------------------------------
-=> Log opened from ILance LDAP (ldapiL) at " . vdate('D M d Y H:i:s O', time());
+=> Log opened from Sheel LDAP (ldapiL) at " . vdate('D M d Y H:i:s O', time());
 		$this->save_log();
         }
         function close_log()

@@ -1,0 +1,318 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div class="page has-contextual-help">
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                    <span class="glyphicons glyphicons-globe draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+                    {currentarea}
+                </h1>
+              
+                <div class="header__primary-actions">
+                
+                    <if condition="!isset($sheel->GPC['subcmd'])">{prevnext}</if>
+                
+                </div>
+                
+            </header>
+        </div>
+        
+        <if condition="!isset($sheel->GPC['subcmd']) OR (isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update'))"><div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1><if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'update'">{_update} {form[groupname]}<else />{_locations}</if></h1>
+                        <p>{_locations_manager_info}</p>
+                        <p>{_locations_manager_info_example}</p>
+                        <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'update'"><p><a href="{https_server_admin}settings/locations/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_cancel}</button></a></p></if>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <if condition="!isset($sheel->GPC['subcmd'])"><div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                
+                                    <table class="expanded">
+                                        <thead>
+                                            <tr>
+                                                
+                                                <th>{_region}</th>
+                                                <th>{_traffic}</th>
+                                                <th>{_customers}<span class="type--subdued"></span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <loop name="regions">
+                                            <tr valign="top">
+                                                <td width="20%"><a href="{https_server_admin}settings/locations/update/region/{id}/">{title}</a></td>
+                                                <td><span class="type--subdued">{traffic}</span></td>
+                                                <td><span class="type--subdued">{customers}</span></td>
+                                              </tr>
+                                            </loop name="regions">
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="tl slidedown-hidden slidedown-visible">
+                              <div class="draw-card__section draw-card__section--subdued draw-card__section--bordered">
+                                
+                              </div>
+                        </div>-->
+                    </div>
+                    </if>
+                    
+                    <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+                    <br />              
+                    <form autocomplete="off" action="{https_server_admin}settings/locations/" accept-charset="UTF-8" method="post">
+                    <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><input type="hidden" name="subcmd" value="add" /><else /><input type="hidden" name="subcmd" value="update" /><input type="hidden" name="mode" value="{form[mode]}" /><input type="hidden" name="locationid" value="{form[locationidx]}" /></if>
+                    <input type="hidden" name="do" value="save" />
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                        
+                            <label class="draw-label" for="form_title">{_title}</label>
+                            <loop name="languages">
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <input class="draw-input with-add-on" size="30" type="text" name="form[title_{languagecode}]" id="form_title_{languagecode}" value="{form[title_{languagecode}]}" placeholder="{language}" dir="{form[textdirection_{languagecode}]}"><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{languagecode}]}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </loop name="languages">
+                        </div>
+                        <if condition="isset($form['mode']) AND $form['mode'] == 'country'">
+                        <div class="draw-card__section">
+                        
+                            <label class="draw-label" for="form_title">{_country_code}</label>
+                            
+                            <div class="draw-grid draw-grid--no-outside-padding">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                    <input class="draw-input" size="30" type="text" name="form[cc]" id="form_cc" value="{form[cc]}">
+                                    </div>
+                                    <p class="draw-input__help-text">{_country_code_info}</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="draw-card__section">
+                                   
+                            <div class="draw-input-wrapper">
+                                <label class="draw-label draw-grid--outside-padding"><strong>{_visible_in_registration}</strong></label>
+                                <ul class="unstyled choicelist">
+                                <li>
+                                    <input class="fl" bind-event-click="" type="radio" name="form[visible]" value="1" id="rb_1[visible]" {form[visible]}>
+                                    <label class="draw-label" for="rb_1[visible]">{_visible}</label>
+                                </li>
+                                <li>
+                                    <input class="fl" bind-event-click="" type="radio" name="form[visible]" value="0" id="rb_0[visible]" {form[invisible]}>
+                                    <label class="draw-label" for="rb_0[visible]">{_not_visible}</label>
+                                </li>
+                                </ul>
+                                <p class="draw-input__help-text">{_visible_registration_location_info}</p>
+                             </div>
+                                
+                         </div>
+                         <div class="draw-card__section">
+                                   
+                            <div class="draw-input-wrapper">
+                                <label class="draw-label draw-grid--outside-padding"><strong>{_visible_in_shipping}</strong></label>
+                                <ul class="unstyled choicelist">
+                                <li>
+                                    <input class="fl" bind-event-click="" type="radio" name="form[visible_shipping]" value="1" id="rb_1[visible_shipping]" {form[visible_shipping]}>
+                                    <label class="draw-label" for="rb_1[visible_shipping]">{_visible}</label>
+                                </li>
+                                <li>
+                                    <input class="fl" bind-event-click="" type="radio" name="form[visible_shipping]" value="0" id="rb_0[visible_shipping]" {form[invisible_shipping]}>
+                                    <label class="draw-label" for="rb_0[visible_shipping]">{_not_visible}</label>
+                                </li>
+                                </ul>
+                                <p class="draw-input__help-text">{_visible_shipping_location_info}</p>
+                             </div>
+                                
+                         </div>
+                        </if>
+                    </div>
+                    <div class="draw-grid draw-grid--right-aligned">
+                        <div class="draw-grid__cell draw-grid__cell--no-flex">
+                            <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                        </div>
+                    </div>
+                    </form>
+                    </if>
+                    
+                </div>
+            </div>
+        </div>
+        </if>
+        
+        <if condition="!isset($sheel->GPC['subcmd'])"><div class="draw-grid draw-grid--outer-grid">
+                <div class="draw-grid__cell">
+                    <div class="draw-card">
+                        <div class="has-bulk-actions">
+                            <div>
+                                <div>
+                                    <ul class="draw-tab__list" role="tablist">
+                                    
+                                        <li role="presentation"><a class="draw-tab<if condition="$sheel->GPC['view'] == ''"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="{https_server_admin}settings/locations/">{_countries}<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == '' OR !isset($sheel->GPC['view'])">&nbsp;&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'states'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel2" aria-selected="false" href="{https_server_admin}settings/locations/?view=states">{_states_or_provinces}<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'states'">&nbsp;&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                        <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="{https_server_admin}settings/locations/?view=cities">{_cities}<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'">&nbsp;&nbsp;<span class="cbadge lineitems cbadge-notification">{form[number]}</span></if></a></li>
+                                        
+                                        <li class="draw-tab__list__disclosure-item dropdown-container">
+                                            <span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true">
+                                                <i class="ico ico-16-svg ico-chevron-down-blue"></i>
+                                            </span>
+                                            <div class="dropdown">
+                                                <ul class="draw-tab__list--vertical" role="tablist"></ul>
+                                            </div>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                                <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                                    <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                        <form class="draw-form draw-form--full-width"  action="{https_server_admin}settings/locations/" accept-charset="UTF-8" method="get">
+                                        <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}"></if>
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label"></label>
+                                            <div class="draw-field__connected-wrapper">
+                                                <if condition="empty($sheel->GPC['view'])">
+                                                <div class="draw-field--connected--no-flex">
+                                                    
+                                                    <div class="draw-select__wrapper">
+                                                        {form[region_pulldown]}
+                                                    </div>
+                                                    
+                                                </div>
+                                                </if>
+                                                
+                                                <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'cities' OR $sheel->GPC['view'] == 'states')">
+                                                <div class="draw-field--connected--no-flex">
+                                                    
+                                                    <div class="draw-select__wrapper">
+                                                        {form[country_pulldown]}
+                                                    </div>
+                                                    
+                                                </div>
+                                                <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'"><div class="draw-field--connected--no-flex">
+                                                    
+                                                    <div class="draw-select__wrapper">
+                                                        {form[state_pulldown]}
+                                                    </div>
+                                                    
+                                                </div>
+                                                </if>
+                                                </if>
+                                                
+                                                <label class="draw-label helper--visually-hidden" for="query">Query</label>
+                                                <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search draw-icon--16" aria-hidden="true"></span></span>
+                                                    <input type="text" name="q" id="query" placeholder="Enter keyword" class="draw-input draw-input--invisible" value="{form[q]}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <if condition="isset($number) AND $number > 0">
+                                <!--<div class="draw-card__section draw-card__section--no-bottom-spacing">
+                                    <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                        
+                                        <div class="draw-input-wrapper">
+                                            <div class="draw-field__connected-wrapper">
+                                                Showing results 1 - 10 of 52
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>-->
+                                </if>
+                           
+                            </div>
+                            
+                            
+                            <form id="formlocations" class="draw-form draw-form--full-width" action="{https_server_admin}settings/locations/" accept-charset="UTF-8" method="post">
+                            <if condition="isset($sheel->GPC['regionid']) AND $sheel->GPC['regionid'] > 0 AND empty($sheel->GPC['view'])"><input type="hidden" name="do" value="save_locations"><input type="hidden" name="regionid" value="{form[regionid]}"></if>
+                            <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'states'"><input type="hidden" name="do" value="save_states"><input type="hidden" name="locationid" value="{form[locationid]}"></if>
+                            <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'"><input type="hidden" name="do" value="save_cities"><input type="hidden" name="locationid" value="{form[locationid]}"><input type="hidden" name="state" value="{form[state]}"></if>
+                            <input type="hidden" name="returnurl" value="{pageurl_urlencoded}">
+                            <div id="locations-results">
+                                <div class="draw-card__section">
+                                    <div class="table-wrapper">
+                                    <if condition="(isset($sheel->GPC['regionid']) AND $sheel->GPC['regionid'] > 0) OR (isset($sheel->GPC['country']) AND !empty($sheel->GPC['country']))">
+                                      <table class="table-hover expanded" >
+                                      <thead>
+                                        <tr id="customer-search_order">
+                                          <th class="name is-sortable no-wrap">{_region}</th>
+                                          <th class="name is-sortable ">{_country}</th>
+                                          <th class="name is-sortable "><span>{_state_or_province}</span></th>
+                                          <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'states'">
+                                          <th class="name">State code</th>
+                                          </if>
+                                          <th class="orders is-sortable "><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'">{_city}<else />&nbsp;</if></th>
+                                          <th class="location is-sortable "><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'"><span>{_zip_slash_postal_code}</span><else />&nbsp;</if></th>
+                                          <th class="orders is-sortable tr" nowrap="nowrap">{_registration} 
+                                            <input type="checkbox" name="checkall" id="checkall" onclick="check_uncheck_all_id('visible[]', 'visible');"></th>
+                                          <th class="orders is-sortable tr" nowrap="nowrap">{_shipping} <input type="checkbox" name="checkall2" id="checkall2" onclick="check_uncheck_all_id('visible2[]', 'visible2');"></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <loop name="locations">
+                                        <tr>
+                                          <td class="name"><a href="{https_server_admin}settings/locations/update/region/{regionid}/" title="{_edit}">{region}</a></td>
+                                              <td class="name"><a href="{https_server_admin}settings/locations/update/country/{locationid}/" title="{_edit}">{country}</a></td>
+                                              <td class="name">{state}</td>
+                                              <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'states'">
+                                              <td class="name">{sc}</td>
+                                              </if>
+                                              <td class="name"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'">{city}<else />&nbsp;</if></td>
+                                              <td class="location"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'">{zipcode}<else />&nbsp;</if></td>
+                                              <td class="orders" nowrap="nowrap" align="right"><input type="checkbox" name="visible[]" id="visible_{id}" value="{id}" class="visible_checkbox" {visible} /></td>
+                                              <td class="orders" nowrap="nowrap" align="right"><input type="checkbox" name="visible2[]" id="visible2_{id}" value="{id}" class="visible2_checkbox" {visible2} /></td>
+                                        </tr>
+                                        </loop name="locations">
+                                        <if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'">
+                                        <tr>
+                                          <td class="name"><a href="#" title="{_edit}">&nbsp;</a></td>
+                                              <td class="name"><a href="#" title="{_edit}">&nbsp;</a></td>
+                                              <td class="name">&nbsp;</td>
+                                              <td class="name"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'"><input type="text" class="draw-input-small" name="newcity[]" value="" placeholder="New city"><else />&nbsp;</if></td>
+                                              <td class="location"><if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities'"><input type="text" class="draw-input-small" name="newzip[]" value="" placeholder="New zip / postal code"><else />&nbsp;</if></td>
+                                              <td class="orders" nowrap="nowrap" align="right"><input type="checkbox" name="newvisible" id="newvisible" value="1" class="visible_checkbox" checked="checked" /></td>
+                                              <td class="orders" nowrap="nowrap" align="right"><input type="checkbox" name="newvisible2" id="newvisible2" value="1" class="visible2_checkbox" checked="checked" /></td>
+                                        </tr>
+                                        </if>
+                                      </tbody>
+                                    </table>
+                                    </if>
+                                </div>
+                            </div>
+                            <if condition="(isset($number) AND $number > 0) OR (isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'cities')"><if condition="(isset($sheel->GPC['regionid']) AND $sheel->GPC['regionid'] > 0) OR (isset($sheel->GPC['country']) AND !empty($sheel->GPC['country']))"><div class="draw-card__section--subdued">
+                                <div class="draw-grid draw-grid--right-aligned">
+                                    <div class="draw-grid__cell draw-grid__cell--no-flex">
+                                       <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                                    </div>
+                                </div>
+                                </div></if></if>
+                        </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+        </if>
+        
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['settings','settings_locations']), iLPage.close()"></div>
+    

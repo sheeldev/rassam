@@ -1,0 +1,335 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="languages-index" refresh="languages-index" class="page has-contextual-help">
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                    <span class="glyphicons glyphicons-globe draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span>
+                    {currentarea}
+                </h1>
+              
+                <div class="header__primary-actions"> <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'update' OR $sheel->GPC['subcmd'] == 'add')"><else /><a class="btn btn-primary" href="{https_server_admin}settings/languages/add/">Add new language</a></if> </div>
+                
+            </header>
+        </div>
+        
+       
+            
+      <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'update' OR $sheel->GPC['subcmd'] == 'add')"><else /><section>  
+        <div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Installed Languages</h1>
+                        <p>Install a new language so users can read the content in their locale. You may need to translate the phrases from English.</p>
+                        <p><a href="{https_server_admin}settings/languages/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="">Add new language</button></a></p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                        <thead>
+                                            <tr>
+                                                
+                                                <th>Title</th>
+                                                <th>Information</th>
+                                                <th>Author</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        
+                                            <loop name="installedlanguages">
+                                            <tr valign="top">
+                                                <td width="20%"><a href="{https_server_admin}settings/languages/update/{languageid}/" title="{charset}">{title}</a><!--<a href="javascript:void(0)" onclick=Attach("{ilpage[language]}?cmd=phrase-reference&amp;languageid={languageid}") class="smaller">{_phrases}</a>--></td>
+                                                <td><span class="type--subdued" title="{locale}">{textdirection}</span>
+                                                 <div class="type--subdued">Installed {installdate}</div>
+                                                 <div class="type--subdued">Last import {lastimport}</div>
+                                                 <div class="type--subdued">{percent}% translated</div>
+                                                </td>
+                                                <td><div class="type--subdued">{author}</div></td>
+                                                <td class="tr">{actions}</td>
+                                            </tr>
+                                            </loop name="installedlanguages">
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </section></if>
+    
+    <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')">
+    <br />
+    <div id="newlanguage">
+    <form method="post" action="{https_server_admin}settings/languages/" name="addlanguage" accept-charset="UTF-8">
+    <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><input type="hidden" name="subcmd" value="add" /><input type="hidden" name="do" value="process" /><else /><input type="hidden" name="subcmd" value="update" /><input type="hidden" name="do" value="process" /><input type="hidden" name="languageid" value="{form[languageid]}" /></if>
+    <section>  
+        <div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+                        <h1>{_create_new_language}</h1>
+                        <p>Create a new language and choose a base language to get started. You'll be translating from the base language into your own language.</p>
+                        <else />
+                        <h1>{_update_language}</h1>
+                        <p>Update language specific information such as character set, author, text direction, etc.</p>
+                        </if>
+                        
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                                        
+                                    <table class="expanded">
+                                    <tr> 
+                                        <td width="31%">{_title}</td>
+                                        <td width="69%">
+                                        <div class="draw-select__wrapper draw-input--has-content">{form[title_pulldown]}</div></td>
+                                    </tr>
+                                    <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><tr> 
+                                        <td valign="middle">{_base_new_language_from}</td>
+                                        <td width="69%">{form[base_language_pulldown]}</td>
+                                    </tr></if>
+                                    <tr> 
+                                        <td width="31%">{_language_iso_code}</td>
+                                        <td width="69%">	<input type="text" name="form[languageiso]" size="4" maxlength="10" class="draw-input" value="{form[languageiso]}" /><p class="type--subdued st"><a href="http://www.loc.gov/standards/iso639-2/php/English_list.php" target="_blank">{_learn_more_about_iso_codes}</a></p></td>
+                                    </tr>
+                                    <tr> 
+                                        <td>{_php_locale}</td>
+                                        <td><input type="text" name="form[locale]" size="4" maxlength="20" class="draw-input" value="{form[locale]}" /><p class="type--subdued st"><a href="http://ca3.php.net/manual/en/function.setlocale.php" target="_blank">{_learn_more_about_setlocale}</a></p></td>
+                                    </tr>
+                                    <tr> 
+                                        <td>{_text_direction}</td>
+                                        <td><div class="draw-select__wrapper draw-input--has-content">{form[textdirection_pulldown]}</div></td>
+                                    </tr>
+                                    <tr> 
+                                        <td valign="middle" nowrap="nowrap">{_character_set}</td>
+                                        <td>
+                                            <div class="draw-select__wrapper draw-input--has-content">{form[characterset_pulldown]}</div>
+                                            </td>
+                                    </tr>
+                                    <tr> 
+                                        <td width="31%">{_language_author}</td>
+                                        <td width="31%"><input type="text" name="form[author]" size="10" maxlength="100" class="draw-input" value="{site_name}" placeholder="{site_name}" /></td>
+                                    </tr>
+                                    <tr> 
+                                        <td valign="middle">{_can_users_select_this_language}</td>
+                                      <td>
+                                              <div class="draw-select__wrapper draw-input--has-content">	
+                                            <select name="form[canselect]" class="draw-select">
+                                                <option value="0">{_no}</option>
+                                                <option value="1" selected="selected">{_yes}</option>
+                                            </select>
+                                            </div>
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                        <td valign="middle">{_force_as_default_language}</td>
+                                      <td>
+                                              <div class="draw-select__wrapper draw-input--has-content">	
+                                            <select name="form[defaultlanguage]" class="draw-select">
+                                                <option value="0">{_no}</option>
+                                                <option value="1">{_yes}</option>
+                                            </select>
+                                            </div>
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                        <td valign="middle">{_replacement_list}</td>
+                                        <td>
+                                            <textarea name="form[replacements]" rows="3" cols="67" class="input"></textarea>
+                                            <p class="type--subdued st">{_you_should_update_this_list_if_you_discover_foreign_characters} {_use_like}: <strong>&#468;|u, &#333;|o, é|e, etc|etc</strong></p>
+                                          
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                        <td valign="middle">Alphabet</td>
+                                        <td>
+                                            <input type="text" name="form[alphabet]" size="4" maxlength="20" class="draw-input" value="{form[alphabet]}" />
+                                            <p class="type--subdued st">You should update this list if your alphabet is different than English.</strong> Separate each letter with only 1 comma and no spaces.</p>
+                                          
+                                      </td>
+                                    </tr>
+                                    </table>
+                                                
+                            
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+    </section>
+    <div class="section">
+        <div class="draw-grid draw-grid--right-aligned">
+            <div class="draw-grid__cell draw-grid__cell--no-flex">
+                <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+            </div>
+        </div>
+    </div>
+    </form>
+    </div>
+    </if>
+    
+    <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'update' OR $sheel->GPC['subcmd'] == 'add')"><else /><section>
+        <form method="post" action="{https_server_admin}settings/languages/import/" accept-charset="UTF-8" enctype="multipart/form-data">
+        <input type="hidden" name="cmd" value="_upload-xml-language" />
+        <div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Import Language</h1>
+                        <p>Import a valid XML language package.  This language should already exist before being imported.</p>
+                        
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <div class="draw-input-wrapper">
+                                    <div class="styled-file-input">
+                                        <div class="btn"> <span>{_browse}</span>
+                                            <input type="file" name="xml_file" class="js-no-dirty"> </div>
+                                    </div>
+                                    </div>
+                                    <div class="draw-input-wrapper">
+                                        <div><label for="noversioncheck" class="type--subdued"><input type="checkbox" name="noversioncheck" id="noversioncheck" value="1" /> {_check_this_box_if_you_would_like_to_disable_the_import_version_checker}</label></div>
+                                        <div><label for="overwrite" class="type--subdued"><input type="checkbox" name="overwrite" value="1" /> {_while_importing_do_not_change_the_text_of_each_phrase_imported_only_change_the_phrase_group_id_if_required}</label></div>
+                                        <div><label for="synctranslate" class="type--subdued"><input type="checkbox" name="syncronize" value="1" /> Syncronize uploaded language to translate.sheel.com? <span class="type--normal" style="font-weight:normal">(phrases found will be updated and can be voted on by others)</span></label></div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="draw-card__section">
+                                <div><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_upload}</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+        
+    </section>
+    
+    <section>  
+        <form method="post" action="{https_server_admin}settings/languages/export/" accept-charset="UTF-8">
+        <div class="section login-services">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Export Language</h1>
+                        <p>Export a language package as XML. You can translate this file offline and re import when done.</p>
+                        
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                        
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <div class="draw-input-wrapper ssb">
+                                        <div class="draw-select__wrapper draw-input--has-content">{language_pulldown}</div>
+                                    </div>
+                                    <div class="draw-input-wrapper">
+                                        <div><label for="untranslated" class="type--subdued"><input type="checkbox" name="untranslated" id="untranslated" value="1" /> {_only_export_phrases_that_have_not_been_translated}</label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-card__section">
+                                <p><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_download}</button></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </section>
+    
+    <section>  
+        
+        <div class="section login-services hide">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Find Orphan Phrases</h1>
+                        <p>Use this tool to scan all files for phrases that are no longer associated in the application.</p>
+                        
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="section-content">
+                        
+                            
+                            <if condition="isset($sheel->show['results']) AND $sheel->show['results']">
+                            <if condition="isset($sheel->show['can_delete']) AND $sheel->show['can_delete']">
+                                <form action="{https_server_admin}settings/languages/orphan/phrase/" method="post" accept-charset="UTF-8">
+                                <input type="hidden" name="do" value="deleteorphanphrases" />
+                                    <table>
+                                    <tr>
+                                        <td colspan="2"><textarea class="draw-input" rows="20" cols="100" name="orphan_phrases_sql" id="orphan_phrases_sql">{orphan_phrases_text_area}</textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">{orphan_phrases_table}</td>
+                                    </tr>
+                                    </table>
+                                    <div class="draw-card__section">
+                                        <p><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">Run query</button></p>
+                                    </div>
+                                </form>
+                            <else />
+                                <form action="{https_server_admin}settings/languages/orphan/phrase/" name="ilform" method="get" accept-charset="UTF-8">
+                                <input type="hidden" name="do" value="find" />
+                                <div class="draw-card__section">
+                                    <p class="type--subdued ssb">{_no_results_found}</p>
+                                    <p><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">Scan again</button></p>
+                                   </div>
+                                </form>
+                                
+                            </if>
+                        <else />
+                            <form action="{https_server_admin}settings/languages/orphan/phrase/" name="ilform" method="get" accept-charset="UTF-8">
+                            <input type="hidden" name="do" value="find" />
+                            <div class="draw-card__section">
+                                <p><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_find}</button></p>
+                            </div>
+                            </form>
+                        </if>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </section></if>
+    
+    <div define="iLNav.setPage(['settings','settings_languages']), iLPage.close()"></div>

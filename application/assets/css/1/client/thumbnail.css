@@ -60,7 +60,7 @@
 	font-size:13px
 }
 .product li a:hover {
-	color:#fdb819;
+	color:#FDB819;
 }
 .product li strong {
 	display:block;
@@ -197,7 +197,7 @@
     margin: auto;
     content: '\0020';
     overflow: hidden;
-    border-bottom: #fdb819 solid 3px;
+    border-bottom: #FDB819 solid 3px;
 	margin-top: 5px;
 	height: 3px;
 	width:35px;

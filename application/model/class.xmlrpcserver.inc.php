@@ -417,24 +417,24 @@ class sheel_xmlrpcserver
     public function getmessage($var, $lng) 
 	{
 		$finalmessage='';
-		$sqllang = $this->ilance->db->query("
+		$sqllang = $this->sheel->db->query("
 			SELECT languagecode
 			FROM " . DB_PREFIX . "language
 			where languageid ='".$lng."'
 		");
-		if ($this->ilance->db->num_rows($sqllang) > 0) {
-			$reslang = $this->ilance->db->fetch_array($sqllang, DB_ASSOC);
+		if ($this->sheel->db->num_rows($sqllang) > 0) {
+			$reslang = $this->sheel->db->fetch_array($sqllang, DB_ASSOC);
 			$slng = substr($reslang['languagecode'],0,3);
 		}
-		$sql = $this->ilance->db->query("
+		$sql = $this->sheel->db->query("
 			SELECT text_$slng AS text
 			FROM " .DB_PREFIX . "language_phrases
 			WHERE varname IN ('" . $var . "')
 			LIMIT 1
 		");
-		if ($this->ilance->db->num_rows($sql) > 0)
+		if ($this->sheel->db->num_rows($sql) > 0)
 		{
-			$message = $this->ilance->db->fetch_array($sql, DB_ASSOC);
+			$message = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 			$finalmessage = $message['text'];
 	
 		}

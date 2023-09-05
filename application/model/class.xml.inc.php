@@ -285,8 +285,8 @@ class xml
                 for ($i = 0; $i < $elementcount; $i++) {
                         if ($a[$i]['tag'] == 'CONFIGURATION') {
                                 if ($a[$i]['type'] == 'open') {
-                                        $sheel_version = $a[$i]['attributes']['ILVERSION'];
-                                        $sheel_build = $a[$i]['attributes']['ILBUILD'];
+                                        $sheel_version = $a[$i]['attributes']['VERSION'];
+                                        $sheel_build = $a[$i]['attributes']['BUILD'];
                                 }
                         } else if ($a[$i]['tag'] == 'SITENAME') {
                                 if ($a[$i]['type'] == 'complete') {
@@ -329,13 +329,13 @@ class xml
          */
         function process_lang_xml($a = array(), $e)
         {
-                $illang_version = $title = $author = $lang_code = $charset = $locale = $languageiso = $textdirection = $current_phrase_group = $replacements = $alphabet = $canselect = '';
+                $lang_version = $title = $author = $lang_code = $charset = $locale = $languageiso = $textdirection = $current_phrase_group = $replacements = $alphabet = $canselect = '';
                 $phrasearray = $phrase_group_data = array();
                 $elementcount = count($a);
                 for ($i = 0; $i < $elementcount; $i++) {
                         if ($a[$i]['tag'] == 'LANGUAGE') {
-                                if (empty($illang_version) and $a[$i]['type'] == 'open') {
-                                        $illang_version = $a[$i]['attributes']['ILVERSION'];
+                                if (empty($lang_version) and $a[$i]['type'] == 'open') {
+                                        $lang_version = $a[$i]['attributes']['VERSION'];
                                 }
                         } else if ($a[$i]['tag'] == 'TITLE') {
                                 if (empty($title) and $a[$i]['type'] == 'complete') {
@@ -398,7 +398,7 @@ class xml
                         }
                 }
                 $result = array(
-                        'illang_version' => $illang_version,
+                        'lang_version' => $lang_version,
                         'title' => $title,
                         'author' => $author,
                         'lang_code' => $lang_code,
@@ -424,13 +424,13 @@ class xml
          */
         function process_email_xml($a = array(), $e)
         {
-                $ilversion = $langcode = $charset = $author = $emailname = $emailsubject = $emailbody = $emailhtmlbody = $emailtype = $emailvarname = $emailproduct = $emailgroup = $emailbuyer = $emailseller = $emailadmin = '';
+                $version = $langcode = $charset = $author = $emailname = $emailsubject = $emailbody = $emailhtmlbody = $emailtype = $emailvarname = $emailproduct = $emailgroup = $emailbuyer = $emailseller = $emailadmin = '';
                 $emailarray = array();
                 $arraycount = count($a);
                 for ($i = 0; $i < $arraycount; $i++) {
                         if ($a[$i]['tag'] == 'LANGUAGE') {
-                                if (empty($ilversion) and $a[$i]['type'] == 'open') {
-                                        $ilversion = $a[$i]['attributes']['ILVERSION'];
+                                if (empty($version) and $a[$i]['type'] == 'open') {
+                                        $version = $a[$i]['attributes']['VERSION'];
                                 }
                         } else if ($a[$i]['tag'] == 'AUTHOR') {
                                 if (empty($author) and $a[$i]['type'] == 'complete') {
@@ -493,7 +493,7 @@ class xml
                         }
                 }
                 $result = array(
-                        'ilversion' => $ilversion,
+                        'version' => $version,
                         'langcode' => $langcode,
                         'author' => $author,
                         'charset' => $charset,
@@ -741,13 +741,13 @@ class xml
          */
         function process_config_xml($a = array(), $e)
         {
-                $ilversion = $current_setting_group = '';
+                $version = $current_setting_group = '';
                 $settingarray = array();
                 $elementcount = count($a);
                 for ($i = 0; $i < $elementcount; $i++) {
                         if ($a[$i]['tag'] == 'CONFIG') {
-                                if (empty($ilversion) and $a[$i]['type'] == 'open') {
-                                        $ilversion = $a[$i]['attributes']['ILVERSION'];
+                                if (empty($version) and $a[$i]['type'] == 'open') {
+                                        $version = $a[$i]['attributes']['VERSION'];
                                 }
                         } else if ($a[$i]['tag'] == 'CONFIGGROUP') {
                                 if ($a[$i]['type'] == 'open' or $a[$i]['type'] == 'complete') {
@@ -781,7 +781,7 @@ class xml
                         }
                 }
                 $result = array(
-                        'ilversion' => $ilversion,
+                        'version' => $version,
                         'settingarray' => $settingarray,
                         'settinggrouparray' => $settinggrouparray,
                 );

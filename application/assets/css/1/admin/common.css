@@ -1040,7 +1040,7 @@ a.type--blog-category:active {
     color: #d4a002
 }
 .type--info {
-    color: #479ccf
+    color: #00000F
 }
 .type--white {
     color: #ffffff
@@ -1579,7 +1579,7 @@ a.drag-handle {
 .btn-default,
 .btn {
     background-color: #ffffff;
-    color: #479ccf;
+    color: #00000F;
     border: 1px solid #d3dbe2
 }
 .btn-default:hover,
@@ -1594,7 +1594,7 @@ a.drag-handle {
 .active.btn {
     border: 1px solid #d3dbe2;
     background-color: #f5f6f7;
-    color: #479ccf;
+    color: #00000F;
     text-decoration: none
 }
 .btn-default:active,
@@ -1607,17 +1607,17 @@ a.drag-handle {
     background: #f5f6f7
 }
 .btn-primary {
-    background-color: #479ccf;
+    background-color: #00000F;
     color: #ffffff;
-    border: 1px solid #479ccf
+    border: 1px solid #00000F
 }
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.focus,
 .btn-primary:active,
 .btn-primary.active {
-    border: 1px solid #4293c2;
-    background-color: #4293c2;
+    border: 1px solid #31373d;
+    background-color: #31373d;
     color: #ffffff;
     text-decoration: none
 }
@@ -1625,11 +1625,11 @@ a.drag-handle {
 .btn-primary.active,
 .btn-primary.rte-command-active {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2) inset;
-    background: #4293c2
+    background: #31373d
 }
 .btn-destroy {
     background-color: #ffffff;
-    color: #479ccf;
+    color: #00000F;
     border: 1px solid #d3dbe2
 }
 .btn-destroy:hover,
@@ -1639,7 +1639,7 @@ a.drag-handle {
 .btn-destroy.active {
     border: 1px solid #d3dbe2;
     background-color: #ff5d5d;
-    color: #479ccf;
+    color: #00000F;
     text-decoration: none
 }
 .btn-destroy:active,
@@ -1927,7 +1927,7 @@ input[type="submit"].btn-disabled.btn--outline,
     background-color: transparent !important;
     border: none;
     cursor: pointer;
-    color: #479ccf;
+    color: #00000F;
     text-decoration: none;
     vertical-align: initial
 }
@@ -1943,7 +1943,7 @@ input[type="submit"].btn-disabled.btn--outline,
 }
 .btn--plain:hover,
 .btn--link:hover {
-    color: #4293c2;
+    color: #31373d;
     text-decoration: underline
 }
 .btn--link {
@@ -1987,7 +1987,7 @@ input[type="submit"].btn-disabled.btn--outline,
     border-left-width: 0 !important
 }
 .segmented>li .btn.btn-primary {
-    border: 1px solid #479ccf;
+    border: 1px solid #00000F;
     border-right-color: #3e89b5
 }
 .segmented>li {
@@ -2004,7 +2004,7 @@ input[type="submit"].btn-disabled.btn--outline,
     border-radius: 0px 3px 3px 0px
 }
 .segmented>li:last-child .btn.btn-primary {
-    border-right-color: #479ccf
+    border-right-color: #00000F
 }
 .segmented>li.middle-child>.btn {
     border-radius: 0px
@@ -2169,7 +2169,7 @@ img.disabled {
 .aspect-ratio--is-selected:before,
 .aspect-ratio--is-selected:hover:before,
 .aspect-ratio--is-selected:focus:before {
-    border: 2px solid #479ccf;
+    border: 2px solid #00000F;
     border-radius: 3px;
     top: -3px;
     right: -3px;
@@ -2467,7 +2467,7 @@ table.expanded td {
 tr.selected:hover td,
 tr.selected td,
 tr.selected td:hover {
-    background-color: #fffbe9
+    background-color: #f3f5f5
 }
 tr:last-child>td {
     border-bottom: none
@@ -2487,8 +2487,8 @@ th.is-sortable {
     cursor: pointer
 }
 th.is-sortable:hover {
-    background: #f6fdff;
-    color: #479ccf
+    background: #f3f5f5;
+    color: #00000F
 }
 th.sorted-desc>span,
 th.sorted-asc>span {
@@ -2629,7 +2629,7 @@ tfoot td {
     border: none
 }
 .table-hover tr:hover td {
-    background: #f6fdff;
+    background: #f3f5f5;
 }
 .table-hover .table-blank-slate tr:hover td {
     background: transparent
@@ -2703,7 +2703,7 @@ td a.subdued:hover {
 }
 .is-selected>td,
 .is-selected:hover>td {
-    background-color: #fffbe9;
+    background-color: #f3f5f5;
     border-color: #ebebda
 }
 .first-row td {
@@ -2917,7 +2917,7 @@ td a.subdued:hover {
     overflow-x: scroll
 }
 .selected .table__cell--sticky {
-    background-color: #fffbe9
+    background-color: #f3f5f5
 }
 form {
     margin: 0;
@@ -2981,7 +2981,7 @@ input.focus,
 .focus.autocomplete-field,
 textarea:focus,
 textarea.focus {
-    border: 1px solid #479ccf;
+    border: 1px solid #00000F;
     outline: none
 }
 input.placeholder,
@@ -3126,7 +3126,7 @@ input[type=checkbox]:focus,
 [type=checkbox].autocomplete-field:focus,
 input[type=radio]:focus,
 [type=radio].autocomplete-field:focus {
-    outline: 2px auto #479ccf
+    outline: 2px auto #00000F
 }
 input[type=file],
 [type=file].autocomplete-field {
@@ -3207,7 +3207,7 @@ select.error {
 select:focus,
 select.focus {
     outline: none;
-    border: 1px solid #479ccf
+    border: 1px solid #00000F
 }
 select.full-width {
     width: 100%
@@ -3385,7 +3385,7 @@ span.arrow {
 }
 .styled-file-input .btn>span,
 .styled-file-input .btn--plain>span {
-    color: #479ccf
+    color: #00000F
 }
 .styled-file-input .btn>label,
 .styled-file-input .btn--plain>label {
@@ -3485,8 +3485,8 @@ span.arrow {
     transition: all 0.15s
 }
 .radio-filter-input:checked+.radio-filter-all:before {
-    background: #479ccf;
-    border-color: #479ccf
+    background: #00000F;
+    border-color: #00000F
 }
 .radio-filter-input:checked+.radio-filter-store:before {
     background: #94c140;
@@ -4385,7 +4385,7 @@ label.resource-image {
 .dropdown li a.is-selected {
     text-decoration: none;
     color: #ffffff;
-    background: #479ccf
+    background: #00000F
 }
 .dropdown li a.destroy:hover {
     background: #ba4747
@@ -4421,7 +4421,7 @@ label.resource-image {
 }
 .dropdown .app-icon-list:hover {
     cursor: pointer;
-    background: #479ccf
+    background: #00000F
 }
 .dropdown .app-icon-list:hover a {
     color: #ffffff
@@ -4500,7 +4500,7 @@ label.resource-image {
 .selected-result>a {
     text-decoration: none;
     color: #ffffff;
-    background: #479ccf
+    background: #00000F
 }
 .selected-result {
     text-decoration: none;
@@ -4696,11 +4696,11 @@ label.resource-image {
     margin-bottom: 30px
 }
 .box.warning {
-    background-color: #fffbe9;
+    background-color: #f3f5f5;
     color: #6f4f0c;
-    border: 1px solid #fffbe9;
-    border-right-color: #fffbe9;
-    border-bottom-color: #fffbe9
+    border: 1px solid #f3f5f5;
+    border-right-color: #f3f5f5;
+    border-bottom-color: #f3f5f5
 }
 .box.warning .divider-top {
     border-top-color: #d4a002 !important
@@ -5001,7 +5001,7 @@ label.resource-image {
 .box-details .box-header .inline-action-links li+li:before {
     content: "Ã¢â‚¬Â¢";
     padding: 0 7px;
-    color: #479ccf
+    color: #00000F
 }
 .box-details .box-footer {
     border-top: 1px solid #ebeef0;
@@ -5312,7 +5312,7 @@ textarea.edit-email-template {
     background: #ffffff;
     border: 1px solid #d3dbe2;
     border-bottom: solid 1px #fff;
-    color: #479ccf;
+    color: #00000F;
     cursor: default
 }
 .tabs .active a:hover,
@@ -5329,7 +5329,7 @@ textarea.edit-email-template {
 }
 .tabs-inline .tabs a {
     border-top: none;
-    color: #479ccf;
+    color: #00000F;
     padding: 15px 18px
 }
 .tabs-inline .tabs li:first-child a {
@@ -5407,7 +5407,7 @@ textarea.edit-email-template {
     position: relative;
     margin: 0;
     padding: 6px;
-    color: #479ccf;
+    color: #00000F;
     font-size: 13px;
     font-weight: normal;
     white-space: nowrap;
@@ -5451,7 +5451,7 @@ textarea.edit-email-template {
 }
 .segmented-control .selected a,
 .segmented-control .selected label {
-    background-color: #479ccf;
+    background-color: #00000F;
     color: #ffffff;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
     z-index: 30;
@@ -5459,7 +5459,7 @@ textarea.edit-email-template {
 }
 .segmented-control .selected a:hover,
 .segmented-control .selected label:hover {
-    background-color: #479ccf;
+    background-color: #00000F;
     z-index: 30;
     padding-right: 6px
 }
@@ -5697,10 +5697,10 @@ textarea.edit-email-template {
     right: calc(100% + 8px)
 }
 .ico-chevron-up-blue {
-    background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M3.5%2C22.2L14%2C11.7l10.5%2C10.5l2.7-2.7L14%2C6.2L0.7%2C19.5L3.5%2C22.2z%22%2F%3E%3C%2Fsvg%3E) 0 0 no-repeat
+    background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M3.5%2C22.2L14%2C11.7l10.5%2C10.5l2.7-2.7L14%2C6.2L0.7%2C19.5L3.5%2C22.2z%22%2F%3E%3C%2Fsvg%3E) 0 0 no-repeat
 }
 .ico-chevron-down-blue {
-    background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M24.5%2C6.2L13.9%2C16.8L3.5%2C6.2L0.8%2C9l13.2%2C13.3L27.2%2C9L24.5%2C6.2z%22%2F%3E%3C%2Fsvg%3E)
+    background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M24.5%2C6.2L13.9%2C16.8L3.5%2C6.2L0.8%2C9l13.2%2C13.3L27.2%2C9L24.5%2C6.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .ico-clear-bluegray {
     background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20baseProfile%3D%22tiny%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2395a7b7%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%23BFBFBF%22%20d%3D%22M12.234%203.766c-2.334-2.334-6.119-2.334-8.453%200s-2.334%206.119%200%208.453%206.119%202.334%208.453%200%202.334-6.119%200-8.453zm-1.06%206.329l-1.056%201.056-2.11-2.112-2.111%202.111-1.056-1.056%202.111-2.111-2.111-2.11%201.056-1.056%202.111%202.111%202.111-2.111%201.056%201.056-2.112%202.111%202.111%202.111z%22%2F%3E%3C%2Fsvg%3E) 0 0 no-repeat
@@ -5718,25 +5718,25 @@ textarea.edit-email-template {
     text-indent: -9999px
 }
 .page-prev {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%2028%2028%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M23%2C24.7L12.5%2C14.2L23%2C3.7L20.3%2C1L7%2C14.2l13.3%2C13.3C20.3%2C27.5%2C23%2C24.7%2C23%2C24.7z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%2028%2028%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M23%2C24.7L12.5%2C14.2L23%2C3.7L20.3%2C1L7%2C14.2l13.3%2C13.3C20.3%2C27.5%2C23%2C24.7%2C23%2C24.7z%22%2F%3E%3C%2Fsvg%3E)
 }
 .disabled .page-prev {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%2028%2028%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23c3cfd8%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M23%2C24.7L12.5%2C14.2L23%2C3.7L20.3%2C1L7%2C14.2l13.3%2C13.3C20.3%2C27.5%2C23%2C24.7%2C23%2C24.7z%22%2F%3E%3C%2Fsvg%3E)
 }
 .page-next {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%20width%3D%2228%22%20height%3D%2228%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M7%2C3.8l10.5%2C10.5L7%2C24.7l2.7%2C2.7L23%2C14.3L9.7%2C1C9.7%2C1%2C7%2C3.8%2C7%2C3.8z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%20width%3D%2228%22%20height%3D%2228%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M7%2C3.8l10.5%2C10.5L7%2C24.7l2.7%2C2.7L23%2C14.3L9.7%2C1C9.7%2C1%2C7%2C3.8%2C7%2C3.8z%22%2F%3E%3C%2Fsvg%3E)
 }
 .disabled .page-next {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%20width%3D%2228%22%20height%3D%2228%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23c3cfd8%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M7%2C3.8l10.5%2C10.5L7%2C24.7l2.7%2C2.7L23%2C14.3L9.7%2C1C9.7%2C1%2C7%2C3.8%2C7%2C3.8z%22%2F%3E%3C%2Fsvg%3E)
 }
 .page-up {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M3.5%2C22.2L14%2C11.7l10.5%2C10.5l2.7-2.7L14%2C6.2L0.7%2C19.5L3.5%2C22.2z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M3.5%2C22.2L14%2C11.7l10.5%2C10.5l2.7-2.7L14%2C6.2L0.7%2C19.5L3.5%2C22.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .disabled .page-up {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23c3cfd8%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M3.5%2C22.2L14%2C11.7l10.5%2C10.5l2.7-2.7L14%2C6.2L0.7%2C19.5L3.5%2C22.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .page-down {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M24.5%2C6.2L13.9%2C16.8L3.5%2C6.2L0.8%2C9l13.2%2C13.3L27.2%2C9L24.5%2C6.2z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M24.5%2C6.2L13.9%2C16.8L3.5%2C6.2L0.8%2C9l13.2%2C13.3L27.2%2C9L24.5%2C6.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .disabled .page-down {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2028%2028%22%20enable-background%3D%22new%200%200%2028%2028%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23c3cfd8%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20fill%3D%22%23329ECC%22%20d%3D%22M24.5%2C6.2L13.9%2C16.8L3.5%2C6.2L0.8%2C9l13.2%2C13.3L27.2%2C9L24.5%2C6.2z%22%2F%3E%3C%2Fsvg%3E)
@@ -5758,7 +5758,7 @@ textarea.edit-email-template {
     margin-top: -2px
 }
 .ico-dot--blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20184.2%20184.2%22%20enable-background%3D%22new%200%200%20184.2%20184.2%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ccircle%20cx%3D%2292.1%22%20cy%3D%2292.1%22%20r%3D%2292.1%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20184.2%20184.2%22%20enable-background%3D%22new%200%200%20184.2%20184.2%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ccircle%20cx%3D%2292.1%22%20cy%3D%2292.1%22%20r%3D%2292.1%22%2F%3E%3C%2Fsvg%3E)
 }
 .ico-dot--green {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20184.2%20184.2%22%20enable-background%3D%22new%200%200%20184.2%20184.2%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2329bc94%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ccircle%20cx%3D%2292.1%22%20cy%3D%2292.1%22%20r%3D%2292.1%22%2F%3E%3C%2Fsvg%3E)
@@ -6076,7 +6076,7 @@ a:hover .ico-16.ico-help {
     background-position: 45% -93px
 }
 .btn .ico-disclosure {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20width%3D%229px%22%20height%3D%224px%22%20viewBox%3D%220%200%209%204%22%20version%3D%221.1%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ctitle%3Edisclosure-icon%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cdefs%2F%3E%3Cg%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%3E%3Cpolygon%20id%3D%22disclosure-icon%22%20fill%3D%22%23929292%22%20sketch%3Atype%3D%22MSShapeGroup%22%20transform%3D%22translate%284.500000%2C%202.000000%29%20scale%281%2C%20-1%29%20translate%28-4.500000%2C%20-2.000000%29%20%22%20points%3D%224.5%200%209%204%200%204%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20width%3D%229px%22%20height%3D%224px%22%20viewBox%3D%220%200%209%204%22%20version%3D%221.1%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ctitle%3Edisclosure-icon%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cdefs%2F%3E%3Cg%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%3E%3Cpolygon%20id%3D%22disclosure-icon%22%20fill%3D%22%23929292%22%20sketch%3Atype%3D%22MSShapeGroup%22%20transform%3D%22translate%284.500000%2C%202.000000%29%20scale%281%2C%20-1%29%20translate%28-4.500000%2C%20-2.000000%29%20%22%20points%3D%224.5%200%209%204%200%204%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 .btn-primary .ico-disclosure,
 .header-item:hover .ico-disclosure,
@@ -6125,7 +6125,7 @@ a:hover .ico-16.ico-help {
     border-top-right-radius: 0
 }
 .rte-sandbox.is-focused {
-    border-color: #479ccf
+    border-color: #00000F
 }
 #rte-editor {
     margin: 0;
@@ -6276,7 +6276,7 @@ a:hover .ico-16.ico-help {
     position: relative
 }
 .timeline-item .timeline-dropdown {
-    background: #f6fdff;
+    background: #f3f5f5;
     border: none;
     border-top: 1px solid #d5dbe6;
     box-shadow: none;
@@ -6703,7 +6703,7 @@ a:hover .ico-16.ico-help {
 }
 .global-search__results .global-search__result--selected {
     background-color: #eff9fd;
-    border-right: 3px solid #479ccf;
+    border-right: 3px solid #00000F;
     outline: 0
 }
 .global-search__results .global-search__result__image {
@@ -6886,7 +6886,7 @@ a:hover .ico-16.ico-help {
 .datalist-stacked a:hover {
     text-decoration: none;
     color: #ffffff;
-    background-color: #479ccf
+    background-color: #00000F
 }
 .datalist-item-applied a {
     color: #999
@@ -7023,7 +7023,7 @@ a:hover .ico-16.ico-help {
 }
 .autocomplete-lst li:hover a,
 .autocomplete-lst li.selected a {
-    background: #479ccf;
+    background: #00000F;
     text-decoration: none;
     color: #ffffff
 }
@@ -7545,7 +7545,7 @@ a.breadcrumb:focus {
 .errorExplanation {
     padding: 10px;
     margin: 0 15px 20px 15px;
-    background-color: #fffbe9;
+    background-color: #f3f5f5;
     color: #9b731d;
     border: 1px solid #f2ebcf;
     border-right-color: #e2dcc2;
@@ -7669,7 +7669,7 @@ a.breadcrumb:focus {
     padding: 1px
 }
 .highlight-warning {
-    background: #fffbe9;
+    background: #f3f5f5;
     color: #e85b0f
 }
 .highlight-success {
@@ -7746,8 +7746,8 @@ a.breadcrumb:focus {
     color: #96bf48
 }
 .badge--outline.badge--info {
-    border-color: #479ccf;
-    color: #479ccf
+    border-color: #00000F;
+    color: #00000F
 }
 .badge--outline.badge--subdued {
     border-color: #95a7b7;
@@ -7939,7 +7939,7 @@ a.breadcrumb:focus {
     color: #96bf48
 }
 .channel-stat--blue {
-    color: #479ccf
+    color: #00000F
 }
 .ratio-bar {
     display: block
@@ -7948,7 +7948,7 @@ a.breadcrumb:focus {
     color: #96bf48
 }
 .ratio-bar__fill--blue {
-    color: #479ccf
+    color: #00000F
 }
 .channel-stats .channel-stat__stats {
     display: -webkit-box;
@@ -8106,7 +8106,7 @@ a.breadcrumb:focus {
     margin-right: 10px
 }
 .draw-popover__container--contains-active-popover .timeline__comment-ellipses {
-    color: #479ccf
+    color: #00000F
 }
 .timeline__comment-delete {
     margin-left: 5px
@@ -8964,7 +8964,7 @@ input[type=button].draw-input--button,
 .draw-input--stylized:focus,
 .draw-textarea:focus,
 .draw-token-list--is-input:focus {
-    border: 1px solid #479ccf
+    border: 1px solid #00000F
 }
 .draw-form.draw-form--full-width {
     width: 100%
@@ -9018,7 +9018,7 @@ input[type=submit].draw-input--submit,
     padding: 10px 15px;
     border: none;
     border-radius: 3px;
-    background-color: #479ccf;
+    background-color: #00000F;
     color: #ffffff;
     font-size: 13px
 }
@@ -9246,10 +9246,10 @@ input[type=checkbox].draw-checkbox,
 }
 .draw-radio:active ~ .draw-radio--styled,
 .draw-radio:focus .draw-radio--styled {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .draw-radio:checked ~ .draw-radio--styled:after {
-    background-color: #479ccf;
+    background-color: #00000F;
     -webkit-transform: translate(-50%, -50%) scale(1);
     -ms-transform: translate(-50%, -50%) scale(1);
     transform: translate(-50%, -50%) scale(1)
@@ -9279,7 +9279,7 @@ input[type=checkbox].draw-checkbox,
 }
 .draw-checkbox:active ~ .draw-checkbox--styled,
 .draw-checkbox:focus ~ .draw-checkbox--styled {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .draw-checkbox:checked ~ .draw-checkbox--styled:after {
     -webkit-transform: translate(-50%, -50%) scale(1);
@@ -9292,7 +9292,7 @@ input[type=checkbox].draw-checkbox,
     transform: translate(-50%, -50%) scale(1)
 }
 .draw-input--is-focused {
-    border: 1px solid #479ccf
+    border: 1px solid #00000F
 }
 .draw-input--has-error {
     border: 1px solid #ff5d5d;
@@ -9308,7 +9308,7 @@ input[type=checkbox].draw-checkbox,
     vertical-align: bottom
 }
 .draw-select__wrapper.draw-input--is-focused, .draw-multiselect__wrapper.draw-input--is-focused {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .draw-select__wrapper:after {
     content: '';
@@ -9404,7 +9404,7 @@ input[type=checkbox].draw-checkbox,
 }
 .draw-field--connected:focus:not(.btn)+.draw-field--connected,
 .draw-field--connected.draw-input--is-focused+.draw-field--connected {
-    border-left: solid 1px #479ccf
+    border-left: solid 1px #00000F
 }
 .draw-field--connected.btn:focus+.draw-field--connected {
     border-left: solid 1px #D6D6D6
@@ -9518,7 +9518,7 @@ input[type=checkbox].draw-checkbox,
     border-top: 1px solid #ebeef0
 }
 .draw-table--condensed tr.selected {
-    background: #fffbe9
+    background: #f3f5f5
 }
 .draw-table--condensed td {
     padding: 0 10px 10px 0;
@@ -9795,7 +9795,7 @@ input[type=checkbox].draw-checkbox,
     background-color: #fafbfc
 }
 .draw-card__section--accentuated {
-    background-color: #479ccf
+    background-color: #00000F
 }
 .draw-card__section--accentuated .draw-heading {
     color: #ffffff
@@ -10060,7 +10060,7 @@ input[type=checkbox].draw-checkbox,
     background: transparent
 }
 .draw-tab__list--vertical .draw-tab:hover {
-    color: #479ccf
+    color: #00000F
 }
 .draw-tab__list--vertical .draw-tab:focus {
     color: black
@@ -10097,7 +10097,7 @@ input[type=checkbox].draw-checkbox,
 .draw-tab:hover {
     outline: none;
     background-color: #fafbfc;
-    color: #479ccf;
+    color: #00000F;
     text-decoration: none
 }
 .draw-tab.draw-tab--is-active {
@@ -10196,7 +10196,7 @@ input[type=checkbox].draw-checkbox,
 .draw-list--divided-selectable>li a.is-selected,
 .draw-list--divided-selectable>li .draw-list__item:hover,
 .draw-list--divided-selectable>li .draw-list__item.is-selected {
-    background: #479ccf;
+    background: #00000F;
     text-decoration: none;
     color: #ffffff
 }
@@ -10245,7 +10245,7 @@ input[type=checkbox].draw-checkbox,
 .draw-list--compact .draw-list__item:hover,
 .draw-list--compact .draw-list__item:focus,
 .draw-list--compact .draw-list__item.draw-list__item--is-selected {
-    background: #479ccf;
+    background: #00000F;
     color: #ffffff;
     text-decoration: none;
     outline: none
@@ -10265,7 +10265,7 @@ input[type=checkbox].draw-checkbox,
 }
 .draw-list--compact .draw-list__item:active {
     color: #ffffff;
-    background: #4293c2
+    background: #31373d
 }
 .draw-list--compact .draw-list__item.is-disabled {
     color: #c3cfd8;
@@ -10286,10 +10286,10 @@ input[type=checkbox].draw-checkbox,
     visibility: visible
 }
 .draw-list--toggles .draw-list__item--promoted-action {
-    color: #479ccf
+    color: #00000F
 }
 .draw-list__item--promoted-action .draw-icon {
-    color: #479ccf;
+    color: #00000F;
     visibility: visible
 }
 .draw-list__item--is-applied .draw-icon {
@@ -10409,7 +10409,7 @@ input[type=checkbox].draw-checkbox,
     padding-bottom: 0
 }
 .draw-label--is-focused .draw-token-list--is-input {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .draw-token-list__wrapper {
     position: relative
@@ -10782,7 +10782,7 @@ input[type=checkbox].draw-checkbox,
     background-color: #eff9fd
 }
 .draw-popover__container--border-when-active.draw-popover__container--contains-active-popover {
-    border-color: #479ccf;
+    border-color: #00000F;
     background-color: #eff9fd
 }
 .draw-popover {
@@ -11480,7 +11480,7 @@ input[type=checkbox].draw-checkbox,
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
-    background: #479ccf;
+    background: #00000F;
     color: #ffffff;
     font-size: 11px;
     height: 17px;
@@ -11756,10 +11756,10 @@ input[type=checkbox].draw-checkbox,
     background: #d3dbe2
 }
 .frame--info {
-    color: #479ccf
+    color: #00000F
 }
 .frame--info.frame--fill {
-    background: #479ccf
+    background: #00000F
 }
 .frame--success {
     color: #96bf48
@@ -11962,10 +11962,10 @@ input[type=checkbox].draw-checkbox,
     color: currentColor
 }
 .draw-icon--info-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M13.5%207h-2c-.8%200-1.5.7-1.5%201.5v14c0%20.8.7%201.5%201.5%201.5h2c.8%200%201.5-.7%201.5-1.5v-14c0-.8-.7-1.5-1.5-1.5z%22%2F%3E%3Ccircle%20cx%3D%2212.5%22%20cy%3D%222.5%22%20r%3D%222.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M13.5%207h-2c-.8%200-1.5.7-1.5%201.5v14c0%20.8.7%201.5%201.5%201.5h2c.8%200%201.5-.7%201.5-1.5v-14c0-.8-.7-1.5-1.5-1.5z%22%2F%3E%3Ccircle%20cx%3D%2212.5%22%20cy%3D%222.5%22%20r%3D%222.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 .draw-icon--new-window-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M9.427%202c-.231%200-.347.28-.184.444l1.393%201.393-3.818%203.818c-.21.211-.21.553%200%20.763l.763.763c.21.21.552.21.763%200l3.818-3.818%201.393%201.393c.164.163.444.048.444-.184v-4.052c0-.287-.233-.52-.52-.52h-4.052z%22%2F%3E%3Cpath%20d%3D%22M9.996%202h-5.987c-1.107%200-2.009.899-2.009%202.009v7.983c0%201.107.899%202.009%202.009%202.009h7.983c1.107%200%202.009-.899%202.009-2.009v-5.987%201.996h-2v3.003c0%20.551-.453.997-.997.997h-6.006c-.551%200-.997-.453-.997-.997v-6.006c0-.551.453-.997.997-.997h3.003v-2h1.996z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M9.427%202c-.231%200-.347.28-.184.444l1.393%201.393-3.818%203.818c-.21.211-.21.553%200%20.763l.763.763c.21.21.552.21.763%200l3.818-3.818%201.393%201.393c.164.163.444.048.444-.184v-4.052c0-.287-.233-.52-.52-.52h-4.052z%22%2F%3E%3Cpath%20d%3D%22M9.996%202h-5.987c-1.107%200-2.009.899-2.009%202.009v7.983c0%201.107.899%202.009%202.009%202.009h7.983c1.107%200%202.009-.899%202.009-2.009v-5.987%201.996h-2v3.003c0%20.551-.453.997-.997.997h-6.006c-.551%200-.997-.453-.997-.997v-6.006c0-.551.453-.997.997-.997h3.003v-2h1.996z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 .draw-icon--preview-white {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20500%20500%22%20enable-background%3D%22new%200%200%20500%20500%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3Awhite%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M497.9%20237.5C447.9%20129.2%20352.1%2058.3%20250%2058.3S52.1%20129.2%202.1%20237.5c-4.2%208.3-4.2%2018.8%200%2027.1%2050%20108.3%20145.8%20179.2%20247.9%20179.2S447.9%20373%20497.9%20264.6c2.1-10.4%202.1-18.8%200-27.1zM250%20345.8c-52.1%200-95.8-43.8-95.8-95.8s43.8-95.8%2095.8-95.8%2095.8%2043.8%2095.8%2095.8-43.7%2095.8-95.8%2095.8z%22%2F%3E%3C%2Fsvg%3E)
@@ -11974,22 +11974,22 @@ input[type=checkbox].draw-checkbox,
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3Awhite%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M19.5%2022c-.2%200-.5-.1-.7-.3L12%2014.9l-6.8%206.8c-.2.2-.4.3-.7.3-.2%200-.5-.1-.7-.3l-1.6-1.6c-.1-.2-.2-.4-.2-.6%200-.2.1-.5.3-.7L9.1%2012%202.3%205.2C2.1%205%202%204.8%202%204.5c0-.2.1-.5.3-.7l1.6-1.6c.2-.1.4-.2.6-.2.3%200%20.5.1.7.3L12%209.1l6.8-6.8c.2-.2.4-.3.7-.3.2%200%20.5.1.7.3l1.6%201.6c.1.2.2.4.2.6%200%20.2-.1.5-.3.7L14.9%2012l6.8%206.8c.2.2.3.4.3.7%200%20.2-.1.5-.3.7l-1.6%201.6c-.2.1-.4.2-.6.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .draw-icon--remove-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M19.5%2022c-.2%200-.5-.1-.7-.3L12%2014.9l-6.8%206.8c-.2.2-.4.3-.7.3-.2%200-.5-.1-.7-.3l-1.6-1.6c-.1-.2-.2-.4-.2-.6%200-.2.1-.5.3-.7L9.1%2012%202.3%205.2C2.1%205%202%204.8%202%204.5c0-.2.1-.5.3-.7l1.6-1.6c.2-.1.4-.2.6-.2.3%200%20.5.1.7.3L12%209.1l6.8-6.8c.2-.2.4-.3.7-.3.2%200%20.5.1.7.3l1.6%201.6c.1.2.2.4.2.6%200%20.2-.1.5-.3.7L14.9%2012l6.8%206.8c.2.2.3.4.3.7%200%20.2-.1.5-.3.7l-1.6%201.6c-.2.1-.4.2-.6.2z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M19.5%2022c-.2%200-.5-.1-.7-.3L12%2014.9l-6.8%206.8c-.2.2-.4.3-.7.3-.2%200-.5-.1-.7-.3l-1.6-1.6c-.1-.2-.2-.4-.2-.6%200-.2.1-.5.3-.7L9.1%2012%202.3%205.2C2.1%205%202%204.8%202%204.5c0-.2.1-.5.3-.7l1.6-1.6c.2-.1.4-.2.6-.2.3%200%20.5.1.7.3L12%209.1l6.8-6.8c.2-.2.4-.3.7-.3.2%200%20.5.1.7.3l1.6%201.6c.1.2.2.4.2.6%200%20.2-.1.5-.3.7L14.9%2012l6.8%206.8c.2.2.3.4.3.7%200%20.2-.1.5-.3.7l-1.6%201.6c-.2.1-.4.2-.6.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .draw-icon--remove-blue-lighter {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23cae9f7%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M19.5%2022c-.2%200-.5-.1-.7-.3L12%2014.9l-6.8%206.8c-.2.2-.4.3-.7.3-.2%200-.5-.1-.7-.3l-1.6-1.6c-.1-.2-.2-.4-.2-.6%200-.2.1-.5.3-.7L9.1%2012%202.3%205.2C2.1%205%202%204.8%202%204.5c0-.2.1-.5.3-.7l1.6-1.6c.2-.1.4-.2.6-.2.3%200%20.5.1.7.3L12%209.1l6.8-6.8c.2-.2.4-.3.7-.3.2%200%20.5.1.7.3l1.6%201.6c.1.2.2.4.2.6%200%20.2-.1.5-.3.7L14.9%2012l6.8%206.8c.2.2.3.4.3.7%200%20.2-.1.5-.3.7l-1.6%201.6c-.2.1-.4.2-.6.2z%22%2F%3E%3C%2Fsvg%3E)
 }
 .draw-icon--search-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M15.5%200C10.8%200%207%203.8%207%208.5c0%201.8.6%203.5%201.5%204.8l-.7.7c-.7-.1-1.5.1-2.1.7l-5%205c-1%201-1%202.6%200%203.5.5.6%201.2.8%201.8.8s1.3-.2%201.8-.7l5-5c.6-.6.8-1.4.7-2.1l.7-.7c1.4%201%203%201.5%204.8%201.5%204.7%200%208.5-3.8%208.5-8.5S20.2%200%2015.5%200zm0%2014c-3%200-5.5-2.5-5.5-5.5S12.5%203%2015.5%203%2021%205.5%2021%208.5%2018.5%2014%2015.5%2014z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M15.5%200C10.8%200%207%203.8%207%208.5c0%201.8.6%203.5%201.5%204.8l-.7.7c-.7-.1-1.5.1-2.1.7l-5%205c-1%201-1%202.6%200%203.5.5.6%201.2.8%201.8.8s1.3-.2%201.8-.7l5-5c.6-.6.8-1.4.7-2.1l.7-.7c1.4%201%203%201.5%204.8%201.5%204.7%200%208.5-3.8%208.5-8.5S20.2%200%2015.5%200zm0%2014c-3%200-5.5-2.5-5.5-5.5S12.5%203%2015.5%203%2021%205.5%2021%208.5%2018.5%2014%2015.5%2014z%22%2F%3E%3C%2Fsvg%3E)
 }
 .draw-icon--subtract-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20enable-background%3D%22new%200%200%2012%2012%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M6%200%22%2F%3E%3Cpath%20d%3D%22M.8%207C.3%207%200%206.7%200%206.2v-.4c0-.5.3-.8.8-.8h10.5c.4%200%20.7.3.7.8v.5c0%20.4-.3.7-.8.7H.8z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20enable-background%3D%22new%200%200%2012%2012%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M6%200%22%2F%3E%3Cpath%20d%3D%22M.8%207C.3%207%200%206.7%200%206.2v-.4c0-.5.3-.8.8-.8h10.5c.4%200%20.7.3.7.8v.5c0%20.4-.3.7-.8.7H.8z%22%2F%3E%3C%2Fsvg%3E)
 }
 .draw-icon--template-editor-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M21%200H3C1.3%200%200%201.3%200%203v18c0%201.7%201.3%203%203%203h18c1.7%200%203-1.3%203-3V3c0-1.7-1.3-3-3-3zM3%2021V3h18v18H3zM18.5%205h-13c-.3%200-.5.2-.5.5v3c0%20.3.2.5.5.5h13c.3%200%20.5-.2.5-.5v-3c0-.3-.2-.5-.5-.5zM12.5%2011h-7c-.3%200-.5.2-.5.5v7c0%20.3.2.5.5.5h7c.3%200%20.5-.2.5-.5v-7c0-.3-.2-.5-.5-.5zM18.5%2011h-3c-.3%200-.5.2-.5.5v7c0%20.3.2.5.5.5h3c.3%200%20.5-.2.5-.5v-7c0-.3-.2-.5-.5-.5z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M21%200H3C1.3%200%200%201.3%200%203v18c0%201.7%201.3%203%203%203h18c1.7%200%203-1.3%203-3V3c0-1.7-1.3-3-3-3zM3%2021V3h18v18H3zM18.5%205h-13c-.3%200-.5.2-.5.5v3c0%20.3.2.5.5.5h13c.3%200%20.5-.2.5-.5v-3c0-.3-.2-.5-.5-.5zM12.5%2011h-7c-.3%200-.5.2-.5.5v7c0%20.3.2.5.5.5h7c.3%200%20.5-.2.5-.5v-7c0-.3-.2-.5-.5-.5zM18.5%2011h-3c-.3%200-.5.2-.5.5v7c0%20.3.2.5.5.5h3c.3%200%20.5-.2.5-.5v-7c0-.3-.2-.5-.5-.5z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 .draw-icon--theme-settings-blue {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M3.9%208.3c-.1-.1-.3-.2-.5-.1-2.9.9-1.4%203-3.3%205.4-.2.2%200%20.5.2.5%201.6%200%205.2-.2%205.7-3.4%200-.2%200-.3-.1-.4l-2-2zM13.8.2c-.6-.6-2%200-3.3%201.3l-4.9%205c-.2.2-.2.5%200%20.7l1.3%201.3c.2.2.5.2.7%200l4.9-4.9C13.8%202.2%2014.3.8%2013.8.2zM23.7%2014.8l-1.7-.4c-.1%200-.2-.1-.2-.2-.1-.3-.2-.6-.4-.9-.1-.1-.1-.2%200-.3l1-1.5c.1-.1.1-.3%200-.4L21%209.7c-.1-.1-.3-.1-.4%200l-1.5%201c-.1.1-.2.1-.3%200-.3-.2-.6-.3-.9-.4-.1%200-.2-.1-.2-.2l-.4-1.8c0-.2-.2-.3-.3-.3h-1.8c-.2%200-.3.1-.3.3l-.5%201.7c0%20.1-.1.2-.2.2-.3.1-.6.2-.9.4-.1.1-.2.1-.3%200l-1.5-1c-.1-.1-.3-.1-.4%200L9.7%2011c-.1.1-.1.3%200%20.4l1%201.5c.1.1.1.2%200%20.3-.2.3-.3.6-.4.9%200%20.1-.1.2-.2.2l-1.8.4c-.2%200-.3.2-.3.3v1.8c0%20.2.1.3.3.3l1.8.4c.1%200%20.2.1.2.2.1.3.2.6.4.9.1.1.1.2%200%20.3l-1%201.5c-.1.1-.1.3%200%20.4l1.3%201.3c.1.1.3.1.4%200l1.5-1c.1-.1.2-.1.3%200%20.3.2.6.3.9.4.1%200%20.2.1.2.2l.4%201.8c0%20.2.2.3.3.3h1.8c.2%200%20.3-.1.3-.3l.4-1.8c0-.1.1-.2.2-.2.3-.1.6-.2.9-.4.1-.1.2-.1.3%200l1.5%201c.1.1.3.1.4%200l1.3-1.3c.1-.1.1-.3%200-.4l-1-1.5c-.1-.1-.1-.2%200-.3.2-.3.3-.6.4-.9%200-.1.1-.2.2-.2l1.8-.4c.2%200%20.3-.2.3-.3V15c.2-.1.1-.2-.1-.2zM16%2019c-1.7%200-3-1.3-3-3s1.3-3%203-3%203%201.3%203%203-1.3%203-3%203z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M3.9%208.3c-.1-.1-.3-.2-.5-.1-2.9.9-1.4%203-3.3%205.4-.2.2%200%20.5.2.5%201.6%200%205.2-.2%205.7-3.4%200-.2%200-.3-.1-.4l-2-2zM13.8.2c-.6-.6-2%200-3.3%201.3l-4.9%205c-.2.2-.2.5%200%20.7l1.3%201.3c.2.2.5.2.7%200l4.9-4.9C13.8%202.2%2014.3.8%2013.8.2zM23.7%2014.8l-1.7-.4c-.1%200-.2-.1-.2-.2-.1-.3-.2-.6-.4-.9-.1-.1-.1-.2%200-.3l1-1.5c.1-.1.1-.3%200-.4L21%209.7c-.1-.1-.3-.1-.4%200l-1.5%201c-.1.1-.2.1-.3%200-.3-.2-.6-.3-.9-.4-.1%200-.2-.1-.2-.2l-.4-1.8c0-.2-.2-.3-.3-.3h-1.8c-.2%200-.3.1-.3.3l-.5%201.7c0%20.1-.1.2-.2.2-.3.1-.6.2-.9.4-.1.1-.2.1-.3%200l-1.5-1c-.1-.1-.3-.1-.4%200L9.7%2011c-.1.1-.1.3%200%20.4l1%201.5c.1.1.1.2%200%20.3-.2.3-.3.6-.4.9%200%20.1-.1.2-.2.2l-1.8.4c-.2%200-.3.2-.3.3v1.8c0%20.2.1.3.3.3l1.8.4c.1%200%20.2.1.2.2.1.3.2.6.4.9.1.1.1.2%200%20.3l-1%201.5c-.1.1-.1.3%200%20.4l1.3%201.3c.1.1.3.1.4%200l1.5-1c.1-.1.2-.1.3%200%20.3.2.6.3.9.4.1%200%20.2.1.2.2l.4%201.8c0%20.2.2.3.3.3h1.8c.2%200%20.3-.1.3-.3l.4-1.8c0-.1.1-.2.2-.2.3-.1.6-.2.9-.4.1-.1.2-.1.3%200l1.5%201c.1.1.3.1.4%200l1.3-1.3c.1-.1.1-.3%200-.4l-1-1.5c-.1-.1-.1-.2%200-.3.2-.3.3-.6.4-.9%200-.1.1-.2.2-.2l1.8-.4c.2%200%20.3-.2.3-.3V15c.2-.1.1-.2-.1-.2zM16%2019c-1.7%200-3-1.3-3-3s1.3-3%203-3%203%201.3%203%203-1.3%203-3%203z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 .draw-icon--theme-settings-yellow-dark {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%239b731d%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%3E%3Cpath%20d%3D%22M3.9%208.3c-.1-.1-.3-.2-.5-.1-2.9.9-1.4%203-3.3%205.4-.2.2%200%20.5.2.5%201.6%200%205.2-.2%205.7-3.4%200-.2%200-.3-.1-.4l-2-2zM13.8.2c-.6-.6-2%200-3.3%201.3l-4.9%205c-.2.2-.2.5%200%20.7l1.3%201.3c.2.2.5.2.7%200l4.9-4.9C13.8%202.2%2014.3.8%2013.8.2zM23.7%2014.8l-1.7-.4c-.1%200-.2-.1-.2-.2-.1-.3-.2-.6-.4-.9-.1-.1-.1-.2%200-.3l1-1.5c.1-.1.1-.3%200-.4L21%209.7c-.1-.1-.3-.1-.4%200l-1.5%201c-.1.1-.2.1-.3%200-.3-.2-.6-.3-.9-.4-.1%200-.2-.1-.2-.2l-.4-1.8c0-.2-.2-.3-.3-.3h-1.8c-.2%200-.3.1-.3.3l-.5%201.7c0%20.1-.1.2-.2.2-.3.1-.6.2-.9.4-.1.1-.2.1-.3%200l-1.5-1c-.1-.1-.3-.1-.4%200L9.7%2011c-.1.1-.1.3%200%20.4l1%201.5c.1.1.1.2%200%20.3-.2.3-.3.6-.4.9%200%20.1-.1.2-.2.2l-1.8.4c-.2%200-.3.2-.3.3v1.8c0%20.2.1.3.3.3l1.8.4c.1%200%20.2.1.2.2.1.3.2.6.4.9.1.1.1.2%200%20.3l-1%201.5c-.1.1-.1.3%200%20.4l1.3%201.3c.1.1.3.1.4%200l1.5-1c.1-.1.2-.1.3%200%20.3.2.6.3.9.4.1%200%20.2.1.2.2l.4%201.8c0%20.2.2.3.3.3h1.8c.2%200%20.3-.1.3-.3l.4-1.8c0-.1.1-.2.2-.2.3-.1.6-.2.9-.4.1-.1.2-.1.3%200l1.5%201c.1.1.3.1.4%200l1.3-1.3c.1-.1.1-.3%200-.4l-1-1.5c-.1-.1-.1-.2%200-.3.2-.3.3-.6.4-.9%200-.1.1-.2.2-.2l1.8-.4c.2%200%20.3-.2.3-.3V15c.2-.1.1-.2-.1-.2zM16%2019c-1.7%200-3-1.3-3-3s1.3-3%203-3%203%201.3%203%203-1.3%203-3%203z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
@@ -12187,7 +12187,7 @@ input[type=checkbox].draw-checkbox,
     color: #798c9c
 }
 .draw-icon--blue {
-    color: #479ccf
+    color: #00000F
 }
 .draw-icon--blue-lighter {
     color: #cae9f7
@@ -12282,7 +12282,7 @@ screen and (max-width: 768px) {
     height: 100%;
     bottom: 0;
     left: 0;
-    background: #479ccf
+    background: #00000F
 }
 @-webkit-keyframes draw-spinner-rotate {
     100% {
@@ -12312,7 +12312,7 @@ screen and (max-width: 768px) {
     display: none
 }
 .draw-spinner__ring {
-    stroke: #479ccf;
+    stroke: #00000F;
     stroke-dasharray: 100%;
     stroke-width: 2px;
     stroke-linecap: round;
@@ -12719,7 +12719,7 @@ table.smart-filters td:first-child {
     color: #798c9c
 }
 .range .range-pill {
-    background: #479ccf;
+    background: #00000F;
     padding: 2px 5px;
     color: #ffffff;
     border-radius: 3px;
@@ -12804,7 +12804,7 @@ table.smart-filters td:first-child {
     content: "";
     border-bottom: 4px solid transparent;
     border-top: 4px solid transparent;
-    border-left: 4px solid #479ccf;
+    border-left: 4px solid #00000F;
     left: 0px;
     top: 4px;
     position: absolute
@@ -12935,7 +12935,7 @@ table.smart-filters td:first-child {
     background-color: rgba(212, 160, 2, 0.1)
 }
 .draw-card--home-notifications .draw-card__section--callout-info .draw-icon {
-    color: #479ccf
+    color: #00000F
 }
 .draw-card--home-notifications .draw-card__section--callout-info+.draw-card__section--callout-info .draw-grid {
     border-top: 1px solid #ebeef0
@@ -13105,7 +13105,7 @@ table.smart-filters td:first-child {
     background-color: rgba(212, 160, 2, 0.1)
 }
 .draw-card--home-notifications .draw-card__section--callout-info .draw-icon {
-    color: #479ccf
+    color: #00000F
 }
 .draw-card--home-notifications .draw-card__section--callout-info+.draw-card__section--callout-info .draw-grid {
     border-top: 1px solid #ebeef0
@@ -13965,7 +13965,7 @@ a.callout-underline {
     padding: 20px
 }
 .draw-upload-dropzone--active {
-    color: #479ccf
+    color: #00000F
 }
 .draw-upload-dropzone--active::before {
     position: absolute;
@@ -13979,10 +13979,10 @@ a.callout-underline {
     content: ""
 }
 .draw-upload-dropzone--active .draw-upload-dropzone__icon {
-    color: #479ccf
+    color: #00000F
 }
 .draw-upload-dropzone--active .draw-upload-dropzone__heading {
-    color: #479ccf
+    color: #00000F
 }
 .draw-upload-dropzone--overlay {
     position: absolute;
@@ -14062,7 +14062,7 @@ a.callout-underline {
     margin-top: 10px
 }
 .variant-image:hover .variant-image__blank-slate__label {
-    color: #4293c2;
+    color: #31373d;
     text-decoration: underline
 }
 .variant-image-overlay {
@@ -14071,7 +14071,7 @@ a.callout-underline {
     transition: 0.1s ease-out
 }
 .products-draw-overlay--transparent:hover .variant-image-dropzone::before {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .variant-image-dropzone__label {
     margin-top: 10px;
@@ -14290,7 +14290,7 @@ a.callout-underline {
 }
 .new-variants-table__row .edit-on-hover:focus,
 .new-variants-table__row .mock-edit-on-hover:focus {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .new-variants-thumb__wrapper {
     width: 40px
@@ -14299,7 +14299,7 @@ a.callout-underline {
     color: #c3cfd8
 }
 .new-variants-thumb__wrapper:hover .new-variants-table__no-photo {
-    color: #479ccf
+    color: #00000F
 }
 .new-variants-table__cell {
     padding-left: 4px;
@@ -14578,7 +14578,7 @@ a.callout-underline {
 }
 .reportcard.order_reports .reportcard-link:focus .reportcard-name,
 .reportcard.order_reports .reportcard-link:hover .reportcard-name {
-    color: #479ccf
+    color: #00000F
 }
 .reportcard.payment_reports .reportcard-link:focus,
 .reportcard.payment_reports .reportcard-link:hover {
@@ -14705,11 +14705,11 @@ a.callout-underline {
     background-position: 50% 35px
 }
 .report-category label.is-selected {
-    border-color: #479ccf;
+    border-color: #00000F;
     box-shadow: 0px 0px 2px 1px rgba(76, 144, 238, 0.3) inset
 }
 .report-category label.is-selected:hover {
-    border-color: #479ccf
+    border-color: #00000F
 }
 .report-category label:hover {
     border-color: #bbbbbb
@@ -14880,7 +14880,7 @@ a.callout-underline {
     width: 48px;
     height: 48px;
     border-radius: 48px;
-    background: #479ccf;
+    background: #00000F;
     box-sizing: border-box
 }
 .switch-to-sp-circle:hover {
@@ -15252,7 +15252,7 @@ iframe.html-email-preview {
     margin-bottom: 40px !important
 }
 .blue {
-    color: #479ccf
+    color: #00000F
 }
 .circle-blue {
     width: 100px;
@@ -15285,7 +15285,7 @@ iframe.html-email-preview {
 }
 .delivery-methods li.selected {
     background-color: #ffffff;
-    border-color: #479ccf
+    border-color: #00000F
 }
 .delivery-methods li .delivery-method-info {
     padding: 10px 20px
@@ -15574,7 +15574,7 @@ td.google-domain-col {
 .pricing__tag {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 60px;
-    color: #479ccf;
+    color: #00000F;
     font-weight: normal
 }
 .pricing__tag--subdued {
@@ -15979,10 +15979,10 @@ td.google-domain-col {
 input[type="submit"].btn-disabled .ico-delete,
 [type="submit"].btn-disabled.autocomplete-field .ico-delete,
 .btn.disabled .ico-delete {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20width%3D%2212px%22%20height%3D%2212px%22%20viewBox%3D%220%200%2012%2012%22%20version%3D%221.1%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23454e57%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ctitle%3Etrash-can-small%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cdefs%2F%3E%3Cg%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%3E%3Cg%20id%3D%22trash-can-small%22%20sketch%3Atype%3D%22MSLayerGroup%22%20fill%3D%22%23479CCF%22%3E%3Cpath%20d%3D%22M7.63636364%2C1.09090909%20L7.63636364%2C0.818181818%20C7.63636364%2C0.366545455%207.26981818%2C0%206.81818182%2C0%20L5.18181818%2C0%20C4.73018182%2C0%204.36363636%2C0.366545455%204.36363636%2C0.818181818%20L4.36363636%2C1.09090909%20L0.825818182%2C1.09090909%20C0.369818182%2C1.09090909%200%2C1.45745455%200%2C1.90909091%20C0%2C2.36072727%200.369818182%2C3.02727272%200.825818182%2C3.02727272%20L11.1741818%2C3.02727272%20C11.6301818%2C3.02727272%2012%2C2.36072727%2012%2C1.90909091%20C12%2C1.45745455%2011.6301818%2C1.09090909%2011.1741818%2C1.09090909%20L7.63636364%2C1.09090909%20Z%22%20id%3D%22Fill-1%22%20sketch%3Atype%3D%22MSShapeGroup%22%2F%3E%3Cpath%20d%3D%22M1.72272728%2C4.05%20C1.57218183%2C4.05%201.45000001%2C4.17218182%201.45000001%2C4.32272728%20L1.45000001%2C11.1136364%20C1.45000001%2C11.5652727%201.81654546%2C11.9318182%202.26818183%2C11.9318182%20L9.75%2C11.9318182%20C10.2016364%2C11.9318182%2010.5681818%2C11.5652727%2010.5681818%2C11.1136364%20L10.5681818%2C4.32272728%20C10.5681818%2C4.17218182%2010.446%2C4.05%2010.2954545%2C4.05%20L1.72272728%2C4.05%20Z%20M7.84090909%2C9.21%20C7.84090909%2C9.50836364%207.59927273%2C9.75%207.30090909%2C9.75%20L7.29%2C9.75%20C6.99163636%2C9.75%206.75%2C9.50836364%206.75%2C9.21%20L6.75%2C6.47181818%20C6.75%2C6.17345455%206.99163636%2C5.93181818%207.29%2C5.93181818%20L7.30090909%2C5.93181818%20C7.59927273%2C5.93181818%207.84090909%2C6.17345455%207.84090909%2C6.47181818%20L7.84090909%2C9.21%20L7.84090909%2C9.21%20Z%20M4.84090909%2C9.21%20C4.84090909%2C9.50836364%204.59927273%2C9.75%204.30090909%2C9.75%20L4.29%2C9.75%20C3.99163636%2C9.75%203.75%2C9.50836364%203.75%2C9.21%20L3.75%2C6.47181818%20C3.75%2C6.17345455%203.99163636%2C5.93181818%204.29%2C5.93181818%20L4.30090909%2C5.93181818%20C4.59927273%2C5.93181818%204.84090909%2C6.17345455%204.84090909%2C6.47181818%20L4.84090909%2C9.21%20L4.84090909%2C9.21%20Z%22%20id%3D%22Fill-2%22%20sketch%3Atype%3D%22MSShapeGroup%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20width%3D%2212px%22%20height%3D%2212px%22%20viewBox%3D%220%200%2012%2012%22%20version%3D%221.1%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23454e57%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ctitle%3Etrash-can-small%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cdefs%2F%3E%3Cg%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%3E%3Cg%20id%3D%22trash-can-small%22%20sketch%3Atype%3D%22MSLayerGroup%22%20fill%3D%22%2300000F%22%3E%3Cpath%20d%3D%22M7.63636364%2C1.09090909%20L7.63636364%2C0.818181818%20C7.63636364%2C0.366545455%207.26981818%2C0%206.81818182%2C0%20L5.18181818%2C0%20C4.73018182%2C0%204.36363636%2C0.366545455%204.36363636%2C0.818181818%20L4.36363636%2C1.09090909%20L0.825818182%2C1.09090909%20C0.369818182%2C1.09090909%200%2C1.45745455%200%2C1.90909091%20C0%2C2.36072727%200.369818182%2C3.02727272%200.825818182%2C3.02727272%20L11.1741818%2C3.02727272%20C11.6301818%2C3.02727272%2012%2C2.36072727%2012%2C1.90909091%20C12%2C1.45745455%2011.6301818%2C1.09090909%2011.1741818%2C1.09090909%20L7.63636364%2C1.09090909%20Z%22%20id%3D%22Fill-1%22%20sketch%3Atype%3D%22MSShapeGroup%22%2F%3E%3Cpath%20d%3D%22M1.72272728%2C4.05%20C1.57218183%2C4.05%201.45000001%2C4.17218182%201.45000001%2C4.32272728%20L1.45000001%2C11.1136364%20C1.45000001%2C11.5652727%201.81654546%2C11.9318182%202.26818183%2C11.9318182%20L9.75%2C11.9318182%20C10.2016364%2C11.9318182%2010.5681818%2C11.5652727%2010.5681818%2C11.1136364%20L10.5681818%2C4.32272728%20C10.5681818%2C4.17218182%2010.446%2C4.05%2010.2954545%2C4.05%20L1.72272728%2C4.05%20Z%20M7.84090909%2C9.21%20C7.84090909%2C9.50836364%207.59927273%2C9.75%207.30090909%2C9.75%20L7.29%2C9.75%20C6.99163636%2C9.75%206.75%2C9.50836364%206.75%2C9.21%20L6.75%2C6.47181818%20C6.75%2C6.17345455%206.99163636%2C5.93181818%207.29%2C5.93181818%20L7.30090909%2C5.93181818%20C7.59927273%2C5.93181818%207.84090909%2C6.17345455%207.84090909%2C6.47181818%20L7.84090909%2C9.21%20L7.84090909%2C9.21%20Z%20M4.84090909%2C9.21%20C4.84090909%2C9.50836364%204.59927273%2C9.75%204.30090909%2C9.75%20L4.29%2C9.75%20C3.99163636%2C9.75%203.75%2C9.50836364%203.75%2C9.21%20L3.75%2C6.47181818%20C3.75%2C6.17345455%203.99163636%2C5.93181818%204.29%2C5.93181818%20L4.30090909%2C5.93181818%20C4.59927273%2C5.93181818%204.84090909%2C6.17345455%204.84090909%2C6.47181818%20L4.84090909%2C9.21%20L4.84090909%2C9.21%20Z%22%20id%3D%22Fill-2%22%20sketch%3Atype%3D%22MSShapeGroup%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 th.is-sortable:hover>span:before {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20width%3D%229px%22%20height%3D%224px%22%20viewBox%3D%220%200%209%204%22%20version%3D%221.1%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ctitle%3Edisclosure-icon%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cdefs%2F%3E%3Cg%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%3E%3Cpolygon%20id%3D%22disclosure-icon%22%20fill%3D%22%23929292%22%20sketch%3Atype%3D%22MSShapeGroup%22%20transform%3D%22translate%284.500000%2C%202.000000%29%20scale%281%2C%20-1%29%20translate%28-4.500000%2C%20-2.000000%29%20%22%20points%3D%224.5%200%209%204%200%204%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E) !important
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20width%3D%229px%22%20height%3D%224px%22%20viewBox%3D%220%200%209%204%22%20version%3D%221.1%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Ctitle%3Edisclosure-icon%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cdefs%2F%3E%3Cg%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%3E%3Cpolygon%20id%3D%22disclosure-icon%22%20fill%3D%22%23929292%22%20sketch%3Atype%3D%22MSShapeGroup%22%20transform%3D%22translate%284.500000%2C%202.000000%29%20scale%281%2C%20-1%29%20translate%28-4.500000%2C%20-2.000000%29%20%22%20points%3D%224.5%200%209%204%200%204%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E) !important
 }
 th.sorted-desc>span:before,
 th.sorted-asc>span:before {
@@ -16008,10 +16008,10 @@ th.sorted-asc>span:before {
     background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjExcHgiIGhlaWdodD0iMTFweCIgdmlld0JveD0iMCAwIDExIDExIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxMSAxMSIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI%2BPGcgaWQ9IlBlbmNpbF8zX3gyQ19fRWRpdF8zIj48cG9seWdvbiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZmlsbD0iI0Q3RERFMiIgcG9pbnRzPSIwLDExIDAsOC42NDMgNS44OTMsMi43NSA4LjI1LDUuMTA3IDIuMzU3LDExICAiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZmlsbD0iI0Q3RERFMiIgZD0iTTcuMDcxLDEuNTcxbDEuMjI2LTEuMjI2YzAuNDYtMC40NiwxLjIwNi0wLjQ2LDEuNjY3LDAgICBsMC42OTEsMC42OTFjMC40NiwwLjQ2LDAuNDYsMS4yMDYsMCwxLjY2N0w5LjQyOSwzLjkyOUw3LjA3MSwxLjU3MXoiLz48L2c%2BPC9zdmc%2B) no-repeat right 20px top 20px
 }
 .edit-block:hover {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2211px%22%20height%3D%2211px%22%20viewBox%3D%220%200%2011%2011%22%20enable-background%3D%22new%200%200%2011%2011%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%20id%3D%22Pencil_3_x2C__Edit_3%22%3E%3Cpolygon%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20fill%3D%22%23D7DDE2%22%20points%3D%220%2C11%200%2C8.643%205.893%2C2.75%208.25%2C5.107%202.357%2C11%20%20%22%2F%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20fill%3D%22%23D7DDE2%22%20d%3D%22M7.071%2C1.571l1.226-1.226c0.46-0.46%2C1.206-0.46%2C1.667%2C0%20%20%20l0.691%2C0.691c0.46%2C0.46%2C0.46%2C1.206%2C0%2C1.667L9.429%2C3.929L7.071%2C1.571z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.1%22%20id%3D%22Layer_1%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2211px%22%20height%3D%2211px%22%20viewBox%3D%220%200%2011%2011%22%20enable-background%3D%22new%200%200%2011%2011%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cg%20id%3D%22Pencil_3_x2C__Edit_3%22%3E%3Cpolygon%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20fill%3D%22%23D7DDE2%22%20points%3D%220%2C11%200%2C8.643%205.893%2C2.75%208.25%2C5.107%202.357%2C11%20%20%22%2F%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20fill%3D%22%23D7DDE2%22%20d%3D%22M7.071%2C1.571l1.226-1.226c0.46-0.46%2C1.206-0.46%2C1.667%2C0%20%20%20l0.691%2C0.691c0.46%2C0.46%2C0.46%2C1.206%2C0%2C1.667L9.429%2C3.929L7.071%2C1.571z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E)
 }
 .draw-checkbox--styled:after {
-    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M23.6%205L22%203.4c-.5-.4-1.2-.4-1.7%200L8.5%2015l-4.8-4.7c-.5-.4-1.2-.4-1.7%200L.3%2011.9c-.5.4-.5%201.2%200%201.6l7.3%207.1c.5.4%201.2.4%201.7%200l14.3-14c.5-.4.5-1.1%200-1.6z%22%2F%3E%3C%2Fsvg%3E)
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20enable-background%3D%22new%200%200%2024%2024%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%2300000F%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M23.6%205L22%203.4c-.5-.4-1.2-.4-1.7%200L8.5%2015l-4.8-4.7c-.5-.4-1.2-.4-1.7%200L.3%2011.9c-.5.4-.5%201.2%200%201.6l7.3%207.1c.5.4%201.2.4%201.7%200l14.3-14c.5-.4.5-1.1%200-1.6z%22%2F%3E%3C%2Fsvg%3E)
 }
 .draw-checkbox:indeterminate ~ .draw-checkbox--styled:after {
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20enable-background%3D%22new%200%200%2012%2012%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3Ecircle%2Cellipse%2Cline%2Cpath%2Cpolygon%2Cpolyline%2Crect%2Ctext%7Bfill%3A%23479ccf%20%21important%3B%20%7D%3C%2Fstyle%3E%3Cpath%20d%3D%22M6%200%22%2F%3E%3Cpath%20d%3D%22M.8%207C.3%207%200%206.7%200%206.2v-.4c0-.5.3-.8.8-.8h10.5c.4%200%20.7.3.7.8v.5c0%20.4-.3.7-.8.7H.8z%22%2F%3E%3C%2Fsvg%3E)
@@ -16481,7 +16481,7 @@ th.sorted-asc>span:before {
         background-color: #bdbdbd
 }
 .cbadge-notification.lineitems {
-	background-color:#6cf;
+	background-color:#00000F;
 	color: #fff;
 	font-weight: normal;
         font-size: 0.929em

@@ -453,6 +453,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$settings = $sheel->admincp->construct_admin_input('attachmentsystem', HTTPS_SERVER_ADMIN . 'settings/attachments/', '', $buttons);
 		$moderation = $sheel->admincp->construct_admin_input('attachmentmoderation', HTTPS_SERVER_ADMIN . 'settings/attachments/');
 		$limits = $sheel->admincp->construct_admin_input('attachmentlimit', HTTPS_SERVER_ADMIN . 'settings/attachments/');
+	} else if (isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'security') {
+		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Selling &amp; Security';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Security';
+		$sheel->template->fetch('main', 'settings.html', 1);
+		$areanav = 'settings_security';
+		$currentarea = '{_security}';
+		$settings = $sheel->admincp->construct_admin_input('globalsecurity', HTTPS_SERVER_ADMIN . 'settings/security/');
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'session') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Sessions';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sessions';
@@ -460,7 +467,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		$areanav = 'settings_session';
 		$currentarea = '{_session}';
 		$settings = $sheel->admincp->construct_admin_input('globalserversession', HTTPS_SERVER_ADMIN . 'settings/session/');
-	}  else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'serverinfo') {
+	}  	else if (isset($sheel->GPC['cmd']) AND $sheel->GPC['cmd'] == 'optimization') {
+		$sheel->template->meta['areatitle'] = 'Admin CP | Settings &ndash; Optimization';
+		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Settings &ndash; Optimization';
+		$sheel->template->fetch('main', 'settings.html', 1);
+		$areanav = 'settings_optimization';
+		$currentarea = 'Optimization';
+		$settings = $sheel->admincp->construct_admin_input('globaloptimization', HTTPS_SERVER_ADMIN . 'setttings/optimization/');
+	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'serverinfo') {
 		$sheel->template->meta['areatitle'] = 'Admin CP | Server Info';
 		$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Server Info';
 		$sheel->template->fetch('main', 'settings_serverinfo.html', 1);

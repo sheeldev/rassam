@@ -37,6 +37,7 @@ $router->map('GET',      '/home/', __DIR__ . '/application/web/client/home.php',
 
 
 $router->map('GET|POST', '/admin/', __DIR__ . '/application/web/admin/home.php', 'admin_home');
+$router->map('GET|POST', '/admin/lookup/', __DIR__ . '/application/web/admin/lookup.php', 'admin_lookup');
 $router->map('GET|POST', '/admin/signin/', __DIR__ . '/application/web/admin/login.php', 'admin_login');
 $router->map('GET|POST', '/admin/signin/[renew-password:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_login_renew');
 $router->map('GET|POST', '/admin/signin/[*:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_logout');
@@ -56,7 +57,7 @@ $router->map('GET|POST', '/admin/users/[roles:cmd]/[delete|update:subcmd]/[*:rol
 $router->map('GET|POST', '/admin/users/[roles:cmd]/[access:subcmd]/[*:roleid]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_access');
 
 $router->map('GET|POST', '/admin/settings/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings');
-$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|registration|security|session|photos|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
+$router->map('GET|POST', '/admin/settings/[companies|branding|locale|mail|currency|registration|security|optimization|session|photos|diagnosis|serverinfo|globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_cmd');
 $router->map('POST',     '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_branding_upload');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
@@ -85,10 +86,19 @@ $router->map('GET|POST', '/admin/settings/announcements/', __DIR__ . '/applicati
 $router->map('GET|POST', '/admin/settings/[announcements:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/announcements.php', 'admin_announcements_add');
 $router->map('GET|POST', '/admin/settings/[announcements:cmd]/[delete|update:subcmd]/[*:announcementid]/', __DIR__ . '/application/web/admin/announcements.php', 'admin_announcements_cmd');
 $router->map('GET|POST', '/admin/settings/attachments/', __DIR__ . '/application/web/admin/attachments.php', 'admin_attachments');
+$router->map('GET|POST', '/admin/settings/languages/', __DIR__ . '/application/web/admin/languages.php', 'admin_languages');
+$router->map('GET|POST', '/admin/settings/[languages:cmd]/[orphan:subcmd]/[phrase:type]/', __DIR__ . '/application/web/admin/languages.php', 'admin_orphan_languages_action');
+$router->map('GET|POST', '/admin/settings/[languages:cmd]/[update|delete|default|defaultusers:subcmd]/[*:languageid]/', __DIR__ . '/application/web/admin/languages.php', 'admin_languages_action');
+$router->map('GET|POST', '/admin/settings/[languages:cmd]/[import|export|add:subcmd]/', __DIR__ . '/application/web/admin/languages.php', 'admin_language_impex');
+$router->map('GET|POST', '/admin/settings/locations/', __DIR__ . '/application/web/admin/locations.php', 'admin_locations');
+$router->map('GET|POST', '/admin/settings/[locations:cmd]/[update:subcmd]/[region|country:mode]/[*:locationid]/', __DIR__ . '/application/web/admin/locations.php', 'admin_locations_update_cmd');
+
+$router->map('GET|POST', '/admin/settings/bc/', __DIR__ . '/application/web/admin/bc.php', 'admin_bc');
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');
 $router->map('GET|POST', '/admin/settings/automation/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation');
 $router->map('GET|POST', '/admin/settings/[automation:cmd]/[add:subcmd]/task/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_add');
 $router->map('GET|POST', '/admin/settings/[automation:cmd]/[delete|update|run:subcmd]/task/[*:cronid]/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_cmd');
+
 
 
 $router->map('GET|POST', '/admin/sessions/', __DIR__ . '/application/web/admin/sessions.php', 'admin_connections');

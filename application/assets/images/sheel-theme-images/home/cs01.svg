@@ -5,7 +5,7 @@
       <stop offset="1" stop-color="#c2c2c2"/>
     </linearGradient>
     <linearGradient id="linear-gradient-2" x1="0.865" y1="0.178" x2="0.152" y2="0.822" gradientUnits="objectBoundingBox">
-      <stop offset="0" stop-color="#fdb819"/>
+      <stop offset="0" stop-color="#FDB819"/>
       <stop offset="1" stop-color="#fff"/>
     </linearGradient>
     <linearGradient id="linear-gradient-3" x1="1.791" y1="-0.202" x2="1.791" y2="0.8" gradientUnits="objectBoundingBox">

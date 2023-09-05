@@ -3,7 +3,7 @@
 		tspan { white-space:pre }
 		.shp0 { fill: none } 
 		.shp1 { fill: #ffffff } 
-		.shp2 { fill: #fdb819 } 
+		.shp2 { fill: #FDB819 } 
 		.shp3 { fill: #333333 } 
 	</style>
 	<g id="Layer">

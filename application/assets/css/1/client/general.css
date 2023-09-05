@@ -790,7 +790,7 @@ input:hover {
     position: relative;
 }
 .main-nav > ul > li .sub-menu > li > a:hover {
-    background: #fdb819;
+    background: #FDB819;
     color: #fff;
 }
 .main-nav > ul > li .sub-menu > li:last-child > a {
@@ -2133,7 +2133,7 @@ ul ul.dropdown-list ul{
     padding: 0 30px;
 }
 .shop-button {
-    background: #fdb819;
+    background: #FDB819;
     color: #fff;
     text-transform: uppercase;
     border-radius: 0;

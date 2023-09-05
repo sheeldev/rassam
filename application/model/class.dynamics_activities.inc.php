@@ -39,8 +39,12 @@ class dynamics_activities
     function dobulkdelete($id, $entity, $companyid)
     {
         $companycode = $this->sheel->admincp_customers->get_company_name($companyid, true);
-        $this->sheel->dynamics->init_dynamics($entity, $companycode);
-        $deleteResponse =$this->sheel->dynamics->delete($id);
+        if ($this->sheel->dynamics->init_dynamics($entity, $companycode)) {
+            $deleteResponse =$this->sheel->dynamics->delete($id);
+        }
+        else {
+            return false;
+        }
         if($deleteResponse->isSuccess()) {
             return true;
         }
@@ -48,7 +52,5 @@ class dynamics_activities
             return $deleteResponse->getErrorMessage();
         }
     }
-
-
 }
 ?>

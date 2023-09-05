@@ -27,7 +27,7 @@
 					<div class="header__primary-actions">
 
 						<if condition="isset($sheel->GPC['subcmd'])">
-							<if condition="isset($sheel->show['ADMINCP_TEST_MODE']) AND $sheel->show['ADMINCP_TEST_MODE']"><button type="button" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" bind-event-click="jQuery.growl.error({ title: '{_demo_version}', message: '{_demo_mode_only}' })">{_save}</button><else /><button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button></if>
+							<button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
 							<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'"><a class="btn" href="{https_server_admin}settings/announcements/">{_cancel}</a></if>
 						</if>
 					</div>

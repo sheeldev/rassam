@@ -38,9 +38,9 @@ class admincp_importexport extends admincp
 					xml_parser_free($parser);
 					if ($error_code == 0) {
 						$result = $this->sheel->xml->process_email_xml($data, $xml_encoding);
-						if ($result['ilversion'] != $this->sheel->config['ilversion'] and $noversioncheck == 0) {
+						if ($result['version'] != $this->sheel->config['version'] and $noversioncheck == 0) {
 							if ($slientmode == false) {
-								$this->print_action_failed('{_the_version_of_the_this_email_package_is_different_than} <strong>' . $this->sheel->config['ilversion'] . '</strong>.  {_the_operation_has_aborted_due_to_a_version_conflict}', HTTPS_SERVER_ADMIN . 'settings/emails/');
+								$this->print_action_failed('{_the_version_of_the_this_email_package_is_different_than} <strong>' . $this->sheel->config['version'] . '</strong>.  {_the_operation_has_aborted_due_to_a_version_conflict}', HTTPS_SERVER_ADMIN . 'settings/emails/');
 								exit();
 							} else {
 								return false;
@@ -188,9 +188,9 @@ class admincp_importexport extends admincp
 					xml_parser_free($parser);
 					if ($error_code == 0) {
 						$result = $this->sheel->xml->process_lang_xml($data, $xml_encoding);
-						if ($result['illang_version'] != $this->sheel->config['ilversion'] and $noversioncheck == 0) {
+						if ($result['lang_version'] != $this->sheel->config['version'] and $noversioncheck == 0) {
 							if ($slientmode == false) {
-								$this->print_action_failed('{_the_version_of_the_this_language_xml_package_is_different_than_the_currently_installed_version} <strong>' . $this->sheel->config['ilversion'] . '</strong>.  {_the_operation_has_aborted_due_to_a_language_version_conflict}<br /><br />{_tip_you_can_click_the_checkbox_on_the_previous_page_to_ignore_language_version_conflicts_which_will_ultimately_bypass_this_version_checker}', HTTPS_SERVER_ADMIN . 'settings/languages/');
+								$this->print_action_failed('{_the_version_of_the_this_language_xml_package_is_different_than_the_currently_installed_version} <strong>' . $this->sheel->config['version'] . '</strong>.  {_the_operation_has_aborted_due_to_a_language_version_conflict}<br /><br />{_tip_you_can_click_the_checkbox_on_the_previous_page_to_ignore_language_version_conflicts_which_will_ultimately_bypass_this_version_checker}', HTTPS_SERVER_ADMIN . 'settings/languages/');
 								exit();
 							} else {
 								return false;
@@ -461,7 +461,7 @@ Simple rules for translators
 6. Editor should support UTF-8 like Atom for Mac or Komodo IDE for Windows
 Team sheel
 -->" . LINEBREAK;
-						$xml_output .= "<language ilversion=\"" . $this->sheel->config['ilversion'] . "\">" . LINEBREAK;
+						$xml_output .= "<language version=\"" . $this->sheel->config['version'] . "\">" . LINEBREAK;
 						$xml_output .= "\t<settings>" . LINEBREAK;
 						$xml_output .= "\t\t<author><![CDATA[" . stripslashes(SITE_NAME) . "]]></author>" . LINEBREAK;
 						$xml_output .= "\t\t<languagecode><![CDATA[" . stripslashes($langconfig['languagecode']) . "]]></languagecode>" . LINEBREAK;
@@ -530,7 +530,7 @@ Simple rules for translators
 5. Editor should support UTF-8 like Atom for Mac or Komodo IDE for Windows
 Team sheel
 -->" . LINEBREAK;
-						$xml_output .= "<language ilversion=\"" . $this->sheel->config['ilversion'] . "\">" . LINEBREAK;
+						$xml_output .= "<language version=\"" . $this->sheel->config['version'] . "\">" . LINEBREAK;
 						$xml_output .= "\t<settings>" . LINEBREAK;
 						$xml_output .= "\t\t<title>" . stripslashes($langconfig['title']) . "</title>" . LINEBREAK;
 						$xml_output .= "\t\t<author>" . stripslashes(SITE_NAME) . "</author>" . LINEBREAK;
@@ -587,7 +587,7 @@ Team sheel
 			case 'configuration': {
 					header("Content-type: text/xml; charset=" . $this->sheel->config['template_charset']);
 					$xml_output = "<?xml version=\"1.0\" encoding=\"" . $this->sheel->config['template_charset'] . "\"?>" . LINEBREAK;
-					$xml_output .= "<configuration ilversion=\"" . $this->sheel->config['ilversion'] . "\" ilbuild=\"" . $this->sheel->buildversion . "\">" . LINEBREAK;
+					$xml_output .= "<configuration version=\"" . $this->sheel->config['version'] . "\" build=\"" . $this->sheel->buildversion . "\">" . LINEBREAK;
 					$xml_output .= "\t<settings>" . LINEBREAK;
 					$xml_output .= "\t\t<sitename>" . stripslashes($this->sheel->config['globalserversettings_sitename']) . "</sitename>" . LINEBREAK;
 					$xml_output .= "\t\t<date>" . DATETIME24H . "</date>" . LINEBREAK;

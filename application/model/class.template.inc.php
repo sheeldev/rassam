@@ -1081,7 +1081,7 @@ class template
 		$this->templatebits['year'] = date('Y');
 		$this->templatebits['csrf'] = (!empty($_SESSION['sheeldata']['user']['csrf']) ? $_SESSION['sheeldata']['user']['csrf'] : md5(uniqid(mt_rand(), true)));
 		$this->templatebits['site_id'] = SITE_ID;
-		$this->templatebits['template_ilversion'] = $this->sheel->config['current_version'];
+		$this->templatebits['template_version'] = $this->sheel->config['current_version'];
 		$this->templatebits['imgrel'] = $this->sheel->config['imgrel'];
 		$this->templatebits['img'] = $this->sheel->config['img'];
 		$this->templatebits['imgcdn'] = $this->sheel->config['imgcdn'];

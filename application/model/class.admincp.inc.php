@@ -939,7 +939,6 @@ class admincp
                                 " . ((!empty($varname)) ? "GROUP BY g.groupname" : "") . "
                                 ORDER BY g.sort ASC
                         ", 0, null, __FILE__, __LINE__);
-                        
                         if ($this->sheel->db->num_rows($sqlgrp) > 0) {
                                 $i = 0;
                                 while ($resgrpties = $this->sheel->db->fetch_array($sqlgrp, DB_ASSOC)) {
@@ -973,7 +972,7 @@ class admincp
                                                         AND visible = '1'
                                                 ORDER BY sort ASC
                                         ", 0, null, __FILE__, __LINE__);
-                                       
+
                                         if ($this->sheel->db->num_rows($sql) > 0) {
                                                 $rowcount = 0;
                                                 while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
@@ -986,12 +985,12 @@ class admincp
                                                         } else if ($res['inputtype'] == 'pulldown') {
                                                                 $html .= $this->construct_parent_pulldown_input($res['name'], $res['value'], '{_' . $res['name'] . '_desc}', $res['inputtype'], $res['class'], $res['sort'], $res['inputcode'], '{_' . $res['name'] . '_help}');
                                                         }
-                                                        
+
                                                         $html .= '<input type="hidden" name="sort[' . $res['name'] . ']" value="' . $res['sort'] . '" />';
-                                                       
+
                                                 }
-                                                
-                                                
+
+
                                         }
 
                                         $html .= '</div>
@@ -1001,7 +1000,7 @@ class admincp
                                                 </div>';
                                         $html .= (($miniform)
                                                 ? '<div class="section"><div class="draw-grid draw-grid--right-aligned"><div class="draw-grid__cell draw-grid__cell--no-flex">
-                        ' . '<button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>'.
+                        ' . '<button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>' .
                                                 '</div></div></div>'
                                                 : '');
                                         $html .= (($miniform) ? '</form>' : '');

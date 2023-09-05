@@ -3434,7 +3434,7 @@ input:hover {
     position: relative;
 }
 .main-nav > ul > li .sub-menu > li > a:hover {
-    background: #fdb819;
+    background: #EF5042;
     color: #fff;
 }
 .main-nav > ul > li .sub-menu > li:last-child > a {
@@ -4449,7 +4449,7 @@ ul ul.dropdown-list ul{
     margin: 0 -2px;
 }
 .view-type a.active {
-    color: #FDB819;
+    color: #EF5042;
 }
 .view-type a.grid-view {
     border-radius: 4px 0 0 4px;
@@ -4777,7 +4777,7 @@ ul ul.dropdown-list ul{
     padding: 0 30px;
 }
 .shop-button {
-    background: #fdb819;
+    background: #EF5042;
     color: #fff;
     text-transform: uppercase;
     border-radius: 0;
@@ -13249,8 +13249,8 @@ select.draw-select_orig option:selected
         --line-height-multiplier: 1.2;
         background-color: #F7F9F9;
         background-image: linear-gradient(141deg, #F7F9F9 0%, #FFFFFF 70%);
-        /*background: #FDB819;*/
-        /*background-image: linear-gradient(141deg, #FDB819 0%, #FFFFFF 70%);*/
+        /*background: #EF5042;*/
+        /*background-image: linear-gradient(141deg, #EF5042 0%, #FFFFFF 70%);*/
     }
     .cd-timeline__content::before {
         top: 24px
