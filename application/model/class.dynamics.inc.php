@@ -104,7 +104,6 @@ class dynamicsresponse
     if ($this->isSuccess()) {
       return null;
     }
-
     return $this->data["error"]["message"];
   }
 
@@ -357,20 +356,25 @@ class dynamics
       $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
       $responseHeaders = substr($response, 0, $headerSize);
       $responseBody = substr($response, $headerSize);
-      $this->sheel->db->query("
-        UPDATE " . DB_PREFIX . "dynamics_api
-        SET success = success+1
-        WHERE name = '" . $this->config["name"] . "' AND active ='1'
-        LIMIT 1
-        ", 0, null, __FILE__, __LINE__);
+      $dynamicresponse = new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
+      if ($dynamicresponse->isSuccess()) {
+        $this->sheel->db->query("
+          UPDATE " . DB_PREFIX . "dynamics_api
+          SET success = success+1
+          WHERE name = '" . $this->config["name"] . "' AND active ='1'
+          LIMIT 1
+          ", 0, null, __FILE__, __LINE__);
+      }
+      else {
+        $this->sheel->db->query("
+          UPDATE " . DB_PREFIX . "dynamics_api
+          SET failed = failed+1
+          WHERE name = '" . $this->config["name"] . "' AND active ='1'
+          LIMIT 1
+          ", 0, null, __FILE__, __LINE__);
+      }
       return new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
     } catch (Exception $e) {
-      $this->sheel->db->query("
-        UPDATE " . DB_PREFIX . "dynamics_api
-        SET failed = failed+1
-        WHERE name = '" . $this->config["name"] . "' AND active ='1'
-        LIMIT 1
-        ", 0, null, __FILE__, __LINE__);
       return false;
     }
   }

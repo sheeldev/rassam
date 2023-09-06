@@ -106,8 +106,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     )
                 );
             } else if (isset($sheel->GPC['systemid']) and $sheel->GPC['systemid'] != '') {
-                $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-                if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
+                $companycode = $sheel->admincp_customers->get_company_name((isset($sheel->GPC['company_id']) ? $sheel->GPC['company_id'] : $defaulcompany), true);
+                if (!$sheel->dynamics->init_dynamics('erCustomerStaffs',  $sheel->GPC['company_id'])) {
                     $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                     exit();
                 }
@@ -134,7 +134,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $staffs = array();
-        $searchcondition = '\'&$orderby=code asc';
+
         $searchfilters = array(
             'name',
             'code',
@@ -150,6 +150,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
 
+        $activecustomers = '$filter=(';
+        $sql2 = $sheel->db->query("
+        SELECT customer_ref
+        FROM " . DB_PREFIX . "customers WHERE status='active'");
+        $i = 0;
+        if ($sheel->db->num_rows($sql2) > 0) {
+            while ($res2 = $sheel->db->fetch_array($sql2, DB_ASSOC)) {
+                $i++;
+                if ($i == $sheel->db->num_rows($sql2)) {
+                    $activecustomers .= 'customerNo eq \'' . $res2['customer_ref'] . '\')';
+                } else {
+                    $activecustomers .= 'customerNo eq \'' . $res2['customer_ref'] . '\' or ';
+                }
+
+            }
+        }
+
+
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
         if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany))) {
@@ -160,18 +178,29 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = '$filter=contains(name, \'' . $sheel->db->escape_string($q) . '\')&$orderby=code asc';
+                        $searchcondition = $activecustomers . ' and contains(name, \'' . $sheel->db->escape_string($q) . '\')&$orderby=code asc';
                         break;
                     }
                 case 'code': {
-                        $searchcondition = '$filter=number eq \'' . $sheel->db->escape_string($q) . '\'&$orderby=code asc';
+                        $searchcondition = $activecustomers . ' and code eq \'' . $sheel->db->escape_string($q) . '\'&$orderby=code asc';
                         break;
                     }
                 case 'customer': {
-                        $searchcondition = '$filter=customerNo eq \'' . $sheel->db->escape_string($q) . '\'&$orderby=code asc';
+                        $sql3 = $sheel->db->query("
+                            SELECT customer_ref
+                            FROM " . DB_PREFIX . "customers WHERE customer_ref='" . $sheel->db->escape_string($q) . "' and status='active'");
+                        if ($sheel->db->num_rows($sql3) > 0) {
+                            $searchcondition = '$filter=customerNo eq \'' . $sheel->db->escape_string($q) . '\'&$orderby=code asc';
+                        } else {
+                            $sheel->template->templateregistry['message'] = 'Not an Active Customer';
+                            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                            exit();
+                        }
                         break;
                     }
             }
+        } else {
+            $searchcondition = $activecustomers . '&$orderby=code asc';
         }
         $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition . $pagination);
         $pageurl = PAGEURL;
@@ -179,14 +208,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $staffs = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
         $filter_options = array(

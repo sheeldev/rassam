@@ -82,8 +82,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
         if (!$sheel->dynamics->init_dynamics('erCustomerList', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany))) {
-            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-            exit();
         }
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
@@ -105,14 +103,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $customers = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
 
@@ -245,14 +237,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempdep = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempdep as $key => $value) {
@@ -279,14 +265,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $departments = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $sheel->template->fetch('main', 'customer-departments.html', 1);
         $sheel->template->parse_hash(
@@ -413,7 +393,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempcustdepartments = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempcustdepartments as $key => $value) {
@@ -439,7 +420,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $temppos = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($temppos as $key => $value) {
@@ -467,7 +449,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $custpositions = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $sheel->template->fetch('main', 'customer-positions.html', 1);
         $sheel->template->parse_hash(
@@ -699,7 +682,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempcustdepartments = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempcustdepartments as $key => $value) {
@@ -726,7 +710,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempcustpos = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempcustpos as $key => $value) {
@@ -756,7 +741,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $custstaffs = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $tempids = array();
         $ids = array();
@@ -892,7 +878,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $tempcuststaffs = $apiResponse->getData();
                     } else {
                         $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                        die($sheel->template->parse_template_phrases('message'));
+                        $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                        exit();
                     }
                     foreach ($tempcuststaffs as $key => $value) {
                         foreach ($value as $key1 => $value1) {
@@ -1072,7 +1059,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempcuststaffs = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         foreach ($tempcuststaffs as $key => $value) {
             foreach ($value as $key1 => $value1) {
@@ -1109,7 +1097,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempmeasurements = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempmeasurements as $key => $value) {
@@ -1133,7 +1122,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempuom = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         foreach ($tempuom as $key => $value) {
             foreach ($value as $key1 => $value1) {
@@ -1187,7 +1177,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $staffmeasurements = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $pageurl = PAGEURL;
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
@@ -1262,7 +1253,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $custstaffs = $apiResponse->getData();
             } else {
                 $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                die($sheel->template->parse_template_phrases('message'));
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
             }
             $suggestdata = array();
             foreach ($custstaffs as $keycust => $valuecust) {
@@ -1278,7 +1270,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $tempsm = $apiResponse->getData();
                 } else {
                     $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                    die($sheel->template->parse_template_phrases('message'));
+                    $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                    exit();
                 }
 
                 foreach ($tempsm as $key => $value) {
@@ -1394,7 +1387,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $tempcuststaffs = $apiResponse->getData();
                     } else {
                         $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                        die($sheel->template->parse_template_phrases('message'));
+                        $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                        exit();
                     }
                     foreach ($tempcuststaffs as $key => $value) {
                         foreach ($value as $key1 => $value1) {
@@ -1601,7 +1595,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempcuststaffs = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         foreach ($tempcuststaffs as $key => $value) {
             foreach ($value as $key1 => $value1) {
@@ -1638,7 +1633,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempsizecategories = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempsizecategories as $key => $value) {
@@ -1663,7 +1659,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempsizes = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempsizes as $key => $value) {
@@ -1688,7 +1685,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempfits = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempfits as $key => $value) {
@@ -1713,7 +1711,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempcuts = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempcuts as $key => $value) {
@@ -1738,7 +1737,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempitemtypes = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         foreach ($tempitemtypes as $key => $value) {
@@ -1798,7 +1798,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $staffsizes = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $pageurl = PAGEURL;
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
@@ -1852,14 +1853,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $customer = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         $customer = $customer['0'];
@@ -2073,14 +2068,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $departments = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
 
         $positions = array();
@@ -2094,14 +2083,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $positions = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $tempsm = array();
         $sm = array();
@@ -2116,7 +2099,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempsm = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $currentStaff = '';
         $lastKey = array_key_last($tempsm);
@@ -2146,7 +2130,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $tempss = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die($sheel->template->parse_template_phrases('message'));
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $currentStaff = '';
         $lastKey = array_key_last($tempss);
@@ -2202,14 +2187,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $sheel->template->fetch('main', 'customers.html', 1);
         $sheel->template->parse_hash(
@@ -2255,14 +2234,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $customer = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-            die(
-                json_encode(
-                    array(
-                        'response' => '0',
-                        'message' => $sheel->template->parse_template_phrases('message')
-                    )
-                )
-            );
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
         }
         $customer = $customer['0'];
         $payload = array();
