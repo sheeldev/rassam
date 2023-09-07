@@ -51,14 +51,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'q' => $q,
     );
     $defaulcompany = '';
+    $defaulcompanyid = '';
     $sqldefault = $sheel->db->query("
-    SELECT bc_code
+    SELECT company_id, bc_code
     FROM " . DB_PREFIX . "companies 
     WHERE isdefault='1' 
     LIMIT 1");
     if ($sheel->db->num_rows($sqldefault) > 0) {
         while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
             $defaulcompany = $res['bc_code'];
+            $defaulcompanyid = $res['company_id'];
         }
     }
 
@@ -77,7 +79,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
                 'form' => $form
             )
         );
@@ -169,8 +170,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
+        $sql3 = $sheel->db->query("
+        SELECT company_id
+        FROM " . DB_PREFIX . "companies WHERE bc_code='".$form['company']."' LIMIT 1");
+        if ($sheel->db->num_rows($sql3) > 0) {
+            while ($res3 = $sheel->db->fetch_array($sql3, DB_ASSOC)) {
+                $form['company_id'] = $res3['company_id'];
+            }
+        }
         $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
-        if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany))) {
+        if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $form['company'])) {
             $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
             exit();
         }
@@ -233,7 +242,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
                 'form' => $form
             )
         );

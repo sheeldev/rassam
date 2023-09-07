@@ -329,7 +329,7 @@
                                                                         <div class="draw-popover__content" style="max-height: 637px;">
                                                                             <div class="draw-popover__pane">
                                                                                 <ul class="draw-list draw-list--compact">
-                                                                                     <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', '<label>This will delete all Staff Measurements and Sizes for Selected Staffs!</label> <br>Are you sure you want to delete selected Staffs?', 'empssss', 'selectedcount', '1', '1', '{https_server_admin}staffs/?company_id={form[company]}')">Delete</a></li>
+                                                                                     <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', '<label>This will delete all Staff Measurements and Sizes for Selected Staffs!</label> <br>Are you sure you want to delete selected Staffs?', 'empssss', 'selectedcount', '1', '1', '{https_server_admin}staffs/?company_id={form[company_id]}')">Delete</a></li>
                                                                                 </ul> 
                                                 
                                                                             </div>
@@ -369,7 +369,7 @@
                                             <td class="status no-wrap">{departmentName}</td>
                                             <td class="status no-wrap">{customerNo}</td>
                                             <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff?', '<label>This will delete all Staff Measurements and Sizes!</label> <br>Are you sure you want to delete the selected staff?', '{systemId}', 1, '', '{https_server_admin}staffs/?systemid={systemId}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff?', '<label>This will delete all Staff Measurements and Sizes!</label> <br>Are you sure you want to delete the selected staff?', '{systemId}', 1, '', '{https_server_admin}staffs/?systemid={systemId}&company_id={form[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>
                                         </tr>
                                         </loop name="staffs">

@@ -215,7 +215,7 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', <label>This will delete all Staff Measurements and Sizes For Selected Staffs!</label> <br>'Are you sure you want to delete selected Customer Staffs?', 'memssss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?company_id={customercard[company_id]}')">Delete</a></li>
+                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', '<label>This will delete all Staff Measurements and Sizes For Selected Staffs!</label> <br>Are you sure you want to delete selected Customer Staffs?', 'stassss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?company_id={customercard[company_id]}')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
@@ -242,7 +242,7 @@
                                     <tbody>
                                     <loop name="custstaffs">
                                         <tr id="tr_selected_{systemId}" valign="top">
-                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="memssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
+                                            <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="stassss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{code}</td>
                                             <td width="15%" align="left">{name}</td> 
@@ -258,7 +258,7 @@
                                     </table>
                                 </form>
                                     <script type="text/javascript">
-                                        inlineCB = new iL_Inline('inlineCB', 'memssss', 'formstaffs', '{_go}'); 
+                                        inlineCB = new iL_Inline('inlineCB', 'stassss', 'formstaffs', '{_go}'); 
                                     </script>
                                 </div>
                             </div>
