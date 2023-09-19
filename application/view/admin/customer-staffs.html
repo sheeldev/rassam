@@ -244,7 +244,7 @@
                                         <tr id="tr_selected_{systemId}" valign="top">
                                             <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="stassss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
-                                            <td width="10%" nowrap="nowrap">{code}</td>
+                                            <td width="10%" nowrap="nowrap"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?subcmd=update&staffno={code}&company_id={customercard[company_id]}" title="{code}">{code}</a></td>
                                             <td width="15%" align="left">{name}</td> 
                                             <td width="15%" align="left">{gender}</td> 
                                             <td width="15%" align="left">{positionName}</td> 

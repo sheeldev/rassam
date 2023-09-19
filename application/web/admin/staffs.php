@@ -52,6 +52,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     );
     $defaulcompany = '';
     $defaulcompanyid = '';
+    $tempcustdepartments = array();
+    $custdepartments = array();
+    $tempcustpositions = array();
+    $custpositions = array();
     $sqldefault = $sheel->db->query("
     SELECT company_id, bc_code
     FROM " . DB_PREFIX . "companies 
@@ -65,20 +69,118 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     }
 
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'view' and isset($sheel->GPC['staffno']) and $sheel->GPC['staffno'] != '') {
+        if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
+          if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $sheel->GPC['company'])) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            //die ($sheel->GPC['staffid'].'|'.$sheel->GPC['staffname'].'|'.$sheel->GPC['form']['gender'].'|'.$sheel->GPC['positions'].'|'.$sheel->GPC['departments'].'|');
+            $updateResponse = $sheel->dynamics->update($sheel->GPC['staffid'], 
+                array(
+                    "@odata.etag" => $sheel->GPC['staffetag'],
+                    "name" => $sheel->GPC['staffname'],
+                    "gender" => $sheel->GPC['form']['gender'],
+                    "positionCode" => $sheel->GPC['positions'],
+                    "departmentCode" => $sheel->GPC['departments']
+                )
+            );
+            if ($updateResponse->isSuccess()) {
+                $sheel->GPC['note'] = 'updatesuccess';
+                
+                // $contactsResponse->getGuidCreated(); - Get the GUID of the created entity
+            } else {
+                $sheel->GPC['note'] = 'updateerror';
+                die ($updateResponse->getErrorMessage());
+                // $contactsResponse->getErrorMessage(); - Get the error message as string
+            }
+            
+       
+        }
+        $staff = array();
+        if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $sheel->GPC['company'])) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '$filter=code eq \'' . $sheel->GPC['staffno'] . '\'';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $staff = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+        $staff = $staff['0'];
+        $gender = array('Male' => '{_male}', 'Female' => '{_female}');
+        if (!$sheel->dynamics->init_dynamics('erCustomerDepartments', $sheel->GPC['company'])) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '$filter=customerNo eq \'' . $staff['customerNo'] . '\'&$orderby=departmentCode asc';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $tempcustdepartments = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+
+        foreach ($tempcustdepartments as $key => $value) {
+
+            foreach ($value as $key1 => $value1) {
+                if ($key1 == 'departmentCode') {
+                    $code = $value1;
+                }
+                if ($key1 == 'departmentName') {
+                    $name = $value1;
+                }
+            }
+            $custdepartments += [$code => $code . ' > ' . $name];
+        }
+
+
+        if (!$sheel->dynamics->init_dynamics('erCustomerPositions', $sheel->GPC['company'])) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '$filter=customerNo eq \'' . $staff['customerNo'] . '\'&$orderby=positionCode asc';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $tempcustpos = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+
+        foreach ($tempcustpos as $key => $value) {
+
+            foreach ($value as $key1 => $value1) {
+                if ($key1 == 'positionCode') {
+                    $code = $value1;
+                }
+                if ($key1 == 'positionName') {
+                    $name = $value1;
+                }
+            }
+            $custpositions += [$code => $code . ' > ' . $name];
+        }
+        $form['department_pulldown'] = $sheel->construct_pulldown('departments', 'departments', $custdepartments,  $staff['departmentCode'], 'class="draw-select"');
+        $form['position_pulldown'] = $sheel->construct_pulldown('positions', 'positions', $custpositions,  $staff['positionCode'], 'class="draw-select"');
+        $form['gender'] = $sheel->construct_pulldown('gender', 'form[gender]', $gender, $staff['gender'], 'class="draw-select"');
+        $form['company'] =  $sheel->GPC['company'];
+        $form['staffetag'] = htmlspecialchars($staff['@odata.etag']);
+        
         $areanav = 'customers_staffs';
         $vars['areanav'] = $areanav;
         $currentarea = $sheel->GPC['staffno'];
         $vars['currentarea'] = $currentarea;
         $sheel->template->fetch('main', 'staffs.html', 1);
-        $sheel->template->parse_loop(
-            'main',
-            array(
-                'customers' => $customers
-            )
-        );
         $sheel->template->parse_hash(
             'main',
             array(
+                'staff' => $staff,
                 'form' => $form
             )
         );

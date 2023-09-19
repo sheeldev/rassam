@@ -335,20 +335,22 @@ class dynamics
           }
         }
       }
+      if ($payload && in_array($originMethod, array('insert', 'update', 'batch'))) { // In case of insert and update methods
+        if (is_array($payload)) {
+          $requestHeaders[] = "If-Match: " . $payload['@odata.etag'];
+          $payload = json_encode($payload);
+        }
 
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+      }
+      
       curl_setopt($curl, CURLOPT_HTTPHEADER, $requestHeaders);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
       curl_setopt($curl, CURLOPT_VERBOSE, 1);
       curl_setopt($curl, CURLOPT_HEADER, 1);
 
-      if ($payload && in_array($originMethod, array('insert', 'update', 'batch'))) { // In case of insert and update methods
-        if (is_array($payload)) {
-          $payload = json_encode($payload);
-        }
 
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
-      }
 
       $response = curl_exec($curl);
       $rawResponse = $response;
@@ -419,7 +421,7 @@ class dynamics
    */
   public function update($GUID, $payload, $extraHeaders = false)
   {
-    return $this->performRequest('/' . $this->entity . '(' . $GUID . ')', 'PATCH', $payload, $extraHeaders, "update");
+    return $this->performRequest('(' . $GUID . ')', 'PATCH', $payload, $extraHeaders, "update");
   }
 
   /*
