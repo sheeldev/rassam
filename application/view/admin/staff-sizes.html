@@ -14,7 +14,7 @@
             <header id="customers-index-header" class="header">
                 <h1 class="header__main">
                     <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
-                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> /</span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{customercard[customer_id]}/">{customercard[customer_ref]}</a> / </span>{currentarea}
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{customercard[customer_id]}/">{customercard[customer_ref]}</a> / </span>{currentarea}
                 </h1>
                 <div class="header__secondary-actions">
                     <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
@@ -138,10 +138,10 @@
                             <tr>
                                 <th width="17%"><label>Staff Code</label> </th>
                                 <th width="15%"><label>Position Code</label></th> 
-                                <th width="17%"><label>Department Code</label></th> 
+                                <th width="17%"><label>Department Code</label></th>
+                                <th width="15%"><label>Size</label></th> 
                                 <th width="5%"><label>Fit</label></th> 
                                 <th width="5%"><label>Cut</label></th>
-                                <th width="15%"><label>Size</label></th>
                                 <th width="15%"><label>Type</label></th>
                                 <th><label>Error</label></th> 
                                 <th>{_action}</span></th>
@@ -157,9 +157,9 @@
                                         <td width="17%" nowrap="nowrap"><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input"/></td>
                                         <td width="15%" align="left"><input name="uploadedpositioncode_{id}" id="uploadedpositioncode_{id}" value="{positioncode}" class="draw-input" /></td> 
                                         <td width="17%" align="left"><input name="uploadeddepartmentcode_{id}" id="uploadeddepartmentcode_{id}" value="{departmentcode}" class="draw-input" /></td> 
+                                        <td width="15%" align="left"><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input" /></td> 
                                         <td width="5%" align="left"><input name="uploadedfit_{id}" id="uploadedfit_{id}" value="{fit}" class="draw-input" /></td> 
                                         <td width="5%" align="left"><input name="uploadedcut_{id}" id="uploadedcut_{id}" value="{cut}" class="draw-input" /></td> 
-                                        <td width="15%" align="left"><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input" /></td> 
                                         <td width="15%" align="left"><input name="uploadedtype_{id}" id="uploadedtype_{id}" value="{type}" class="draw-input" /></td> 
                                         <td><input name="uploaderrormessage_{id}" id="uploaderrormessage_{id}" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message({id});">{_show_error}</a></td> 
                                         <td >
@@ -272,9 +272,9 @@
                                         <th width="15%"><label>Gender</label></th>
                                         <th width="15%"><label>Position</label></th> 
                                         <th width="15%"><label>Department</label></th> 
+                                        <th width="10%"><label>Size</label></th>
                                         <th width="5%"><label>Fit</label></th> 
-                                        <th width="5%"><label>Cut</label></th> 
-                                        <th width="10%"><label>Size</label></th> 
+                                        <th width="5%"><label>Cut</label></th>  
                                         <th width="100%"><label>Type</label></th> 
                                         <th>{_action}</span></th>
                                     </tr>
@@ -289,9 +289,9 @@
                                             <td width="15%" align="left">{gender}</td>
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="15%" align="left">{departmentName}</td> 
+                                            <td width="10%" align="left">{sizeCode}</td> 
                                             <td width="5%" align="left">{fitCode}</td> 
                                             <td width="5%" align="left">{cutCode}</td> 
-                                            <td width="10%" align="left">{sizeCode}</td> 
                                             <td width="100%" align="left">{sizeType}</td> 
 
                                             <td >

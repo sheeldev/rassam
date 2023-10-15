@@ -2336,7 +2336,7 @@ img.disabled {
 }
 .breadcrumb {
     color: #798c9c;
-    padding-{template_textalignment}: 7px
+    padding-{template_textalignment}: 0px
 }
 .breadcrumb a,
 .breadcrumb a:hover {

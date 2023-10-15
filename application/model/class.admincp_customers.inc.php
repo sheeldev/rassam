@@ -296,7 +296,23 @@ class admincp_customers extends admincp
                 'subcriptionid' => '0'
             );
         }
-        
+    }
+    function get_customer_id($custref)
+    {
+        $uid = 0;
+        $sql = $this->sheel->db->query("
+				SELECT customer_id
+				FROM " . DB_PREFIX . "customers
+				WHERE customer_ref = '" . $custref . "'
+				LIMIT 1
+			", 0, null, __FILE__, __LINE__);
+        if ($this->sheel->db->num_rows($sql) > 0) {
+            $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+            return $res['customer_id'];
+        } 
+        else {
+            return '0';
+        }
     }
     function get_company_id($code)
     {

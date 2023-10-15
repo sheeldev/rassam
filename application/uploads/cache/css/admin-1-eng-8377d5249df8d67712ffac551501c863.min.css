@@ -10384,7 +10384,7 @@ img.disabled {
 }
 .breadcrumb {
     color: #798c9c;
-    padding-left: 7px
+    padding-left: 0px
 }
 .breadcrumb a,
 .breadcrumb a:hover {

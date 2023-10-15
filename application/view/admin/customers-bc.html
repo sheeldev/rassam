@@ -339,7 +339,7 @@
                                 <td class="status no-wrap">{blocked}</td>
                                 <if condition="isset($sheel->GPC['view']) AND ($sheel->GPC['view'] == 'active') "><td class="last_order type--subdued">{switchadd}{switchview}</td>
                                 <else />
-                                <td class="last_order type--subdued"><a href="customers/bcview/{No}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>
+                                <td class="last_order type--subdued"><a href="customers/bcview/{number}/?company={form[company]}" class="btn btn-slim btn--icon" title="{_activate}"><span class="glyphicons glyphicons-user-add x1" aria-hidden="true"></span></a></td>
                                 </if>
                             </tr>
                             </loop name="customers">

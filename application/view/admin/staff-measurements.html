@@ -4,7 +4,9 @@
 <if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidfe'"><script>jQuery.growl.error({ title: '{_invalid_file_extension}', message: '{_the_bulk_file_you_uploaded_did_not_have_the_correct_file_extension}' })</script></if>
 <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'cancel'"><script>jQuery.growl.error({ title: '{_cancelled}', message: '{_bulk_upload_cancelled}' })</script></if>
 <if condition="isset($sheel->GPC['error']) AND $sheel->GPC['error'] ==  'invalidff'"><script>jQuery.growl.error({ title: '{_invalid_bulk_import_file_format}', message: '{_the_bulk_file_format_you_uploaded_was_not_correct_check_columns}' })</script></if>
-
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updatesuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Staff Member has been successfully Updated.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updateerror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Staff Member could not be updated.' });</script></if>
+   
 <section>
     <script type="text/javascript">
         Page();
@@ -265,7 +267,7 @@
                                             <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="memssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{staffCode}</td>
-                                            <td width="15%" align="left">{measurementCode}</td> 
+                                            <td width="15%" align="left"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?subcmd=update&systemId={systemId}&company_id={customercard[company_id]}" title="{measurementCode}">{measurementCode}</a></td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="15%" align="left">{departmentName}</td> 
                                             <td width="15%" align="left">{value}</td> 

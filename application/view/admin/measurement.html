@@ -1,0 +1,78 @@
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updatesuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Staff Measurement has been successfully Updated.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updateerror'"><script>jQuery.growl.error({ title: '{_error}', message: '{form[error]}' });</script></if>
+    
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    
+    <div class="section account-overview">
+        <form autocomplete="off" id="update_measurement" action="{https_server_admin}customers/org/{measurement[customer_id]}/measurements/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="subcmd" value="update" />
+        <input type="hidden" name="do" value="save" />
+        <input type="hidden" name="systemId" value="{measurement[systemId]}" />
+        <input type="hidden" name="staffno" value="{measurement[staffCode]}" />
+        <input type="hidden" name="measurementetag" value="{form[measurementetag]}" />
+        <input type="hidden" name="company_id" value="{form[company]}">
+        <input type="hidden" name="customerNo" value="{measurement[customerNo]}">
+
+        <div class="header-row">
+			<header class="header">
+				<h1 class="header__main">
+					<span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> /</span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{measurement[customer_id]}/">{measurement[customerNo]}</a> / <a href="{https_server_admin}customers/org/{measurement[customer_id]}/measurements/">{_measurements}</a> / </span> {currentarea}
+				</h1> 
+                <div class="header__primary-actions">
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                </div>
+                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/org/{measurement[customer_id]}/measurements/">{_cancel}</a> </div>
+			</header>
+		</div>
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Measurement details</h1>
+                    <p> {measurement[measurementCode]} Details for {measurement[staffCode]}. </div>
+            </div>
+            <div class="layout-content__main">
+                <div class="draw-card">
+                    <div class="section-content">
+                        <div class="draw-card__section">
+                        
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label>{_code}</label> 
+                                    <span>{measurement[measurementCode]}</span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <label>{_staff}</label> 
+                                    <span >{measurement[staffCode]} </span>
+                                </div>
+
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label>{_value}</label> 
+                                    <span ><input name="measurementvalue" id="measurementvalue" value="{measurement[value]}" class="draw-input" /></span> 
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label>{_uom}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            {form[uom_pulldown]}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+</section>
+
+

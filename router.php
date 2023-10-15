@@ -45,8 +45,6 @@ $router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/
 $router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_bc_list');
 $router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_org');
 $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
-$router->map('GET|POST', '/admin/staffs/', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs');
-$router->map('GET|POST', '/admin/staffs/[view:cmd]/[*:staffno]', __DIR__ . '/application/web/admin/staffs.php', 'admin_staffs_view');
 $router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/users.php', 'admin_users');
 $router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer_view');
 $router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer');
@@ -75,7 +73,7 @@ $router->map('GET|POST', '/admin/settings/[pages:cmd]/[update|update/link|delete
 $router->map('GET|POST', '/admin/settings/heros/', __DIR__ . '/application/web/admin/heros.php', 'admin_heros');
 $router->map('GET|POST', '/admin/settings/[heros:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/heros.php', 'admin_heros_upload');
 $router->map('GET|POST', '/admin/settings/memberships/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership');
-$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[add:subcmd]/[role|plan|permission:type]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_add_type_cmd');
+$router->map('GET|POST', '/admin/settings/[memberships:cmd]/[add:subcmd]/[plan|permission:type]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_add_type_cmd');
 $router->map('GET|POST', '/admin/settings/[memberships:cmd]/[delete|update:subcmd]/[plan:type]/[*:subscriptionid]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_delete_plan_cmd');
 $router->map('GET|POST', '/admin/settings/[memberships:cmd]/[delete|update:subcmd]/[permissions:type]/[*:subscriptionid]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_delete_group_cmd');
 $router->map('GET|POST', '/admin/settings/[memberships:cmd]/[upload:subcmd]/', __DIR__ . '/application/web/admin/memberships.php', 'admin_membership_upload_badge');
@@ -92,6 +90,8 @@ $router->map('GET|POST', '/admin/settings/[languages:cmd]/[update|delete|default
 $router->map('GET|POST', '/admin/settings/[languages:cmd]/[import|export|add:subcmd]/', __DIR__ . '/application/web/admin/languages.php', 'admin_language_impex');
 $router->map('GET|POST', '/admin/settings/locations/', __DIR__ . '/application/web/admin/locations.php', 'admin_locations');
 $router->map('GET|POST', '/admin/settings/[locations:cmd]/[update:subcmd]/[region|country:mode]/[*:locationid]/', __DIR__ . '/application/web/admin/locations.php', 'admin_locations_update_cmd');
+$router->map('GET|POST', '/admin/settings/sizingrules/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules');
+$router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_add');
 
 $router->map('GET|POST', '/admin/settings/bc/', __DIR__ . '/application/web/admin/bc.php', 'admin_bc');
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');

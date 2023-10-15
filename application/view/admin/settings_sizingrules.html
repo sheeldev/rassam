@@ -1,0 +1,255 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="sizingrule-index" refresh="sizingrule-index" class="page has-contextual-help">
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+                </h1>
+    
+                <div class="header__primary-actions"></div>
+    
+            </header>
+        </div>
+        <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Sizing Rules</h1>
+                        <p>A sizing rule defines specific criterias to auto suggest sizes from measurements.</p>
+                        <p><a href="{https_server_admin}settings/sizingrules/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">{_cancel}</button></a></p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <form autocomplete="off" action="{https_server_admin}settings/sizingrules/" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="subcmd" value="add" />
+                        <input type="hidden" name="do" value="save" />
+                        <div class="draw-card" id="newsizingrule">
+        
+                            <div class="draw-card__section">
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="code">{_code}</label>
+                                        <input class="draw-input with-add-on" size="30" type="text" name="code" id="code"  placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="form_length">{_gender}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content">
+                                                {form[gender]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="form_length">{_length}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content">
+                                                {form[duration_pulldown]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                             <div class="draw-card__section">
+                                <label class="draw-label" for="form_description">{_description}</label>
+                                <loop name="languages_plan">
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <input class="draw-input with-add-on" size="30" type="text" name="form[description_{languagecode}]" id="form_description_{languagecode}" value="{form[description_{languagecode}]}" placeholder="{language}" dir="{form[textdirection_{languagecode}]}"><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{languagecode}]}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                </loop name="languages_plan">
+                             </div>
+        
+                             <div class="draw-card__section">
+        
+                             <div class="draw-card__section">
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="form_cost">{_cost}</label>
+                                        <input class="draw-input" size="30" type="text" name="form[cost]" id="form_cost" value="{form[cost]}" placeholder="0.00">
+                                        </div>
+                                    </div>
+        
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="form_length">{_length}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content">
+                                                {form[duration_pulldown]}
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="form_length">{_unit}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content">
+                                                {form[unit_pulldown]}
+                                            </div>
+                                         </div>
+                                         <if condition="isset($sheel->config['eway_subscriptions']) AND $sheel->config['eway_subscriptions'] AND $sheel->config['eway_active']"><p class="type--subdued st">If you offer recurring memberships via eWay leave the length as <strong>1</strong> and the unit on <strong>month</strong> or <strong>year</strong>.</p></if>
+                                    </div>
+        
+                                </div>
+                            </div>
+        
+                             <div class="draw-card__section">
+                                 <div class="draw-grid draw-grid--no-outside-padding">
+                                     <div class="draw-grid__cell">
+                                         <div class="draw-input-wrapper">
+                                             <label class="draw-label" for="form_active">{_plan_is_active}</label>
+                                             <input type="checkbox" name="form[active]" id="form_active" value="1" {form[active]}> {_yes}
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label class="draw-label" for="form_canremove">{_can_remove}</label>
+                                            <input type="checkbox" name="form[canremove]" id="form_active" value="1" {form[canremove]}> {_yes}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="form_visible">{_plan_is_visible_in}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[visible_pulldown]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="form_icon">{_subscription_plan_icon}</label>
+                                        <div class="type--subdued sb">Path: /application/uploads/attachments/plan/</div>
+                                        <div class="draw-select__wrapper draw-input--has-content">
+                                            {form[icon_pulldown]}
+                                        </div>
+                                        </div>
+        
+                                        <div class="styled-file-input fl sr st">
+                                            <div class="btn"> <span>{_upload} Badge <img src="{imgcdn}v5/ico_working.gif" border="0" alt="" id="uploading" style="display:none" /></span><input type="file" name="badge" class="js-no-dirty" id="uploader"></div>
+                                        </div>
+                                    </div>
+        
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                        <label class="draw-label" for="form_icon">{_display_order}</label>
+                                        <input type="text" name="form[sort]" size="10" value="{form[sort]}" class="draw-input" />
+                                        </div>
+                                    </div>
+        
+                                </div>
+                             </div>
+        
+                            
+        
+                        </div>
+                        <div class="draw-grid draw-grid--right-aligned">
+                            <div class="draw-grid__cell draw-grid__cell--no-flex">
+                                <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                            </div>
+                        </div>
+                        </form>
+                </div>
+            </div>
+
+        <else />
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Sizing Rules</h1>
+                        <p>A sizing rule defines specific criterias to auto suggest sizes from measurements.</p>
+                        <p><a href="{https_server_admin}settings/sizingrules/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="ui-accordion__toggler--9" aria-expanded="false" aria-controls="ui-accordion__panel--9">Add Rule</button></a></p>
+                    </div>
+                </div>
+                <div class="layout-content__main">
+                    <div>
+                        <ul class="draw-tab__list" role="tablist">
+                            <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/sizingrules/">{_male}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                            <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/sizingrules/?view=female">{_female} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                            <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
+                                <div class="dropdown">
+                                    <ul class="draw-tab__list--vertical" role="tablist"></ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                                <div class="table-wrapper">
+                                    <table class="expanded">
+                                        <thead>
+                                            <tr>
+                                                <th>{_code}</th>
+                                                <th>{_measurement} {_details}</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <loop name="rules_rows">
+                                            <tr valign="top">
+                                                <td width="20%"><a href="{https_server_admin}settings/sizingrules/update/{code}/">{code}</a><div class="type--subdued">{totalrules} rule lines, {totaltypes} types</div></td>
+                                                <td>{mcname} ({mccode})
+                                                <div class="type--subdued">{_rules}: {access}</div>
+                                                <div class="type--subdued">{_gender}: {gender}</div></td>
+                                                <td class="tr">
+
+                                                <ul class="segmented">
+                                                    <li>
+
+                                                        <a href="{https_server_admin}settings/sizingrules/update/{code}/" class="btn btn-slim btn--icon" title="Configure permissions for this sizingrule.">
+                                                        <span class="ico-16-svg halflings halflings-cog draw-icon" aria-hidden="true"></span>
+                                                        </a>
+
+                                                    </li>
+
+                                                <li>
+                                                    <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected sizingrule?', 'Are you sure you want to delete the selected sizing rule?', '{code}', 1, '', '{https_server_admin}settings/sizingrules/delete/{code}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                </li>
+                                                </ul>
+
+                                                </td>
+                                            </tr>
+                                            </loop name="rules_rows">
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </if>
+        
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['settings','settings_sizingrules']), iLPage.close()"></div>
+    

@@ -7,24 +7,25 @@
     </script>
     
     <div class="section account-overview">
-        <form autocomplete="off" id="update_staff" action="{https_server_admin}staffs/view/{staff[code]}?company={form[company]}" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
+        <form autocomplete="off" id="update_staff" action="{https_server_admin}customers/org/{staff[customer_id]}/staffs/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="subcmd" value="update" />
         <input type="hidden" name="do" value="save" />
         <input type="hidden" name="staffid" value="{staff[systemId]}" />
+        <input type="hidden" name="staffno" value="{staff[code]}" />
         <input type="hidden" name="staffetag" value="{form[staffetag]}" />
-        <input type="hidden" name="company" value="{form[company]}">
+        <input type="hidden" name="company_id" value="{form[company]}">
         <input type="hidden" name="customerNo" value="{staff[customerNo]}">
 
         <div class="header-row">
 			<header class="header">
 				<h1 class="header__main">
 					<span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
-                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> /</span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{customercard[customer_id]}/">{customercard[customer_ref]}</a> / </span>{currentarea}
-					<span class="breadcrumb"><a href="{https_server_admin}staffs/">{_staffs}</a> / </span> {currentarea}
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> /</span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{staff[customer_id]}/">{staff[customerNo]}</a> / <a href="{https_server_admin}customers/org/{staff[customer_id]}/staffs/">{_staffs}</a> / </span> {currentarea}
 				</h1> 
                 <div class="header__primary-actions">
                     <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                 </div>
-                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}staffs/">{_staffs_list}</a> </div>
+                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/org/{staff[customer_id]}/staffs/">{_cancel}</a> </div>
 			</header>
 		</div>
         <div class="layout-content">
