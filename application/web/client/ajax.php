@@ -266,19 +266,15 @@ if (isset($sheel->GPC['do'])) {
 			echo $sheel->template->parse_template_phrases('showcities');
 			exit();
 		}
-	} 	else if ($sheel->GPC['do'] == 'heropicture')
-	{ // admin hero picture info
-		if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata']['user']['userid'] > 0 AND $_SESSION['sheeldata']['user']['isadmin'] == '1')
-		{
+	} else if ($sheel->GPC['do'] == 'heropicture') { // admin hero picture info
+		if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
 			$filename = ((isset($sheel->GPC['filename'])) ? $sheel->GPC['filename'] : '');
 			$mode = ((isset($sheel->GPC['mode'])) ? o($sheel->GPC['mode']) : 'homepage');
 			$folder = ((isset($sheel->GPC['folder'])) ? o($sheel->GPC['folder']) : 'heros');
 			$cid = ((isset($sheel->GPC['cid'])) ? intval($sheel->GPC['cid']) : 0);
 			$id = ((isset($sheel->GPC['id'])) ? intval($sheel->GPC['id']) : 0);
-			if (!empty($filename))
-			{
-				if ($mode == 'load' AND $id > 0)
-				{
+			if (!empty($filename)) {
+				if ($mode == 'load' and $id > 0) {
 					$sql = $sheel->db->query("
 						SELECT imagemap, mode, filename, sort, width, height, styleid
 						FROM " . DB_PREFIX . "hero
@@ -286,43 +282,36 @@ if (isset($sheel->GPC['do'])) {
 							AND id = '" . intval($id) . "'
 						LIMIT 1
 					");
-					if ($sheel->db->num_rows($sql) > 0)
-					{
+					if ($sheel->db->num_rows($sql) > 0) {
 						$res = $sheel->db->fetch_array($sql, DB_ASSOC);
 						$themeselect = '<div class="draw-select__wrapper draw-input--has-content">' . $sheel->styles->print_styles_pulldown($res['styleid'], '', 'src_styleid', 'draw-select') . '</div>';
 						$pulldown = '<div class="draw-select__wrapper draw-input--has-content"><select name="src_location" id="src_location" class="draw-select" onchange="((jQuery(\'#src_location option:selected\').attr(\'type\').length > 0) ? jQuery(\'#src_mode\').val(jQuery(\'#src_location option:selected\').attr(\'type\')) : jQuery(\'#src_mode\').val(\'\'))"><optgroup label="{_location}"><option value="homepage" id="0" cid="0"' . (($res['mode'] == 'homepage') ? ' selected="selected"' : '') . ' type="homepage">{_homepage}</option><option value="landingpage" id="0" cid="0"' . (($res['mode'] == 'landingpage') ? ' selected="selected"' : '') . ' type="landingpage">Landing Page</option></optgroup>';
-	
+
 						$pulldown .= '</select><input type="hidden" name="src_mode" id="src_mode" value="' . $res['mode'] . '" /></div>';
 						$sheel->template->templateregistry['results'] = "$res[sort]|$res[imagemap]|''|$pulldown|$res[width]|$res[height]|$themeselect";
 						die($sheel->template->parse_template_phrases('results'));
 					}
-				}
-				else if ($mode == 'insert')
-				{
+				} else if ($mode == 'insert') {
 					$sql = $sheel->db->query("
 						SELECT imagemap, mode, filename, sort
 						FROM " . DB_PREFIX . "hero
 						ORDER BY sort DESC
 						LIMIT 1
 					");
-					if ($sheel->db->num_rows($sql) > 0)
-					{
+					if ($sheel->db->num_rows($sql) > 0) {
 						$res = $sheel->db->fetch_array($sql, DB_ASSOC);
 						$themeselect = '<div class="draw-select__wrapper draw-input--has-content">' . $sheel->styles->print_styles_pulldown($sheel->config['defaultstyle'], '', 'src_styleid', 'draw-select') . '</div>';
 						$pulldown = '<div class="draw-select__wrapper draw-input--has-content"><select name="src_location" id="src_location" class="draw-select" onchange="((jQuery(\'#src_location option:selected\').attr(\'type\').length > 0) ? jQuery(\'#src_mode\').val(jQuery(\'#src_location option:selected\').attr(\'type\')) : jQuery(\'#src_mode\').val(\'\'))"><option value="">{_select_a_location}</option><optgroup label="{_location}"><option value="homepage" id="0" type="homepage">{_homepage}</option><option value="landingpage" id="0" type="landingpage">Landing Page</option></optgroup>';
 						$pulldown .= '</select><input type="hidden" name="src_mode" id="src_mode" /></div>';
 						$width = $height = '';
 						$targetpath = DIR_ATTACHMENTS . $folder . '/' . $filename;
-						if (file_exists($targetpath)) 
-						{
+						if (file_exists($targetpath)) {
 							list($width, $height, $type, $attr) = getimagesize($targetpath);
 						}
 						$sheel->template->templateregistry['results'] = "$res[sort]|$res[imagemap]|''|$pulldown|$width|$height|$themeselect";
 						echo $sheel->template->parse_template_phrases('results');
 						exit();
-					}
-					else
-					{
+					} else {
 						echo "10|";
 						exit();
 					}
@@ -330,6 +319,81 @@ if (isset($sheel->GPC['do'])) {
 			}
 		}
 		echo '';
+		exit();
+	} else if ($sheel->GPC['do'] == 'showtypes') {
+		if (isset($sheel->GPC['gendername']) and !empty($sheel->GPC['gendername']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname'])) {
+			$gender = $sheel->GPC['gendername'];
+		} else {
+			$gender = 'Male';
+		}
+		$html = $sheel->common_sizingrule->construct_type_checkbox($gender, true);
+		$sheel->template->templateregistry['showtypes'] = $html;
+		echo $sheel->template->parse_template_phrases('showtypes');
+		exit();
+	} else if ($sheel->GPC['do'] == 'showimpactvalues') {
+		if (isset($sheel->GPC['impactname']) and !empty($sheel->GPC['impactname']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname'])) {
+			$impact = $sheel->GPC['impactname'];
+		} else {
+			$impact = 'Fit';
+		}
+		$html = $sheel->common_sizingrule->construct_impactvalue_pulldown($impact, 'form[impactvalue_1]', '', false, false, 'draw-select');
+		$sheel->template->templateregistry['showimpactvalues'] = $html;
+		echo $sheel->template->parse_template_phrases('showimpactvalues');
+		exit();
+	} else if ($sheel->GPC['do'] == 'showrule') {
+		if (isset($sheel->GPC['action']) and $sheel->GPC['action'] == 'reset') {
+			$html = '<fieldset class="mb-20"><legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="'. $sheel->config['imgcdn'].'v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend></fieldset>';
+			$sheel->template->templateregistry['showimpactvalues'] = $html;
+			echo $sheel->template->parse_template_phrases('showimpactvalues');
+			exit();
+		}
+
+		if (isset($sheel->GPC['impactname']) and !empty($sheel->GPC['impactname'])) {
+			$impact = $sheel->GPC['impactname'];
+		} else {
+			$impact = 'Fit';
+		}
+		$html .= '<fieldset class="mb-20">';
+		$html .= '<legend><span class="smaller litegray left prl-6 pt-12 uc">Rule #' . $sheel->GPC['rulenumber'] . ': </span></legend>';
+		$html .= '<div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">';
+		$html .= '<div class="draw-grid__cell">';
+		$html .= ' <div class="draw-input-wrapper">';
+		$html .= '<label>{_value_high}</label>';
+		$html .= '<input class="draw-input with-add-on" size="2" type="text" value="0" name="rank_' . $sheel->GPC['rulenumber'] . '" id="rank_' . $sheel->GPC['rulenumber'] . '"  placeholder="">';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '<div class="draw-grid__cell">';
+		$html .= '<label>{_impact} {_value}</label>';
+		$html .= '<div class="draw-select__wrapper draw-input--has-content" id="value-wraper">';
+		$html .= '<div  id="value-wrapper">';
+		$html .= $sheel->common_sizingrule->construct_impactvalue_pulldown($impact, 'form[impactvalue_' . $sheel->GPC['rulenumber'] . ']', '', false, false, 'draw-select');
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '<div class="draw-grid__cell">';
+		$html .= '<div class="draw-input-wrapper">';
+		$html .= '<label>{_value_low}</label>';
+		$html .= '<input class="draw-input with-add-on" size="50" type="text" value="0" name="valuelow_' . $sheel->GPC['rulenumber'] . '" id="valuelow_' . $sheel->GPC['rulenumber'] . '"  placeholder="">';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '<div class="draw-grid__cell">';
+		$html .= ' <div class="draw-input-wrapper">';
+		$html .= '<label>{_value_high}</label>';
+		$html .= '<input class="draw-input with-add-on" size="50" type="text" value="0" name="valuehigh_' . $sheel->GPC['rulenumber'] . '" id="valuehigh_' . $sheel->GPC['rulenumber'] . '"  placeholder="">';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '<div class="draw-grid__cell">';
+		$html .= ' <label>{_uom}</label>';
+		$html .= '<div class="draw-select__wrapper draw-input--has-content" id="value-wraper">';
+		$html .= '<div>';
+		$html .= $sheel->common_sizingrule->construct_uom_pulldown('form[uom_' . $sheel->GPC['rulenumber'] . ']', 'CM', false, false, 'draw-select');
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</fieldset>';
+		$sheel->template->templateregistry['showimpactvalues'] = $html;
+		echo $sheel->template->parse_template_phrases('showimpactvalues');
 		exit();
 	} else if ($sheel->GPC['do'] == 'build') {
 		die('001');
@@ -520,18 +584,13 @@ if (isset($sheel->GPC['do'])) {
 			set_cookie('tzoffset', $sheel->datetimes->fetch_timezone_offset($sheel->config['globalserverlocale_sitetimezone'], $sheel->GPC['ctz']));
 			set_cookie('timezone', $sheel->GPC['ctz']);
 		}
-	}
-	else if ($sheel->GPC['do'] == 'acpcheckusername')
-	{
+	} else if ($sheel->GPC['do'] == 'acpcheckusername') {
 		$sheel->template->templateregistry['error'] = '';
 		$response = '0';
-		if ($sheel->common->is_username_banned($sheel->GPC['username']))
-		{
+		if ($sheel->common->is_username_banned($sheel->GPC['username'])) {
 			$sheel->template->templateregistry['error'] = ((!empty($sheel->common->username_errors[0])) ? $sheel->common->username_errors[0] : '{_sorry_that_username_has_been_blocked}');
 			$response = '1';
-		}
-		else if (empty($sheel->GPC['username']) OR !isset($sheel->GPC['username']))
-		{
+		} else if (empty($sheel->GPC['username']) or !isset($sheel->GPC['username'])) {
 			$sheel->template->templateregistry['error'] = '{_please_enter_correct_username}';
 			$response = '1';
 		}
@@ -542,25 +601,20 @@ if (isset($sheel->GPC['do'])) {
 			WHERE username IN ('" . $sheel->db->escape_string($sheel->GPC['username']) . "')
 			LIMIT 1
 		", 0, null, __FILE__, __LINE__);
-		if ($sheel->db->num_rows($sqlusercheck) > 0)
-		{ // woops! change username for new user automatically.
+		if ($sheel->db->num_rows($sqlusercheck) > 0) { // woops! change username for new user automatically.
 			$sheel->template->templateregistry['error'] = '{_that_username_already_exists_in_our_system}';
 			$response = '1';
 		}
 		$html = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'error' => $html)));
-	}
-	else if ($sheel->GPC['do'] == 'acpcheckemail')
-	{
+	} else if ($sheel->GPC['do'] == 'acpcheckemail') {
 		$sheel->template->templateregistry['error'] = '';
 		$response = '0';
-		if (!isset($sheel->GPC['email']) OR empty($sheel->GPC['email']))
-		{
+		if (!isset($sheel->GPC['email']) or empty($sheel->GPC['email'])) {
 			$sheel->template->templateregistry['error'] = '{_please_enter_correct_email}';
 			$response = '1';
 		}
-		if (!$sheel->common->is_email_valid($sheel->GPC['email']))
-		{
+		if (!$sheel->common->is_email_valid($sheel->GPC['email'])) {
 			$sheel->template->templateregistry['error'] = '{_please_enter_correct_email}';
 			$response = '1';
 		}
@@ -571,8 +625,7 @@ if (isset($sheel->GPC['do'])) {
 			WHERE email IN ('" . $sheel->db->escape_string($sheel->GPC['email']) . "')
 			LIMIT 1
 		", 0, null, __FILE__, __LINE__);
-		if ($sheel->db->num_rows($sqlusercheck) > 0)
-		{ // woops! can't use same email!
+		if ($sheel->db->num_rows($sqlusercheck) > 0) { // woops! can't use same email!
 			$sheel->template->templateregistry['error'] = '{_that_email_address_already_exists_in_our_system}';
 			$response = '1';
 		}

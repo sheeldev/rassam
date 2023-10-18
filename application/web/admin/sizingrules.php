@@ -17,6 +17,7 @@ $sheel->template->meta['jsinclude'] = array(
 );
 $sheel->template->meta['cssinclude'] = array(
     'common',
+    'addition',
     'vendor' => array(
         'growl',
         'font-awesome',
@@ -41,12 +42,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
-            die('test');
+            //echo ($sheel->GPC['active_rules']);
+            echo ($sheel->GPC['form']['impactvalue_'.$sheel->GPC['active_rules']]);
+            echo ($sheel->GPC['valuelow_'.$sheel->GPC['active_rules']]);
+            echo ($sheel->GPC['valuehigh_'.$sheel->GPC['active_rules']]);
+            echo ($sheel->GPC['form']['uom_'.$sheel->GPC['active_rules']]);
+            $type = $sheel->GPC['type'];
+            if (is_array($type)) {
+                foreach ($type as $key => $value) {
+                    echo $value .'<BR>';
+                }
+                die('array');
+            }
+            else {
+                die('test');
+            }
+            
         }
 
-        $sheel->common_location->construct_country_pulldown($countryid, $geodata['country'], 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', false, false, '', 0, 'city', 'cityid'),
+        //$sheel->common_location->construct_country_pulldown($countryid, $geodata['country'], 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', false, false, '', 0, 'city', 'cityid'),
         $gender = array('Male' => '{_male}', 'Female' => '{_female}');
-        $form['gender'] = $sheel->construct_pulldown('gender', 'form[gender]', $gender, $staff['gender'], 'class="draw-select"');
+        $form['gender'] = $sheel->common_sizingrule->construct_gender_pulldown('Male', 'form[gender]',false, 'draw-select', 'type[]','type-wrapper',false);
+        $form['type'] = $sheel->common_sizingrule->construct_type_checkbox('Male', true);
+        $form['impact'] = $sheel->common_sizingrule->construct_impact_pulldown('', 'form[impact]',false, 'draw-select', 'form[impactvalue_1]','value-wrapper',false);
+        $form['impactvalue'] = $sheel->common_sizingrule->construct_impactvalue_pulldown('Fit', 'form[impactvalue_1]','', false, false, 'draw-select');
+        $form['uom'] = $sheel->common_sizingrule->construct_uom_pulldown('form[uom_1]','CM', false, false, 'draw-select');
         $regions = array();
         $sql = $sheel->db->query("
         SELECT regionid, region_" . $_SESSION['sheeldata']['user']['slng'] . " AS title

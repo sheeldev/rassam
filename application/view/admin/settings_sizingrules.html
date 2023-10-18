@@ -28,12 +28,11 @@
                         <input type="hidden" name="subcmd" value="add" />
                         <input type="hidden" name="do" value="save" />
                         <div class="draw-card" id="newsizingrule">
-        
                             <div class="draw-card__section">
                                 <div class="draw-grid draw-grid--no-outside-padding">
                                     <div class="draw-grid__cell">
                                         <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="code">{_code}</label>
+                                        <label>{_code}</label>
                                         <input class="draw-input with-add-on" size="30" type="text" name="code" id="code"  placeholder="">
                                         </div>
                                     </div>
@@ -41,7 +40,7 @@
                                 <div class="draw-grid draw-grid--no-outside-padding">
                                     <div class="draw-grid__cell">
                                         <div class="draw-input-wrapper">
-                                            <label class="draw-label" for="form_length">{_gender}</label>
+                                            <label>{_gender}</label>
                                             <div class="draw-select__wrapper draw-input--has-content">
                                                 {form[gender]}
                                             </div>
@@ -51,129 +50,148 @@
                                 <div class="draw-grid draw-grid--no-outside-padding">
                                     <div class="draw-grid__cell">
                                         <div class="draw-input-wrapper">
-                                            <label class="draw-label" for="form_length">{_length}</label>
-                                            <div class="draw-select__wrapper draw-input--has-content">
-                                                {form[duration_pulldown]}
+                                            <label>{_type}</label>
+                                            <div  id="type-wrapper">
+                                                {form[type]}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_measurement} {_code}</label>
+                                            <input class="draw-input with-add-on" size="30" type="text" name="mcode" id="mcode"  placeholder=""> 
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_measurement} {_name}</label>
+                                            <input class="draw-input with-add-on" size="30" type="text" name="mname" id="mname"  placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                             
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <input type="checkbox" name="isformula" id="isformula" value="1"> {_isformula}
+                                            <input class="draw-input with-add-on" size="50" type="text" name="mformula" id="mformula"  placeholder="Enter Formula">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_impact}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content">
+                                                {form[impact]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-20-0-20-0"></div>
+                        
+                                <input type="hidden" id="active_rules" name="active_rules" value="1" />
+                                <div id="rule-1">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc">Rule #1: </span></legend>
+                                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                                <div class="draw-grid__cell">
+                                                    <div class="draw-input-wrapper">
+                                                        <label>{_rank}</label>
+                                                        <input class="draw-input with-add-on" size="2" type="text" value="0" name="rank_1" id="rank_1"  placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="draw-grid__cell">
+                                                    <label>{_impact} {_value}</label>
+                                                    <div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
+                                                        <div  id="value-wrapper">
+                                                            {form[impactvalue]}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="draw-grid__cell">
+                                                    <div class="draw-input-wrapper">
+                                                        <label>{_value_low}</label>
+                                                        <input class="draw-input with-add-on" size="50" type="text" value="0" name="valuelow_1" id="valuelow_1"  placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="draw-grid__cell">
+                                                    <div class="draw-input-wrapper">
+                                                        <label>{_value_high}</label>
+                                                        <input class="draw-input with-add-on" size="50" type="text" value="0" name="valuehigh_1" id="valuehigh_1"  placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="draw-grid__cell">
+                                                    <label>{_uom}</label>
+                                                    <div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
+                                                        <div>
+                                                            {form[uom]}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                    </fieldset>
+                                </div>
+                                <div id="rule-2" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-3" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-4" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-5" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-6" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-7" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-8" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-9" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                                <div id="rule-10" class="hide">
+                                    <fieldset class="mb-20">
+                                        <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                    </fieldset>
+                                </div>
+                               
+                                <div><button type="button" class="btn btn-primary" onclick="add_rule('form[impact]')"><span>{_add_rule}</span></button>&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="remove_rule('form[impact]')" class="btn btn-secondary btn-small">{_remove_rule}</a></div>
 
-                            
-                             <div class="draw-card__section">
-                                <label class="draw-label" for="form_description">{_description}</label>
-                                <loop name="languages_plan">
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <input class="draw-input with-add-on" size="30" type="text" name="form[description_{languagecode}]" id="form_description_{languagecode}" value="{form[description_{languagecode}]}" placeholder="{language}" dir="{form[textdirection_{languagecode}]}"><span class="add-on-plain after fr type--subdued fr-textinput-icon">{form[flag_{languagecode}]}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                </loop name="languages_plan">
-                             </div>
-        
-                             <div class="draw-card__section">
-        
-                             <div class="draw-card__section">
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="form_cost">{_cost}</label>
-                                        <input class="draw-input" size="30" type="text" name="form[cost]" id="form_cost" value="{form[cost]}" placeholder="0.00">
-                                        </div>
-                                    </div>
-        
-                                </div>
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="form_length">{_length}</label>
-                                            <div class="draw-select__wrapper draw-input--has-content">
-                                                {form[duration_pulldown]}
-                                            </div>
-                                        </div>
-                                    </div>
-        
-                                </div>
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="form_length">{_unit}</label>
-                                            <div class="draw-select__wrapper draw-input--has-content">
-                                                {form[unit_pulldown]}
-                                            </div>
-                                         </div>
-                                         <if condition="isset($sheel->config['eway_subscriptions']) AND $sheel->config['eway_subscriptions'] AND $sheel->config['eway_active']"><p class="type--subdued st">If you offer recurring memberships via eWay leave the length as <strong>1</strong> and the unit on <strong>month</strong> or <strong>year</strong>.</p></if>
-                                    </div>
-        
+                            </div>
+                            <div class="draw-grid draw-grid--right-aligned">
+                                <div class="draw-grid__cell draw-grid__cell--no-flex">
+                                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                                 </div>
                             </div>
-        
-                             <div class="draw-card__section">
-                                 <div class="draw-grid draw-grid--no-outside-padding">
-                                     <div class="draw-grid__cell">
-                                         <div class="draw-input-wrapper">
-                                             <label class="draw-label" for="form_active">{_plan_is_active}</label>
-                                             <input type="checkbox" name="form[active]" id="form_active" value="1" {form[active]}> {_yes}
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                            <label class="draw-label" for="form_canremove">{_can_remove}</label>
-                                            <input type="checkbox" name="form[canremove]" id="form_active" value="1" {form[canremove]}> {_yes}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="form_visible">{_plan_is_visible_in}</label>
-                                            <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[visible_pulldown]}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="form_icon">{_subscription_plan_icon}</label>
-                                        <div class="type--subdued sb">Path: /application/uploads/attachments/plan/</div>
-                                        <div class="draw-select__wrapper draw-input--has-content">
-                                            {form[icon_pulldown]}
-                                        </div>
-                                        </div>
-        
-                                        <div class="styled-file-input fl sr st">
-                                            <div class="btn"> <span>{_upload} Badge <img src="{imgcdn}v5/ico_working.gif" border="0" alt="" id="uploading" style="display:none" /></span><input type="file" name="badge" class="js-no-dirty" id="uploader"></div>
-                                        </div>
-                                    </div>
-        
-                                </div>
-                                <div class="draw-grid draw-grid--no-outside-padding">
-                                    <div class="draw-grid__cell">
-                                        <div class="draw-input-wrapper">
-                                        <label class="draw-label" for="form_icon">{_display_order}</label>
-                                        <input type="text" name="form[sort]" size="10" value="{form[sort]}" class="draw-input" />
-                                        </div>
-                                    </div>
-        
-                                </div>
-                             </div>
-        
-                            
-        
                         </div>
-                        <div class="draw-grid draw-grid--right-aligned">
-                            <div class="draw-grid__cell draw-grid__cell--no-flex">
-                                <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
-                            </div>
-                        </div>
-                        </form>
+                    </form>
                 </div>
             </div>
 
