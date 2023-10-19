@@ -27,7 +27,7 @@ class common_sizingrule extends common
 		$html .= '</select>';
 		return $html;
 	}
-	function construct_type_checkbox($gender, $allselected = false)
+	function construct_type_checkbox($gender, $allselected = false, $returnid = false)
 	{
 		if ($gender == 'Female') {
 			$gender = 'F';
@@ -43,7 +43,12 @@ class common_sizingrule extends common
 		", 0, null, __FILE__, __LINE__);
 		if ($this->sheel->db->num_rows($sql) > 0) {
 			while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
-				$html .= '<input type="checkbox" name="type[]" id="type" value="' . $res['id'] . '" ';
+				if ($returnid) {
+					$html .= '<input type="checkbox" name="type[]" id="type" value="' . $res['id'] . '" ';
+				}
+				else {
+					$html .= '<input type="checkbox" name="type[]" id="type" value="' . $res['code'] . '" ';
+				}
 				$html .= $allselected ? 'checked="checked"' : '';
 				$html .= '>' . $res['code'];
 				$html .= '<br>';

@@ -1,3 +1,31 @@
+/* function submit_sizingrule_form() {
+	haserror = false;
+	if (jQuery('#code').val() == '') {
+		haserror = true;
+		jQuery('#code').addClass('error');
+		jQuery.growl.error({ title: phrase['_error'], message: 'Please enter a code' });
+	}
+	if (jQuery('#mcode').val() == '') {
+		haserror = true;
+		jQuery('#mcode').addClass('error');
+		jQuery.growl.error({ title: phrase['_error'], message: 'Please enter a valid Measurement Code' });
+	}
+	if (jQuery('#mname').val() == '') {
+		haserror = true;
+		jQuery('#mname').addClass('error');
+		jQuery.growl.error({ title: phrase['_error'], message: 'Please enter a valid Measurement Name' });
+	}
+	if (jQuery('#priority').val() == 0) {
+		haserror = true;
+		jQuery('#priority').addClass('error');
+		jQuery.growl.error({ title: phrase['_error'], message: 'Priority must be greater than 0' });
+	}
+	if (!haserror) {
+		return true;
+	}
+	return false;
+} (jQuery); */
+
 function print_types(fieldname, genderfieldname, divtypeid) {
 	var ajaxRequest;
 	try {
@@ -72,9 +100,9 @@ function add_rule(fieldname) {
 	var ajaxRequest;
 	var rulenumber = parseInt(fetch_js_object('active_rules').value, 10) + 1;
 	var divruleid = "rule-" + rulenumber;
-	jQuery('#'+divruleid).removeClass('hide');
+	jQuery('#' + divruleid).removeClass('hide');
 	if (rulenumber > 10) {
-		jQuery.growl.error({title: phrase['_error'], message: 'Maximum 10 Rules allowed'});
+		jQuery.growl.error({ title: phrase['_error'], message: 'Maximum 10 Rules allowed' });
 	}
 	else {
 		try {
@@ -106,14 +134,14 @@ function add_rule(fieldname) {
 		ajaxRequest.open('GET', iL['AJAXURL'] + '?do=showrule' + querystring, true);
 		ajaxRequest.send(null);
 	}
-	
+
 }
 
 function remove_rule(fieldname) {
 	var rulenumber = parseInt(fetch_js_object('active_rules').value, 10);
 	var divruleid = "rule-" + rulenumber;
 	if (rulenumber == 1) {
-		jQuery.growl.error({title: phrase['_error'], message: 'Cannot Remove First Rule'});
+		jQuery.growl.error({ title: phrase['_error'], message: 'Cannot Remove First Rule' });
 	}
 	else {
 		if (rulenumber - 1 == 1) {
@@ -143,7 +171,7 @@ function remove_rule(fieldname) {
 		}
 		ajaxRequest.open('GET', iL['AJAXURL'] + '?do=showrule&action=reset', true);
 		ajaxRequest.send(null);
-		jQuery('#'+divruleid).addClass('hide');
+		jQuery('#' + divruleid).addClass('hide');
 		fetch_js_object('active_rules').value = rulenumber - 1;
 
 	}

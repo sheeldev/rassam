@@ -42,31 +42,49 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
-            //echo ($sheel->GPC['active_rules']);
-            echo ($sheel->GPC['form']['impactvalue_'.$sheel->GPC['active_rules']]);
-            echo ($sheel->GPC['valuelow_'.$sheel->GPC['active_rules']]);
-            echo ($sheel->GPC['valuehigh_'.$sheel->GPC['active_rules']]);
-            echo ($sheel->GPC['form']['uom_'.$sheel->GPC['active_rules']]);
             $type = $sheel->GPC['type'];
+            $rulescount = $sheel->GPC['active_rules'];
             if (is_array($type)) {
                 foreach ($type as $key => $value) {
-                    echo $value .'<BR>';
+                    for ($x = 1; $x <= $rulescount; $x++) {
+                        $sheel->db->query("
+                            INSERT INTO " . DB_PREFIX . "size_rules
+                            (id, code, iscalculated, mcformula, mccode, mcname, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, `rank`, priority, active)
+                            VALUES
+                            (NULL,
+                            '" . $sheel->db->escape_string($sheel->GPC['code']) . "',
+                            '" . $sheel->GPC['isformula'] . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['mformula']) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['mcode']) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['mname']) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['valuelow_' . $x]) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['valuehigh_' . $x]) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['form']['uom_' . $x]) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['form']['gender']) . "',
+                            '" . $sheel->db->escape_string($value) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['form']['impact']) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['form']['impactvalue_' . $x]) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['rank_' . $x]) . "',
+                            '" . intval($sheel->GPC['priority']) . "',
+                            '1')
+                        ");
+                        $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'New size rule line added', 'A new size rule line was added to the portal');
+                        
+                    }
                 }
-                die('array');
+            } else {
+
             }
-            else {
-                die('test');
-            }
-            
+            refresh(HTTPS_SERVER_ADMIN . 'settings/sizingrules/');
         }
 
         //$sheel->common_location->construct_country_pulldown($countryid, $geodata['country'], 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', false, false, '', 0, 'city', 'cityid'),
         $gender = array('Male' => '{_male}', 'Female' => '{_female}');
-        $form['gender'] = $sheel->common_sizingrule->construct_gender_pulldown('Male', 'form[gender]',false, 'draw-select', 'type[]','type-wrapper',false);
+        $form['gender'] = $sheel->common_sizingrule->construct_gender_pulldown('Male', 'form[gender]', false, 'draw-select', 'type[]', 'type-wrapper', false);
         $form['type'] = $sheel->common_sizingrule->construct_type_checkbox('Male', true);
-        $form['impact'] = $sheel->common_sizingrule->construct_impact_pulldown('', 'form[impact]',false, 'draw-select', 'form[impactvalue_1]','value-wrapper',false);
-        $form['impactvalue'] = $sheel->common_sizingrule->construct_impactvalue_pulldown('Fit', 'form[impactvalue_1]','', false, false, 'draw-select');
-        $form['uom'] = $sheel->common_sizingrule->construct_uom_pulldown('form[uom_1]','CM', false, false, 'draw-select');
+        $form['impact'] = $sheel->common_sizingrule->construct_impact_pulldown('', 'form[impact]', false, 'draw-select', 'form[impactvalue_1]', 'value-wrapper', false);
+        $form['impactvalue'] = $sheel->common_sizingrule->construct_impactvalue_pulldown('Fit', 'form[impactvalue_1]', '', false, false, 'draw-select');
+        $form['uom'] = $sheel->common_sizingrule->construct_uom_pulldown('form[uom_1]', 'CM', false, false, 'draw-select');
         $regions = array();
         $sql = $sheel->db->query("
         SELECT regionid, region_" . $_SESSION['sheeldata']['user']['slng'] . " AS title
