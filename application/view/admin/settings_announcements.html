@@ -161,7 +161,8 @@
 				jQuery(document).ready(function() {
 					jQuery('#submitupload').bind("click", function()
 					{
-					<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">var imgval = jQuery('#uploadimage').val();
+					<if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+						var imgval = jQuery('#uploadimage').val();
 						if (imgval == '')
 						{
 							jQuery.growl.error({title: '{_error}', message: 'The announcement image file is missing', duration: 5000, size: 'large', fixed: true});

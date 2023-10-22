@@ -75,7 +75,7 @@ class common_sizingrule extends common
 		$html .= '</select>';
 		return $html;
 	}
-	function construct_impactvalue_pulldown($impact = 'Fit', $fieldname = 'impactvalue', $defaultvalue='', $disabled = false, $showpleaseselect = false, $extracss = '')
+	function construct_impactvalue_pulldown($impact = 'Fit', $fieldname = 'impactvalue', $defaultvalue='', $disabled = false, $showpleaseselect = false, $extracss = '', $returnarray = false)
 	{
 		$defaulcompany = '';
 		$searchcondition = '$orderby=code asc';
@@ -151,7 +151,12 @@ class common_sizingrule extends common
 			$html .= '>' . $value . '</option>';
 		}
 		$html .= '</select>';
-		return $html;
+		if ($returnarray) {
+			return $result;
+		}
+		else {
+			return $html;
+		}
 	}
 
 	function construct_uom_pulldown($fieldname = 'uom', $defaultvalue='', $disabled = false, $showpleaseselect = false, $extracss = '')

@@ -37,8 +37,59 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->cache->store("sidenav_settings", $sidenav);
     }
     if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-
+        $sheel->db->query("
+        DELETE FROM " . DB_PREFIX . "size_rules
+        WHERE code = '" . $sheel->GPC['code'] . "' AND gender = '" . $sheel->GPC['gender'] . "'
+        ");
+        $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizerule}';
+        die(
+            json_encode(
+                array(
+                    'response' => '1',
+                    'message' => $sheel->template->parse_template_phrases('message')
+                )
+            )
+        );
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Rules - Update</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Update';
+        $areanav = 'settings_sizingrules';
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/">Sizing Rules</a> / </span>' . $sheel->GPC['code'];
+
+        if (isset($sheel->GPC['gender']) and isset($sheel->GPC['impact']) and $sheel->GPC['gender'] != '' and $sheel->GPC['impact'] != '') {
+            if ($sheel->GPC['gender'] == 'Male') {
+                $where = "gender = 'Male'";
+            } else if ($sheel->GPC['gender'] == 'Female') {
+                $where = "gender = 'Female'";
+            }
+    
+            $sql = $sheel->db->query("
+                SELECT *
+                FROM " . DB_PREFIX . "size_rules
+                WHERE code ='".  $sheel->GPC['code'] . "' AND $where
+                ORDER BY  type, mvaluelow 
+            ");
+            $count = 0;
+            $impact=$sheel->GPC['impact'];
+            $impactvaluearray = $sheel->common_sizingrule->construct_impactvalue_pulldown($impact, 'form[impactvalue]', '', false, false, 'draw-select', true);
+            if ($sheel->db->num_rows($sql) > 0) {
+                while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) { 
+                    $count++;    
+                    if ($sheel->db->num_rows($sqlsetup) == 0) {
+                        $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender='.$row['gender'].'">{_set_up}</a>';
+                    } else {
+                        $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender='.$row['gender'].'">{_update}</a>';
+                    }
+                    $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_'.$count.']', 'form[impactvalue_'.$count.']', $impactvaluearray, $row['impactvalue'], 'class="draw-select"');
+                    $row['rulenumber'] = $count;
+                    $rules_rows[] = $row;
+                }
+            }
+        }
+        else {
+
+        }
+
 
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
@@ -69,7 +120,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                             '1')
                         ");
                         $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'New size rule line added', 'A new size rule line was added to the portal');
-                        
+
                     }
                 }
             } else {
@@ -85,23 +136,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['impact'] = $sheel->common_sizingrule->construct_impact_pulldown('', 'form[impact]', false, 'draw-select', 'form[impactvalue_1]', 'value-wrapper', false);
         $form['impactvalue'] = $sheel->common_sizingrule->construct_impactvalue_pulldown('Fit', 'form[impactvalue_1]', '', false, false, 'draw-select');
         $form['uom'] = $sheel->common_sizingrule->construct_uom_pulldown('form[uom_1]', 'CM', false, false, 'draw-select');
-        $regions = array();
-        $sql = $sheel->db->query("
-        SELECT regionid, region_" . $_SESSION['sheeldata']['user']['slng'] . " AS title
-        FROM " . DB_PREFIX . "locations_regions
-    ");
-        if ($sheel->db->num_rows($sql) > 0) {
-            while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-                $row['id'] = $row['regionid'];
-                $row['traffic'] = '0';
-                $row['customers'] = '0';
-
-                $region_options[$row['regionid']] = o($row['title']);
-                $regions[] = $row;
-            }
-        }
-
-
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Rules - Add</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Add';
         $areanav = 'settings_sizingrules';
@@ -120,10 +154,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $sql = $sheel->db->query("
-            SELECT distinct code,  mccode, mcname, gender
+            SELECT distinct code,  mccode, mcname, gender, priority, impact, iscalculated, mcformula
             FROM " . DB_PREFIX . "size_rules
             WHERE $where
-            ORDER BY code
+            ORDER BY  priority ASC
         ");
         $count = 0;
         if ($sheel->db->num_rows($sql) > 0) {
@@ -133,7 +167,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     SELECT COUNT(*) AS totalrules
                     FROM " . DB_PREFIX . "size_rules
                     WHERE code = '" . $row['code'] . "'
-                        AND active = '1'
+                        AND active = '1' AND $where
                 ");
                 if ($sheel->db->num_rows($sqla) > 0) {
                     $resactive = $sheel->db->fetch_array($sqla, DB_ASSOC);
@@ -146,7 +180,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     SELECT COUNT(distinct type) AS totaltypes
                     FROM " . DB_PREFIX . "size_rules
                     WHERE code = '" . $row['code'] . "'
-                        AND active = '1'
+                        AND active = '1' AND $where
                 ");
                 if ($sheel->db->num_rows($sqla) > 0) {
                     $resactive = $sheel->db->fetch_array($sqla, DB_ASSOC);
@@ -157,13 +191,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sqlsetup = $sheel->db->query("
                     SELECT *
                     FROM " . DB_PREFIX . "size_rules
-                    WHERE code = '" . $row['code'] . "'
+                    WHERE code = '" . $row['code'] . "' AND $where
                 ");
                 if ($sheel->db->num_rows($sqlsetup) == 0) {
-                    $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/">{_set_up}</a>';
+                    $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender='.$row['gender'].'&impact='.$row['impact'].'">{_set_up}</a>';
                 } else {
-                    $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/">{_update}</a>';
+                    $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender='.$row['gender'].'&impact='.$row['impact'].'">{_update}</a>';
                 }
+                $row['iscalculated'] = ($row['iscalculated'] == '1') ? 'Yes' : 'No';
+                $row['mcformula'] = ($row['mcformula'] == '0') ? '-' : $row['mcformula'];
                 $rules_rows[] = $row;
             }
         }

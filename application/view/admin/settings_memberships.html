@@ -3,7 +3,6 @@
     Page();
     </script>
     <div id="membership-index" refresh="membership-index" class="page has-contextual-help">
-    
         <div class="header-row">
             <header class="header">
             <h1 class="header__main">
@@ -15,9 +14,6 @@
     
             </header>
         </div>
-    
-    
-    
         <if condition="!isset($sheel->GPC['subcmd']) OR (isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update' AND isset($sheel->GPC['type']) AND $sheel->GPC['type'] == 'plan')"><div class="section login-services">
             <div class="layout-content">
                 <div class="layout-content__sidebar layout-content__first">

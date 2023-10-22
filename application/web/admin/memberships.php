@@ -67,7 +67,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     )
                 )
             );
-            exit();
         }
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
         if (isset($sheel->GPC['type']) and $sheel->GPC['type'] == 'plan') {
