@@ -868,6 +868,7 @@ input,
 fieldset {
     border: 0;
     margin: 0;
+    padding: 0 0 20px 0
 }
 html {
     font-size: 62.5%
@@ -16965,6 +16966,12 @@ input.msg-overlay-list-bubble-search__search-typeahead-input {
 	background-image: url(/application/assets/images/v5/ico_zoom.jpg);
 	background-position: 8px 9px;
 	background-repeat: no-repeat;
+}
+
+input.loading {
+	background-image: url(/application/assets/images/v5/ico_working.gif);
+	background-position: 8px 9px;
+	background-repeat: no-repeat;  
 }
 .a11y-text {
 	border: 0 !important;

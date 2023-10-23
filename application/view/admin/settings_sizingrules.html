@@ -231,8 +231,8 @@
                                             <td>{type}</td>
                                             <td>{gender}</td>
                                             <td>{mccode}</td>
-                                            <td nowrap="nowrap"><input class="draw-input with-add-on" size="50" type="text" value="{mvaluelow}" name="valuelow_{rulenumber}" id="valuelow_{rulenumber}"></td>
-                                            <td><input class="draw-input with-add-on" size="50" type="text" value="{mvaluehigh}" name="valuehigh_{rulenumber}" id="valuehigh_{rulenumber}" ></td>
+                                            <td nowrap="nowrap"><input class="draw-input with-add-on" size="50" type="text" value="{mvaluelow}" name="valuelow_{rulenumber}" id="valuelow_{rulenumber}"  onfocus="focus_rule_line('valuelow_{rulenumber}')" onchange="update_rule_line('valuelow_{rulenumber}','mvaluelow',{id},{rulenumber})"></td>
+                                            <td><input class="draw-input with-add-on" size="50" type="text" value="{mvaluehigh}" name="valuehigh_{rulenumber}" id="valuehigh_{rulenumber}" onfocus="focus_rule_line('valuehigh_{rulenumber}')" onchange="update_rule_line('valuehigh_{rulenumber}','mvaluehigh',{id},{rulenumber})"></td>
                                             <td>{uom}</td>
                                             <td>{impact}</td>
                                             <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
@@ -240,8 +240,8 @@
                                                     {impactvaluefinal}
                                                 </div>
                                             </div></td>
-                                            <td><input class="draw-input with-add-on" size="2" type="number" value="{rank}" name="rank_{rulenumber}" id="rank_{rulenumber}"></td>
-                                            <td></td>
+                                            <td><input class="draw-input with-add-on" size="2" type="number" value="{rank}" name="rank_{rulenumber}" id="rank_{rulenumber}" onfocus="focus_rule_line('rank_{rulenumber}')" onchange="update_rule_line('rank_{rulenumber}','rank',{id},{rulenumber})"></td>
+                                            <td><div id="savingstatus_{rulenumber}" class="mw-40"></div></td>
                                         </tr>
                                         </loop name="rules_rows">
                                     </tbody>

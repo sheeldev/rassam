@@ -16967,6 +16967,12 @@ input.msg-overlay-list-bubble-search__search-typeahead-input {
 	background-position: 8px 9px;
 	background-repeat: no-repeat;
 }
+
+input.loading {
+	background-image: url({imgcdn}v5/ico_working.gif);
+	background-position: 8px 9px;
+	background-repeat: no-repeat;  
+}
 .a11y-text {
 	border: 0 !important;
 	clip: rect(1px, 1px, 1px, 1px);

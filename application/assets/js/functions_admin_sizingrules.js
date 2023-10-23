@@ -1,4 +1,4 @@
-/* function submit_sizingrule_form() {
+function submit_sizingrule_form() {
 	haserror = false;
 	if (jQuery('#code').val() == '') {
 		haserror = true;
@@ -24,8 +24,55 @@
 		return true;
 	}
 	return false;
-} (jQuery); */
+} (jQuery);
 
+function update_rule_line(fieldname, dbname, recordid,rulenumber) {
+	var ajaxRequest;
+	var field = fetch_js_object(fieldname);
+	var originalvalue = field.value;
+	field.value = "";
+	fetch_js_object("savingstatus_"+rulenumber).innerHTML = "Saving..."
+	jQuery('#' + fieldname).addClass('loading');
+	try {
+		ajaxRequest = new XMLHttpRequest();
+	}
+	catch (e) {
+		try {
+			ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e) {
+			try {
+				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			catch (e) {
+				return false;
+			}
+		}
+	}
+	ajaxRequest.onreadystatechange = function () {
+		if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
+			var result = JSON.parse(ajaxRequest.responseText);
+			if (result.response == '1') {
+				jQuery('#' + fieldname).removeClass('loading');
+				fetch_js_object("savingstatus_"+rulenumber).innerHTML = "Error"
+				field.value = result.error;
+			}
+			else{
+				jQuery('#' + fieldname).removeClass('loading');
+				fetch_js_object("savingstatus_"+rulenumber).innerHTML = "Saved"
+				field.value = result.value;
+			}
+		}
+	}
+	var querystring = "&recordid=" + recordid + "&fieldname=" + dbname + "&newvalue=" + originalvalue + "&token=" + iL['TOKEN'];
+	ajaxRequest.open('GET', iL['AJAXURL'] + '?do=updateruleline' + querystring, true);
+	ajaxRequest.send(null);
+}
+
+function focus_rule_line(fieldname) {
+	var field = fetch_js_object(fieldname);
+	field.select();
+}
 function print_types(fieldname, genderfieldname, divtypeid) {
 	var ajaxRequest;
 	try {

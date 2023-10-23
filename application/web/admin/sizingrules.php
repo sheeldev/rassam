@@ -80,7 +80,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     } else {
                         $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender='.$row['gender'].'">{_update}</a>';
                     }
-                    $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_'.$count.']', 'form[impactvalue_'.$count.']', $impactvaluearray, $row['impactvalue'], 'class="draw-select"');
+                    $extra = 'class="draw-select" onchange="update_rule_line(\'form[impactvalue_'.$count.']\',\'impactvalue\','.$row['id'].','.$count.')"';
+                    $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_'.$count.']', 'form[impactvalue_'.$count.']', $impactvaluearray, $row['impactvalue'], $extra);
                     $row['rulenumber'] = $count;
                     $rules_rows[] = $row;
                 }

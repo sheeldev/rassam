@@ -26,6 +26,10 @@ $methods = array(
 	'showstates' => array('skipsession' => true),
 	'showcities' => array('skipsession' => true),
 	'heropicture' => array('skipsession' => true),
+	'updateruleline' => array('skipsession' => true),
+	'showtypes' => array('skipsession' => true),
+	'showimpactvalues' => array('skipsession' => true),
+	'showrule' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -320,6 +324,32 @@ if (isset($sheel->GPC['do'])) {
 		}
 		echo '';
 		exit();
+	} else if ($sheel->GPC['do'] == 'updateruleline') {
+		if (isset($sheel->GPC['recordid']) and !empty($sheel->GPC['recordid']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname']) and isset($sheel->GPC['newvalue']) and !empty($sheel->GPC['newvalue'])) {
+			$sheel->template->templateregistry['error'] = '';
+			$response = '0';
+			$sheel->db->query("
+					UPDATE " . DB_PREFIX . "size_rules
+					SET `" . $sheel->GPC['fieldname'] . "` = '" . $sheel->GPC['newvalue'] . "'
+					WHERE id = '" . $sheel->GPC['recordid'] . "'
+					LIMIT 1
+					", 0, null, __FILE__, __LINE__);
+			$sql = $sheel->db->query("
+					SELECT `" . $sheel->GPC['fieldname'] . "`
+					FROM " . DB_PREFIX . "size_rules
+					WHERE id = '" . $sheel->GPC['recordid'] . "'
+					LIMIT 1
+					");
+			if ($sheel->db->num_rows($sql) > 0) {
+				$res = $sheel->db->fetch_array($sql, DB_ASSOC);
+				$value = $res[$sheel->GPC['fieldname']];
+			}
+		} else {
+			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$response = '1';
+		}
+		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
 	} else if ($sheel->GPC['do'] == 'showtypes') {
 		if (isset($sheel->GPC['gendername']) and !empty($sheel->GPC['gendername']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname'])) {
 			$gender = $sheel->GPC['gendername'];
@@ -342,7 +372,7 @@ if (isset($sheel->GPC['do'])) {
 		exit();
 	} else if ($sheel->GPC['do'] == 'showrule') {
 		if (isset($sheel->GPC['action']) and $sheel->GPC['action'] == 'reset') {
-			$html = '<fieldset class="mb-20"><legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="'. $sheel->config['imgcdn'].'v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend></fieldset>';
+			$html = '<fieldset class="mb-20"><legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="' . $sheel->config['imgcdn'] . 'v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend></fieldset>';
 			$sheel->template->templateregistry['showimpactvalues'] = $html;
 			echo $sheel->template->parse_template_phrases('showimpactvalues');
 			exit();
