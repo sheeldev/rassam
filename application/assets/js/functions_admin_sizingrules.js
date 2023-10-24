@@ -26,12 +26,70 @@ function submit_sizingrule_form() {
 	return false;
 } (jQuery);
 
-function update_rule_line(fieldname, dbname, recordid,rulenumber) {
+function toggle_add() {
+	if (fetch_js_object('addtype').classList.contains('hide')) {
+		jQuery('#addtype').removeClass('hide');
+	}
+	else {
+		jQuery('#addtype').addClass('hide');
+	}
+	
+}
+function add_type_line(endpoint) {
+	fetch_js_object("savingstatus").innerHTML = "Saving..."
+	var needsize = (fetch_js_object('needsize').checked)?'1':'0';
+	var querystring = "&code=" + fetch_js_object('code').value + "&needsize=" + needsize + "&gender=" + fetch_js_object('form[gender]').value + "&token=" + iL['TOKEN'];
+	try {
+		ajaxRequest = new XMLHttpRequest();
+	}
+	catch (e) {
+		try {
+			ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e) {
+			try {
+				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			catch (e) {
+				return false;
+			}
+		}
+	}
+	ajaxRequest.onreadystatechange = function () {
+		if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
+			var result = JSON.parse(ajaxRequest.responseText);
+			if (result.response == '1') {
+				fetch_js_object("savingstatus").innerHTML = "Error";
+			}
+			else{
+				fetch_js_object("savingstatus").innerHTML = "Saved.";
+				location.replace(endpoint)
+			}
+		}
+	}
+	ajaxRequest.open('GET', iL['AJAXURL'] + '?do=addtypeline' + querystring, true);
+	ajaxRequest.send(null);
+}
+function update_type_line(fieldname, dbname, recordid) {
 	var ajaxRequest;
 	var field = fetch_js_object(fieldname);
-	var originalvalue = field.value;
-	field.value = "";
-	fetch_js_object("savingstatus_"+rulenumber).innerHTML = "Saving..."
+	var originalvalue = '';
+	if (field.type == 'checkbox') {
+		if (field.checked) {
+			originalvalue = '1';
+		}
+		else {
+			originalvalue = '0';
+		}
+	}
+	else {
+		originalvalue = field.value;
+	}
+	if (field.type == 'text') {
+		field.value = "";
+	}
+	
+	fetch_js_object("savingstatus").innerHTML = "Saving..."
 	jQuery('#' + fieldname).addClass('loading');
 	try {
 		ajaxRequest = new XMLHttpRequest();
@@ -54,12 +112,55 @@ function update_rule_line(fieldname, dbname, recordid,rulenumber) {
 			var result = JSON.parse(ajaxRequest.responseText);
 			if (result.response == '1') {
 				jQuery('#' + fieldname).removeClass('loading');
-				fetch_js_object("savingstatus_"+rulenumber).innerHTML = "Error"
+				fetch_js_object("savingstatus").innerHTML = "Error";
 				field.value = result.error;
 			}
 			else{
 				jQuery('#' + fieldname).removeClass('loading');
-				fetch_js_object("savingstatus_"+rulenumber).innerHTML = "Saved"
+				fetch_js_object("savingstatus").innerHTML = "Saved";
+				field.value = result.value;
+			}
+		}
+	}
+	var querystring = "&recordid=" + recordid + "&fieldname=" + dbname + "&newvalue=" + originalvalue + "&token=" + iL['TOKEN'];
+	ajaxRequest.open('GET', iL['AJAXURL'] + '?do=updatetypeline' + querystring, true);
+	ajaxRequest.send(null);
+}
+
+function update_rule_line(fieldname, dbname, recordid) {
+	var ajaxRequest;
+	var field = fetch_js_object(fieldname);
+	var originalvalue = field.value;
+	field.value = "";
+	fetch_js_object("savingstatus").innerHTML = "Saving..."
+	jQuery('#' + fieldname).addClass('loading');
+	try {
+		ajaxRequest = new XMLHttpRequest();
+	}
+	catch (e) {
+		try {
+			ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e) {
+			try {
+				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			catch (e) {
+				return false;
+			}
+		}
+	}
+	ajaxRequest.onreadystatechange = function () {
+		if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
+			var result = JSON.parse(ajaxRequest.responseText);
+			if (result.response == '1') {
+				jQuery('#' + fieldname).removeClass('loading');
+				fetch_js_object("savingstatus").innerHTML = "Error";
+				field.value = result.error;
+			}
+			else{
+				jQuery('#' + fieldname).removeClass('loading');
+				fetch_js_object("savingstatus").innerHTML = "Saved";
 				field.value = result.value;
 			}
 		}
@@ -67,11 +168,6 @@ function update_rule_line(fieldname, dbname, recordid,rulenumber) {
 	var querystring = "&recordid=" + recordid + "&fieldname=" + dbname + "&newvalue=" + originalvalue + "&token=" + iL['TOKEN'];
 	ajaxRequest.open('GET', iL['AJAXURL'] + '?do=updateruleline' + querystring, true);
 	ajaxRequest.send(null);
-}
-
-function focus_rule_line(fieldname) {
-	var field = fetch_js_object(fieldname);
-	field.select();
 }
 function print_types(fieldname, genderfieldname, divtypeid) {
 	var ajaxRequest;
@@ -174,6 +270,7 @@ function add_rule(fieldname) {
 				ajaxDisplay.innerHTML = ajaxRequest.responseText;
 			}
 		}
+		fetch_js_object('impactdisabled').value = fetch_js_object(fieldname).value;
 		fetch_js_object(fieldname).disabled = true;
 		fetch_js_object('active_rules').value = rulenumber;
 		var impactname = fetch_js_object(fieldname).options[fetch_js_object(fieldname).selectedIndex].value;
@@ -193,6 +290,7 @@ function remove_rule(fieldname) {
 	else {
 		if (rulenumber - 1 == 1) {
 			fetch_js_object(fieldname).disabled = false;
+			fetch_js_object('impactdisabled').value = '';
 		}
 		try {
 			ajaxRequest = new XMLHttpRequest();

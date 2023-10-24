@@ -154,6 +154,11 @@ var current_container_iframe = null;
 var current_container = null;
 var current_container_w = null;
 
+function focus_field(fieldname) {
+	var field = fetch_js_object(fieldname);
+	field.select();
+}
+
 /**
 * Mobile helper functions
 */

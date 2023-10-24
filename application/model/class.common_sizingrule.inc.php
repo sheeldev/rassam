@@ -42,15 +42,18 @@ class common_sizingrule extends common
 			    AND needsize = '1'
 		", 0, null, __FILE__, __LINE__);
 		if ($this->sheel->db->num_rows($sql) > 0) {
+			
 			while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+				$html .= '<div class="draw-input-wrapper draw-input-wrapper--inline">';
 				if ($returnid) {
-					$html .= '<input type="checkbox" name="type[]" id="type" value="' . $res['id'] . '" ';
+					$html .= '<input type="checkbox" name="type[]" id="type" class="draw-checkbox" value="' . $res['id'] . '" ';
 				}
 				else {
-					$html .= '<input type="checkbox" name="type[]" id="type" value="' . $res['code'] . '" ';
+					$html .= '<input type="checkbox" name="type[]" id="type" class="draw-checkbox" value="' . $res['code'] . '" ';
 				}
 				$html .= $allselected ? 'checked="checked"' : '';
-				$html .= '>' . $res['code'];
+				$html .= '> ' . $res['code'];
+				$html .= '<span class="draw-checkbox--styled"></span></div>';
 				$html .= '<br>';
 			}
 		}

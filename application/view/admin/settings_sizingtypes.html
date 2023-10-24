@@ -1,0 +1,92 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="sizingrule-index" refresh="sizingrule-index" class="page has-contextual-help">
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+                </h1>
+                <div class="header__primary-actions">
+                    <div id="savingstatus" class="mw-40">{_saved}</div>
+                </div>
+            </header>
+        </div>
+        <div class="section">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>Types Manager</h1>
+                        <p>Types list is required for sizing rules and staff sizes calculation.</p>
+                        <p><a href="{https_server_admin}settings/sizingrules/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a>&nbsp;&nbsp;<button name="button" onclick="toggle_add()" data-accordion-toggler-for="" class="btn">{_add}</button></p>
+                    </div>
+                </div>
+                
+                <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
+
+  
+                <else />
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                            <div class="table-wrapper">
+                                <table class="expanded">
+                                <thead>
+                                    <tr>
+                                        <th width="15%"><label>{_code}</label></th>
+                                        <th width="8%" align="center"><label>{_size_required}</label></th>
+                                        <th width="15%"><label>{_gender}</label></th>
+                                        <th class="tr" width="100%"><label>{_action}</label></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 
+                                    <tr id="addtype" valign="top" class="hide">
+                                        <td><input class="draw-input with-add-on" size="50" type="text" value="" name="code" id="code" ></td>
+                                        <td align="center" valign="middle"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" class="draw-checkbox" name="needsize" id="needsize"><span class="draw-checkbox--styled"></span></div></td>
+                                        <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
+                                            <div  id="value-wrapper">
+                                                {form[gender]}
+                                            </div>
+                                        </td>
+                                        <td class="tr">
+                                            <ul class="segmented">
+                                                <li>
+                                                    <a href="javascript:;"  onclick="add_type_line('{https_server_admin}settings/sizingrules/types/')" class="btn btn-slim btn--icon" title="{_save}">
+                                                    <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    
+                                    <loop name="types_rows">
+                                    <tr valign="top">
+                                        <td><input class="draw-input with-add-on" size="50" type="text" value="{code}" name="code_{id}" id="code_{id}"  onfocus="focus_field('code_{id}')" onchange="update_type_line('code_{id}','code',{id})"></td>
+                                        <td align="center" valign="middle">{needsizefinal}</td>
+                                        <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
+                                            <div  id="value-wrapper">
+                                                {genderfinal}
+                                            </div>
+                                        </td>
+                                        <td class="tr">{action}</td>
+                                    </tr>
+                                    </loop name="types_rows">
+                                </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                </if>
+            </div>
+        </div>
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['settings','settings_sizingrules']), iLPage.close()"></div>
+    
