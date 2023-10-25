@@ -87,7 +87,7 @@ class admincp_nav extends admincp
                                         </a>
                                 </li>
                                 <li class="draw-nav__item">
-                                <a class="draw-nav__link" data-nav-section="dashboard" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Dashboard" aria-controls="iLNav_Dashboard" href="' . HTTPS_SERVER_ADMIN . 'dashboard/">
+                                        <a class="draw-nav__link" data-nav-section="dashboard" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Dashboard" aria-controls="iLNav_Dashboard" href="' . HTTPS_SERVER_ADMIN . 'dashboard/">
                                                 <span class="glyphicons glyphicons-dashboard draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">{_dashboard}</span>
                                         </a>
@@ -228,7 +228,15 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_bulkmailer" bind-event-click="" allow-default="1" href="users/bulkmailer/">Bulk Mailer</a> </li>
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_roles" bind-event-click="" allow-default="1" href="users/roles/">Roles</a> </li>
                         </ol>
-                        <!-- customers subnav -->
+                        <!-- users subnav -->
+                        <!-- reports subnav -->
+                        <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="reports" id="iLNav_Reports">
+                                <li class="draw-nav__item draw-nav__item--header">
+                                        <h2 class="draw-heading--callout">Reports</h2>
+                                </li>
+                        </ol>
+                        <!-- reports subnav -->
+
                         <!-- settings subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="settings" id="iLNav_Settings">
                                 <li class="draw-nav__item draw-nav__item--header">

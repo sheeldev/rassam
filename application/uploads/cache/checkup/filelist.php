@@ -2,14 +2,13 @@
 $sheel_md5 = array(
 	'/' => array(
 		'.htaccess' => '6aaa52337afa9f8e9d31ba66a12ebc71',
-		'cron.php' => 'c3b46f5cad167770060fac2cb5473ca3',
-		'phpinfo.php' => '48101bbdd897877cc62b8704a293a436',
-		'robots.txt' => '77087d3be111331340f4075dd72aeba0',
+		'cron.php' => 'ad7c73ea90bf0007bbbb5a284b2620a4',
+		'robots.txt' => '43f2d86d5dccaca61a245e6439fc7a7e',
 		'router.php' => '2ef1bf7832d060e4d227a8c477861d7a',
 		'router_custom.php' => '8ec876a36c0d662d59deb0e629876108',
 	),
 	'/application' => array(
-		'kernel.php' => '4acae221d7cbd69cc798404cca05f054',
+		'core.php' => '7b6a6b737ceacf524002cfb6dc627e6f',
 	),
 	'/application/assets' => array(
 		'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
@@ -570,7 +569,7 @@ $sheel_md5 = array(
 		'sprite_share.png' => '15ba8becff42931a8ed2cb924e8c8fe7',
 		'sprite_widgets.png' => 'e0c595f7931f80f62efb728ee6f99493',
 	),
-	'/application/assets/javascript' => array(
+	'/application/assets/js' => array(
 		'functions.js' => 'c1a64e83b6564a5fe83e44059e360065',
 		'functions.min.js' => '1a3a1eeb5a4bf7e7b48f02c17ee525b0',
 		'functions_accounting.js' => 'e13f2fb6383ce7e1a2915f21b9c4f504',

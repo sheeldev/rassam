@@ -201,7 +201,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $vars['areanav'] = $areanav;
         $vars['currentarea'] = $currentarea;
         $vars['sidenav'] = $sidenav;
-        $vars['settings'] = $settings;
         $vars['url'] = $_SERVER['REQUEST_URI'];
         $sheel->template->fetch('main', 'settings_sizingtypes.html', 1);
 
@@ -234,6 +233,34 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             )
         );
+    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'sizesystem') {
+        $buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_cancel}</button></a></p>';
+        $settings = $sheel->admincp->construct_admin_input('sizesystem', HTTPS_SERVER_ADMIN . 'settings/sizingrules/sizesystem/','',$buttons);
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Size System</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Size System';
+        $areanav = 'settings_sizingrules';
+        $currentarea = 'Size System';
+        $vars['areanav'] = $areanav;
+        $vars['currentarea'] = $currentarea;
+        $vars['sidenav'] = $sidenav;
+        $vars['settings'] = $settings;
+        $vars['url'] = $_SERVER['REQUEST_URI'];
+        $sheel->template->fetch('main', 'settings_sizingsystem.html', 1);
+
+        $sheel->template->parse_loop(
+            'main',
+            array(
+                'types_rows' => $types_rows
+            )
+        );
+        $sheel->template->parse_hash(
+            'main',
+            array(
+                'form' => (isset($form) ? $form : array())
+            )
+        );
+        $sheel->template->pprint('main', $vars);
+        exit();
     } else {
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Rules</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Sizing Rules';
@@ -303,7 +330,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $vars['areanav'] = $areanav;
     $vars['currentarea'] = $currentarea;
     $vars['sidenav'] = $sidenav;
-    $vars['settings'] = $settings;
     $vars['url'] = $_SERVER['REQUEST_URI'];
     $sheel->template->fetch('main', 'settings_sizingrules.html', 1);
 

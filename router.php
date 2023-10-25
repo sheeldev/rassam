@@ -63,7 +63,8 @@ $router->map('GET|POST', '/admin/settings/[currencymanager:cmd]/', __DIR__ . '/a
 $router->map('POST',     '/admin/settings/[currencymanager:cmd]/[save:subcmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_save');
 $router->map('GET|POST', '/admin/settings/[currencymanager:cmd]/[default|defaultusers|delete:subcmd]/[*:currencyid]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_defaults');
 
-
+$router->map('GET|POST', '/admin/reports/', __DIR__ . '/application/web/admin/reports.php', 'admin_reports');
+$router->map('GET|POST', '/admin/dashboard/', __DIR__ . '/application/web/admin/dashboard.php', 'admin_dashboard');
 $router->map('GET|POST', '/admin/settings/emails/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates');
 $router->map('GET|POST', '/admin/settings/[emails:cmd]/[update:subcmd]/[*:varname]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_action');
 $router->map('GET|POST', '/admin/settings/[emails:cmd]/[import|export|add|save:subcmd]/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates_impex');
@@ -93,7 +94,7 @@ $router->map('GET|POST', '/admin/settings/[locations:cmd]/[update:subcmd]/[regio
 $router->map('GET|POST', '/admin/settings/sizingrules/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules');
 $router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_add');
 $router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[update|delete|deleteline:subcmd]/[*:code]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_delete');
-$router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[deletetype|types:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingtypes');
+$router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[sizesystem|deletetype|types:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingtypes');
 
 $router->map('GET|POST', '/admin/settings/bc/', __DIR__ . '/application/web/admin/bc.php', 'admin_bc');
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');
