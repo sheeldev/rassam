@@ -1,74 +1,109 @@
 <?php
 /**
-* xlsx class to perform the majority of importing and exporting functions within sheel.
-*
-* @package      sheel\xlsx
-* @version      1.0.0.0
-* @author       sheel
-*/
+ * xlsx class to perform the majority of importing and exporting functions within sheel.
+ *
+ * @package      sheel\xlsx
+ * @version      1.0.0.0
+ * @author       sheel
+ */
 class xlsx
 {
 	protected $sheel;
 
 	function __construct($sheel)
 	{
-	$this->sheel = $sheel;
+		$this->sheel = $sheel;
 	}
-	function size_xlsx_to_db($data, $staffs,  $customer_ref, $userid = 0, $bulk_id = 0)
+	function size_xlsx_to_db($data, $staffs, $customer_ref, $userid = 0, $bulk_id = 0)
 	{
 		if ($bulk_id > 0) {
 			foreach ($data as $t) {
-				$staffdetails = explode('|',$staffs[$t[0]]);
-				$this->sheel->db->query("
-							INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
-							(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
-							VALUES (
-							NULL,
-							'" . $t[0] . "',
-							'" . $staffdetails[0] . "',
-							'" . $staffdetails[1] . "',
-							'" . $t[1] . "',
-							'" . $t[2] . "',
-							'" . $t[3] . "',
-							'" . $t[4] . "',
-							'" . $customer_ref . "',
-							'',
-							'" . $this->sheel->db->escape_string(DATETODAY) . "',
-							'0',
-							'" . $userid . "',
-							'" . $bulk_id . "')
-						", 0, null, __FILE__, __LINE__);
+				$staffdetails = explode('|', $staffs[$t[0]]);
+				$stmt = $this->sheel->db->prepare("
+					INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
+					(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+					VALUES (
+						NULL, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, '0', ?, ?
+					)
+					ON DUPLICATE KEY UPDATE
+						staffcode = VALUES(staffcode),
+						positioncode = VALUES(positioncode),
+						departmentcode = VALUES(departmentcode),
+						fit = VALUES(fit),
+						cut = VALUES(cut),
+						size = VALUES(size),
+						type = VALUES(type),
+						customerno = VALUES(customerno),
+						errors = VALUES(errors),
+						dateuploaded = VALUES(dateuploaded),
+						uploaded = VALUES(uploaded),
+						user_id = VALUES(user_id),
+						bulk_id = VALUES(bulk_id)
+				");
+				$stmt->bind_param(
+					"ssssssssssss",
+					$t[0],
+					$staffdetails[0],
+					$staffdetails[1],
+					$t[1],
+					$t[2],
+					$t[3],
+					$t[4],
+					$customer_ref,
+					$this->sheel->db->escape_string(DATETODAY),
+					$userid,
+					$bulk_id
+				);
+				$stmt->execute();
 			}
-		}
-		else {
+		} else {
 			foreach ($data as $t) {
-				$this->sheel->db->query("
-							INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
-							(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
-							VALUES (
-							NULL,
-							'" . $t['staffcode'] . "',
-							'" . $t['positioncode']  . "',
-							'" . $t['departmentcode']  . "',
-							'" . $t['fit']  . "',
-							'" . $t['cut']  . "',
-							'" . $t['size']  . "',
-							'" . $t['type']  . "',
-							'" . $customer_ref . "',
-							'" . $t['error']  . "',
-							'" . $this->sheel->db->escape_string(DATETODAY) . "',
-							'0',
-							'" . $userid . "',
-							'" . $bulk_id . "')
-						", 0, null, __FILE__, __LINE__);
+				$stmt = $this->sheel->db->prepare("
+				INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
+				(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+				VALUES (
+					NULL,
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?, ?
+				)
+				ON DUPLICATE KEY UPDATE
+					staffcode = VALUES(staffcode),
+					positioncode = VALUES(positioncode),
+					departmentcode = VALUES(departmentcode),
+					fit = VALUES(fit),
+					cut = VALUES(cut),
+					size = VALUES(size),
+					type = VALUES(type),
+					customerno = VALUES(customerno),
+					errors = VALUES(errors),
+					dateuploaded = VALUES(dateuploaded),
+					uploaded = VALUES(uploaded),
+					user_id = VALUES(user_id),
+					bulk_id = VALUES(bulk_id)
+			");
+				$stmt->bind_param(
+					"ssssssssssss",
+					$t['staffcode'],
+					$t['positioncode'],
+					$t['departmentcode'],
+					$t['fit'],
+					$t['cut'],
+					$t['size'],
+					$t['type'],
+					$customer_ref,
+					$t['error'],
+					$this->sheel->db->escape_string(DATETODAY),
+					$userid,
+					$bulk_id
+				);
+				$stmt->execute();
 			}
 		}
-		
+
 	}
-	function measurement_xlsx_to_db($data, $staffs,  $customer_ref, $userid = 0, $bulk_id = 0)
+	function measurement_xlsx_to_db($data, $staffs, $customer_ref, $userid = 0, $bulk_id = 0)
 	{
 		foreach ($data as $t) {
-			$staffdetails = explode('|',$staffs[$t[0]]);
+			$staffdetails = explode('|', $staffs[$t[0]]);
 			$this->sheel->db->query("
                         INSERT INTO " . DB_PREFIX . "bulk_tmp_measurements
                         (id, staffcode, measurementcategory, positioncode, departmentcode, mvalue, uom, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
@@ -98,7 +133,7 @@ class xlsx
                         (id, code, name, gender, positioncode, departmentcode, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
                         VALUES (
                         NULL,
-                        '" . $customer_ref .'-'. $nextid . "',
+                        '" . $customer_ref . '-' . $nextid . "',
 						'" . $t[0] . "',
 						'" . $t[1] . "',
 						'" . $t[2] . "',
@@ -114,11 +149,13 @@ class xlsx
 
 		}
 	}
-	function isEmptyRow($row) {
-		foreach($row as $cell){
-			if (null !== $cell) return false;
+	function isEmptyRow($row)
+	{
+		foreach ($row as $cell) {
+			if (null !== $cell)
+				return false;
 		}
 		return true;
-	}	
+	}
 }
 ?>

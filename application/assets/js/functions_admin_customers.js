@@ -26,9 +26,16 @@ function init_page()
         //init_bulk_animation();
 }
 
-function forward_with_loading(url) {
-	jQuery('#refreshloading').removeClass('hide');
-	location.href=url;
+function forward_with_loading(url, specific) {
+	if (!specific) {
+		jQuery('#refreshloading').removeClass('hide');
+		location.href=url;
+	}
+	else {
+		jQuery('#refreshloading').removeClass('hide');
+		location.href=url+'&specific='+jQuery('#staffs').val();
+	}
+	
 
 }
 function forward_with_loading_nourl() {

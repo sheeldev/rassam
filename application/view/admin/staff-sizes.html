@@ -85,6 +85,7 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-input-wrapper">
                                     <button name="submit" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff Size</button>
+                                    <button type="button" class="btn btn-primary" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', true);"><span>{_suggest_sizes}</span></button>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +100,7 @@
                     <p>Add Bulk Staff Sizes for this customer. </p>
                     <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=sizesample'" /></div>
                     <p></p>
-                    <div><input type="button" value="{_suggest_sizes}" class="btn large" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest');" /></div>
+                    <div><input type="button" value="{_suggest_sizes_for_all}" class="btn large" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', false);" /></div>
 								
               </div>
             </div>

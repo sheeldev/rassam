@@ -1443,17 +1443,25 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             exit();
         }
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'suggest') {
-            $sheel->db->query("
+            
+            $custstaffs = array();
+            if (isset($sheel->GPC['specific']) and !empty($sheel->GPC['specific'])) {
+                $custstaffs = explode('|', $sheel->GPC['specific']);
+                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and code eq \'' . $custstaffs[0] . '\''; // and positionCode eq \'' . $custstaffs[1] . '\' and departmentCode eq \'' . $custstaffs[2] . '\'';
+            }
+            else {
+                $sheel->db->query("
                     DELETE FROM " . DB_PREFIX . "bulk_tmp_sizes
                     WHERE customerno = '" . $customer['customer_ref'] . "'
                         AND uploaded = '0'
                     ", 0, null, __FILE__, __LINE__);
-            $custstaffs = array();
+                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+            }
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
-            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+            
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
                 $custstaffs = $apiResponse->getData();
@@ -2201,8 +2209,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     }
                 }
                 if (!move_uploaded_file($_FILES['imagename']['tmp_name'], DIR_ATTACHMENTS . 'customers/' . $sheel->GPC['customer_ref'] . $ext)) {
-                    die($_FILES["imagename"]["error"]);
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error saving customer logo file', 'customer logo file could not be uploaded (check folder permission)');
+                    die($_FILES["imagename"]["error"]);
                 } else {
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'Added customer logo file', 'A new customer logo file was saved ');
                 }

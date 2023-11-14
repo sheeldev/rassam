@@ -54,16 +54,14 @@
 									<input type="password" name="password" size="16" id="password" class="dialog-input "
 										value="{password}" spellcheck="false" placeholder="{_password}" />
 									<label for="password" class="visuallyhidden">{_password}</label>
-									<i class="ico dialog-ico ico-password"></i>
-									<div class="forgot-password-container">
-										<a class="forgot-password tooltip tooltip-bottom" id="forgot-password"
+									<a  id="forgot-password"
 											title="{_forgot_your_password}?"
-											href="{https_server_admin}signin/renew-password/">
-											<span class="tooltip-container"><span
-													class="tooltip-label">{_forgot_your_password}?</span></span>
-											<i class="ico dialog-ico ico-forgot-password"></i>
+											href="{https_server_admin}signin/renew-password/" title="{_forgot_your_password}?">
+											<i class="ico dialog-ico ico-password"></i>
 										</a>
-									</div>
+									
+
+						
 								</div>
 							</div>
 							<input type="submit" name="commit" value="{_login}" class="dialog-btn" />

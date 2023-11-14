@@ -36,35 +36,42 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sidenav = $sheel->admincp_nav->print('settings');
         $sheel->cache->store("sidenav_settings", $sidenav);
     }
-    if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'delete') {
-        $sheel->db->query("
-        DELETE FROM " . DB_PREFIX . "size_rules
-        WHERE code = '" . $sheel->GPC['code'] . "' AND gender = '" . $sheel->GPC['gender'] . "'
-        ");
+    if (isset($sheel->GPC['subcmd']) && $sheel->GPC['subcmd'] == 'delete') {
+        $query = "
+            DELETE FROM " . DB_PREFIX . "size_rules
+            WHERE code = ? AND gender = ?
+        ";
+
+        $stmt = $sheel->db->prepare($query);
+        $stmt->bind_param("ss", $sheel->GPC['code'], $sheel->GPC['gender']);
+
+        $stmt->execute();
+
         $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizerule}';
-        die(
-            json_encode(
-                array(
-                    'response' => '1',
-                    'message' => $sheel->template->parse_template_phrases('message')
-                )
-            )
-        );
-    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'deleteline') {
-        $sheel->db->query("
+
+        die(json_encode([
+            'response' => '1',
+            'message' => $sheel->template->parse_template_phrases('message')
+        ]));
+    }
+    if (isset($sheel->GPC['subcmd']) && $sheel->GPC['subcmd'] == 'deleteline') {
+        $query = "
         DELETE FROM " . DB_PREFIX . "size_rules
-        WHERE id = '" . $sheel->GPC['xid'] . "'
+        WHERE id = ?
         LIMIT 1
-        ");
+        ";
+
+        $stmt = $sheel->db->prepare($query);
+        $stmt->bind_param("s", $sheel->GPC['xid']);
+
+        $stmt->execute();
+
         $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizerule}';
-        die(
-            json_encode(
-                array(
-                    'response' => '1',
-                    'message' => $sheel->template->parse_template_phrases('message')
-                )
-            )
-        );
+
+        die(json_encode([
+            'response' => '1',
+            'message' => $sheel->template->parse_template_phrases('message')
+        ]));
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Rules - Update</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Update';
@@ -72,42 +79,32 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/">Sizing Rules</a> / </span>' . $sheel->GPC['code'];
 
         if (isset($sheel->GPC['gender']) and isset($sheel->GPC['impact']) and $sheel->GPC['gender'] != '' and $sheel->GPC['impact'] != '') {
-            if ($sheel->GPC['gender'] == 'Male') {
-                $where = "gender = 'Male'";
-            } else if ($sheel->GPC['gender'] == 'Female') {
-                $where = "gender = 'Female'";
-            }
 
-            $sql = $sheel->db->query("
+            $query = "
                 SELECT *
                 FROM " . DB_PREFIX . "size_rules
-                WHERE code ='" . $sheel->GPC['code'] . "' AND $where
-                ORDER BY  type, mvaluelow 
-            ");
+                WHERE code = ? AND gender = ?
+                ORDER BY type, mvaluelow
+            ";
+
+            $stmt = $sheel->db->prepare($query);
+            $stmt->bind_param("ss", $sheel->GPC['code'], $sheel->GPC['gender']);
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+
             $count = 0;
             $impact = $sheel->GPC['impact'];
             $impactvaluearray = $sheel->common_sizingrule->construct_impactvalue_pulldown($impact, 'form[impactvalue]', '', false, false, 'draw-select', true);
-            if ($sheel->db->num_rows($sql) > 0) {
-                while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-                    $count++;
-                    if ($sheel->db->num_rows($sqlsetup) == 0) {
-                        $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender=' . $row['gender'] . '">{_set_up}</a>';
-                    } else {
-                        $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender=' . $row['gender'] . '">{_update}</a>';
-                    }
-                    $extra = 'class="draw-select" onchange="update_rule_line(\'form[impactvalue_' . $count . ']\',\'impactvalue\',' . $row['id'] . ')"';
-                    $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_' . $count . ']', 'form[impactvalue_' . $count . ']', $impactvaluearray, $row['impactvalue'], $extra);
-                    $row['rulenumber'] = $count;
-                    $row['action'] =
-                        '<ul class="segmented">
-                            <li>
-                                <a href="javascript:;" data-bind-event-click="acp_confirm(\'deleteline\', \'Delete selected rule line?\', \'Are you sure you want to delete the selected rule line? This action cannot be reversed and therefore cannot be undone.\', \'' . $row['id'] . '\', 1, \'\', \'{https_server_admin}settings/sizingrules/deleteline/' . $row['code'] . '/\')" class="btn btn-slim btn--icon" title="{_delete}">
-                                <span class="halflings halflings-trash draw-icon" aria-hidden="true"></span>
-                                </a>
-                            </li>
-                        </ul>';
-                    $rules_rows[] = $row;
-                }
+
+            while ($row = $result->fetch_assoc()) {
+                $count++;
+                $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/update/' . $row['code'] . '/?gender=' . $row['gender'] . '">{_update}</a>';
+                $extra = 'class="draw-select" onchange="update_rule_line(\'form[impactvalue_' . $count . ']\',\'impactvalue\',' . $row['id'] . ')"';
+                $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_' . $count . ']', 'form[impactvalue_' . $count . ']', $impactvaluearray, $row['impactvalue'], $extra);
+                $row['rulenumber'] = $count;
+                $row['action'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'deleteline\', \'Delete selected rule line?\', \'Are you sure you want to delete the selected rule line? This action cannot be reversed and therefore cannot be undone.\', \'' . $row['id'] . '\', 1, \'\', \'{https_server_admin}settings/sizingrules/deleteline/' . $row['code'] . '/\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
+                $rules_rows[] = $row;
             }
         } else {
 
@@ -151,8 +148,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
             refresh(HTTPS_SERVER_ADMIN . 'settings/sizingrules/');
         }
-
-        //$sheel->common_location->construct_country_pulldown($countryid, $geodata['country'], 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', false, false, '', 0, 'city', 'cityid'),
         $gender = array('Male' => '{_male}', 'Female' => '{_female}');
         $form['gender'] = $sheel->common_sizingrule->construct_gender_pulldown('Male', 'form[gender]', false, 'draw-select', 'type[]', 'type-wrapper', false);
         $form['type'] = $sheel->common_sizingrule->construct_type_checkbox('Male', true);
@@ -163,7 +158,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Add';
         $areanav = 'settings_sizingrules';
         $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/">Sizing Rules</a> / </span> {_add}';
-
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'types') {
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Types</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Sizing Types';
@@ -185,7 +179,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $row['genderfinal'] = $sheel->construct_pulldown('form[gender_' . $count . ']', 'form[gender_' . $count . ']', $gender, $row['gender'], $extra);
                 $row['needsizefinal'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input onchange="update_type_line(\'needsize_' . $count . '\',\'needsize\',' . $row['id'] . ')" type="checkbox" class="draw-checkbox" name="needsize_' . $count . '" id="needsize_' . $count . '"' . $checked . '><span class="draw-checkbox--styled"></span></div>';
                 $row['action'] =
-                        '<ul class="segmented">
+                    '<ul class="segmented">
                             <li>
                                 <a href="javascript:;" data-bind-event-click="acp_confirm(\'deletetype\', \'Delete selected type?\', \'Are you sure you want to delete the selected type?\', \'' . $row['id'] . '\', 1, \'\', \'{https_server_admin}settings/sizingrules/\')" class="btn btn-slim btn--icon" title="{_delete}">
                                 <span class="halflings halflings-trash draw-icon" aria-hidden="true"></span>
@@ -235,7 +229,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         );
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'sizesystem') {
         $buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingrules/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_cancel}</button></a></p>';
-        $settings = $sheel->admincp->construct_admin_input('sizesystem', HTTPS_SERVER_ADMIN . 'settings/sizingrules/sizesystem/','',$buttons);
+        $settings = $sheel->admincp->construct_admin_input('sizesystem', HTTPS_SERVER_ADMIN . 'settings/sizingrules/sizesystem/', '', $buttons);
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Size System</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Size System';
         $areanav = 'settings_sizingrules';

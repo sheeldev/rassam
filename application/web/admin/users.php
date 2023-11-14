@@ -170,7 +170,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$sheel->GPC['form']['dob'] = ((isset($sheel->GPC['form']['dob']) and !empty($sheel->GPC['form']['dob'])) ? $sheel->GPC['form']['dob'] : '0000-00-00');
 				$sheel->GPC['form']['gender'] = ((isset($sheel->GPC['form']['gender']) and !empty($sheel->GPC['form']['gender'])) ? $sheel->GPC['form']['gender'] : '');
 
-
+				if ($sheel->GPC['form']['isadmin']=='1') {
+					$sheel->GPC['form']['customerid'] = '0';
+				}
 
 				$newuserid = $sheel->admincp_users->construct_new_member(
 					$sheel->GPC['form']['username'],
