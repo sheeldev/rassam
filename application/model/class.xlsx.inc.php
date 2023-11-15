@@ -16,46 +16,51 @@ class xlsx
 	}
 	function size_xlsx_to_db($data, $staffs, $customer_ref, $userid = 0, $bulk_id = 0)
 	{
+
 		if ($bulk_id > 0) {
 			foreach ($data as $t) {
-				$staffdetails = explode('|', $staffs[$t[0]]);
+				echo $staffs[$t[0]];
+				$staffdetails = explode('|', $staffs[trim($t[0])]);
 				$stmt = $this->sheel->db->prepare("
-					INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
-					(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
-					VALUES (
-						NULL, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, '0', ?, ?
-					)
-					ON DUPLICATE KEY UPDATE
-						staffcode = VALUES(staffcode),
-						positioncode = VALUES(positioncode),
-						departmentcode = VALUES(departmentcode),
-						fit = VALUES(fit),
-						cut = VALUES(cut),
-						size = VALUES(size),
-						type = VALUES(type),
-						customerno = VALUES(customerno),
-						errors = VALUES(errors),
-						dateuploaded = VALUES(dateuploaded),
-						uploaded = VALUES(uploaded),
-						user_id = VALUES(user_id),
-						bulk_id = VALUES(bulk_id)
-				");
+				INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
+				(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+				VALUES (
+					NULL,
+					?, ?, ?, ?, ?, ?, ?, ?, '[No Errors]',?, '0', ?, ?
+				)
+				ON DUPLICATE KEY UPDATE
+					staffcode = VALUES(staffcode),
+					positioncode = VALUES(positioncode),
+					departmentcode = VALUES(departmentcode),
+					fit = VALUES(fit),
+					cut = VALUES(cut),
+					size = VALUES(size),
+					type = VALUES(type),
+					customerno = VALUES(customerno),
+					dateuploaded = VALUES(dateuploaded),
+					uploaded = VALUES(uploaded),
+					user_id = VALUES(user_id),
+					bulk_id = VALUES(bulk_id)
+			");
+
 				$stmt->bind_param(
-					"ssssssssssss",
-					$t[0],
-					$staffdetails[0],
-					$staffdetails[1],
-					$t[1],
-					$t[2],
-					$t[3],
-					$t[4],
-					$customer_ref,
+					"sssssssssss",
+					trim($t[0]),
+					trim($staffdetails[0]),
+					trim($staffdetails[1]),
+					trim($t[1]),
+					trim($t[2]),
+					trim($t[3]),
+					trim($t[4]),
+					trim($customer_ref),
 					$this->sheel->db->escape_string(DATETODAY),
 					$userid,
 					$bulk_id
 				);
 				$stmt->execute();
+
 			}
+			
 		} else {
 			foreach ($data as $t) {
 				$stmt = $this->sheel->db->prepare("

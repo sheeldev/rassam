@@ -191,7 +191,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
 
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            if (!$sheel->dynamics->init_dynamics('erCustomerDepartments', $defaulcompany)) {
+            if (!$sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
@@ -341,7 +341,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
 
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            if (!$sheel->dynamics->init_dynamics('erCustomerPositions', $defaulcompany)) {
+            if (!$sheel->dynamics->init_dynamics('erCustomerPositions', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
@@ -641,7 +641,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
 
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
-            if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $defaulcompany)) {
+            if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
