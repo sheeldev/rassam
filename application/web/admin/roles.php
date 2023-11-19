@@ -1,6 +1,5 @@
 <?php
 define('LOCATION', 'admin');
-require_once(SITE_ROOT . 'application/config.php');
 if (isset($match['params'])) {
     $sheel->GPC = array_merge($sheel->GPC, $match['params']);
 }
@@ -38,7 +37,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sidenav = $sheel->admincp_nav->print('users');
         $sheel->cache->store("sidenav_users", $sidenav);
     }
-
     $languages_role = $roles = array();
     $sql_lang = $sheel->db->query("
         SELECT languagecode, title, textdirection
@@ -63,7 +61,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 )
             )
         );
-        exit();
 
 
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
@@ -97,7 +94,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     UPDATE " . DB_PREFIX . "roles
                     SET $field
                     custom = '" . $sheel->db->escape_string($sheel->GPC['form']['custom']) . "',
-                    roletype = 'product',
+                    roletype = 'portal',
                     roleusertype = '" . $sheel->db->escape_string($sheel->GPC['form']['roleusertype']) . "',
                     active = '" . $sheel->GPC['form']['visible'] . "',
                     isdefault = '" . $sheel->GPC['form']['isdefault'] . "',
@@ -177,7 +174,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     NULL,
                     " . $field2 . "
                     '" . $sheel->db->escape_string($sheel->GPC['form']['custom']) . "',
-                    'product',
+                    'portal',
                     '" . $sheel->GPC['form']['roleusertype'] . "',
                     '" . intval($sheel->GPC['form']['visible']) . "',
                     '" . intval($sheel->GPC['form']['isdefault']) . "',
@@ -236,7 +233,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
             } else { // create new access
                 $sql = $sheel->db->query("
-                        SELECT id, accessname, accessgroup, hasaccess, original, isadmin
+                        SELECT id, accessname, accessgroup, hasaccess, original, isadmin, ismenu
                         FROM " . DB_PREFIX . "roles_access
                         WHERE original = '1'
                         GROUP BY accessname
@@ -246,7 +243,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
                         $sheel->db->query("
                                 INSERT INTO " . DB_PREFIX . "roles_access
-                                (id, roleid, accessgroup, accessname,   hasaccess, original, isadmin)
+                                (id, roleid, accessgroup, accessname,   hasaccess, original, isadmin, ismenu)
                                 VALUES(
                                 NULL,
                                 '" . intval($sheel->GPC['roleid']) . "',
@@ -254,7 +251,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                                 '" . $sheel->db->escape_string($res['accessname']) . "',
                                 '1',
                                 '" . $res['original'] . "',
-                                '" . $res['isadmin'] . "'
+                                '" . $res['isadmin'] . "',
+                                '" . $res['ismenu'] . "'
                                 )
                             ");
                     }
@@ -278,8 +276,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sqlgroups = $sheel->db->query("
                     SELECT groupid, accessgroup
                     FROM " . DB_PREFIX . "roles_access_groups
-                    WHERE visible = '1'
-                    AND isadmin ='" . intval($isadmin) . "'
+                    WHERE isadmin ='" . intval($isadmin) . "'
                     ORDER BY accessgroup ASC
                 ");
             if ($sheel->db->num_rows($sqlgroups) > 0) {
@@ -291,7 +288,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                                 AND accessgroup = '" . $sheel->db->escape_string($resgroups['accessgroup']) . "'
                                 AND isadmin ='" . intval($isadmin) . "'
                             GROUP BY accessname
-                            ORDER BY id ASC
+                            ORDER BY accessname ASC
                         ");
                     if ($sheel->db->num_rows($sqlitems) > 0) {
                         while ($resitems = $sheel->db->fetch_array($sqlitems, DB_ASSOC)) {
@@ -354,7 +351,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $sql = $sheel->db->query("
         SELECT roleid, title_$slng AS title, purpose_$slng AS purpose, custom, roletype, roleusertype, active
         FROM " . DB_PREFIX . "roles
-        WHERE roletype = 'product'
+        WHERE roletype = 'portal'
         ORDER BY roleid ASC
     ");
     if ($sheel->db->num_rows($sql) > 0) { // roles

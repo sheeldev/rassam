@@ -1,6 +1,4 @@
 <?php
-require_once(SITE_ROOT . 'application/config.php');
-
 if (isset($match['params'])) {
 	$sheel->GPC = array_merge($sheel->GPC, $match['params']);
 }

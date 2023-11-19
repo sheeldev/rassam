@@ -129,25 +129,9 @@ class admincp_nav extends admincp
                                 </li>
 
                                 <li class="draw-nav__item--spacer"></li>
-                                ' . ((isset($this->sheel->config['stores']) AND $this->sheel->config['stores']) ? '<li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="stores" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Stores" aria-controls="iLNav_Stores" href="' . HTTPS_SERVER_ADMIN . 'stores/">
-                                                <span class="glyphicons glyphicons-shop draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">{_stores}</span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>' : '') . '
-                                ' . ((isset($this->sheel->config['brands']) AND $this->sheel->config['brands']) ? '<li class="draw-nav__item">
-                                        <a class="draw-nav__link" data-nav-section="brands" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Brands" aria-controls="iLNav_Brands" href="' . HTTPS_SERVER_ADMIN . 'brands/">
-                                                <span class="glyphicons glyphicons-tag draw-icon" aria-hidden="true"></span>
-                                                <span class="draw-nav__text">{_products} &amp; {_brands}</span>
-                                                <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                        <use xlink:href="#draw-chevron"></use>
-                                                </svg>
-                                        </a>
-                                </li>' : '') . '
-                                
+                                ' .  
+                                ($this->sheel->access->has_access($_SESSION['sheeldata']['user']['userid'], 'admin_connections') ?
+                                '                   
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="whosonline" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_WhosOnline" aria-controls="iLNav_WhosOnline" href="' . HTTPS_SERVER_ADMIN . 'sessions/">
                                             <span class="glyphicons glyphicons-door draw-icon" aria-hidden="true"></span>
@@ -156,13 +140,13 @@ class admincp_nav extends admincp
                                                 <span class="draw-nav__badge-content">' . number_format($this->sheel->admincp->members_online(false)) . '</span>
                                             </span>
                                             <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
-                                                    <use xlink:href="#draw-chevron"></use>
                                             </svg>
                                         </a>
                                 </li>
                                 <li class="draw-nav__item--spacer"></li>
-                                
-                                <li class="draw-nav__item">
+                                ' :'').
+
+                                '<li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="settings" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Settings" aria-controls="iLNav_Settings" href="' . HTTPS_SERVER_ADMIN . 'settings/">
                                                 <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">{_settings}</span>

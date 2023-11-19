@@ -1,6 +1,5 @@
 <?php
 define('LOCATION', 'javascript');
-require_once(dirname(__FILE__, 3) . '/config.php');
 $expires = 60 * 60 * 24 * 7;
 $html = '';
 $computed_scripts = [];

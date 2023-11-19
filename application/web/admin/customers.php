@@ -1,6 +1,5 @@
 <?php
 define('LOCATION', 'admin');
-require_once(SITE_ROOT . 'application/config.php');
 require_once(DIR_CLASSES . '/vendor/office/autoload.php');
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;

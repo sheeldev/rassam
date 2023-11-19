@@ -25,7 +25,6 @@ if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) OR !empty($_SERVER['HTTP_IF_NONE_
 	}
 	exit();
 }
-require_once(SITE_ROOT . 'application/config.php');
 if (isset($match['params']))
 {
 	$sheel->GPC = array_merge($sheel->GPC, $match['params']);
