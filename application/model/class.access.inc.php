@@ -50,5 +50,37 @@ class access
 		}
 		return $hasaccess;
 	}
+
+	function display_menu($userid, $page, $ismulti = false)
+	{
+		$display = false;
+		if ($ismulti) {
+			$query = $this->sheel->db->query("
+					SELECT u.roleid, ra.hasaccess
+					FROM " . DB_PREFIX . "users AS u
+					INNER JOIN " . DB_PREFIX . "roles_access AS ra ON u.roleid=ra.roleid
+					WHERE u.user_id = '" . intval($userid) . "' and u.status ='active' and ra.accessgroup ='" . $page . "' and ra.hasaccess='1' and ra.ismenu='1'
+				", 0, null, __FILE__, __LINE__);
+			if ($this->sheel->db->num_rows($query) > 0) {
+				$display = true;
+			}
+
+		} else {
+			$query = $this->sheel->db->query("
+					SELECT u.roleid, ra.hasaccess
+					FROM " . DB_PREFIX . "users AS u
+					INNER JOIN " . DB_PREFIX . "roles_access AS ra ON u.roleid=ra.roleid
+					WHERE u.user_id = '" . intval($userid) . "' and u.status ='active' and ra.accessname ='" . $page . "' and ra.ismenu='1'
+					LIMIT 1
+				", 0, null, __FILE__, __LINE__);
+			if ($this->sheel->db->num_rows($query) > 0) {
+				$user = $this->sheel->db->fetch_array($query, DB_ASSOC);
+				if ($user['hasaccess']) {
+					$display = true;
+				}
+			}
+		}
+		return $display;
+	}
 }
 ?>

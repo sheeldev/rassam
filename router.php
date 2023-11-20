@@ -29,10 +29,8 @@ $router->map('GET|POST', '/attachment/[captcha:do]/', __DIR__ . '/application/we
 $router->map('GET', '/home/', __DIR__ . '/application/web/client/home.php', 'home');
 
 
-
-
-
 $router->map('GET|POST', '/admin/', __DIR__ . '/application/web/admin/home.php', 'admin_home');
+$router->map('GET|POST', '/admin/access.php', __DIR__ . '/application/web/admin/access.php', 'admin_access');
 $router->map('GET|POST', '/admin/lookup/', __DIR__ . '/application/web/admin/lookup.php', 'admin_lookup');
 $router->map('GET|POST', '/admin/signin/', __DIR__ . '/application/web/admin/login.php', 'admin_login');
 $router->map('GET|POST', '/admin/signin/[renew-password:cmd]/', __DIR__ . '/application/web/admin/login.php', 'admin_login_renew');
@@ -42,9 +40,10 @@ $router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/w
 $router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_org');
 $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
 $router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/users.php', 'admin_users');
-$router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer_view');
-$router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_customer');
-$router->map('GET|POST', '/admin/users/[add|bulkmailer|bulkmailer/export|verifications|violations|audit:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_add');
+$router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_user_view');
+$router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_user');
+$router->map('GET|POST', '/admin/users/[add|verifications|violations|audit:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_add');
+$router->map('GET|POST', '/admin/users/[bulkmailer|bulkmailer/export:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_bulkmailer');
 $router->map('GET|POST', '/admin/users/roles/', __DIR__ . '/application/web/admin/roles.php', 'admin_role');
 $router->map('GET|POST', '/admin/users/[roles:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_add');
 $router->map('GET|POST', '/admin/users/[roles:cmd]/[delete|update:subcmd]/[*:roleid]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_cmd');
@@ -129,55 +128,21 @@ if (($match and is_callable($match['target'])) or ($match and stristr($match['ta
 		//        var_dump($match['target']); exit();
 
 		//die ($match['name']);
-		if ($sheel->access->has_access($_SESSION['sheeldata']['user']['userid'], $match['name'])) {
+		if (!isset($_SESSION['sheeldata']['user']['userid'])) {
 			require $match['target'];
 		} else {
-			$template = '
-							<html>
-							<head>
-							<title>This page does not exist.</title>
-							<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-							<style type="text/css">
-							<!--
-							body { background-color: white; color: black; }
-							#container { width: 400px; }
-							#message   { width: 400px; color: black; background-color: #FFFFCC; }
-							#bodytitle { font: 13pt/15pt verdana, arial, sans-serif; height: 35px; vertical-align: top; }
-							.bodytext  { font: 8pt/11pt verdana, arial, sans-serif; }
-							a:link     { font: 8pt/11pt verdana, arial, sans-serif; color: red; }
-							a:visited  { font: 8pt/11pt verdana, arial, sans-serif; color: #4e4e4e; }
-							-->
-							</style>
-							</head>
-							<body>
-							<table cellpadding="3" cellspacing="5" id="container">
-							<tr>
-									<td id="bodytitle" width="100%">No Access.</td>
-							</tr>
-							<tr>
-									<td class="bodytext" colspan="2">You do not have permission to access this page. contact your administrator and provide the following page reference: ' . $match['name'].'</td>
-							</tr>
-							<tr>
-									<td colspan="2"><hr /></td>
-							</tr>
-							<tr>
-									<td class="bodytext" colspan="2">
-											Please try the following:
-											<ul>
-													<li><a href="/">Load the homepage</a> again.</li>
-													<li>Click the <a href="javascript:history.back(1)">Back</a> button to try another link.</li>
-											</ul>
-									</td>
-							</tr>
-							<tr>
-									<td class="bodytext" colspan="2">We apologise for any inconvenience.</td>
-							</tr>
-							</table>
-							</body>
-							</html>';
-
-			die($template);
+			if ($sheel->access->has_access($_SESSION['sheeldata']['user']['userid'], $match['name'])) {
+				require $match['target'];
+			} else {
+				if ($_SESSION['sheeldata']['user']['isadmin']) {
+					require __DIR__ . '/application/web/admin/access.php';
+				}
+				else {
+					require __DIR__ . '/application/web/client/access.php';
+				}
+			}
 		}
+
 
 	} else {
 		call_user_func_array($match['target'], $match['params']);

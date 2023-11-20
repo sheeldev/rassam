@@ -86,12 +86,18 @@ class admincp_nav extends admincp
                                                 <span class="draw-nav__text">{_home}</span>
                                         </a>
                                 </li>
+                                ' .
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_dashboard', false) ?
+                                '   
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="dashboard" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Dashboard" aria-controls="iLNav_Dashboard" href="' . HTTPS_SERVER_ADMIN . 'dashboard/">
                                                 <span class="glyphicons glyphicons-dashboard draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">{_dashboard}</span>
                                         </a>
                                 </li>
+                                ' :'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'customers', true) ?
+                                '    
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="customers" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Customers" aria-controls="iLNav_Customers" href="' . HTTPS_SERVER_ADMIN . 'customers/">
                                                 <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
@@ -106,6 +112,9 @@ class admincp_nav extends admincp
                                                 </svg>
                                         </a>
                                 </li>
+                                ' :'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'users', true) ?
+                                '     
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="users" bind-event-click="" allow-default="1" href="' . HTTPS_SERVER_ADMIN . 'users/">
                                                 <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
@@ -118,6 +127,9 @@ class admincp_nav extends admincp
                                                 </svg>
                                         </a>
                                 </li>
+                                ' :'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'reports', true) ?
+                                '     
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="reports" bind-event-click="" allow-default="1" href="' . HTTPS_SERVER_ADMIN . 'reports/">
                                                 <span class="glyphicons glyphicons-charts draw-icon" aria-hidden="true"></span>
@@ -129,8 +141,8 @@ class admincp_nav extends admincp
                                 </li>
 
                                 <li class="draw-nav__item--spacer"></li>
-                                ' .  
-                                ($this->sheel->access->has_access($_SESSION['sheeldata']['user']['userid'], 'admin_connections') ?
+                                ' :'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_connections', false) ?
                                 '                   
                                 <li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="whosonline" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_WhosOnline" aria-controls="iLNav_WhosOnline" href="' . HTTPS_SERVER_ADMIN . 'sessions/">
@@ -145,7 +157,7 @@ class admincp_nav extends admincp
                                 </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 ' :'').
-
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'settings', true) ?
                                 '<li class="draw-nav__item">
                                         <a class="draw-nav__link" data-nav-section="settings" bind-event-click="" allow-default="1" data-secondary-nav-id="#iLNav_Settings" aria-controls="iLNav_Settings" href="' . HTTPS_SERVER_ADMIN . 'settings/">
                                                 <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
@@ -156,8 +168,8 @@ class admincp_nav extends admincp
                                         </a>
                                 </li>
                                 <li class="draw-nav__item--spacer"></li>
-                               
-                                <li class="draw-nav__item--flex-spacer"></li>
+                                ' :'').
+                                '<li class="draw-nav__item--flex-spacer"></li>
                                 <li class="draw-nav__item draw-nav__item--group draw-nav__item--account">
                                         <div class="draw-popover__container draw-popover__container--full-width">
                                                 <button type="button" class="draw-nav__link" bind-event-click="iLNav.hover()" id="draw-popover-activator--1" aria-expanded="false" aria-haspopup="true" aria-owns="draw-popover--1" aria-controls="draw-popover--1">
@@ -198,20 +210,32 @@ class admincp_nav extends admincp
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="customers" id="iLNav_Customers">
                                 <li class="draw-nav__item draw-nav__item--header">
                                         <h2 class="draw-heading--callout">Customers</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_customers" bind-event-click="" allow-default="1" href="customers/">{_customers}</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_bc" bind-event-click="" allow-default="1" href="customers/bc/">{_bc_customers_list}</a> </li>
-                        </ol>
+                                </li>'
+                                .
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_customers', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_customers" bind-event-click="" allow-default="1" href="customers/">{_customers}</a> </li>'
+                                :'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_customers_bc_list', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_bc" bind-event-click="" allow-default="1" href="customers/bc/">{_bc_customers_list}</a> </li>'
+                                :'').
+                        '</ol>
                         <!-- customers subnav -->
                         <!-- users subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="users" id="iLNav_Users">
                                 <li class="draw-nav__item draw-nav__item--header">
                                         <h2 class="draw-heading--callout">Users</h2>
-                                </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users" bind-event-click="" allow-default="1" href="users/">Users</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_bulkmailer" bind-event-click="" allow-default="1" href="users/bulkmailer/">Bulk Mailer</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_roles" bind-event-click="" allow-default="1" href="users/roles/">Roles</a> </li>
-                        </ol>
+                                </li>'
+                                .
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_users', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users" bind-event-click="" allow-default="1" href="users/">Users</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_users_bulkmailer', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_bulkmailer" bind-event-click="" allow-default="1" href="users/bulkmailer/">Bulk Mailer</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_role', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="users_roles" bind-event-click="" allow-default="1" href="users/roles/">Roles</a> </li>
+                                ':'').
+                        '</ol>
                         <!-- users subnav -->
                         <!-- reports subnav -->
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="reports" id="iLNav_Reports">
@@ -225,36 +249,109 @@ class admincp_nav extends admincp
                         <ol class=" draw-nav__list draw-nav__list--secondary" data-nav-section="settings" id="iLNav_Settings">
                                 <li class="draw-nav__item draw-nav__item--header">
                                         <h2 class="draw-heading--callout">Settings</h2>
-                                </li>
+                                </li>'
+                                .
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_general" bind-event-click="" allow-default="1" href="settings/">General</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_companies', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_companies" bind-event-click="" allow-default="1" href="settings/companies/">Companies</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_branding', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_branding" bind-event-click="" allow-default="1" href="settings/branding/">Branding</a> </li>
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locale" bind-event-click="" allow-default="1" href="settings/locale/">Locale</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_locale', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locale" bind-event-click="" allow-default="1" href="settings/locale/">Locale</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_email', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_mail" bind-event-click="" allow-default="1" href="settings/mail/">Mail / SMTP</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_registration', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_registration" bind-event-click="" allow-default="1" href="settings/registration/">Registration</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_security', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_security" bind-event-click="" allow-default="1" href="settings/security/">Security</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_optimization" bind-event-click="" allow-default="1" href="settings/optimization/">Optimization</a> </li>
+				':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_optimization', false) ?
+                                '
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_optimization" bind-event-click="" allow-default="1" href="settings/optimization/">Optimization</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_session', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_session" bind-event-click="" allow-default="1" href="settings/session/">Session</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_email_templates', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_emails" bind-event-click="" allow-default="1" href="settings/emails/">Email Templates</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_currency', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_currency" bind-event-click="" allow-default="1" href="settings/currency/">Currency</a> </li>
-                                
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_pages', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_pages" bind-event-click="" allow-default="1" href="settings/pages/">Pages &amp; Content</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_heros', false) ?
+                                '
                                 <li class="draw-nav__item"> <a data-no-turbolink="true" class="draw-nav__link" data-nav-sub-item="settings_heros" bind-event-click="" allow-default="1" href="settings/heros/">Hero Designer</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_membership', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_memberships" bind-event-click="" allow-default="1" href="settings/memberships/">Memberships</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_motd', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_motd" bind-event-click="" allow-default="1" href="settings/motd/">Message of the Day</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_announcements', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_announcements" bind-event-click="" allow-default="1" href="settings/announcements/">Announcements</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_photos', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_attachments" bind-event-click="" allow-default="1" href="settings/photos/">Photos &amp; Attachments</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_languages', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_languages" bind-event-click="" allow-default="1" href="settings/languages/">Language Manager</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locations" bind-event-click="" allow-default="1" href="settings/locations/">Locations Manager</a> </li>
+				':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_locations', false) ?
+                                '
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_locations" bind-event-click="" allow-default="1" href="settings/locations/">Locations Manager</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_sizingrules', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_sizingrules" bind-event-click="" allow-default="1" href="settings/sizingrules/">Sizing Rules</a> </li>
-                                
                                 <li class="draw-nav__item--spacer"></li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_bc', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_bc" bind-event-click="" allow-default="1" href="settings/bc/">Business Central</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_api', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_api" bind-event-click="" allow-default="1" href="settings/api/">API Manager</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_automation', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_automation" bind-event-click="" allow-default="1" href="settings/automation/">Automation</a> </li>
+                                ':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_diagnosis', false) ?
+                                '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_diagnosis" bind-event-click="" allow-default="1" href="settings/diagnosis/">App Diagnosis</a> </li>
-				<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_serverinfo" bind-event-click="" allow-default="1" href="settings/serverinfo/">App &amp; Server Specs</a> </li>
-                        </ol>
+				':'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_settings_serverinfo', false) ?
+                                '
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_serverinfo" bind-event-click="" allow-default="1" href="settings/serverinfo/">App &amp; Server Specs</a> </li>
+                                ':'').
+                        '</ol>
                         <!-- settings subnav -->
                 </div>
                 <div class="draw-nav__panel draw-nav__panel--icon-overlay" bind-event-click="iLNav.setState(\'default\')"></div>

@@ -32,7 +32,7 @@ class role
 			SELECT title_$slng AS title
 			FROM " . DB_PREFIX . "roles
 			WHERE roleid = '" . intval($roleid) . "'
-				AND roletype = 'product'
+				AND roletype = 'portal'
 		", 0, null, __FILE__, __LINE__);
 		if ($this->sheel->db->num_rows($sqlroles) > 0)
 		{

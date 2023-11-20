@@ -1111,7 +1111,7 @@ class template
 		$this->templatebits['hpadurl8'] = $this->sheel->config['globalserversettings_homepageadurl8'];
 		$this->templatebits['section'] = ((!empty($this->meta['area'])) ? $this->meta['area'] : '');
 		$this->templatebits['footerdebug'] = (((!$this->forcenodebugbar)) ? $this->sheel->template_debug->print($node) : '');
-		$this->templatebits['js_phrases_content'] = $this->init_js_phrase_array($node);
+		$this->templatebits['js_phrases_content'] = '';
 		$this->init_js_phrase_array($node);
 		$this->templatebits['membershipstatus'] = $membershipstatus;
 		$this->templatebits['attachgauge'] = $attachgauge;
