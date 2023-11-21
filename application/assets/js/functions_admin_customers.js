@@ -161,6 +161,22 @@ function fetch_measurement_post_form(obj, id)
 		}
 	});
 }
+function validate_staff_form() {
+	haserror = false;
+	jQuery('#staffname').removeClass('error');
+	if (jQuery('#staffname').val()== '')
+	{
+		jQuery('#staffname').addClass('error');
+		jQuery.growl.error({title: phrase['_error'], message: 'Staff name can\'t be empty.'});
+		return false;
+	}
+	if (!haserror)
+	{
+		return true;
+	}
+	return false;
+
+}
 function submit_measurement_form() {
 	haserror = false;
 	jQuery('#measurements').removeClass('error');

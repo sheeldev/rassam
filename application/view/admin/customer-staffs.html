@@ -24,7 +24,7 @@
         </div>
     <div class="section overview">
     <div class="section section--no-border tags">
-        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" accept-charset="UTF-8" method="post">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/" accept-charset="UTF-8" method="post" onsubmit="return validate_staff_form()">
             <input type="hidden" name="subcmd" value="add" />
             <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
             <input type="hidden" name="company_id" value="{customercard[company_id]}" />
@@ -43,13 +43,13 @@
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <label class="draw-label" >{_code}</label>
-                                        <input name="form[staffcode]" value="{form[staffcode]}" class="draw-input" readonly/>
+                                        <input id="staffcode" name="form[staffcode]" value="{form[staffcode]}" class="draw-input" readonly/>
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div class="draw-input-wrapper">
                                         <label class="draw-label" >{_name}</label>
-                                        <input name="form[staffname]" value="{form[staffname]}" class="draw-input" />
+                                        <input id="staffname" name="form[staffname]" value="{form[staffname]}" class="draw-input" />
                                     </div>
                                 </div>
                                 <div class="draw-grid__cell">

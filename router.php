@@ -121,13 +121,9 @@ if (file_exists(__DIR__ . '/router_custom.php')) {
 $match = $router->match();
 if (($match and is_callable($match['target'])) or ($match and stristr($match['target'], '.php'))) { // run function if we need to
 	if (!is_callable($match['target']) and stristr($match['target'], '.php')) {
-
 		if (file_exists($match['target'] . 'x')) { // duplicate .php -> .phpx for custom changes with automatic updates on
 			require $match['target'] . 'x';
 		}
-		//        var_dump($match['target']); exit();
-
-		//die ($match['name']);
 		if (!isset($_SESSION['sheeldata']['user']['userid'])) {
 			require $match['target'];
 		} else {
@@ -142,8 +138,6 @@ if (($match and is_callable($match['target'])) or ($match and stristr($match['ta
 				}
 			}
 		}
-
-
 	} else {
 		call_user_func_array($match['target'], $match['params']);
 	}

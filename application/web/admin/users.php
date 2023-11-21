@@ -257,8 +257,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			$userstatuses = array('active' => '{_active_can_signin}', 'suspended' => '{_suspended_cannot_signin}', 'unverified' => '{_unverified_email_cannot_signin}', 'banned' => '{_banned_cannot_signin}', 'moderated' => '{_moderated_cannot_signin}');
 			$form['userstatus'] = $sheel->construct_pulldown('status', 'form[status]', $userstatuses, '', 'class="draw-select"');
 			$form['role_pulldown'] = $sheel->role->print_role_pulldown('', 1, 0, '', '', 'draw-select', 'form_roleid', 'form[roleid]', false);
-			$form['customer_pulldown'] = $sheel->admincp_customers->print_customer_pulldown('', 1, '', '', 'draw-select', 'form_customerid', 'form[customerid]', false);
-			$form['oldroleid'] = '';
+			$form['customer_pulldown'] = $sheel->admincp_customers->print_customer_pulldown('', 1, '', '', 'draw-select', 'form_customerid', 'form[customerid]', false, true);
 
 			$planactions = array(
 				'active' => '{_add_plan_invoice_mark_paid}',
@@ -468,7 +467,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 						$usernamehistory .= '<div class="sb" title="{_profile_changed_on_x::' . $sheel->common->print_date($array['datetime']) . '}">' . $array['username'] . '</div>';
 					}
 					$sheel->show['usernamehistory'] = true;
-				}
+				} 
 				$res['usernamehistory'] = $usernamehistory;
 				$res['first_name'] = o($res['first_name']);
 				$res['last_name'] = o($res['last_name']);
@@ -493,7 +492,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$form = $res;
 				$form['userid'] = intval($sheel->GPC['userid']);
 				$form['role_pulldown'] = $sheel->role->print_role_pulldown($res['roleid'], 0, 0, '', '', 'draw-select', 'form_roleid', 'form[roleid]', false);
-				$form['customer_pulldown'] = $sheel->admincp_customers->print_customer_pulldown($res['customerid'], 0, '', '', 'draw-select', 'form_customerid', 'form[customerid]', false);
+				$form['customer_pulldown'] = $sheel->admincp_customers->print_customer_pulldown($res['customerid'], 0, '', '', 'draw-select', 'form_customerid', 'form[customerid]', false, true);
 				
 				
 				

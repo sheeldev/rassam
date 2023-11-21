@@ -26,7 +26,7 @@
         </div>
     <div class="section overview">
     <div class="section section--no-border tags">
-        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" accept-charset="UTF-8" method="post" onsubmit="return submit_measurement_form()">
+        <form autocomplete="off" action="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/" accept-charset="UTF-8" method="post" onsubmit="return validate_staff_form()">
             <input type="hidden" name="subcmd" value="add" />
             <input type="hidden" name="customer_ref" value="{customercard[customer_ref]}" />
             <input type="hidden" name="company_id" value="{customercard[company_id]}" />

@@ -493,7 +493,7 @@ class admincp_customers extends admincp
         return $finalsizes;
     }
 
-    function print_customer_pulldown($selected = '', $shownoneselected = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_customerid', $fieldname = 'form[customerid]', $disabled = false)
+    function print_customer_pulldown($selected = '', $shownoneselected = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_customerid', $fieldname = 'form[customerid]', $disabled = false, $hasforadmin=false)
 	{
 		if (empty($slng))
 		{
@@ -514,6 +514,10 @@ class admincp_customers extends admincp
 		$sqlcustomers = $this->sheel->db->query($sql, 0, null, __FILE__, __LINE__);
 		if ($this->sheel->db->num_rows($sqlcustomers) > 0)
 		{
+            if (isset($hasforadmin) AND $hasforadmin)
+            {
+                $arr['0'] = '{_staff}';
+            }
 			while ($customers = $this->sheel->db->fetch_array($sqlcustomers, DB_ASSOC))
 			{
 				$arr[$customers['customer_id']] = stripslashes($customers['customer_ref']) . ' - ' . stripslashes($customers['customername']);

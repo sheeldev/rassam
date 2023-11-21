@@ -285,9 +285,7 @@ function update_user_listener()
 			jQuery('#user_email').removeClass('error');
 		}
 	});
-
 }
-
 function newapikey()
 {
 	var strVal = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
