@@ -9,7 +9,7 @@ define('SITE_ROOT', __DIR__ . '/');
 require_once(SITE_ROOT . 'application/config.php');
 
 
-$cronid = isset($_SERVER['argv'][1]) ? intval($_SERVER['argv'][1]) : null;
+$cronid = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : null;
 if ($cronid < 1) {
 	$cronid = null;
 }

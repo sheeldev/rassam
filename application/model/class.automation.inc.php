@@ -159,6 +159,7 @@ class automation
 		");
         $norun = ($this->sheel->db->affected_rows() > 0);
         $this->build_cron_next_runtime($nextrun);
+        //die ('return: ' . $norun . '--' .$nextrun . '--' . iif($norun, $nextrun, 0) );
         return iif($norun, $nextrun, 0);
     }
     function build_cron_next_runtime($nextrun = '')
@@ -195,14 +196,19 @@ class automation
     function execute_task($cronid = null)
     {
         $this->reset_locked_tasks();
-        
         if (!$this->automatic_update_in_progress()) {
-            if ($cronid = intval($cronid)) {
-                $nextitem = $this->sheel->db->query_fetch("
+            if ($cronid > 0) {
+                $nextitemsql = $this->sheel->db->query("
         				SELECT cronid, nextrun, resetafter, month, weekday, day, hour, minute, filename, loglevel, active, varname, product
         				FROM " . DB_PREFIX . "cron
-        				WHERE cronid = '" . intval($cronid) . "'
+        				WHERE cronid = '" . $cronid . "'
+                        AND active = '1'
+                        LIMIT 1
         			");
+                    if ($this->sheel->db->num_rows($nextitemsql) > 0) {
+                        $nextitem = $this->sheel->db->fetch_array($nextitemsql, DB_ASSOC);
+                    }
+                
             } else {
                 $nextitems = $this->sheel->db->query("
         				SELECT cronid, nextrun, resetafter, month, weekday, day, hour, minute, filename, loglevel, active, varname, product
@@ -212,15 +218,18 @@ class automation
         				ORDER BY nextrun
         			", 0, null, __FILE__, __LINE__);
             }
-            
-            if (isset($nextitem)) { // set new date for nextrun for this task
-                if ($nextrun = $this->construct_cron_item($nextitem['cronid'], $nextitem)) {
+            if (isset($nextitemsql)) { // set new date for nextrun for this task
+                //$this->lock_task($nextitem['cronid'], $nextitem['varname']);
+                        include_once(DIR_CRON . $nextitem['filename']);
+                        //$this->unlock_task($nextitem['cronid']);
+                /* if ($nextrun = $this->construct_cron_item($nextitem['cronid'], $nextitem)) {
+
                     if (!empty($nextitem['filename']) and file_exists(DIR_CRON . $nextitem['filename'])) {
                         $this->lock_task($nextitem['cronid'], $nextitem['varname']);
                         include_once(DIR_CRON . $nextitem['filename']);
                         $this->unlock_task($nextitem['cronid']);
                     }
-                }
+                } */
             } else if (isset($nextitems)) {
                 while ($nextitem = $this->sheel->db->fetch_array($nextitems, DB_ASSOC)) { // for each task, set new date for nextrun
                     if ($nextrun = $this->construct_cron_item($nextitem['cronid'], $nextitem)) {
@@ -250,7 +259,7 @@ class automation
             case 'weekly':
             case 'monthly':
             case 'emailqueue':
-            case 'currency':{
+            case 'currency': {
                     $resetafter = 1 * 60 * 60; // 12 hour max execution time! 
                 }
             default: {

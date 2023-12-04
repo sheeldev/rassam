@@ -31,30 +31,6 @@ $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Business Centra
 
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
     $areanav = 'settings_bc';
-
-    try {
-        $conf = new RdKafka\Conf();
-        $conf->set('security.protocol', 'ssl');
-
-
-        $conf->set('log_level', (string) LOG_DEBUG);
-        $conf->set('debug', 'all');
-        $conf->set('security.protocol', 'ssl');
-        $conf->set('ssl.ca.location', '/opt/kafka_2.13-3.6.0/ssl/ca-cert');
-        $conf->set('ssl.certificate.location', '/opt/kafka_2.13-3.6.0/ssl/cert-signed');
-
-        $rk = new RdKafka\Producer($conf);
-        $rk->addBrokers("portal.emilerassam.com:9092");
-        $topic = $rk->newTopic("test");
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Message payload");
-    }
-
-    //catch exception
-    catch (Exception $e) {
-        die('Message: ' . $e->getMessage());
-    }
-
-
     $currentarea = 'Business Central API Manager';
     if (($sidenav = $sheel->cache->fetch("sidenav_settings")) === false) {
         $sidenav = $sheel->admincp_nav->print('settings');

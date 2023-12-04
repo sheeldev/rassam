@@ -231,7 +231,6 @@ class dynamics
     } else {
       return false;
     }
-    return false;
   }
 
   private function fetchToken()
@@ -347,7 +346,7 @@ class dynamics
       curl_setopt($curl, CURLOPT_HTTPHEADER, $requestHeaders);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-      curl_setopt($curl, CURLOPT_VERBOSE, 1);
+      curl_setopt($curl, CURLOPT_VERBOSE, 0);
       curl_setopt($curl, CURLOPT_HEADER, 1);
 
 
