@@ -8,7 +8,7 @@ $cronlog = '';
 
 $cronlog .= $this->sheel->language->clean_cache();
 $cronlog .= $this->sheel->styles->clean_cache();
-
+$cronlog .= $this->sheel->xlsx->clean_cache();
 if (!empty($cronlog))
 {
         $cronlog = mb_substr($cronlog, 0, -2);

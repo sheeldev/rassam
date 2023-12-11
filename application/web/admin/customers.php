@@ -1,7 +1,6 @@
 <?php
 define('LOCATION', 'admin');
 require_once(DIR_CLASSES . '/vendor/office/autoload.php');
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 if (isset($match['params'])) {
@@ -929,8 +928,37 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'measurementsample') {
-            $samplefile = file_get_contents(DIR_OTHER . 'measurementsample.xlsx');
-            $sheel->common->download_file($samplefile, "measurementsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=code asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $custstaffs = $apiResponse->getData();
+                $mandatorymeasurements = explode(',', $sheel->config['mandatorymeasurements']);
+                $reader = new Xlsx();
+                $reader->setLoadSheetsOnly(["Sheet1"]);
+                $spreadsheet = $reader->load(DIR_OTHER . 'measurementsample.xlsx');
+                $sheet = $spreadsheet->getActiveSheet();
+                $last_row = (int) $sheet->getHighestRow() + 1;
+                foreach ($custstaffs as $key => $value) {
+                    foreach ($mandatorymeasurements as $key1 => $value1) {
+                        $sheet->setCellValue('A' . $last_row, $value['code']);
+                        $sheet->setCellValue('B' . $last_row, $value1);
+                        $last_row++;
+                    }
+                }
+                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+                $writer->save(DIR_TMP . 'xlsx/measurementsample-' . $customer['customer_ref'] . '.xlsx');
+                $samplefile = file_get_contents(DIR_TMP . 'xlsx/measurementsample-' . $customer['customer_ref'] . '.xlsx');
+                $sheel->common->download_file($samplefile, "measurementsample-" . $customer['customer_ref'] . ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+            } else {
+                $samplefile = file_get_contents(DIR_OTHER . 'measurementsample.xlsx');
+                $sheel->common->download_file($samplefile, "measurementsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            }
+
             exit();
         }
 
@@ -1144,12 +1172,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
             if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
-                
+
                 if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
                     $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                     exit();
                 }
-                
+
                 $updateResponse = $sheel->dynamics->update(
                     $sheel->GPC['systemId'],
                     array(
@@ -1195,7 +1223,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
-            $searchcondition = '$filter=systemId eq ' . $sheel->GPC['systemId'] ;
+            $searchcondition = '$filter=systemId eq ' . $sheel->GPC['systemId'];
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
                 $measurement = $apiResponse->getData();
@@ -1212,7 +1240,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $measurement['customer_id'] = $sheel->admincp_customers->get_customer_id($measurement['customerNo']);
             $areanav = 'customers_customers';
             $vars['areanav'] = $areanav;
-            $currentarea = $measurement['staffCode'].'-'. $measurement['measurementCode'];
+            $currentarea = $measurement['staffCode'] . '-' . $measurement['measurementCode'];
             $vars['currentarea'] = $currentarea;
             $sheel->template->fetch('main', 'measurement.html', 1);
             $sheel->template->parse_hash(
@@ -1437,18 +1465,50 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'sizesample') {
-            $samplefile = file_get_contents(DIR_OTHER . 'sizesample.xlsx');
-            $sheel->common->download_file($samplefile, "sizesample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=code asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $custstaffs = $apiResponse->getData();
+
+                $reader = new Xlsx();
+                $reader->setLoadSheetsOnly(["Sheet1"]);
+                $spreadsheet = $reader->load(DIR_OTHER . 'sizesample.xlsx');
+                $sheet = $spreadsheet->getActiveSheet();
+                $last_row = (int) $sheet->getHighestRow() + 1;
+                foreach ($custstaffs as $key => $value) {
+                    $sql = $sheel->db->query("
+                    SELECT code
+                    FROM " . DB_PREFIX . "size_types 
+                    WHERE  (gender = '" . substr($value['gender'], 0, 1) . "' OR gender='U') AND needsize = '1'
+                    ");
+                    while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                        $sheet->setCellValue('A' . $last_row, $value['code']);
+                        $sheet->setCellValue('E' . $last_row, $res['code']);
+                        $last_row++;
+                    }
+                }
+                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+                $writer->save(DIR_TMP . 'xlsx/sizesample-' . $customer['customer_ref'] . '.xlsx');
+                $samplefile = file_get_contents(DIR_TMP . 'xlsx/sizesample-' . $customer['customer_ref'] . '.xlsx');
+                $sheel->common->download_file($samplefile, "sizesample-" . $customer['customer_ref'] . ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+            } else {
+                $samplefile = file_get_contents(DIR_OTHER . 'sizesample.xlsx');
+                $sheel->common->download_file($samplefile, "sizesample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            }
             exit();
         }
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'suggest') {
-            
+
             $custstaffs = array();
             if (isset($sheel->GPC['specific']) and !empty($sheel->GPC['specific'])) {
                 $custstaffs = explode('|', $sheel->GPC['specific']);
                 $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and code eq \'' . $custstaffs[0] . '\''; // and positionCode eq \'' . $custstaffs[1] . '\' and departmentCode eq \'' . $custstaffs[2] . '\'';
-            }
-            else {
+            } else {
                 $sheel->db->query("
                     DELETE FROM " . DB_PREFIX . "bulk_tmp_sizes
                     WHERE customerno = '" . $customer['customer_ref'] . "'
@@ -1460,7 +1520,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
-            
+
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
                 $custstaffs = $apiResponse->getData();

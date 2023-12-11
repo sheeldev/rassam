@@ -162,5 +162,18 @@ class xlsx
 		}
 		return true;
 	}
+
+	function clean_cache()
+	{
+		$files = glob(DIR_TMP_XLSX . '*.xlsx');
+		if (!empty($files) and is_array($files) and count($files) > 0) {
+			foreach ($files as $file) {
+				if (!empty($file) and $file != '' and file_exists($file)) {
+					@unlink($file);
+				}
+			}
+		}
+		return 'xlsx->clean_cache(), ';
+	}
 }
 ?>
