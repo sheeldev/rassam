@@ -401,15 +401,41 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
 			}
 		}
+		else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'factory') {
+			if (isset($sheel->GPC['xid']) and $sheel->GPC['xid'] > 0) {
+				$sqlcomp = $sheel->db->query("
+					SELECT isfactory
+					FROM " . DB_PREFIX . "companies
+					WHERE company_id = '" . intval($sheel->GPC['xid']) . "'
+				", 0, null, __FILE__, __LINE__);
+
+				if ($sheel->db->num_rows($sqlcomp) > 0) {
+					$rescomp = $sheel->db->fetch_array($sqlcomp, DB_ASSOC);
+					$isfactory = $rescomp['isfactory'];
+					$newIsfactory = ($isfactory == '1') ? '0' : '1';
+					$message = ($isfactory == '1') ? 'Successfully removed manufacturing capabilities from company to ID ' . $sheel->GPC['xid'] : 'Successfully added manufacturing capabilities to company to ID ' . $sheel->GPC['xid'];
+					$sheel->db->query("
+						UPDATE " . DB_PREFIX . "companies
+						SET isfactory = '" . $newIsfactory . "'
+						WHERE company_id = '" . intval($sheel->GPC['xid']) . "'
+					", 0, null, __FILE__, __LINE__);
+				}
+				die(json_encode(array('response' => 1, 'message' => $message)));
+			} else {
+				$sheel->template->templateregistry['message'] = 'No company was selected.  Please try again.';
+				die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+			}
+		}
 		$sqlcomp = $sheel->db->query("
-			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone, isdefault
+			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone, isfactory, isdefault
 			FROM " . DB_PREFIX . "companies
 		", 0, null, __FILE__, __LINE__);
 		if ($sheel->db->num_rows($sqlcomp) > 0) {
 			while ($comp = $sheel->db->fetch_array($sqlcomp, DB_ASSOC)) {
 				$comp['currency'] = $sheel->currency->currencies[$comp['currencyid']]['currency_abbrev'];
 				$comp['country'] = $sheel->common_location->print_country_name($comp['countryid'], $_SESSION['sheeldata']['user']['slng'], false, '');
-				$comp['action'] = '<a href="javascript:;"' . (($comp['isdefault'] == '1') ? '' : ' data-bind-event-click="acp_confirm(\'default\', \'{_set_system_default_company}\', \'{_set_company_system_default_message}\', \'' . $comp['company_id'] . '\', 1, \'\', \'\')"') . ' class="btn btn-slim btn--icon" title="'. (($comp['isdefault'] == '1') ? '{_default_company}' : '{_set_as_default}') .'"><span class="halflings halflings-star draw-icon' . (($comp['isdefault'] == '1') ? '--sky-darker' : '') . '" aria-hidden="true"></span></a></li></ul>';
+				$comp['action'] = '<a href="javascript:;"' . ' data-bind-event-click="acp_confirm(\'factory\', \'{_set_company_as_factory}\', \'{_set_company_as_factory_message}\', \'' . $comp['company_id'] . '\', 1, \'\', \'\')"' . ' class="btn btn-slim btn--icon" title="'. (($comp['isfactory'] == '1') ? '{_is_factory}' : '{_set_as_factory}') .'"><span class="halflings halflings-factory draw-icon' . (($comp['isfactory'] == '1') ? '--yellow-dark' : '') . '" aria-hidden="true"></span></a>
+				<a href="javascript:;"' . (($comp['isdefault'] == '1') ? '' : ' data-bind-event-click="acp_confirm(\'default\', \'{_set_system_default_company}\', \'{_set_company_system_default_message}\', \'' . $comp['company_id'] . '\', 1, \'\', \'\')"') . ' class="btn btn-slim btn--icon" title="'. (($comp['isdefault'] == '1') ? '{_default_company}' : '{_set_as_default}') .'"><span class="halflings halflings-star draw-icon' . (($comp['isdefault'] == '1') ? '--sky-darker' : '') . '" aria-hidden="true"></span></a>';
 
 				$comps[] = $comp;;
 			}

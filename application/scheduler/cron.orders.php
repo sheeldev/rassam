@@ -22,14 +22,14 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 $sqlEventTime = $this->sheel->db->query("
                         SELECT MAX(eventtime) AS max_eventtime
                         FROM " . DB_PREFIX . "events
-                        WHERE companyid = '" . $rescompanies['company_id'] . "'
+                        WHERE companyid = '" . $rescompanies['company_id'] . "' AND (topic = 'Order' Or topic = 'Quote')
                         ");
 
                 if ($this->sheel->db->num_rows($sqlEventTime) > 0) {
                         $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
-                        $maxEventTime = $resEventTime['max_eventtime']-5;
+                        $maxEventTime = $resEventTime['max_eventtime']+1;
                         $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
-                        $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
+                        $searchcondition = '$filter=(documentType eq \'Quote\' or documentType eq \'Order\') and systemModifiedAt gt ' . $maxEventTimeIso . '';
                 }
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
@@ -81,14 +81,15 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
 
                                                         $this->sheel->db->query("
                                                                 INSERT INTO " . DB_PREFIX . "events
-                                                                (systemid, eventtime, eventfor, eventidentifier, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                 VALUES(
                                                                 '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                                 " . strtotime($order['systemModifiedAt']) . ",
                                                                 'customer',
+                                                                '" . $this->sheel->db->escape_string($order['no']) . "',
                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
                                                                 '" . $this->sheel->db->escape_string(json_encode($order)) . "',
-                                                                'Orders',
+                                                                '".$order['documentType']."',
                                                                 '0',
                                                                 '" . $checkpoint . "',
                                                                 '" . $rescompanies['company_id'] . "'
@@ -108,14 +109,15 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 }
                                                 $this->sheel->db->query("
                                                         INSERT INTO " . DB_PREFIX . "events
-                                                        (systemid, eventtime, eventfor, eventidentifier, eventdata, topic, istriggered, checkpointid, companyid)
+                                                        (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                         VALUES(
                                                         '" . $this->sheel->db->escape_string($order['systemId']) . "',
-                                                        " . strtotime($order['systemCreatedAt']) . ",
+                                                        " . strtotime($order['systemModifiedAt']) . ",
                                                         'customer',
+                                                        '" . $this->sheel->db->escape_string($order['no']) . "',
                                                         '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
                                                         '" . $this->sheel->db->escape_string(json_encode($order)) . "',
-                                                        'Orders',
+                                                        '".$order['documentType']."',
                                                         '0',
                                                         '" . $checkpoint . "',
                                                         '" . $rescompanies['company_id'] . "'

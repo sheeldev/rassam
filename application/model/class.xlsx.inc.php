@@ -16,7 +16,6 @@ class xlsx
 	}
 	function size_xlsx_to_db($data, $staffs, $customer_ref, $userid = 0, $bulk_id = 0)
 	{
-
 		if ($bulk_id > 0) {
 			foreach ($data as $t) {
 				echo $staffs[$t[0]];
@@ -29,18 +28,18 @@ class xlsx
 					?, ?, ?, ?, ?, ?, ?, ?, '[No Errors]',?, '0', ?, ?
 				)
 				ON DUPLICATE KEY UPDATE
-					staffcode = VALUES(staffcode),
-					positioncode = VALUES(positioncode),
-					departmentcode = VALUES(departmentcode),
-					fit = VALUES(fit),
-					cut = VALUES(cut),
-					size = VALUES(size),
-					type = VALUES(type),
-					customerno = VALUES(customerno),
-					dateuploaded = VALUES(dateuploaded),
-					uploaded = VALUES(uploaded),
-					user_id = VALUES(user_id),
-					bulk_id = VALUES(bulk_id)
+					staffcode = " . DB_PREFIX . "bulk_tmp_sizes.staffcode,
+					positioncode = " . DB_PREFIX . "bulk_tmp_sizes.positioncode,
+					departmentcode = " . DB_PREFIX . "bulk_tmp_sizes.departmentcode,
+					fit = " . DB_PREFIX . "bulk_tmp_sizes.fit,
+					cut = " . DB_PREFIX . "bulk_tmp_sizes.cut,
+					size = " . DB_PREFIX . "bulk_tmp_sizes.size,
+					type = " . DB_PREFIX . "bulk_tmp_sizes.type,
+					customerno = " . DB_PREFIX . "bulk_tmp_sizes.customerno,
+					dateuploaded = " . DB_PREFIX . "bulk_tmp_sizes.dateuploaded,
+					uploaded = " . DB_PREFIX . "bulk_tmp_sizes.uploaded,
+					user_id = " . DB_PREFIX . "bulk_tmp_sizes.user_id,
+					bulk_id = " . DB_PREFIX . "bulk_tmp_sizes.bulk_id
 			");
 
 				$stmt->bind_param(
@@ -60,50 +59,45 @@ class xlsx
 				$stmt->execute();
 
 			}
-			
+
 		} else {
 			foreach ($data as $t) {
-				$stmt = $this->sheel->db->prepare("
+				$stmt = $this->sheel->db->query("
 				INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
 				(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
 				VALUES (
 					NULL,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?, ?
+					'" . $t['staffcode'] . "',
+					'" . $t['positioncode'] . "',
+					'" . $t['departmentcode'] . "',
+					'" . $t['fit'] . "',
+					'" . $t['cut'] . "',
+					'" . $t['size'] . "',
+					'" . $t['type'] . "',
+					'" . $customer_ref . "',
+					'" . $t['error'] . "',
+					'" . $this->sheel->db->escape_string(DATETODAY) . "',
+					'0',
+					'" . $userid . "',
+					'" . $bulk_id . "'
 				)
 				ON DUPLICATE KEY UPDATE
-					staffcode = VALUES(staffcode),
-					positioncode = VALUES(positioncode),
-					departmentcode = VALUES(departmentcode),
-					fit = VALUES(fit),
-					cut = VALUES(cut),
-					size = VALUES(size),
-					type = VALUES(type),
-					customerno = VALUES(customerno),
-					errors = VALUES(errors),
-					dateuploaded = VALUES(dateuploaded),
-					uploaded = VALUES(uploaded),
-					user_id = VALUES(user_id),
-					bulk_id = VALUES(bulk_id)
+				staffcode = " . DB_PREFIX . "bulk_tmp_sizes.staffcode,
+				positioncode = " . DB_PREFIX . "bulk_tmp_sizes.positioncode,
+				departmentcode = " . DB_PREFIX . "bulk_tmp_sizes.departmentcode,
+				fit = " . DB_PREFIX . "bulk_tmp_sizes.fit,
+				cut = " . DB_PREFIX . "bulk_tmp_sizes.cut,
+				size = " . DB_PREFIX . "bulk_tmp_sizes.size,
+				type = " . DB_PREFIX . "bulk_tmp_sizes.type,
+				customerno = " . DB_PREFIX . "bulk_tmp_sizes.customerno,
+				errors = " . DB_PREFIX . "bulk_tmp_sizes.errors,
+				dateuploaded =" . DB_PREFIX . "bulk_tmp_sizes.dateuploaded,
+				uploaded = " . DB_PREFIX . "bulk_tmp_sizes.uploaded,
+				user_id = " . DB_PREFIX . "bulk_tmp_sizes.user_id,
+				bulk_id = " . DB_PREFIX . "bulk_tmp_sizes.bulk_id
 			");
-				$stmt->bind_param(
-					"ssssssssssss",
-					$t['staffcode'],
-					$t['positioncode'],
-					$t['departmentcode'],
-					$t['fit'],
-					$t['cut'],
-					$t['size'],
-					$t['type'],
-					$customer_ref,
-					$t['error'],
-					$this->sheel->db->escape_string(DATETODAY),
-					$userid,
-					$bulk_id
-				);
-				$stmt->execute();
 			}
 		}
-
 	}
 	function measurement_xlsx_to_db($data, $staffs, $customer_ref, $userid = 0, $bulk_id = 0)
 	{

@@ -55,7 +55,7 @@ $router->map('GET|POST', '/admin/settings/[branding:cmd]/[upload:subcmd]/', __DI
 $router->map('GET|POST', '/admin/settings/[locale:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_locale');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_companies');
 $router->map('GET|POST', '/admin/settings/[companies:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_add');
-$router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
+$router->map('GET|POST', '/admin/settings/[companies:cmd]/[delete|update|default|factory:subcmd]/[*:companyid]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_company_cmd');
 $router->map('GET|POST', '/admin/settings/[currency:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_currency');
 $router->map('GET|POST', '/admin/settings/[currencymanager:cmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_cmd');
 $router->map('GET|POST', '/admin/settings/[currencymanager:cmd]/[save:subcmd]/', __DIR__ . '/application/web/admin/currency.php', 'admin_currency_save');

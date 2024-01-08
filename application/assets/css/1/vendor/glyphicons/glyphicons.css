@@ -3663,6 +3663,10 @@
     content: "\E063"
 }
 
+.halflings-factory:before {
+    content:"\E136"
+}
+
 .halflings-tint:before {
     content: "\E064"
 }
