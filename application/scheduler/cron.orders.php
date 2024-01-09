@@ -24,17 +24,23 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         FROM " . DB_PREFIX . "events
                         WHERE companyid = '" . $rescompanies['company_id'] . "' AND (topic = 'Order' Or topic = 'Quote')
                         ");
-
-                if ($this->sheel->db->num_rows($sqlEventTime) > 0) {
-                        $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
-                        $maxEventTime = $resEventTime['max_eventtime']+1;
+                $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
+                if ($resEventTime['max_eventtime'] !== null) {
+                        $maxEventTime = $resEventTime['max_eventtime'] + 1;
                         $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
-                        $searchcondition = '$filter=(documentType eq \'Quote\' or documentType eq \'Order\') and systemModifiedAt gt ' . $maxEventTimeIso . '';
+                        $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
                 }
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
                         $orders = $apiResponse->getData();
                         foreach ($orders as $order) {
+                                if (isset($order['shipped']) && $order['shipped'] == 'true') {
+                                        $order['status'] = 'Shipped';
+                                        if (isset($order['shippedNotInvoiced']) && $order['shippedNotInvoiced'] != 'true') {
+                                        
+                                                $order['status'] = 'Completed';
+                                        }
+                                }
                                 $sqlcustomer = $this->sheel->db->query("
                                 SELECT *
                                 FROM " . DB_PREFIX . "customers 
@@ -89,7 +95,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 '" . $this->sheel->db->escape_string($order['no']) . "',
                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
                                                                 '" . $this->sheel->db->escape_string(json_encode($order)) . "',
-                                                                '".$order['documentType']."',
+                                                                '" . $order['documentType'] . "',
                                                                 '0',
                                                                 '" . $checkpoint . "',
                                                                 '" . $rescompanies['company_id'] . "'
@@ -117,7 +123,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         '" . $this->sheel->db->escape_string($order['no']) . "',
                                                         '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
                                                         '" . $this->sheel->db->escape_string(json_encode($order)) . "',
-                                                        '".$order['documentType']."',
+                                                        '" . $order['documentType'] . "',
                                                         '0',
                                                         '" . $checkpoint . "',
                                                         '" . $rescompanies['company_id'] . "'

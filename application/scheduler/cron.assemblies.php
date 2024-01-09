@@ -24,9 +24,8 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         FROM " . DB_PREFIX . "events
                         WHERE companyid = '" . $rescompanies['company_id'] . "' and topic = 'Assembly'
                         ");
-
-                if ($this->sheel->db->num_rows($sqlEventTime) > 0) {
-                        $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
+                $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
+                if ($resEventTime['max_eventtime'] !== null) {
                         $maxEventTime = $resEventTime['max_eventtime'] + 1;
                         $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                         $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
@@ -40,14 +39,14 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 }
                                 $assembly['documentType'] = 'Assembly';
                                 $sqlcustomer = $this->sheel->db->query("
-                                SELECT *
+                                SELECT customer_ref
                                 FROM " . DB_PREFIX . "customers 
                                 WHERE status = 'active' 
-                                AND customer_ref = '" . $assembly['sellToCustomerNo'] . "'
+                                AND customer_ref = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "'
                                 ");
                                 if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
                                         $sqlevent = $this->sheel->db->query("
-                                                SELECT *
+                                                SELECT eventid
                                                 FROM " . DB_PREFIX . "events
                                                 WHERE systemid = '" . $assembly['systemId'] . "'
                                                 ORDER BY eventtime DESC
@@ -73,8 +72,8 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
                                                         " . strtotime($assembly['systemModifiedAt']) . ",
                                                         'customer',
-                                                        '" . $assembly['sellToCustomerNo'] . "',
-                                                        '" . $assembly['assemblyNo'] . "',
+                                                        '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
+                                                        '" . $assembly['sourceNo'] . "',
                                                         '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
                                                         '" . $assembly['documentType'] . "',
                                                         '0',
