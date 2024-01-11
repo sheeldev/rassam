@@ -19,6 +19,9 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 if (!$this->sheel->dynamics->init_dynamics('erSales', $rescompanies['bc_code'])) {
                         $cronlog .= 'Inactive Dynamics API erSales for company ' . $rescompanies['name'] . ', ';
                 }
+                $maxEventTime = $rescompanies['eventstart'];
+                $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
+                $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
                         $orders = $apiResponse->getData();

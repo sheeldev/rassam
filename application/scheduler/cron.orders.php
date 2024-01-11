@@ -10,7 +10,7 @@ $this->sheel->timer->start();
 $sqlcompany = $this->sheel->db->query("
         SELECT *
         FROM " . DB_PREFIX . "companies
-        WHERE status = 'active' and name ='Aver'
+        WHERE status = 'active'
         ");
 $searchcondition = '';
 $orders = array();
@@ -24,12 +24,15 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         FROM " . DB_PREFIX . "events
                         WHERE companyid = '" . $rescompanies['company_id'] . "' AND (topic = 'Order' Or topic = 'Quote')
                         ");
+                $maxEventTime = '0';
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['max_eventtime'] !== null) {
                         $maxEventTime = $resEventTime['max_eventtime'] + 1;
-                        $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
-                        $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
+                } else {
+                        $maxEventTime = $rescompanies['eventstart'];
                 }
+                $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
+                $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
                         $orders = $apiResponse->getData();
@@ -37,7 +40,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 if (isset($order['shipped']) && $order['shipped'] == 'true') {
                                         $order['status'] = 'Shipped';
                                         if (isset($order['shippedNotInvoiced']) && $order['shippedNotInvoiced'] != 'true') {
-                                        
+
                                                 $order['status'] = 'Completed';
                                         }
                                 }
@@ -92,8 +95,8 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                                 " . strtotime($order['systemModifiedAt']) . ",
                                                                 'customer',
-                                                                '" . $this->sheel->db->escape_string($order['no']) . "',
                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                                '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
                                                                 '" . $this->sheel->db->escape_string(json_encode($order)) . "',
                                                                 '" . $order['documentType'] . "',
                                                                 '0',
@@ -120,8 +123,8 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                         " . strtotime($order['systemModifiedAt']) . ",
                                                         'customer',
-                                                        '" . $this->sheel->db->escape_string($order['no']) . "',
                                                         '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                        '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
                                                         '" . $this->sheel->db->escape_string(json_encode($order)) . "',
                                                         '" . $order['documentType'] . "',
                                                         '0',

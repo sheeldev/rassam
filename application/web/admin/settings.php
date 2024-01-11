@@ -260,7 +260,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				}
 				$sheel->db->query("
 					INSERT INTO " . DB_PREFIX . "companies
-					(company_id, name, bc_code, about, description, status, countryid,currencyid, timezone)
+					(company_id, name, bc_code, about, description, status, eventstart, countryid,currencyid, timezone)
 					VALUES(
 					NULL,
 					'" . $sheel->db->escape_string($sheel->GPC['form']['name']) . "',
@@ -268,6 +268,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 					'" . $sheel->db->escape_string($sheel->GPC['form']['about']) . "',
 					'" . $sheel->db->escape_string($sheel->GPC['form']['description']) . "',
 					'" . $sheel->db->escape_string($sheel->GPC['form']['status']) . "',
+					'" . strtotime($sheel->GPC['form']['eventstart']) . "',
 					'" . intval($countryid) . "',
 					'" . intval($sheel->GPC['form']['currencyid']) . "',
 					'" . $sheel->db->escape_string($sheel->GPC['form']['tz']) . "')
@@ -289,6 +290,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			$form['country_js_pulldown'] = $sheel->common_location->construct_country_pulldown(0, '', 'country', false);
 			$form['currencypulldown'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', '');
 			$statuses = array('active' => '{_active}', 'inactive' => '{_inactive}');
+			$form['eventstart'] ='';
 			$form['status'] = $sheel->construct_pulldown('status', 'form[status]', $statuses, '', 'class="draw-select"');
 			
 		} else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update' and isset($sheel->GPC['companyid']) and $sheel->GPC['companyid'] > 0) {
@@ -310,16 +312,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 					$sheel->admincp->print_action_failed('{_you_must_enter_a_business_central_reference}', HTTPS_SERVER_ADMIN . 'settings/companies/');
 					exit();
 				}
-				$sql = $sheel->db->query("
-				SELECT company_id
-				FROM " . DB_PREFIX . "companies
-				WHERE bc_code = '" . $sheel->db->escape_string($sheel->GPC['form']['bc_code']) . "'
-				", 0, null, __FILE__, __LINE__);
-				if ($sheel->db->num_rows($sql) > 0)
-				{
-					$sheel->admincp->print_action_failed('Business Central Code already exist. Please choose a different Code.', HTTPS_SERVER_ADMIN . 'settings/companies/update/'.intval($sheel->GPC['companyid']).'/');
-					exit();	
-				}
 
 				$sheel->db->query("
 					UPDATE " . DB_PREFIX . "companies
@@ -330,6 +322,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 					countryid = '" . $countryid . "',
 					currencyid = '" . intval($sheel->GPC['form']['currencyid']) . "',
 					status = '" . $sheel->GPC['form']['status'] . "',
+					eventstart = '" . strtotime($sheel->GPC['form']['eventstart']) . "',
 					timezone = '" . $sheel->GPC['form']['tz'] . "'
 					WHERE company_id = '" . intval($sheel->GPC['companyid']) . "'
 					LIMIT 1
@@ -338,7 +331,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				exit();
 			}
 			$sql = $sheel->db->query("
-			SELECT company_id, name, bc_code, about, description, countryid, currencyid, status, timezone
+			SELECT company_id, name, bc_code, about, description, countryid, currencyid, eventstart, status, timezone
 			FROM " . DB_PREFIX . "companies
 			WHERE company_id = '" . intval($sheel->GPC['companyid']) . "'
 			", 0, null, __FILE__, __LINE__);
@@ -349,6 +342,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$form['name'] = $res['name'];
 				$form['bc_code'] = $res['bc_code'];
 				$form['about'] = $res['about'];
+				$form['eventstart'] = date('Y-m-d', $res['eventstart']);
 				$form['description'] = $res['description'];
 				$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 				$tzlistfinal=array();
@@ -427,7 +421,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			}
 		}
 		$sqlcomp = $sheel->db->query("
-			SELECT company_id, name, bc_code, description, countryid, currencyid, status, timezone, isfactory, isdefault
+			SELECT company_id, name, bc_code, description, countryid, currencyid, status, eventstart, timezone, isfactory, isdefault
 			FROM " . DB_PREFIX . "companies
 		", 0, null, __FILE__, __LINE__);
 		if ($sheel->db->num_rows($sqlcomp) > 0) {
@@ -437,7 +431,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$comp['action'] = '<a href="javascript:;"' . ' data-bind-event-click="acp_confirm(\'factory\', \'{_set_company_as_factory}\', \'{_set_company_as_factory_message}\', \'' . $comp['company_id'] . '\', 1, \'\', \'\')"' . ' class="btn btn-slim btn--icon" title="'. (($comp['isfactory'] == '1') ? '{_is_factory}' : '{_set_as_factory}') .'"><span class="halflings halflings-factory draw-icon' . (($comp['isfactory'] == '1') ? '--yellow-dark' : '') . '" aria-hidden="true"></span></a>
 				<a href="javascript:;"' . (($comp['isdefault'] == '1') ? '' : ' data-bind-event-click="acp_confirm(\'default\', \'{_set_system_default_company}\', \'{_set_company_system_default_message}\', \'' . $comp['company_id'] . '\', 1, \'\', \'\')"') . ' class="btn btn-slim btn--icon" title="'. (($comp['isdefault'] == '1') ? '{_default_company}' : '{_set_as_default}') .'"><span class="halflings halflings-star draw-icon' . (($comp['isdefault'] == '1') ? '--sky-darker' : '') . '" aria-hidden="true"></span></a>';
 
-				$comps[] = $comp;;
+				$comps[] = $comp;
 			}
 		}
 		$sheel->template->parse_loop('main', array('comps' => $comps));
