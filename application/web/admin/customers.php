@@ -2649,7 +2649,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = "AND (c.customername Like '%" . $sheel->db->escape_string($q) . "%' OR c.description Like '%" . $sheel->db->escape_string($q) . "%')";
+                        $searchcondition = "AND (c.customername Like '%" . $sheel->db->escape_string($q) . "%' OR c.customername Like '%" . $sheel->db->escape_string($q) . "%')";
                         break;
                     }
                 case 'account': {
@@ -2694,6 +2694,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 // $res['lineitems'] = $sheel->admincp->fetch_line_items($res['orderidpublic']);
                 // $res['pictures'] = $sheel->buynow->fetch_line_item_pictures($res['orderidpublic']);
                 $res['countrycode'] = $sheel->common_location->print_country_name($res['country']);
+
+                $sqlOrderCount = $sheel->db->query("
+                    SELECT COUNT(DISTINCT(reference)) AS ordercount
+                    FROM " . DB_PREFIX . "events
+                    WHERE topic = 'Order' AND eventidentifier = '" . $res['customer_ref'] . "' AND eventfor = 'customer'
+                ");
+                $resOrderCount = $sheel->db->fetch_array($sqlOrderCount, DB_ASSOC);
+                $res['ordercount'] = $resOrderCount['ordercount'];
                 $customers[] = $res;
             }
         }

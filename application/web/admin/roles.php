@@ -250,7 +250,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                                 '" . $sheel->db->escape_string($res['accessgroup']) . "',
                                 '" . $sheel->db->escape_string($res['accessname']) . "',
                                 '1',
-                                '" . $res['original'] . "',
+                                '0',
                                 '" . $res['isadmin'] . "',
                                 '" . $res['ismenu'] . "'
                                 )

@@ -1403,14 +1403,18 @@ class common
 			}
 		}
 		if (empty($result)) {
-			$datetime = empty($datetime) ? null : $datetime;
+			if (is_numeric($datetime)) {
+				$datetime = date('Y-m-d H:i:s', $datetime);
+			} else {
+				$datetime = empty($datetime) ? null : $datetime;
+			}
 			$datetimezone = new DateTimeZone($this->sheel->config['globalserverlocale_sitetimezone']);
 			$date = new DateTime($datetime, $datetimezone);
 			if (!empty($forcetimezone)) {
 				$datetimezone = new DateTimeZone($forcetimezone);
 				$date->setTimezone($datetimezone);
 			}
-			$result = vdate($format, $date->getTimestamp()); // multi-language
+			$result =  $date->format($format);
 			if ($showtimezone) {
 				$result .= ' ' . $date->format('T');
 			}

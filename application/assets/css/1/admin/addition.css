@@ -11,10 +11,10 @@ select::-ms-expand {
 .bulk-actions-widget {
 	position: fixed;
 	bottom: 0;
-	left: 410px;
 	right: 0;
+	left:150px;
 	height: 0;
-	width: 92%;
+	width: 100%;
 	border-top: 0;
 	font-family: arial, sans-serif;
 	z-index: 10000;
@@ -29,7 +29,7 @@ select::-ms-expand {
 	display: inline-block;
 	text-align: left;
 	background: #fff;
-	width:65%;
+	width:70%;
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
 	height:450px;
@@ -86,7 +86,7 @@ select::-ms-expand {
 	}
 }
 .bulk-actions-widget.open {
-	height: 400px; /*355px;*/
+	height: 450px; /*355px;*/
 	transition: 0.5s;
 	z-index:99999
 }

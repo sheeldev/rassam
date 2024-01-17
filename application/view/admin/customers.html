@@ -631,6 +631,7 @@
                                           <th> <span><label>{_description}</label></span> </th>
                                           <th> <span><label>{_available_balance}</label></span> </th>
                                           <th> <span><label>{_total_balance}</label></span> </th>
+                                          <th> <span><label>{_orders}</label></span> </th>
                                           <th class="is-sortable"> <span><label>{_subscription}</label></span> </th>
                         </tr>
                         </thead>
@@ -643,9 +644,10 @@
                                 <td class="no-wrap"> <span>{customername2}</span></td>
                                 <td class="no-wrap"> <span>{customerabout}</span></td>
                                 <td class="status type--subdued">{customerdescription}</td>
-                                <td class="status no-wrap">{available_balance}</td>
-                                <td class="status no-wrap">{total_balance}</td>
-                                <td class="status no-wrap">{title_eng}</td>
+                                <td class="status no-wrap"><span class="badge badge--subdued">{available_balance}</span></td>
+                                <td class="status no-wrap"><span class="badge badge--subdued">{total_balance}</span></td>
+                                <td class="status no-wrap"><span class="badge badge--info"><a href="customers/orders/{customer_id}/">{ordercount}</a></span></td>
+                                <td class="status no-wrap"><span class="badge badge--subdued">{title_eng}</span></td>
                             </tr>
                             </loop name="customers">
                         </tbody>

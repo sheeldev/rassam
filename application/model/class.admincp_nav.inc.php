@@ -218,6 +218,9 @@ class admincp_nav extends admincp
                                 ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_customers_bc_list', false) ?
                                 '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customers_bc" bind-event-click="" allow-default="1" href="customers/bc/">{_bc_customers_list}</a> </li>'
                                 :'').
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_customer_orders_list', false) ?
+                                '<li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="customer_orders" bind-event-click="" allow-default="1" href="customers/orders/0/">{_orders}</a> </li>'
+                                :'').
                         '</ol>
                         <!-- customers subnav -->
                         <!-- users subnav -->

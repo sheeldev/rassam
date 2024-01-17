@@ -1,0 +1,110 @@
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    <div id="customers-index" class="page has-contextual-help customers-page">
+        <div class="header-row">
+            <header id="customers-index-header" class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span> {currentarea}
+              	</h1>
+              	<div class="header__primary-actions"> 
+                    <a class="btn btn-primary" href="{https_server_admin}customers/">{_cancel}</a>  
+                </div>
+                
+                <div class="header__secondary-actions">
+                    <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
+                    <ul class="segmented"> </ul>
+                </div>
+            </header>
+    </div>
+    
+    <div class="draw-grid draw-grid--outer-grid">
+        <div class="draw-grid__cell">
+            <div class="draw-card">
+                <div context="filterer">
+                    <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                        <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                            <div class="draw-input-wrapper">
+                                
+                                <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/" id="formsearch" accept-charset="UTF-8" method="get">
+                                <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}"></if>
+                                <div class="draw-field__connected-wrapper">
+                                    
+                                    <div class="draw-field--connected--no-flex">
+                                        <div class="draw-select__wrapper">
+                                            {form[filter_pulldown]}
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                        <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
+                                        <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                            <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
+                                        </div>
+                                    
+                                    <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                </div>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="customers-results">
+                    <div class="draw-card__section">
+                        <div class="table-wrapper">
+                            <table class="table-hover expanded">
+                                    <thead>
+                                        <tr>
+                                            <th class="is-sortable" width="10%"> <span><label>{_number}</label></span> </th>
+                                            <th width="10%"> <span><label>{_account}</label></span> </th>
+                                            <th width="30%"> <span><label>{_name}</label></span></th>
+                                            <th width="20%"> <span><label>{_status}</label></span></th>
+                                            <th width="10%"> <span><label>{_created_by}</label></span></th>
+                                            <th width="10%"> <span><label>{_created_date}</label></span></th>
+                                            <th width="10%"> <span><label>{_checkpoint}</label></span></th>
+                                            <th width="10%"> <span><label>{_time}</label></span></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <loop name="events">
+                                        <tr id="tr_selected_{customer_id}" valign="top">
+                                            <td><a href="customers/view/{customer_id}/">{reference}</a></td>
+                                            <td> <span>{eventidentifier}</span></td>
+                                            <td> <span>{customername}</span></td>
+                                            <td> <span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointmessage}</span></span></td>
+                                            <td class="no-wrap">{createdby}</td>
+                                            <td class="status no-wrap">{createdat}</td>
+                                            <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
+                                            <td class="status no-wrap">{eventtime}</td>
+                                            <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                                        </tr>
+                                        </loop name="events">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div define="iLNav.setPage(['customers','customer_orders']), iLPage.close()"></div>
+</section>
+
+<a href="javascript:;" onclick="jQuery('#assemblies_status').toggleClass('open')" class="close">Close</a></span>
+<div id="assemblies_status" class="bulk-actions-widget">
+    <div>
+        <h1><span class=">right  bold"><a href="javascript:;" onclick="jQuery('#assemblies_status').removeClass('open')"
+                    class="close">{_close}</a></span>{_assemblies}</h1><br>
+
+        <div class="clear"></div>
+        <br>
+
+    </div>
+</div>
+
+
+

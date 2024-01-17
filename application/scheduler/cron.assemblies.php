@@ -55,8 +55,54 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 ORDER BY eventtime DESC
                                                 LIMIT 1
                                                 ");
+                                                
                                         if ($this->sheel->db->num_rows($sqlevent) == 0) {
                                                 $checkpoint = 0;
+                                                $sqlactive = $this->sheel->db->query("
+                                                        SELECT COUNT(eventid) as event_count
+                                                        FROM " . DB_PREFIX . "events
+                                                        WHERE reference = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sourceNo']) . "' AND topic = 'Assembly'
+                                                        ");
+                                                $resactive = $this->sheel->db->fetch_array($sqlactive, DB_ASSOC);
+                                                if ($resactive['event_count'] == 0) {
+                                                        if (!$this->sheel->dynamics->init_dynamics('erSales', $rescompanies['bc_code'])) {
+                                                                $cronlog .= 'Inactive Dynamics API erSales for company ' . $rescompanies['name'] . ', ';
+                                                        }
+                                                        $searchcondition = '$filter=no eq \'' . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sourceNo']) . '\'';
+                                                        $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
+                                                        if ($apiResponse->isSuccess()) {
+                                                                $orders = $apiResponse->getData();
+                                                        }
+                                                        else {
+                                                                $cronlog .= $apiResponse->getErrorMessage() . ', ';
+                                                        }
+                                                        $sqlcheckpoint = $this->sheel->db->query("
+                                                                SELECT checkpointid
+                                                                FROM " . DB_PREFIX . "checkpoints
+                                                                WHERE type = 'Order' AND triggeredon = 'Active'
+                                                                LIMIT 1
+                                                                ");
+                                                                if ($this->sheel->db->num_rows($sqlcheckpoint) > 0) {
+                                                                        $rescheckpoint = $this->sheel->db->fetch_array($sqlcheckpoint, DB_ASSOC);
+                                                                        $checkpoint = $rescheckpoint['checkpointid'];
+                                                                }
+                                                        $order = $orders[0];
+                                                        $this->sheel->db->query("
+                                                                INSERT INTO " . DB_PREFIX . "events
+                                                                (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                VALUES(
+                                                                '" . $this->sheel->db->escape_string($order['systemId']) . "',
+                                                                " . (strtotime($assembly['systemModifiedAt'])) . ",
+                                                                'customer',
+                                                                '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                                '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
+                                                                '" . $this->sheel->db->escape_string(json_encode($order)) . "',
+                                                                '" . $order['documentType'] . "',
+                                                                '0',
+                                                                '" . $checkpoint . "',
+                                                                '" . $rescompanies['company_id'] . "'
+                                                                )", 0, null, __FILE__, __LINE__);
+                                                }
                                                 $sqlcheckpoint = $this->sheel->db->query("
                                                         SELECT checkpointid
                                                         FROM " . DB_PREFIX . "checkpoints
@@ -67,7 +113,6 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         $rescheckpoint = $this->sheel->db->fetch_array($sqlcheckpoint, DB_ASSOC);
                                                         $checkpoint = $rescheckpoint['checkpointid'];
                                                 }
-
                                                 $this->sheel->db->query("
                                                         INSERT INTO " . DB_PREFIX . "events
                                                         (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)

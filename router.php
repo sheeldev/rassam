@@ -39,6 +39,7 @@ $router->map('GET|POST', '/admin/customers/', __DIR__ . '/application/web/admin/
 $router->map('GET|POST', '/admin/customers/[bc:cmd]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_bc_list');
 $router->map('GET|POST', '/admin/customers/[org:cmd]/[*:no]/[*:sub]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_org');
 $router->map('GET|POST', '/admin/customers/[view|bcview|refresh:cmd]/[*:no]/', __DIR__ . '/application/web/admin/customers.php', 'admin_customers_view');
+$router->map('GET|POST', '/admin/customers/[orders:cmd]/[*:no]/', __DIR__ . '/application/web/admin/orders.php', 'admin_customer_orders_list');
 $router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/users.php', 'admin_users');
 $router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_user_view');
 $router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_user');
