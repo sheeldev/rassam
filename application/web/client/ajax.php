@@ -31,6 +31,7 @@ $methods = array(
 	'showtypes' => array('skipsession' => true),
 	'showimpactvalues' => array('skipsession' => true),
 	'showrule' => array('skipsession' => true),
+	'getassemblystatus' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -472,6 +473,13 @@ if (isset($sheel->GPC['do'])) {
 		$html .= '</fieldset>';
 		$sheel->template->templateregistry['showimpactvalues'] = $html;
 		echo $sheel->template->parse_template_phrases('showimpactvalues');
+		exit();
+	} else if ($sheel->GPC['do'] == 'getorderdetails') {
+		if (isset($sheel->GPC['orderno']) and !empty($sheel->GPC['orderno'])) {
+			$html = $sheel->common_order->get_order_details($sheel->GPC['orderno']);
+			$sheel->template->templateregistry['orderdetails'] = $html;
+			echo $sheel->template->parse_template_phrases('orderdetails');
+		}
 		exit();
 	} else if ($sheel->GPC['do'] == 'build') {
 		die('001');

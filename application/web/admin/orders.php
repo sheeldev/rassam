@@ -10,7 +10,7 @@ $sheel->template->meta['jsinclude'] = array(
     'header' => array(
         'functions',
         'admin',
-        'admin_customers',
+        'admin_orders',
         'inline',
         'vendor/chartist',
         'vendor/growl'
@@ -74,7 +74,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
-                WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . $res['customer_ref'] . "' and e.topic='Order' and eventfor='customer'
+                WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . $res['customer_ref'] . "' and e.topic='Order'
                 ORDER BY max_eventtime DESC
                 LIMIT 1
             ");

@@ -60,13 +60,13 @@
                                         <tr>
                                             <th class="is-sortable" width="10%"> <span><label>{_number}</label></span> </th>
                                             <th width="10%"> <span><label>{_account}</label></span> </th>
-                                            <th width="30%"> <span><label>{_name}</label></span></th>
+                                            <th width="20%"> <span><label>{_name}</label></span></th>
                                             <th width="20%"> <span><label>{_status}</label></span></th>
                                             <th width="10%"> <span><label>{_created_by}</label></span></th>
                                             <th width="10%"> <span><label>{_created_date}</label></span></th>
                                             <th width="10%"> <span><label>{_checkpoint}</label></span></th>
                                             <th width="10%"> <span><label>{_time}</label></span></th>
-                                            <th></th>
+                                            <th width="10%"><span><label>{_details}</label></span></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -80,7 +80,8 @@
                                             <td class="status no-wrap">{createdat}</td>
                                             <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
                                             <td class="status no-wrap">{eventtime}</td>
-                                            <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                                            <td><div id="toggleOrder"><a href="javascript:;" onclick="showOrderDetails('{reference}')"><i class="fa fa-ellipsis-h text-black-50"></i></a></div></td>
+                                            
                                         </tr>
                                         </loop name="events">
                                     </tbody>
@@ -94,12 +95,11 @@
     <div define="iLNav.setPage(['customers','customer_orders']), iLPage.close()"></div>
 </section>
 
-<a href="javascript:;" onclick="jQuery('#assemblies_status').toggleClass('open')" class="close">Close</a></span>
-<div id="assemblies_status" class="bulk-actions-widget">
+<div id="order_details" class="bulk-actions-widget">
     <div>
-        <h1><span class=">right  bold"><a href="javascript:;" onclick="jQuery('#assemblies_status').removeClass('open')"
-                    class="close">{_close}</a></span>{_assemblies}</h1><br>
-
+        <span class=">right  bold"><a href="javascript:;" onclick="jQuery('#order_details').removeClass('open')" class="close">{_close}</a></span><br>
+            <div id="orders_status">
+            </div>
         <div class="clear"></div>
         <br>
 
