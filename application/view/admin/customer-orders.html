@@ -58,29 +58,31 @@
                             <table class="table-hover expanded">
                                     <thead>
                                         <tr>
-                                            <th class="is-sortable" width="10%"> <span><label>{_number}</label></span> </th>
-                                            <th width="10%"> <span><label>{_account}</label></span> </th>
-                                            <th width="20%"> <span><label>{_name}</label></span></th>
-                                            <th width="20%"> <span><label>{_status}</label></span></th>
-                                            <th width="10%"> <span><label>{_created_by}</label></span></th>
-                                            <th width="10%"> <span><label>{_created_date}</label></span></th>
-                                            <th width="10%"> <span><label>{_checkpoint}</label></span></th>
-                                            <th width="10%"> <span><label>{_time}</label></span></th>
-                                            <th width="10%"><span><label>{_details}</label></span></th>
+                                            <th width="3%"> <span><i class="fa fa-cogs" style="font-size: 16px;"></i></span> </th>
+                                            <th> <span><label>{_number}</label></span> </th>
+                                            <th> <span><label>{_account}</label></span> </th>
+                                            <th> <span><label>{_name}</label></span></th>
+                                            <th> <span><label>{_status}</label></span></th>
+                                            <th> <span><label>{_created_by}</label></span></th>
+                                            <th> <span><label>{_created_date}</label></span></th>
+                                            <th> <span><label>{_checkpoint}</label></span></th>
+                                            <th> <span><label>{_time}</label></span></th>
+                                            <th><span><label>{_details}</label></span></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <loop name="events">
                                         <tr id="tr_selected_{customer_id}" valign="top">
-                                            <td><a href="customers/view/{customer_id}/">{reference}</a></td>
+                                            <td>{assembly}</td>
+                                            <td>{reference}</td>
                                             <td> <span>{eventidentifier}</span></td>
                                             <td> <span>{customername}</span></td>
-                                            <td> <span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointmessage}</span></span></td>
+                                            <td class="status no-wrap"> <span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointmessage}</span></span></td>
                                             <td class="no-wrap">{createdby}</td>
                                             <td class="status no-wrap">{createdat}</td>
                                             <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
                                             <td class="status no-wrap">{eventtime}</td>
-                                            <td><div id="toggleOrder"><a href="javascript:;" onclick="showOrderDetails('{reference}')"><i class="fa fa-ellipsis-h text-black-50"></i></a></div></td>
+                                            <td><div id="toggleOrder"><i class="fa fa-ellipsis-h" onclick="showOrderDetails('{reference}', '{eventidentifier}')" style="cursor: pointer;"></i></div></td>
                                             
                                         </tr>
                                         </loop name="events">

@@ -58,13 +58,33 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 
                                         if ($this->sheel->db->num_rows($sqlevent) == 0) {
                                                 $checkpoint = 0;
+                                                $canreoccur = 0;
                                                 $sqlactive = $this->sheel->db->query("
                                                         SELECT COUNT(eventid) as event_count
                                                         FROM " . DB_PREFIX . "events
                                                         WHERE reference = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sourceNo']) . "' AND topic = 'Assembly'
                                                         ");
                                                 $resactive = $this->sheel->db->fetch_array($sqlactive, DB_ASSOC);
-                                                if ($resactive['event_count'] == 0) {
+                                                $sqlOrders = $this->sheel->db->query("
+                                                        SELECT e.eventid, e.checkpointid, c.occuronce as occuronce
+                                                        FROM " . DB_PREFIX . "events e
+                                                        LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
+                                                        WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sellToCustomerNo']) . "' AND e.reference = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sourceNo']) . "' AND e.topic='Order'
+                                                        ORDER BY eventtime DESC
+                                                        LIMIT 1
+                                                ");
+                                                
+                                                if ($this->sheel->db->num_rows($sqlOrders) > 0) {
+                                                        $resorders = $this->sheel->db->fetch_array($sqlOrders, DB_ASSOC);
+                                                        if ($resorders['occuronce'] == 1) {
+                                                                $canreoccur = 0;
+                                                        } else {
+                                                                $canreoccur = 1;
+                                                        }
+                                                }
+
+
+                                                if ($resactive['event_count'] == 0 and $canreoccur == 1) {
                                                         if (!$this->sheel->dynamics->init_dynamics('erSales', $rescompanies['bc_code'])) {
                                                                 $cronlog .= 'Inactive Dynamics API erSales for company ' . $rescompanies['name'] . ', ';
                                                         }

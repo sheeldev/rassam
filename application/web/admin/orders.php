@@ -36,7 +36,6 @@ $sheel->template->meta['cssinclude'] = array(
 );
 $sheel->template->meta['areatitle'] = 'Admin CP | Customers';
 $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Customers';
-
 if (($sidenav = $sheel->cache->fetch("sidenav_customers")) === false) {
     $sidenav = $sheel->admincp_nav->print('customers');
     $sheel->cache->store("sidenav_customers", $sidenav);
@@ -80,11 +79,29 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             ");
 
             while ($resEvent = $sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
+                $sqlAssemblies = $sheel->db->query("
+                    SELECT eventdata
+                    FROM " . DB_PREFIX . "events e
+                    WHERE eventfor = 'customer' AND eventidentifier = '" . $res['customer_ref'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly'
+                    ORDER BY eventtime DESC
+                ");
+                $assemblycount = 0;
+                $previousassembly = '';
+                if ($sheel->db->num_rows($sqlAssemblies) > 0) {
+                    while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
+                        $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
+                        if ($previousassembly != $resAssemblyData['assemblyNo']) {
+                            $assemblycount++;
+                            $previousassembly = $resAssemblyData['assemblyNo'];
+                        }
+                    }
+                }
+                $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
                 $resEventData = json_decode($resEvent['eventdata'], true);
                 $resEvent['customername'] = $resEventData['sellToCustomerName'];
                 $resEvent['createdby'] = $resEventData['createdUser'];
-                $resEvent['createdat'] = $sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s',0,0,'');
-                $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s',0,0,'');
+                $resEvent['createdat'] = $sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
+                $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
                 $events[] = $resEvent;
             }
         }

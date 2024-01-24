@@ -31,7 +31,9 @@ $methods = array(
 	'showtypes' => array('skipsession' => true),
 	'showimpactvalues' => array('skipsession' => true),
 	'showrule' => array('skipsession' => true),
-	'getassemblystatus' => array('skipsession' => true),
+	'getorderdetails' => array('skipsession' => true),
+	'getassemblydetails' => array('skipsession' => true),
+	'getassemblyscans' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -475,10 +477,24 @@ if (isset($sheel->GPC['do'])) {
 		echo $sheel->template->parse_template_phrases('showimpactvalues');
 		exit();
 	} else if ($sheel->GPC['do'] == 'getorderdetails') {
-		if (isset($sheel->GPC['orderno']) and !empty($sheel->GPC['orderno'])) {
-			$html = $sheel->common_order->get_order_details($sheel->GPC['orderno']);
+		if (isset($sheel->GPC['orderno']) and !empty($sheel->GPC['orderno']) and isset($sheel->GPC['customerno']) and !empty($sheel->GPC['customerno'])) {
+			$html = $sheel->common_order->get_order_details($sheel->GPC['orderno'], $sheel->GPC['customerno']);
 			$sheel->template->templateregistry['orderdetails'] = $html;
 			echo $sheel->template->parse_template_phrases('orderdetails');
+		}
+		exit();
+	} else if ($sheel->GPC['do'] == 'getassemblydetails') {
+		if (isset($sheel->GPC['orderno']) and !empty($sheel->GPC['orderno']) and isset($sheel->GPC['customerno']) and !empty($sheel->GPC['customerno'])) {
+			$html = $sheel->common_order->get_assembly_details($sheel->GPC['orderno'], $sheel->GPC['customerno']);
+			$sheel->template->templateregistry['assemblydetails'] = $html;
+			echo $sheel->template->parse_template_phrases('assemblydetails');
+		}
+		exit();
+	} else if ($sheel->GPC['do'] == 'getassemblyscans') {
+		if (isset($sheel->GPC['assemblyno']) and !empty($sheel->GPC['assemblyno']) and isset($sheel->GPC['orderno']) and !empty($sheel->GPC['orderno']) and isset($sheel->GPC['customerno']) and !empty($sheel->GPC['customerno'])) {
+			$html = $sheel->common_order->get_assembly_scans($sheel->GPC['assemblyno'], $sheel->GPC['orderno'], $sheel->GPC['customerno']);
+			$sheel->template->templateregistry['assemblyscans'] = $html;
+			echo $sheel->template->parse_template_phrases('assemblyscans');
 		}
 		exit();
 	} else if ($sheel->GPC['do'] == 'build') {

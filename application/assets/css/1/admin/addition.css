@@ -32,7 +32,7 @@ select::-ms-expand {
 	width:70%;
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
-	height:450px;
+	height:550px;
 	padding:14px;
 	border:5px solid #dfdfdf
 }
@@ -61,7 +61,7 @@ select::-ms-expand {
 		margin-top: -48px;
 	}
 	#buyerrestrictions.bulk-actions-widget.open {
-		height: 450px;
+		height: 550px;
 		transition: 0.5s;
 	}
 }
@@ -86,7 +86,7 @@ select::-ms-expand {
 	}
 }
 .bulk-actions-widget.open {
-	height: 450px; /*355px;*/
+	height: 550px; /*355px;*/
 	transition: 0.5s;
 	z-index:99999
 }
@@ -961,6 +961,3 @@ fieldset legend {
 .blue {
     color: #479ccf
 }
-
-
-
