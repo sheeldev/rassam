@@ -136,7 +136,7 @@ class common_order extends common
 		usort($assemblies, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_tracking_for}: '.$orderno.'</h1>';
+		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_assemblies_for}: '.$orderno.'</h1>';
 		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
@@ -157,7 +157,7 @@ class common_order extends common
 		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
 		$html .= '<th> <span><label>{_time}</label></span></th>';
 		$html .= '<th> <span><label>{_source}</label></span></th>';
-		$html .= '<th><span><label>{_details}</label></span></th>';
+		$html .= '<th><span><label>{_updates}</label></span></th>';
 		$html .= '</tr>';
 		$html .= '</thead>';
 		$html .= '<tbody>';
@@ -232,11 +232,11 @@ class common_order extends common
 		$html .= '<table>';
 		$html .= '<thead>';
 		$html .= '<tr>';
-
+		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
 		$html .= '<th> <span><label>{_status}</label></span></th>';
 		$html .= '<th> <span><label>{_created_by}</label></span></th>';
 		$html .= '<th> <span><label>{_created_date}</label></span></th>';
-		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
+
 		$html .= '<th> <span><label>{_time}</label></span></th>';
 		$html .= '<th> <span><label>{_source}</label></span></th>';
 		$html .= '</tr>';
@@ -244,10 +244,10 @@ class common_order extends common
 		$html .= '<tbody>';
 		foreach ($assemblies as $assembly) {
 			$html .= '<tr valign="top">';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '<td  class="status no-wrap"><span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointmessage'] . '</span></span></td>';
 			$html .= '<td class="no-wrap">' . $assembly['createdby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['createdat'] . '</td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap">' . $assembly['eventtime'] . '</td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'green' : $assembly['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
 			$html .= '</tr>';

@@ -1,7 +1,8 @@
 function showOrderDetails(orderno, customerno) {
     fetch_js_object("toggleOrder").innerHTML = '<img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" width="13" height="13" alt="{_loading}" />';
-
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
+    var ajaxDisplay = fetch_js_object("orders_status");
+    ajaxDisplay.innerHTML ='';
     try {
         ajaxRequest = new XMLHttpRequest();
     }
@@ -20,7 +21,6 @@ function showOrderDetails(orderno, customerno) {
     }
     ajaxRequest.onreadystatechange = function () {
         if (ajaxRequest.readyState == 4 && ajaxRequest.responseText != '') {
-            var ajaxDisplay = fetch_js_object("orders_status");
             ajaxDisplay.innerHTML = ajaxRequest.responseText;
             fetch_js_object("toggleOrder").innerHTML = '<i class="fa fa-ellipsis-h" onclick="showOrderDetails(\'' + orderno + '\',\'' + customerno + '\')" style="cursor: pointer;"></i>';
         }
@@ -34,8 +34,9 @@ function showOrderDetails(orderno, customerno) {
 }
 
 function showAssemblyDetails(orderno, customerno) {
-
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
+    var ajaxDisplay = fetch_js_object("orders_status");
+    ajaxDisplay.innerHTML ='';
     try {
         ajaxRequest = new XMLHttpRequest();
     }
@@ -54,7 +55,6 @@ function showAssemblyDetails(orderno, customerno) {
     }
     ajaxRequest.onreadystatechange = function () {
         if (ajaxRequest.readyState == 4 && ajaxRequest.responseText != '') {
-            var ajaxDisplay = fetch_js_object("orders_status");
             ajaxDisplay.innerHTML = ajaxRequest.responseText;
         }
     }
@@ -68,6 +68,8 @@ function showAssemblyDetails(orderno, customerno) {
 }
 function showAssemblyScans(assemblyno, orderno, customerno) {
     var querystring = "&assemblyno=" + assemblyno + "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
+    var ajaxDisplay = fetch_js_object("orders_status");
+    ajaxDisplay.innerHTML ='';
     try {
         ajaxRequest = new XMLHttpRequest();
     }
@@ -86,7 +88,6 @@ function showAssemblyScans(assemblyno, orderno, customerno) {
     }
     ajaxRequest.onreadystatechange = function () {
         if (ajaxRequest.readyState == 4 && ajaxRequest.responseText != '') {
-            var ajaxDisplay = fetch_js_object("orders_status");
             ajaxDisplay.innerHTML = ajaxRequest.responseText;
         }
     }
