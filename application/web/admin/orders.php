@@ -73,9 +73,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
+                INNER JOIN (
+                    SELECT reference, MAX(eventtime) as max_eventtime
+                    FROM " . DB_PREFIX . "events
+                    WHERE eventfor = 'customer' AND eventidentifier = '" . $res['customer_ref'] . "' and topic='Order'
+                    GROUP BY reference
+                ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
                 WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . $res['customer_ref'] . "' and e.topic='Order'
-                ORDER BY max_eventtime DESC
-                LIMIT 1
+                ORDER BY max_eventtime DESC, reference ASC
             ");
 
             while ($resEvent = $sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
@@ -90,9 +95,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 if ($sheel->db->num_rows($sqlAssemblies) > 0) {
                     while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
                         $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
-                        if ($previousassembly != $resAssemblyData['assemblyNo']) {
+                        static $processedAssemblies = array();
+
+                        if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
                             $assemblycount++;
-                            $previousassembly = $resAssemblyData['assemblyNo'];
+                            $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
+                            $assemblies[] = $resAssemblies;
                         }
                     }
                 }

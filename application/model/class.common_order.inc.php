@@ -60,7 +60,7 @@ class common_order extends common
 		usort($events, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_tracking_for}: '.$orderno.'</h1>';
+		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_updates_for}: '.$orderno.'</h1>';
 		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
@@ -114,8 +114,6 @@ class common_order extends common
 			WHERE e.eventfor = 'customer' AND e.reference = '" . $orderno . "' AND e.eventidentifier = '" . $customerno . "' and e.topic='Assembly'
 			ORDER BY max_eventtime DESC
 		");
-
-		$assemblycount = 0;
 		$previousassembly = '';
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
@@ -127,8 +125,9 @@ class common_order extends common
 			$resAssemblies['createdby'] = $resAssemblyData['createdBy'];
 			$resAssemblies['createdat'] = $this->sheel->common->print_date($resAssemblyData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
 			$resAssemblies['eventtime'] = $this->sheel->common->print_date($resAssemblies['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
-			if ($previousassembly != $resAssemblyData['assemblyNo']) {
-				$assemblycount++;
+			static $processedAssemblies = array();
+			if ($previousassembly != $resAssemblyData['assemblyNo'] and !isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
+				$processedAssemblies[$resAssemblyData['assemblyNo']] = true;
 				$previousassembly = $resAssemblyData['assemblyNo'];
 				$assemblies[] = $resAssemblies;
 			}
@@ -198,8 +197,7 @@ class common_order extends common
 			ORDER BY max_eventtime DESC
 		");
 
-		$assemblycount = 0;
-		$previousassembly = '';
+
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
 			$resAssemblies['assemblynumber'] = $resAssemblyData['no'];
@@ -210,10 +208,8 @@ class common_order extends common
 			$resAssemblies['createdby'] = $resAssemblyData['createdBy'];
 			$resAssemblies['createdat'] = $this->sheel->common->print_date($resAssemblyData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
 			$resAssemblies['eventtime'] = $this->sheel->common->print_date($resAssemblies['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
-			$previousassembly = $resAssemblyData['assemblyNo'];
-			if ($previousassembly == $resAssemblyData['assemblyNo']) {
-				$assemblycount++;
-				$previousassembly = $resAssemblyData['assemblyNo'];
+
+			if ($assemblyno == $resAssemblyData['assemblyNo']) {
 				$assemblies[] = $resAssemblies;
 			}
 		}
@@ -222,7 +218,7 @@ class common_order extends common
 		});
 		
 
-		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_tracking_for}: '.$assemblyno.'</h1>';
+		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_updates_for}: '.$assemblyno.'</h1>';
 		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';

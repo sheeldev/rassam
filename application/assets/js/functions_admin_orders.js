@@ -1,5 +1,5 @@
-function showOrderDetails(orderno, customerno) {
-    fetch_js_object("toggleOrder").innerHTML = '<img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" width="13" height="13" alt="{_loading}" />';
+function showOrderDetails(orderno, customerno) {  
+    fetch_js_object("toggleOrder_"+orderno).innerHTML = '<img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" width="13" height="13" alt="{_loading}" />';
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
     var ajaxDisplay = fetch_js_object("orders_status");
     ajaxDisplay.innerHTML ='';
@@ -22,7 +22,7 @@ function showOrderDetails(orderno, customerno) {
     ajaxRequest.onreadystatechange = function () {
         if (ajaxRequest.readyState == 4 && ajaxRequest.responseText != '') {
             ajaxDisplay.innerHTML = ajaxRequest.responseText;
-            fetch_js_object("toggleOrder").innerHTML = '<i class="fa fa-ellipsis-h" onclick="showOrderDetails(\'' + orderno + '\',\'' + customerno + '\')" style="cursor: pointer;"></i>';
+            fetch_js_object("toggleOrder_"+orderno).innerHTML = '<i class="fa fa-ellipsis-h" onclick="showOrderDetails(\'' + orderno + '\',\'' + customerno + '\')" style="cursor: pointer;"></i>';
         }
     }
     ajaxRequest.open('GET', iL['AJAXURL'] + '?do=getorderdetails' + querystring, true);

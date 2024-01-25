@@ -32,7 +32,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $maxEventTime = $rescompanies['eventstart'];
                 }
                 $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
-                $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
+                $searchcondition = '$filter=(documentType eq \'Quote\' or documentType eq \'Order\') and systemModifiedAt gt ' . $maxEventTimeIso . '';
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
                         $orders = $apiResponse->getData();

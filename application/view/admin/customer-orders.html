@@ -82,7 +82,10 @@
                                             <td class="status no-wrap">{createdat}</td>
                                             <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
                                             <td class="status no-wrap">{eventtime}</td>
-                                            <td><div id="toggleOrder"><i class="fa fa-ellipsis-h" onclick="showOrderDetails('{reference}', '{eventidentifier}')" style="cursor: pointer;"></i></div></td>
+                                            <td><div id="toggleOrder_{reference}"><i class="fa fa-ellipsis-h" onclick="showOrderDetails('{reference}', '{eventidentifier}')" style="cursor: pointer;"></i></div></td>
+                                            
+                                        </tr>
+                                        <tr>
                                             
                                         </tr>
                                         </loop name="events">
