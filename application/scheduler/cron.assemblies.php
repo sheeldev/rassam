@@ -45,13 +45,11 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 if ($rescustomers['company_id'] != $rescompanies['company_id']) {
                                         $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . ' and icSourceNo eq \'' . $rescustomers['customer_ref'] . '\'';
                                 } else {
-                                        $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . ' and sellToCustomerNo eq \'' . $rescustomers['customer_ref'] . '\'';
+                                        $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . ' and (sellToCustomerNo eq \'' . $rescustomers['customer_ref'] . '\' and icSourceNo eq \' \')';
                                 }
-                                echo $searchcondition.": ";     
                                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                                 if ($apiResponse->isSuccess()) {
                                         $assemblies = $apiResponse->getData();
-                                        echo  count($assemblies)."\n";
                                         foreach ($assemblies as $assembly) {
                                                 if (isset($assembly['scanType']) && isset($assembly['sequenceNo'])) {
                                                         $assembly['status'] = $assembly['sequenceNo'] . '-' . ($assembly['scanType'] == 'Scan In' ? 'In' : 'Out');
@@ -77,7 +75,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         SELECT e.eventid, e.checkpointid, c.occuronce as occuronce
                                                                         FROM " . DB_PREFIX . "events e
                                                                         LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
-                                                                        WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "' AND e.reference = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sourceNo']) . "' AND e.topic='Order'
+                                                                        WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "' AND e.reference = '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "' AND e.topic='Order'
                                                                         ORDER BY eventtime DESC
                                                                         LIMIT 1
                                                                 ");
@@ -90,7 +88,6 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         $canreoccur = 1;
                                                                 }
                                                         }
-
                                                         if ($resactive['event_count'] == 0 and $canreoccur == 1) {
                                                                 if (!$this->sheel->dynamics->init_dynamics('erSales', $rescustomers['bc_code'])) {
                                                                         $cronlog .= 'Inactive Dynamics API erSales for company ' . $rescustomers['name'] . ', ';
@@ -139,21 +136,48 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 $rescheckpoint = $this->sheel->db->fetch_array($sqlcheckpoint, DB_ASSOC);
                                                                 $checkpoint = $rescheckpoint['checkpointid'];
                                                         }
-                                                        $this->sheel->db->query("
-                                                                        INSERT INTO " . DB_PREFIX . "events
-                                                                        (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
-                                                                        VALUES(
-                                                                        '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
-                                                                        " . strtotime($assembly['systemModifiedAt']) . ",
-                                                                        'customer',
-                                                                        '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
-                                                                        '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
-                                                                        '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
-                                                                        '" . $assembly['documentType'] . "',
-                                                                        '0',
-                                                                        '" . $checkpoint . "',
-                                                                        '" . $rescompanies['company_id'] . "'
-                                                                        )", 0, null, __FILE__, __LINE__);
+                                                        if (!empty($assembly['icSourceNo'])) {
+                                                                $icSourceNo = $this->sheel->db->escape_string($assembly['icSourceNo']);
+                                                                $sqlcustomer = $this->sheel->db->query("
+                                                                        SELECT customer_ref
+                                                                        FROM " . DB_PREFIX . "customers
+                                                                        WHERE customer_ref = '" . $icSourceNo . "' AND status = 'active'
+                                                                        ");
+                                                                if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
+                                                                        $this->sheel->db->query("
+                                                                                INSERT INTO " . DB_PREFIX . "events
+                                                                                (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                                VALUES(
+                                                                                '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
+                                                                                " . strtotime($assembly['systemModifiedAt']) . ",
+                                                                                'customer',
+                                                                                '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
+                                                                                '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
+                                                                                '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
+                                                                                '" . $assembly['documentType'] . "',
+                                                                                '0',
+                                                                                '" . $checkpoint . "',
+                                                                                '" . $rescompanies['company_id'] . "'
+                                                                                )", 0, null, __FILE__, __LINE__);
+                                                                }
+                                                        } else {
+                                                                $this->sheel->db->query("
+                                                                INSERT INTO " . DB_PREFIX . "events
+                                                                (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                VALUES(
+                                                                '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
+                                                                " . strtotime($assembly['systemModifiedAt']) . ",
+                                                                'customer',
+                                                                '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
+                                                                '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
+                                                                '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
+                                                                '" . $assembly['documentType'] . "',
+                                                                '0',
+                                                                '" . $checkpoint . "',
+                                                                '" . $rescompanies['company_id'] . "'
+                                                                )", 0, null, __FILE__, __LINE__);
+                                                        }
+                                                        
                                                 }
 
                                         }
