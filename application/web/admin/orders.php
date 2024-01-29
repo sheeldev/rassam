@@ -1,8 +1,5 @@
 <?php
 define('LOCATION', 'admin');
-require_once(DIR_CLASSES . '/vendor/office/autoload.php');
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-
 if (isset($match['params'])) {
     $sheel->GPC = array_merge($sheel->GPC, $match['params']);
 }
@@ -22,20 +19,16 @@ $sheel->template->meta['cssinclude'] = array(
     'common',
     'addition',
     'spinner',
-    'slidein',
-    'slider',
     'vendor' => array(
         'font-awesome',
         'glyphicons',
         'chartist',
         'growl',
-        'inputtags',
-        'balloon',
-        'bootstrap'
+        'balloon'
     )
 );
-$sheel->template->meta['areatitle'] = 'Admin CP | Customers';
-$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Customers';
+$sheel->template->meta['areatitle'] = 'Admin CP | Orders';
+$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Orders';
 if (($sidenav = $sheel->cache->fetch("sidenav_customers")) === false) {
     $sidenav = $sheel->admincp_nav->print('customers');
     $sheel->cache->store("sidenav_customers", $sidenav);
@@ -44,88 +37,125 @@ if (($sidenav = $sheel->cache->fetch("sidenav_customers")) === false) {
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
     $q = ((isset($sheel->GPC['q'])) ? o($sheel->GPC['q']) : '');
     $sheel->GPC['page'] = (!isset($sheel->GPC['page']) or isset($sheel->GPC['page']) and $sheel->GPC['page'] <= 0) ? 1 : intval($sheel->GPC['page']);
+    $sheel->GPC['pp'] = (!isset($sheel->GPC['pp']) or isset($sheel->GPC['pp']) and $sheel->GPC['pp'] <= 0) ? $sheel->config['globalfilters_maxrowsdisplay'] : intval($sheel->GPC['pp']);
     $vars = array(
         'sidenav' => $sidenav,
         'q' => $q,
     );
+    $searchfilters = array(
+        'number',
+        'account'
+    );
+    $searchcondition = '';
+    if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
+        switch ($sheel->GPC['filter']) {
+            case 'number': {
+                    $searchcondition = "AND e.reference = '" . $sheel->db->escape_string($q) . "'";
+                    break;
+                }
+            case 'account': {
+                    $searchcondition = "AND e.eventidentifier = '" . $sheel->db->escape_string($q) . "'";
+                    break;
+                }
+        }
+    }
     if ($sheel->GPC['no'] == '0') {
         $currentarea = 'Orders';
-        $sql = $sheel->db->query("
-        SELECT customer_ref
-            FROM " . DB_PREFIX . "customers
-        WHERE status='active'
-        ");
-    } else {
-        $sql = $sheel->db->query("
-        SELECT customer_ref
-            FROM " . DB_PREFIX . "customers
-        WHERE customer_id = '" . $sheel->GPC['no'] . "' and status='active'
-        LIMIT 1
-        ");
-    }
-    $events = array();
-    if ($sheel->db->num_rows($sql) > 0) {
-        while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
-            if ($sheel->GPC['no'] != '0') {
-                $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/view/' . $sheel->GPC['no'] . '/">' . $res['customer_ref'] . '</a> / </span> Orders';
-            }
-            $sqlEvents = $sheel->db->query("
+        $sqlEvents = $sheel->db->query("
                 SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
                     SELECT reference, MAX(eventtime) as max_eventtime
                     FROM " . DB_PREFIX . "events
-                    WHERE eventfor = 'customer' AND eventidentifier = '" . $res['customer_ref'] . "' and topic='Order'
+                    WHERE eventfor = 'customer' and topic='Order' 
                     GROUP BY reference
                 ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
-                WHERE e.eventfor = 'customer' AND e.eventidentifier = '" . $res['customer_ref'] . "' and e.topic='Order'
-                ORDER BY max_eventtime DESC, reference ASC
-            ");
-
-            while ($resEvent = $sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
-                $sqlAssemblies = $sheel->db->query("
+                WHERE e.eventfor = 'customer' and e.topic='Order' $searchcondition
+                ORDER BY max_eventtime DESC
+                LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->GPC['pp']) . "," . $sheel->GPC['pp']);
+        $sqlEventsCount = $sheel->db->query("
+                SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                FROM " . DB_PREFIX . "events e
+                LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
+                INNER JOIN (
+                    SELECT reference, MAX(eventtime) as max_eventtime
+                    FROM " . DB_PREFIX . "events
+                    WHERE eventfor = 'customer' and topic='Order' 
+                    GROUP BY reference
+                ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
+                WHERE e.eventfor = 'customer' and e.topic='Order' $searchcondition
+                ORDER BY max_eventtime DESC");
+    } else {
+        $sqlEvents = $sheel->db->query("
+                SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                FROM " . DB_PREFIX . "events e
+                LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
+                INNER JOIN (
+                    SELECT reference, MAX(eventtime) as max_eventtime
+                    FROM " . DB_PREFIX . "events
+                    WHERE eventfor = 'customer' and topic='Order' 
+                    GROUP BY reference
+                ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
+                WHERE e.eventfor = 'customer' and e.topic='Order' AND e.eventidentifier = '" . $sheel->GPC['no'] . "'
+                ORDER BY max_eventtime DESC
+                ");
+    }
+    $events = array();
+    if ($sheel->GPC['no'] != '0') {
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/view/' . $sheel->GPC['no'] . '/">' . $sheel->GPC['no'] . '</a> / </span> Orders';
+    }
+    while ($resEvent = $sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
+        $sqlAssemblies = $sheel->db->query("
                     SELECT eventdata
                     FROM " . DB_PREFIX . "events e
-                    WHERE eventfor = 'customer' AND eventidentifier = '" . $res['customer_ref'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly'
+                    WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly'
                     ORDER BY eventtime DESC
                 ");
-                $assemblycount = 0;
-                $previousassembly = '';
-                if ($sheel->db->num_rows($sqlAssemblies) > 0) {
-                    while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
-                        $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
-                        static $processedAssemblies = array();
+        $assemblycount = 0;
+        $previousassembly = '';
+        if ($sheel->db->num_rows($sqlAssemblies) > 0) {
+            while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
+                $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
+                static $processedAssemblies = array();
 
-                        if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
-                            $assemblycount++;
-                            $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
-                            $assemblies[] = $resAssemblies;
-                        }
-                    }
+                if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
+                    $assemblycount++;
+                    $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
+                    $assemblies[] = $resAssemblies;
                 }
-                $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
-                $resEventData = json_decode($resEvent['eventdata'], true);
-                $resEvent['customername'] = $resEventData['sellToCustomerName'];
-                $resEvent['createdby'] = $resEventData['createdUser'];
-                $resEvent['createdat'] = $sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
-                $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
-                $events[] = $resEvent;
             }
         }
+        $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
+        $resEventData = json_decode($resEvent['eventdata'], true);
+        $resEvent['customername'] = $resEventData['sellToCustomerName'];
+        $resEvent['createdby'] = $resEventData['createdUser'];
+        $resEvent['createdat'] = $sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
+        $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
+        $events[] = $resEvent;
     }
+
+    usort($events, function ($a, $b) {
+        return strtotime($b['createdat']) - strtotime($a['createdat']);
+    });
+    $number = (int) $sheel->db->num_rows($sqlEventsCount);
+    $form['number'] = number_format($number);
+    
+    $pageurl = PAGEURL;
+    $prevnext = $sheel->admincp->pagination($number, $sheel->GPC['pp'], $sheel->GPC['page'], $pageurl);
     $filter_options = array(
         '' => '{_select_filter} &ndash;',
         'account' => '{_account}',
-        'number' => '{_number}',
-        'date' => '{_created_date} (YYYY-MM-DD)'
+        'number' => '{_number}'
     );
+
     $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
     $form['q'] = (isset($sheel->GPC['q']) ? $sheel->GPC['q'] : '');
     unset($filter_options);
 
     $vars['areanav'] = $areanav;
     $vars['currentarea'] = $currentarea;
+    $vars['prevnext'] = (isset($prevnext) ? $prevnext : '');
     $sheel->template->fetch('main', 'customer-orders.html', 1);
     $sheel->template->parse_loop(
         'main',

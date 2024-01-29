@@ -12,7 +12,9 @@
               	<div class="header__primary-actions"> 
                     <a class="btn btn-primary" href="{https_server_admin}customers/">{_cancel}</a>  
                 </div>
-                
+                <div class="header__primary-actions"> 
+                    {prevnext}
+                </div>
                 <div class="header__secondary-actions">
                     <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
                     <ul class="segmented"> </ul>
@@ -28,7 +30,7 @@
                         <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
                             <div class="draw-input-wrapper">
                                 
-                                <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/" id="formsearch" accept-charset="UTF-8" method="get">
+                                <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/orders/0/" id="formsearch" accept-charset="UTF-8" method="get">
                                 <if condition="isset($sheel->GPC['view']) AND !empty($sheel->GPC['view'])"><input type="hidden" name="view" value="{form[view]}"></if>
                                 <div class="draw-field__connected-wrapper">
                                     

@@ -2664,7 +2664,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
         $vars['prevnext'] = '';
-        $requests = array();
         $sql = $sheel->db->query("
             SELECT c.*, sc.paymethod, sc.startdate, sc.renewdate, sc.active, s.title_eng,s.description_eng
             FROM " . DB_PREFIX . "customers c

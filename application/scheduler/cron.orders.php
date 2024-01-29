@@ -45,11 +45,11 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                         }
                                 }
                                 $sqlcustomer = $this->sheel->db->query("
-                                SELECT *
-                                FROM " . DB_PREFIX . "customers 
-                                WHERE status = 'active' 
-                                AND customer_ref = '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "'
-                                ");
+                                        SELECT *
+                                        FROM " . DB_PREFIX . "customers 
+                                        WHERE status = 'active' 
+                                        AND customer_ref = '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "'
+                                        ");
                                 if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
                                         $sqlevent = $this->sheel->db->query("
                                                 SELECT *

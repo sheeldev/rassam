@@ -60,7 +60,7 @@ class common_order extends common
 		usort($events, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_updates_for}: '.$orderno.'</h1>';
+		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span>' . $orderno . ' / <span class="breadcrumb"><a href="javascript:;" onclick="showAssemblyDetails(\'' . $orderno . '\', \'' . $customerno . '\')">{_assemblies}</a></span></h1>';
 		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
@@ -121,6 +121,7 @@ class common_order extends common
 			$resAssemblies['customername'] = $resAssemblyData['sellToCustomerName'];
 			$resAssemblies['description'] = $resAssemblyData['description'];
 			$resAssemblies['itemno'] = $resAssemblyData['itemNo'];
+			$resAssemblies['quantity'] = $resAssemblyData['quantity'];
 			$resAssemblies['mo'] = $resAssemblyData['erManufacturingOrderNo'];
 			$resAssemblies['createdby'] = $resAssemblyData['createdBy'];
 			$resAssemblies['createdat'] = $this->sheel->common->print_date($resAssemblyData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
@@ -135,7 +136,7 @@ class common_order extends common
 		usort($assemblies, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_assemblies_for}: '.$orderno.'</h1>';
+		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a></span> / {_assemblies}</h1>';
 		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
@@ -150,6 +151,7 @@ class common_order extends common
 		$html .= '<th> <span><label>{_manufacturing_order}</label></span></th>';
 		$html .= '<th> <span><label>{_item_code}</label></span></th>';
 		$html .= '<th> <span><label>{_item_name}</label></span></th>';
+		$html .= '<th> <span><label>{_quantity}</label></span></th>';
 		$html .= '<th> <span><label>{_status}</label></span></th>';
 		$html .= '<th> <span><label>{_created_by}</label></span></th>';
 		$html .= '<th> <span><label>{_created_date}</label></span></th>';
@@ -167,6 +169,7 @@ class common_order extends common
 			$html .= '<td> <span>' . $assembly['mo'] . '</span></td>';
 			$html .= '<td> <span>' . $assembly['itemno'] . '</span></td>';
 			$html .= '<td> <span>' . $assembly['description'] . '</span></td>';
+			$html .= '<td> <span>' . $assembly['quantity'] . '</span></td>';
 			$html .= '<td  class="status no-wrap"><span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointmessage'] . '</span></span></td>';
 			$html .= '<td class="no-wrap">' . $assembly['createdby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['createdat'] . '</td>';
@@ -216,9 +219,9 @@ class common_order extends common
 		usort($assemblies, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-		
 
-		$html .= '<div><h1><span class="'. ($this->sheel->config["template_textdirection"]=='ltr'?'right':'left').' bold"></span>{_updates_for}: '.$assemblyno.'</h1>';
+
+		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a> / <a href="javascript:;" onclick="showAssemblyDetails(\'' . $orderno . '\', \'' . $customerno . '\')">{_assemblies}</a> / </span>'.$assemblyno.'</h1>';
 		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
