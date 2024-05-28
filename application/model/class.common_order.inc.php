@@ -21,7 +21,6 @@ class common_order extends common
                 WHERE e.eventfor = 'customer' AND e.reference = '" . $orderno . "' AND e.eventidentifier = '" . $customerno . "' and e.topic='Order'
                 ORDER BY max_eventtime DESC
             ");
-
 		while ($resEvent = $this->sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
 			$resEventData = json_decode($resEvent['eventdata'], true);
 			if (isset($resEventData['quoteNo']) and $resEventData['quoteNo'] != '' and !$quoteexist) {
@@ -47,21 +46,17 @@ class common_order extends common
 					$warningcount++;
 					$warningmessage .= '<b>' . $warningcount . '. </b>{_quote_not_found}<br>';
 				}
-
-
 			}
 			$resEvent['customername'] = $resEventData['sellToCustomerName'];
 			$resEvent['createdby'] = $resEventData['createdUser'];
 			$resEvent['createdat'] = $this->sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
 			$resEvent['eventtime'] = $this->sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
 			$events[] = $resEvent;
-
 		}
 		usort($events, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
 		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span>' . $orderno . ' / <span class="breadcrumb"><a href="javascript:;" onclick="showAssemblyDetails(\'' . $orderno . '\', \'' . $customerno . '\')">{_assemblies}</a></span></h1>';
-		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
@@ -137,7 +132,6 @@ class common_order extends common
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
 		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a></span> / {_assemblies}</h1>';
-		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
@@ -179,7 +173,6 @@ class common_order extends common
 			$html .= '<td><div id="toggleOrder"><i class="fa fa-ellipsis-h" onclick="showAssemblyScans(\'' . $assembly['assemblynumber'] . '\',\'' . $assembly['reference'] . '\', \'' . $assembly['eventidentifier'] . '\')" style="cursor: pointer;"></i></div></td>';
 			$html .= '</tr>';
 		}
-
 		$html .= '</tbody>';
 		$html .= '</table>';
 		$html .= '</div>';
@@ -199,8 +192,6 @@ class common_order extends common
 			WHERE e.eventfor = 'customer' AND e.reference = '" . $orderno . "' AND e.eventidentifier = '" . $customerno . "' and e.topic='Assembly'
 			ORDER BY max_eventtime DESC
 		");
-
-
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
 			$resAssemblies['assemblynumber'] = $resAssemblyData['no'];
@@ -219,10 +210,7 @@ class common_order extends common
 		usort($assemblies, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-
-
 		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a> / <a href="javascript:;" onclick="showAssemblyDetails(\'' . $orderno . '\', \'' . $customerno . '\')">{_assemblies}</a> / </span>'.$assemblyno.'</h1>';
-		//$html .= '<div class="pt-9">{_enter_single_url_digital_download}</div>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
@@ -251,7 +239,6 @@ class common_order extends common
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'green' : $assembly['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
 			$html .= '</tr>';
 		}
-
 		$html .= '</tbody>';
 		$html .= '</table>';
 		$html .= '</div>';
