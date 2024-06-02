@@ -25,7 +25,6 @@ function init_page()
 {
         //init_bulk_animation();
 }
-
 function forward_with_loading(url, specific) {
 	if (!specific) {
 		jQuery('#refreshloading').removeClass('hide');

@@ -1,6 +1,6 @@
 <?php
 define('LOCATION', 'admin');
-require_once(DIR_CLASSES . '/vendor/office/autoload.php');
+require_once (DIR_CLASSES . '/vendor/office/autoload.php');
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 if (isset($match['params'])) {
@@ -85,13 +85,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = '$filter=contains( name, \'' . $sheel->db->escape_string($q) . '\')';
-                        break;
-                    }
+                    $searchcondition = '$filter=contains( name, \'' . $sheel->db->escape_string($q) . '\')';
+                    break;
+                }
                 case 'account': {
-                        $searchcondition = '$filter=number eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=number eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
             }
         }
         //$contactsResponse = $sheel->dynamics->select('?$select=No&$filter=No eq \'AVR-CF00001\'');
@@ -105,7 +105,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             exit();
         }
 
-
+        foreach ($customers as &$customer) {
+            if (isset($customer['blocked']) && $customer['blocked'] == '_x0020_') {
+                $customer['blocked'] = '<span class="label label-danger">{_active}</span>';
+            } else {
+                $customer['blocked'] = '<span class="label label-success">{_blocked} - ' . $customer['blocked'] . '</span>';
+            }
+        }
+        unset($customer);
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
@@ -485,7 +492,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->common->download_file($samplefile, "staffsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             exit();
         }
-
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'bulkupload') {
             if (isset($sheel->GPC['cancel']) and $sheel->GPC['cancel'] == 'cancel') { // user cancelled bulk upload
                 $sheel->db->query("
@@ -1384,21 +1390,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'staff': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'measurement': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and measurementCode eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and measurementCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'position': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and positionName eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and positionName eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'department': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and departmentName eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and departmentName eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
             }
         } else {
             $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
@@ -1505,29 +1511,112 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'suggest') {
 
             $custstaffs = array();
-            if (isset($sheel->GPC['specific']) and !empty($sheel->GPC['specific'])) {
-                $custstaffs = explode('|', $sheel->GPC['specific']);
-                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and code eq \'' . $custstaffs[0] . '\''; // and positionCode eq \'' . $custstaffs[1] . '\' and departmentCode eq \'' . $custstaffs[2] . '\'';
-            } else {
-                $sheel->db->query("
-                    DELETE FROM " . DB_PREFIX . "bulk_tmp_sizes
-                    WHERE customerno = '" . $customer['customer_ref'] . "'
-                        AND uploaded = '0'
-                    ", 0, null, __FILE__, __LINE__);
-                $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
-            }
-            if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
+            if (!empty($_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']])) {
+                $ids = explode("~", $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']]);
+                $response = array();
+                $response = $sheel->admincp_customers->get_customer_details_bc($ids, $companycode);
+                $custstaffs = $response['staffs'];
+                unset($ids);
+                $sheel->template->templateregistry['success'] = $response['success'];
+                $sheel->template->templateregistry['errors'] = $response['errors'];
+                $suggestdata = array();
+                foreach ($custstaffs as $keycust => $valuecust) {
+                    $tempsm = array();
+                    $sm = array();
+                    if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
+                        $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                        exit();
+                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $valuecust['code'] . '\'';
+                    $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                    if ($apiResponse->isSuccess()) {
+                        $tempsm = $apiResponse->getData();
+                    } else {
+                        $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                        $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                        exit();
+                    }
+                    foreach ($tempsm as $key => $value) {
+                        foreach ($value as $key1 => $value1) {
+                            if ($key1 == 'measurementCode') {
+                                $code = $value1;
+                            }
+                            if ($key1 == 'value') {
+                                $name['value'] = $value1;
+                            }
+                            if ($key1 == 'uomCode') {
+                                $name['uomCode'] = $value1;
+                            }
+                        }
+                        $sm += [$code => $name];
+                    }
+                    $sqlupd = $sheel->db->query("
+                        SELECT id, code, gender
+                            FROM " . DB_PREFIX . "size_types
+                        WHERE  (gender = '" . substr($valuecust['gender'], 0, 1) . "' OR gender='U') AND needsize = '1'
+                        ORDER BY code
+                    ");
+                    while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
+                        $res['staffcode'] = $valuecust['code'];
+                        $res['positioncode'] = $valuecust['positionCode'];
+                        $res['departmentcode'] = $valuecust['departmentCode'];
+                        $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
+                        $autosizearray = array();
+                        if ($ismavailable == '0') {
+                            $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
+                            $res['fit'] = $autosizearray['Fit'];
+                            $res['cut'] = $autosizearray['Cut'];
+                            $res['size'] = $autosizearray['Size'];
+                            $res['error'] = '[Auto Suggest]';
+                        } else {
+                            $res['fit'] = '';
+                            $res['cut'] = '';
+                            $res['size'] = '';
+                            $res['error'] = $ismavailable;
+                        }
 
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $custstaffs = $apiResponse->getData();
+                        $res['type'] = $res['code'];
+                        $suggestdata[] = $res;
+                    }
+                }
+                $sheel->xlsx->size_xlsx_to_db($suggestdata, $custstaffs, $customer['customer_ref'], $_SESSION['sheeldata']['user']['userid'], 0);
+                die(
+                    json_encode(
+                        array(
+                            'response' => '2',
+                            'success' => $sheel->template->parse_template_phrases('success'),
+                            'errors' => $sheel->template->parse_template_phrases('errors'),
+                            'ids' => $_COOKIE[COOKIE_PREFIX . 'inline' . $sheel->GPC['checkboxid']],
+                            'successids' => $response['successids'],
+                            'failedids' => $response['failedids']
+                        )
+                    )
+                );
             } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
+                if (isset($sheel->GPC['specific']) and !empty($sheel->GPC['specific'])) {
+                    $custstaffs = explode('|', $sheel->GPC['specific']);
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and code eq \'' . $custstaffs[0] . '\''; // and positionCode eq \'' . $custstaffs[1] . '\' and departmentCode eq \'' . $custstaffs[2] . '\'';
+                } else {
+                    $sheel->db->query("
+                        DELETE FROM " . DB_PREFIX . "bulk_tmp_sizes
+                        WHERE customerno = '" . $customer['customer_ref'] . "'
+                            AND uploaded = '0'
+                        ", 0, null, __FILE__, __LINE__);
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+                }
+                if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
+                    $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                    exit();
+                }
+
+                $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                if ($apiResponse->isSuccess()) {
+                    $custstaffs = $apiResponse->getData();
+                } else {
+                    $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                    $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                    exit();
+                }
             }
             $suggestdata = array();
             foreach ($custstaffs as $keycust => $valuecust) {
@@ -1546,7 +1635,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                     exit();
                 }
-
                 foreach ($tempsm as $key => $value) {
                     foreach ($value as $key1 => $value1) {
                         if ($key1 == 'measurementCode') {
@@ -1561,7 +1649,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     }
                     $sm += [$code => $name];
                 }
-
                 $sqlupd = $sheel->db->query("
                     SELECT id, code, gender
                         FROM " . DB_PREFIX . "size_types
@@ -2041,25 +2128,25 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'staff': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'size': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and sizeCode eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and sizeCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'position': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and positionName eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and positionName eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'department': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and departmentName eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and departmentName eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
                 case 'type': {
-                        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and sizeType eq \'' . $sheel->db->escape_string($q) . '\'';
-                        break;
-                    }
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and sizeType eq \'' . $sheel->db->escape_string($q) . '\'';
+                    break;
+                }
             }
         } else {
             $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
@@ -2634,13 +2721,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['view']) and !empty($sheel->GPC['view']) and in_array($sheel->GPC['view'], $searchviews)) {
             switch ($sheel->GPC['view']) {
                 case 'active': {
-                        $searchview = " WHERE (c.status = 'active')";
-                        break;
-                    }
+                    $searchview = " WHERE (c.status = 'active')";
+                    break;
+                }
                 case 'inactive': {
-                        $searchview = " WHERE (c.status = 'inactive')";
-                        break;
-                    }
+                    $searchview = " WHERE (c.status = 'inactive')";
+                    break;
+                }
             }
         } else {
             $searchview = " WHERE (c.status = 'active')";
@@ -2649,18 +2736,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'name': {
-                        $searchcondition = "AND (c.customername Like '%" . $sheel->db->escape_string($q) . "%' OR c.customername Like '%" . $sheel->db->escape_string($q) . "%')";
-                        break;
-                    }
+                    $searchcondition = "AND (c.customername Like '%" . $sheel->db->escape_string($q) . "%' OR c.customername Like '%" . $sheel->db->escape_string($q) . "%')";
+                    break;
+                }
                 case 'account': {
-                        $searchcondition = "AND (c.customer_ref = '" . $sheel->db->escape_string($q) . "' OR c.account_number = '" . $sheel->db->escape_string($q) . "')";
-                        break;
-                    }
+                    $searchcondition = "AND (c.customer_ref = '" . $sheel->db->escape_string($q) . "' OR c.account_number = '" . $sheel->db->escape_string($q) . "')";
+                    break;
+                }
 
                 case 'date': {
-                        $searchcondition = "AND (DATE(c.date_added) = '" . $sheel->db->escape_string($q) . "')";
-                        break;
-                    }
+                    $searchcondition = "AND (DATE(c.date_added) = '" . $sheel->db->escape_string($q) . "')";
+                    break;
+                }
             }
         }
         $vars['prevnext'] = '';

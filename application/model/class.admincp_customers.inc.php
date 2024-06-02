@@ -526,5 +526,42 @@ class admincp_customers extends admincp
 		$extradisabled = (($disabled) ? ' disabled="disabled"' : '');
 		return $this->sheel->construct_pulldown($id, $fieldname, $arr, $selected, 'class="' . $class . '"' . $extradisabled . ' ' . $js);
 	}
+
+    function get_customer_details_bc($staffids, $companycode) {
+        $allerrors = $successids = $failedids = $display = $searchcondition = '';
+        $count = 0;
+        $staffs = array();
+        $display = '{_suggested}';
+        if ($this->sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
+            foreach ($staffids as $staffid) {
+                $searchcondition = '$filter=systemId eq ' . $staffid;
+                $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
+               
+                if ($apiResponse->isSuccess()) {
+                    $staffs = array_merge($staffs, $apiResponse->getData());
+                    $successids .= "$staffid~";
+                    $count++;
+                } else {
+                    $failedids .= "$staffid~";
+                    $allerrors .= $apiResponse->getErrorMessage() . '|';
+                }
+            }
+        }
+        else {
+            return false;
+        }
+        $this->sheel->template->templateregistry['action'] = $display;
+        $this->sheel->template->templateregistry['actionplural'] = (($count == 1) ? '{_record}' : '{_records}');
+        $success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
+        $this->sheel->template->templateregistry['success'] = $success;
+        
+        return array(
+            'success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''),
+            'errors' => $allerrors,
+            'successids' => $successids,
+            'failedids' => $failedids,
+            'staffs'=> $staffs
+        );
+    }
 }
 ?>

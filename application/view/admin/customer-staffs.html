@@ -33,6 +33,9 @@
                     <div class="section-summary">
                         <h1>Add Staff For {customercard[customer_ref]}</h1>
                         <p>Add specific Staff Member for this customer. </p>
+                        
+					<p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/">Measurements</a></p>
+                    <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/">Sizes</a></p>	
                   </div>
                 </div>
                 <div class="layout-content__main">
@@ -93,8 +96,7 @@
                 <div class="section-summary">
                     <h1>Upload Staffs For {customercard[customer_ref]}</h1>
                     <p>Add Bulk Staff Members for this customer. </p>
-                    <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/staffs/?subcmd=staffsample'" /></div>
-								
+                    <p><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/staffs/?subcmd=staffsample'" /></p>		
               </div>
             </div>
             <div class="layout-content__main">
@@ -215,7 +217,8 @@
                                                                     <div class="draw-popover__content" style="max-height: 637px;">
                                                                         <div class="draw-popover__pane">
                                                                             <ul class="draw-list draw-list--compact">
-                                                                                 <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', '<label>This will delete all Staff Measurements and Sizes For Selected Staffs!</label> <br>Are you sure you want to delete selected Customer Staffs?', 'stassss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?company_id={customercard[company_id]}')">Delete</a></li>
+                                                                                <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('suggest', 'Suggest sizes for selected staff(s)?', 'Are you sure you want to suggest sizes for selected staff(s)?', 'stassss', 'selectedcount', '0', '0', '{https_server_admin}customers/org/{customercard[customer_id]}/sizes/')">Suggest Sizes</a></li>
+                                                                                <li><a class="draw-list__item" data-bind-event-click="bulk_confirm('delete', 'Delete selected Customer Staffs?', '<label>This will delete all Staff Measurements and Sizes For Selected Staffs!</label> <br>Are you sure you want to delete selected Customer Staffs?', 'stassss', 'selectedcount', '1', '1', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?company_id={customercard[company_id]}')">Delete</a></li>
                                                                             </ul> 
                                             
                                                                         </div>
