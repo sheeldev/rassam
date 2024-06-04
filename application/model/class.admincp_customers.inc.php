@@ -288,8 +288,7 @@ class admincp_customers extends admincp
                 'customername' => $res['customername'],
                 'subscriptionid' => $res['subscriptionid']
             );
-        } 
-        else {
+        } else {
             return array(
                 'customer_ref' => '{_staff}',
                 'customername' => '{_staff}',
@@ -309,8 +308,7 @@ class admincp_customers extends admincp
         if ($this->sheel->db->num_rows($sql) > 0) {
             $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
             return $res['customer_id'];
-        } 
-        else {
+        } else {
             return '0';
         }
     }
@@ -382,7 +380,7 @@ class admincp_customers extends admincp
                                         }
                                     }
                                 } else {
-                                    $return = ($return == '0' ? '' : $return) . '[Measurement Code not Found]<br>';
+                                    $return = ($return == '0' ? '' : $return) . '['.$keysm.' Measurement not Found]<br>';
                                 }
 
                             }
@@ -406,7 +404,7 @@ class admincp_customers extends admincp
                             }
 
                         } else {
-                            $return = ($return == '0' ? '' : $return) . '[Measurement Code not Found]<br>';
+                            $return = ($return == '0' ? '' : $return) . '['.$currentmccode.' Measurement not Found]<br>';
                         }
                     }
                     $prevmccode = $currentmccode;
@@ -423,7 +421,7 @@ class admincp_customers extends admincp
     function calculate_staff_size($measurements, $gender, $type)
     {
         $sql = $this->sheel->db->query("
-                    SELECT code, iscalculated, mcformula, mccode, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, 'rank', priority
+                    SELECT code, iscalculated, mcformula, mccode, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, rulerank, priority
                     FROM " . DB_PREFIX . "size_rules
                     WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
 			    ", 0, null, __FILE__, __LINE__);
@@ -431,31 +429,22 @@ class admincp_customers extends admincp
         while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
 
             if ($res['iscalculated'] == '1') {
-                //echo $res['code'] . '<br>';;
                 $formula = $res['mcformula'];
                 foreach ($measurements as $keysm => $valuesm) {
-                    //echo $keysm . ' ' . $formula . '<br>';
-                    //echo $keysm. ' ' . $formula. '<br>';
                     if (strpos($formula, $keysm) !== false) {
                         $formula = str_replace($keysm, $valuesm['value'], $formula);
                     }
-
                 }
-                //echo  $formula. '<br>';
-                $result = eval("return $formula;");
+                $result = eval ("return $formula;");
                 if ($result >= $res['mvaluelow'] and $result <= $res['mvaluehigh']) {
                     $temparray['rulecode'] = $res['code'];
                     $temparray['mccode'] = $res['mccode'];
                     $temparray['impact'] = $res['impact'];
                     $temparray['impactvalue'] = $res['impactvalue'];
-                    $temparray['rank'] = $res['rank'];
+                    $temparray['rank'] = $res['rulerank'];
                     $temparray['priority'] = $res['priority'];
                     $sizearray[] = $temparray;
-
-                } else {
-
                 }
-
             } else {
                 $sm = $measurements[$res['mccode']];
                 if ($sm['value'] >= $res['mvaluelow'] and $sm['value'] <= $res['mvaluehigh']) {
@@ -463,71 +452,66 @@ class admincp_customers extends admincp
                     $temparray['mccode'] = $res['mccode'];
                     $temparray['impact'] = $res['impact'];
                     $temparray['impactvalue'] = $res['impactvalue'];
-                    $temparray['rank'] = $res['rank'];
+                    $temparray['rank'] = $res['rulerank'];
                     $temparray['priority'] = $res['priority'];
                     $sizearray[] = $temparray;
-
-                } else {
-
                 }
             }
         }
         foreach ($sizearray as $d1) {
             $add = 0;
-            foreach ($sizearray as $d2) {
-                if ($d1['impact'] == $d2['impact']) {
-                    if ($d1['priority'] <= $d2['priority']) {
+            if (!isset($finalsizes[$d1['impact']])) {
+                $add = 1;
+            } else {
+                foreach ($sizearray as $d2) {
+                    if (($d1['priority'] < $finalsizes[$d1['impact']]['priority']) && ($d1['rank'] < $finalsizes[$d1['impact']]['rank'])) {
                         $add = 1;
                     } else {
                         $add = 0;
                     }
-                } else {
-                    $add = 1;
                 }
             }
             if ($add == 1) {
-                $finalsizes[$d1['impact']] = $d1['impactvalue'];
+                $finalsizes[$d1['impact']] = ['impactvalue' => $d1['impactvalue'], 'priority' => $d1['priority'], 'rank' => $d1['rank']];
             }
-
+        }   
+        foreach ($finalsizes as $impact => $data) {
+            $finalsizes[$impact] = $data['impactvalue'];
         }
         return $finalsizes;
     }
 
-    function print_customer_pulldown($selected = '', $shownoneselected = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_customerid', $fieldname = 'form[customerid]', $disabled = false, $hasforadmin=false)
-	{
-		if (empty($slng))
-		{
-			$slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : $this->sheel->language->fetch_site_slng();
-		}
-		$arr = array();
+    function print_customer_pulldown($selected = '', $shownoneselected = 0, $js = '', $slng = '', $class = 'draw-select', $id = 'form_customerid', $fieldname = 'form[customerid]', $disabled = false, $hasforadmin = false)
+    {
+        if (empty($slng)) {
+            $slng = isset($_SESSION['sheeldata']['user']['slng']) ? $_SESSION['sheeldata']['user']['slng'] : $this->sheel->language->fetch_site_slng();
+        }
+        $arr = array();
         $sql = "
 				SELECT customer_id, customer_ref, customername
 				FROM " . DB_PREFIX . "customers
 				WHERE status = 'active' 
 			";
 
-		if (isset($shownoneselected) AND $shownoneselected)
-		{
-			$selected = ((empty($selected)) ? '-1' : $selected);
-			$arr['-1'] = '{_select}';
-		}
-		$sqlcustomers = $this->sheel->db->query($sql, 0, null, __FILE__, __LINE__);
-		if ($this->sheel->db->num_rows($sqlcustomers) > 0)
-		{
-            if (isset($hasforadmin) AND $hasforadmin)
-            {
+        if (isset($shownoneselected) and $shownoneselected) {
+            $selected = ((empty($selected)) ? '-1' : $selected);
+            $arr['-1'] = '{_select}';
+        }
+        $sqlcustomers = $this->sheel->db->query($sql, 0, null, __FILE__, __LINE__);
+        if ($this->sheel->db->num_rows($sqlcustomers) > 0) {
+            if (isset($hasforadmin) and $hasforadmin) {
                 $arr['0'] = '{_staff}';
             }
-			while ($customers = $this->sheel->db->fetch_array($sqlcustomers, DB_ASSOC))
-			{
-				$arr[$customers['customer_id']] = stripslashes($customers['customer_ref']) . ' - ' . stripslashes($customers['customername']);
-			}
-		}
-		$extradisabled = (($disabled) ? ' disabled="disabled"' : '');
-		return $this->sheel->construct_pulldown($id, $fieldname, $arr, $selected, 'class="' . $class . '"' . $extradisabled . ' ' . $js);
-	}
+            while ($customers = $this->sheel->db->fetch_array($sqlcustomers, DB_ASSOC)) {
+                $arr[$customers['customer_id']] = stripslashes($customers['customer_ref']) . ' - ' . stripslashes($customers['customername']);
+            }
+        }
+        $extradisabled = (($disabled) ? ' disabled="disabled"' : '');
+        return $this->sheel->construct_pulldown($id, $fieldname, $arr, $selected, 'class="' . $class . '"' . $extradisabled . ' ' . $js);
+    }
 
-    function get_customer_details_bc($staffids, $companycode) {
+    function get_customer_details_bc($staffids, $companycode)
+    {
         $allerrors = $successids = $failedids = $display = $searchcondition = '';
         $count = 0;
         $staffs = array();
@@ -536,7 +520,7 @@ class admincp_customers extends admincp
             foreach ($staffids as $staffid) {
                 $searchcondition = '$filter=systemId eq ' . $staffid;
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
-               
+
                 if ($apiResponse->isSuccess()) {
                     $staffs = array_merge($staffs, $apiResponse->getData());
                     $successids .= "$staffid~";
@@ -546,21 +530,20 @@ class admincp_customers extends admincp
                     $allerrors .= $apiResponse->getErrorMessage() . '|';
                 }
             }
-        }
-        else {
+        } else {
             return false;
         }
         $this->sheel->template->templateregistry['action'] = $display;
         $this->sheel->template->templateregistry['actionplural'] = (($count == 1) ? '{_record}' : '{_records}');
         $success = '{_successfully_x_x_x::' . $this->sheel->template->parse_template_phrases('action') . '::' . $count . '::' . $this->sheel->template->parse_template_phrases('actionplural') . '}';
         $this->sheel->template->templateregistry['success'] = $success;
-        
+
         return array(
             'success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''),
             'errors' => $allerrors,
             'successids' => $successids,
             'failedids' => $failedids,
-            'staffs'=> $staffs
+            'staffs' => $staffs
         );
     }
 }

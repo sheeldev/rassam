@@ -119,7 +119,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     for ($x = 1; $x <= $rulescount; $x++) {
                         $sheel->db->query("
                             INSERT INTO " . DB_PREFIX . "size_rules
-                            (id, code, iscalculated, mcformula, mccode, mcname, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, `rank`, priority, active)
+                            (id, code, iscalculated, mcformula, mccode, mcname, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, rulerank, priority, active)
                             VALUES
                             (NULL,
                             '" . $sheel->db->escape_string($sheel->GPC['code']) . "',
