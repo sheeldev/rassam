@@ -353,68 +353,73 @@ class admincp_customers extends admincp
 
     function is_staff_measurements_available($companycode, $customerno, $staffcode, $measurements, $gender, $type)
     {
-        $return = '0';
+        $return = array();
         $sql = $this->sheel->db->query("
-                    SELECT mccode, uom, iscalculated, mcformula, mvaluelow, mvaluehigh
+                    SELECT mccode, code, uom, iscalculated, mcformula, mvaluelow, mvaluehigh
                     FROM " . DB_PREFIX . "size_rules
-                    WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
+                    WHERE rulerank='1' AND active='1' AND gender = '" . $gender . "' AND type = '" . $type . "'
+                    GROUP BY code
 			    ", 0, null, __FILE__, __LINE__);
         if ($this->sheel->db->num_rows($sql) > 0) {
-            $withininterval = '0';
-            $prevmccode = '';
+
             while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
                 $currentmccode = $res['mccode'];
-                //echo $currentmccode . ' - ' . $prevmccode . '<br>';
                 if ($res['iscalculated'] == '1') {
-                    if ($currentmccode != $prevmccode) {
-                        $formula = $res['mcformula'];
-                        foreach ($measurements as $keysm => $valuesm) {
-                            if (strpos($formula, $keysm) !== false) {
-                                $sm = $measurements[$keysm];
+                    $formula = $res['mcformula'];
+                    foreach ($measurements as $keysm => $valuesm) {
+                        if (strpos($formula, $keysm) !== false) {
+                            $formula = str_replace($keysm, $valuesm['value'], $formula);
+                        }
+                        if (strpos($formula, $keysm) !== false) {
+                            $sm = $measurements[$keysm];
+                            if (!isset($return[$keysm])) {
                                 if (is_array($sm)) {
                                     if ($sm['value'] == '0') {
-                                        $return = ($return == '0' ? '' : $return) . '[Required Measurement ' . $keysm . ' cannot be 0]<br>';
-                                    } else {
-                                        if ($sm['value'] >= $res['mvaluelow'] and $sm['value'] <= $res['mvaluehigh']) {
-                                            $withininterval = '1';
-                                        }
+                                        $return[$keysm] = $res['code'] . ': [Required Measurement ' . $keysm . ' cannot be 0]<br>';
                                     }
                                 } else {
-                                    $return = ($return == '0' ? '' : $return) . '['.$keysm.' Measurement not Found]<br>';
+                                    $return[$keysm] =  $res['code'] . ': [' . $keysm . ' Measurement not Found]<br>';
                                 }
-
                             }
                         }
                     }
-                    $prevmccode = $currentmccode;
+                    $result = eval ("return $formula;");
+                    $sqlinterval = $this->sheel->db->query("
+                        SELECT id
+                        FROM " . DB_PREFIX . "size_rules
+                        WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "' and code = '" . $res['code'] . "' and (mvaluelow <= '" . $result . "' and mvaluehigh >= '" . $result . "')
+                    ", 0, null, __FILE__, __LINE__);
 
+                    if ($this->sheel->db->num_rows($sqlinterval) == 0) {
+                        $return[$keysm] =  $res['code'] . ': [Required Measurement ' .  $res['mccode'] .' cannot be smaller or greater than fixed rule intervals]<br>';
+                    }
                 } else {
-                    if ($currentmccode != $prevmccode) {
+                    if (!isset($return[$currentmccode])) {
                         $sm = $measurements[$currentmccode];
                         if (is_array($sm)) {
+                            if ($sm['uomCode'] != $res['uom']) {
+                                $return[$currentmccode] =  $res['code'] . ': [Required Measurement ' . $currentmccode . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
+                            }
                             if ($sm['value'] == '0') {
-                                $return = ($return == '0' ? '' : $return) . '[Required Measurement ' . $currentmccode . ' cannot be 0]<br>';
+                                $return[$currentmccode] =  $res['code'] . ': [Required Measurement ' . $currentmccode . ' cannot be 0]<br>';
                             } else {
-                                if (floatval($sm['value']) >= floatval($res['mvaluelow']) or floatval($sm['value']) <= floatval($res['mvaluehigh'])) {
-                                    $withininterval = '1';
+                                $sqlinterval = $this->sheel->db->query("
+                                    SELECT id
+                                    FROM " . DB_PREFIX . "size_rules
+                                    WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "' AND code = '" . $res['code'] . "' AND (mvaluelow <= '" . $sm['value'] . "' AND mvaluehigh >='" . $sm['value'] . "')
+                                ", 0, null, __FILE__, __LINE__);
+                                if ($this->sheel->db->num_rows($sqlinterval) == 0) {
+                                    $return[$currentmccode] =  $res['code'] . ': [Required Measurement ' . $currentmccode . ' cannot be smaller or greater than fixed rule intervals]<br>';
                                 }
                             }
-                            if ($sm['uomCode'] != $res['uom']) {
-                                $return = ($return == '0' ? '' : $return) . '[Required Measurement ' . $currentmccode . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
-                            }
-
                         } else {
-                            $return = ($return == '0' ? '' : $return) . '['.$currentmccode.' Measurement not Found]<br>';
+                            $return[$currentmccode] =  $res['code'] . ': [' . $currentmccode . ' Measurement not Found]<br>';
                         }
                     }
-                    $prevmccode = $currentmccode;
                 }
             }
-            if ($withininterval == '0') {
-                $return = ($return == '0' ? '' : $return) . '[Required Measurement cannot be smaller or greater than fixed rules]<br>';
-            }
         } else {
-            $return = ($return == '0' ? '' : $return) . '[No Rule Specified]<br>';
+            $return['OVERALL'] = '[No Rule Specified] <br>';
         }
         return $return;
     }
@@ -474,7 +479,7 @@ class admincp_customers extends admincp
             if ($add == 1) {
                 $finalsizes[$d1['impact']] = ['impactvalue' => $d1['impactvalue'], 'priority' => $d1['priority'], 'rank' => $d1['rank']];
             }
-        }   
+        }
         foreach ($finalsizes as $impact => $data) {
             $finalsizes[$impact] = $data['impactvalue'];
         }

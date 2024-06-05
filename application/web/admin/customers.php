@@ -488,8 +488,56 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'staffsample') {
-            $samplefile = file_get_contents(DIR_OTHER . 'staffsample.xlsx');
-            $sheel->common->download_file($samplefile, "staffsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            $positions = $departments = array();
+            $positionsuccess = $departmentsuccess = false;
+            if (!$sheel->dynamics->init_dynamics('erCustomerPositions', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=positionCode asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $positions = $apiResponse->getData();
+                $positionsuccess = true;
+            }
+            if (!$sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=departmentCode asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+
+            if ($apiResponse->isSuccess()) {
+                $departments = $apiResponse->getData();
+                $departmentsuccess = true;
+            }
+            if ($positionsuccess and $departmentsuccess) {
+                $reader = new Xlsx();
+                $spreadsheet = $reader->load(DIR_OTHER . 'staffsample.xlsx');
+                $sheet = $spreadsheet->getSheet('1');
+                $last_row = 2;
+                foreach ($positions as $key => $value) {
+                    $sheet->setCellValue('A' . $last_row, $value['positionCode']);
+                    $sheet->setCellValue('B' . $last_row, $value['positionName']);
+                    $sheet->setCellValue('C' . $last_row, $value['departmentCode']);
+                    $last_row++;
+                }
+                $sheet = $spreadsheet->getSheet('2');
+                $last_row = 2;
+                foreach ($departments as $key => $value) {
+                    $sheet->setCellValue('A' . $last_row, $value['departmentCode']);
+                    $sheet->setCellValue('B' . $last_row, $value['departmentName']);
+                    $last_row++;
+                }
+                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+                $writer->save(DIR_TMP . 'xlsx/staffsample-' . $customer['customer_ref'] . '.xlsx');
+                $samplefile = file_get_contents(DIR_TMP . 'xlsx/staffsample-' . $customer['customer_ref'] . '.xlsx');
+                $sheel->common->download_file($samplefile, "staffsample-" . $customer['customer_ref'] . ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+            } else {
+                $samplefile = file_get_contents(DIR_OTHER . 'staffsample.xlsx');
+                $sheel->common->download_file($samplefile, "staffsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            }
             exit();
         }
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'bulkupload') {
@@ -525,11 +573,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'D') {
                         refresh(HTTPS_SERVER_ADMIN . 'customers/org/' . $customer['customer_id'] . '/staffs/?error=invalidff');
                     }
-                    $sheetData = $spreadsheet->getSheet(0)->toArray();
+
+                    $sheetData = $spreadsheet->getSheet('0')->toArray();
+                    $sheetData = array_filter($sheetData, function($row) {
+                        return !empty($row[0]);
+                    });
                     $fileinfo = serialize($sheetData);
                     if (isset($sheel->GPC['containsheader']) and $sheel->GPC['containsheader'] == '1') {
                         unset($sheetData[0]);
                     }
+
                     $sheel->db->query("
                             INSERT INTO " . DB_PREFIX . "bulk_sessions
                             (id, user_id, dateupload, uploadtype, linescount, linesuploaded, picturesuploaded, haserrors, fileinfo)
@@ -999,7 +1052,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'D') {
                         refresh(HTTPS_SERVER_ADMIN . 'customers/org/' . $customer['customer_id'] . '/measurements/?error=invalidff');
                     }
-                    $sheetData = $spreadsheet->getSheet(0)->toArray();
+                    $sheetData = $spreadsheet->getSheet('0')->toArray();
                     $fileinfo = serialize($sheetData);
                     if (isset($sheel->GPC['containsheader']) and $sheel->GPC['containsheader'] == '1') {
                         unset($sheetData[0]);
@@ -1661,7 +1714,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $res['departmentcode'] = $valuecust['departmentCode'];
                     $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
                     $autosizearray = array();
-                    if ($ismavailable == '0') {
+                    if (count($ismavailable) == 0) {
                         $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
                         $res['fit'] = $autosizearray['Fit'];
                         $res['cut'] = $autosizearray['Cut'];
@@ -1671,7 +1724,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $res['fit'] = '';
                         $res['cut'] = '';
                         $res['size'] = '';
-                        $res['error'] = $ismavailable;
+                        $countelement = 1;
+                        foreach ($ismavailable as $element) {
+                            $res['error'] .= print_r($element, true) . "\n";
+                        }
+
                     }
 
                     $res['type'] = $res['code'];
@@ -1713,7 +1770,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'E') {
                         refresh(HTTPS_SERVER_ADMIN . 'customers/org/' . $customer['customer_id'] . '/sizes/?error=invalidff');
                     }
-                    $sheetData = $spreadsheet->getSheet(0)->toArray();
+                    $sheetData = $spreadsheet->getSheet('0')->toArray();
                     $fileinfo = serialize($sheetData);
                     if (isset($sheel->GPC['containsheader']) and $sheel->GPC['containsheader'] == '1') {
                         unset($sheetData[0]);
