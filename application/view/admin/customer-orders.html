@@ -61,12 +61,13 @@
                                     <thead>
                                         <tr>
                                             <th width="3%"> <span><i class="fa fa-cogs" style="font-size: 16px;"></i></span> </th>
+                                            <th width="3%"> <span><i class="fa fa-spinner" style="font-size: 16px;"></i></span> </th>
                                             <th> <span><label>{_number}</label></span> </th>
                                             <th> <span><label>{_account}</label></span> </th>
                                             <th> <span><label>{_name}</label></span></th>
                                             <th> <span><label>{_status}</label></span></th>
                                             <th> <span><label>{_created_by}</label></span></th>
-                                            <th> <span><label>{_created_date}</label></span></th>
+                                            <th> <span><label>{_event_date}</label></span></th>
                                             <th> <span><label>{_checkpoint}</label></span></th>
                                             <th> <span><label>{_time}</label></span></th>
                                             <th><span><label>{_updates}</label></span></th>
@@ -76,6 +77,7 @@
                                         <loop name="events">
                                         <tr id="tr_selected_{customer_id}" valign="top">
                                             <td>{assembly}</td>
+                                            <td>{progress}</td>
                                             <td>{reference}</td>
                                             <td> <span>{eventidentifier}</span></td>
                                             <td> <span>{customername}</span></td>

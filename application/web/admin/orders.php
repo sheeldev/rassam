@@ -113,12 +113,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     ORDER BY eventtime DESC
                 ");
         $assemblycount = 0;
+        $qty = 0;
         $previousassembly = '';
         if ($sheel->db->num_rows($sqlAssemblies) > 0) {
             while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
                 $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
                 static $processedAssemblies = array();
-
+                $qty =$qty + intval($resAssemblyData['quantity']); //to be used at a later stage
                 if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
                     $assemblycount++;
                     $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
@@ -126,7 +127,50 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
             }
         }
+        $sqlcheckpointend = $sheel->db->query("
+            SELECT cp.checkpointid
+            FROM " . DB_PREFIX . "checkpoints cp
+            INNER JOIN " . DB_PREFIX . "checkpoints_sequence cs ON cp.checkpointid = cs.checkpointid
+            WHERE cp.type='Assembly' and cs.isend = 1
+            LIMIT 1
+        ");
+        $sqlcheckpointstart = $sheel->db->query("
+            SELECT cp.checkpointid
+            FROM " . DB_PREFIX . "checkpoints cp
+            INNER JOIN " . DB_PREFIX . "checkpoints_sequence cs ON cp.checkpointid = cs.checkpointid
+            WHERE cp.type='Assembly' and cs.isstart = 1
+            LIMIT 1
+        ");
+        $resCheckpointend = $sheel->db->fetch_array($sqlcheckpointend, DB_ASSOC);
+        $resCheckpointstart = $sheel->db->fetch_array($sqlcheckpointstart, DB_ASSOC);
+        $sqlFinishedAssemblies = $sheel->db->query("
+            SELECT eventid
+            FROM " . DB_PREFIX . "events
+            WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly' and checkpointid = '" . $resCheckpointend['checkpointid'] . "'
+        ");
+        $sqlStartedAssemblies = $sheel->db->query("
+            SELECT eventid
+            FROM " . DB_PREFIX . "events
+            WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly' and checkpointid = '" . $resCheckpointstart['checkpointid'] . "'
+        ");
+        $startedqty = $sheel->db->num_rows($sqlStartedAssemblies);
+        $finishedqty = $sheel->db->num_rows($sqlFinishedAssemblies);
+        $progresspercent=round(($finishedqty/$startedqty)*100);
+        $color = '';
+
+        if ($progresspercent >= 0 && $progresspercent < 25) {
+            $color = 'darkred';
+        } else if ($progresspercent >= 25 && $progresspercent < 50) {
+            $color = 'sheelColor';
+        } else if ($progresspercent >= 50 && $progresspercent < 75) {
+            $color = 'amber';
+        } else if ($progresspercent >= 75 && $progresspercent < 100) {
+            $color = 'lightgreen';
+        } else if ($progresspercent == 100) {
+            $color = 'green';
+        }
         $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
+        $resEvent['progress'] = '<span class="draw-status__badge ' . $color . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $progresspercent . '%</span></span>';
         $resEventData = json_decode($resEvent['eventdata'], true);
         $resEvent['customername'] = $resEventData['sellToCustomerName'];
         $resEvent['createdby'] = $resEventData['createdUser'];
@@ -134,7 +178,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
         $events[] = $resEvent;
     }
-
+    //die ();
     usort($events, function ($a, $b) {
         return strtotime($b['createdat']) - strtotime($a['createdat']);
     });
