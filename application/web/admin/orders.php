@@ -50,13 +50,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
         switch ($sheel->GPC['filter']) {
             case 'number': {
-                    $searchcondition = "AND e.reference = '" . $sheel->db->escape_string($q) . "'";
-                    break;
-                }
+                $searchcondition = "AND e.reference = '" . $sheel->db->escape_string($q) . "'";
+                break;
+            }
             case 'account': {
-                    $searchcondition = "AND e.eventidentifier = '" . $sheel->db->escape_string($q) . "'";
-                    break;
-                }
+                $searchcondition = "AND e.eventidentifier = '" . $sheel->db->escape_string($q) . "'";
+                break;
+            }
         }
     }
     if ($sheel->GPC['no'] == '0') {
@@ -119,9 +119,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
                 $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
                 static $processedAssemblies = array();
-                $qty =$qty + intval($resAssemblyData['quantity']); //to be used at a later stage
+                
                 if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
                     $assemblycount++;
+                    $qty = $qty + intval($resAssemblyData['quantity']); //to be used at a later stage
                     $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
                     $assemblies[] = $resAssemblies;
                 }
@@ -134,28 +135,22 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             WHERE cp.type='Assembly' and cs.isend = 1
             LIMIT 1
         ");
-        $sqlcheckpointstart = $sheel->db->query("
-            SELECT cp.checkpointid
-            FROM " . DB_PREFIX . "checkpoints cp
-            INNER JOIN " . DB_PREFIX . "checkpoints_sequence cs ON cp.checkpointid = cs.checkpointid
-            WHERE cp.type='Assembly' and cs.isstart = 1
-            LIMIT 1
-        ");
         $resCheckpointend = $sheel->db->fetch_array($sqlcheckpointend, DB_ASSOC);
-        $resCheckpointstart = $sheel->db->fetch_array($sqlcheckpointstart, DB_ASSOC);
         $sqlFinishedAssemblies = $sheel->db->query("
             SELECT eventid
             FROM " . DB_PREFIX . "events
             WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly' and checkpointid = '" . $resCheckpointend['checkpointid'] . "'
         ");
-        $sqlStartedAssemblies = $sheel->db->query("
-            SELECT eventid
-            FROM " . DB_PREFIX . "events
-            WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly' and checkpointid = '" . $resCheckpointstart['checkpointid'] . "'
-        ");
-        $startedqty = $sheel->db->num_rows($sqlStartedAssemblies);
+
         $finishedqty = $sheel->db->num_rows($sqlFinishedAssemblies);
-        $progresspercent=round(($finishedqty/$startedqty)*100);
+        if ($assemblycount == 0 && $finishedqty == 0) {
+            $progresspercent = 0;
+        } else if ($finishedqty > $assemblycount && $assemblycount > 0 && $finishedqty > 0) {
+            $progresspercent = 100;
+        } else {
+            $progresspercent = round(($finishedqty / $assemblycount) * 100);
+        }
+
         $color = '';
 
         if ($progresspercent >= 0 && $progresspercent < 25) {
@@ -171,11 +166,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
         $resEvent['progress'] = '<span class="draw-status__badge ' . $color . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $progresspercent . '%</span></span>';
+        $resEvent['qty'] = $qty;
         $resEventData = json_decode($resEvent['eventdata'], true);
         $resEvent['customername'] = $resEventData['sellToCustomerName'];
         $resEvent['createdby'] = $resEventData['createdUser'];
+        $resEvent['promisedDeliveryDate'] = $resEventData['promisedDeliveryDate'];
         $resEvent['createdat'] = $sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
         $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
+        $resEvent['days'] = $resEventData['promisedDeliveryDate'] == '0001-01-01' ? '0' : $sheel->common->getBusinessDays(date('Y-m-d'),$resEventData['promisedDeliveryDate'],);
         $events[] = $resEvent;
     }
     //die ();
@@ -184,7 +182,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     });
     $number = (int) $sheel->db->num_rows($sqlEventsCount);
     $form['number'] = number_format($number);
-    
+
     $pageurl = PAGEURL;
     $prevnext = $sheel->admincp->pagination($number, $sheel->GPC['pp'], $sheel->GPC['page'], $pageurl);
     $filter_options = array(

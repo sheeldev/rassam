@@ -62,39 +62,39 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 		switch ($sheel->GPC['form']['method']) {
 			case 'newline': {
-					$sql = $sheel->db->query("
+				$sql = $sheel->db->query("
 					SELECT email
 					FROM " . DB_PREFIX . "users
 					WHERE email != ''
 					ORDER BY user_id ASC
 				", 0, null, __FILE__, __LINE__);
-					if ($sheel->db->num_rows($sql) > 0) {
-						$txt = '';
-						while ($emails = $sheel->db->fetch_array($sql)) {
-							$txt .= trim($emails['email']) . LINEBREAK;
-						}
+				if ($sheel->db->num_rows($sql) > 0) {
+					$txt = '';
+					while ($emails = $sheel->db->fetch_array($sql)) {
+						$txt .= trim($emails['email']) . LINEBREAK;
 					}
-					$ext = '.txt';
-					$mime = 'text/plain';
-					break;
 				}
+				$ext = '.txt';
+				$mime = 'text/plain';
+				break;
+			}
 			case 'csv': {
-					$sql = $sheel->db->query("
+				$sql = $sheel->db->query("
 					SELECT email
 					FROM " . DB_PREFIX . "users
 					WHERE email != ''
 					ORDER BY user_id ASC
 				", 0, null, __FILE__, __LINE__);
-					if ($sheel->db->num_rows($sql) > 0) {
-						$txt = '';
-						while ($emails = $sheel->db->fetch_array($sql)) {
-							$txt .= '"' . trim($emails['email']) . '",' . LINEBREAK;
-						}
+				if ($sheel->db->num_rows($sql) > 0) {
+					$txt = '';
+					while ($emails = $sheel->db->fetch_array($sql)) {
+						$txt .= '"' . trim($emails['email']) . '",' . LINEBREAK;
 					}
-					$ext = '.csv';
-					$mime = 'text/x-csv';
-					break;
 				}
+				$ext = '.csv';
+				$mime = 'text/x-csv';
+				break;
+			}
 		}
 		$sheel->common->download_file($txt, "email-list" . $ext, $mime);
 		exit();
@@ -108,8 +108,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			'currentarea' => $currentarea,
 			'id' => (isset($sheel->GPC['id']) ? intval($sheel->GPC['id']) : ''),
 		);
-		
-		
+
+
 		exit();
 	} else {
 		if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'switch' and isset($sheel->GPC['userid']) and $sheel->GPC['userid'] > 0) {
@@ -169,12 +169,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$sheel->GPC['form']['dob'] = ((isset($sheel->GPC['form']['dob']) and !empty($sheel->GPC['form']['dob'])) ? $sheel->GPC['form']['dob'] : '0000-00-00');
 				$sheel->GPC['form']['gender'] = ((isset($sheel->GPC['form']['gender']) and !empty($sheel->GPC['form']['gender'])) ? $sheel->GPC['form']['gender'] : '');
 
-				if ($sheel->GPC['form']['isadmin']=='1') {
+				if ($sheel->GPC['form']['isadmin'] == '1') {
 					$sheel->GPC['form']['customerid'] = '0';
 				}
 
 				$newuserid = $sheel->admincp_users->construct_new_member(
 					$sheel->GPC['form']['username'],
+					$sheel->GPC['form']['entityid'],
 					$sheel->GPC['form']['customerid'],
 					$sheel->GPC['form']['roleid'],
 					$pass,
@@ -258,7 +259,17 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			$form['userstatus'] = $sheel->construct_pulldown('status', 'form[status]', $userstatuses, '', 'class="draw-select"');
 			$form['role_pulldown'] = $sheel->role->print_role_pulldown('', 1, 0, '', '', 'draw-select', 'form_roleid', 'form[roleid]', false);
 			$form['customer_pulldown'] = $sheel->admincp_customers->print_customer_pulldown('', 1, '', '', 'draw-select', 'form_customerid', 'form[customerid]', false, true);
-
+			$companies = array();
+			$sql = $sheel->db->query("
+			SELECT company_id, name
+			FROM " . DB_PREFIX . "companies");
+			$companies['0'] = 'All';
+			if ($sheel->db->num_rows($sql) > 0) {
+				while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+					$companies[$res['company_id']] = $res['name'];
+				}
+			}
+			$form['entity_pulldown'] = $sheel->construct_pulldown('form_entityid', 'form[entityid]', $companies, '0', 'class="draw-select"');
 			$planactions = array(
 				'active' => '{_add_plan_invoice_mark_paid}',
 				'activepaid' => '{_add_plan_invoice_mark_paid_for_amount}',
@@ -377,6 +388,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 						UPDATE " . DB_PREFIX . "users
 						SET username = '" . $sheel->db->escape_string($sheel->GPC['form']['username']) . "',
 						customerid = '" . intval($sheel->GPC['form']['customerid']) . "',
+						entityid = '" . intval($sheel->GPC['form']['entityid']) . "',
 						roleid = '" . intval($sheel->GPC['form']['roleid']) . "',
 						$passwordsql
 						email = '" . $sheel->db->escape_string($sheel->GPC['form']['email']) . "',
@@ -440,7 +452,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 				refresh(HTTPS_SERVER_ADMIN . 'users/update/' . intval($sheel->GPC['userid']) . '/');
 				exit();
-			} 
+			}
 
 			$sql = $sheel->db->query("
 					SELECT
@@ -467,7 +479,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 						$usernamehistory .= '<div class="sb" title="{_profile_changed_on_x::' . $sheel->common->print_date($array['datetime']) . '}">' . $array['username'] . '</div>';
 					}
 					$sheel->show['usernamehistory'] = true;
-				} 
+				}
 				$res['usernamehistory'] = $usernamehistory;
 				$res['first_name'] = o($res['first_name']);
 				$res['last_name'] = o($res['last_name']);
@@ -493,9 +505,19 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$form['userid'] = intval($sheel->GPC['userid']);
 				$form['role_pulldown'] = $sheel->role->print_role_pulldown($res['roleid'], 0, 0, '', '', 'draw-select', 'form_roleid', 'form[roleid]', false);
 				$form['customer_pulldown'] = $sheel->admincp_customers->print_customer_pulldown($res['customerid'], 0, '', '', 'draw-select', 'form_customerid', 'form[customerid]', false, true);
-				
-				
-				
+				$companies = array();
+				$sqlcomp = $sheel->db->query("
+					SELECT company_id, name
+					FROM " . DB_PREFIX . "companies");
+				$companies['0'] = 'All';
+				if ($sheel->db->num_rows($sqlcomp) > 0) {
+					while ($rescomp = $sheel->db->fetch_array($sqlcomp, DB_ASSOC)) {
+						$companies[$rescomp['company_id']] = $rescomp['name'];
+					}
+				}
+				$form['entity_pulldown'] = $sheel->construct_pulldown('form_entityid', 'form[entityid]', $companies, $res['entityid'], 'class="draw-select"');
+
+
 				$countryid = $sheel->common_location->fetch_country_id($res['location'], $_SESSION['sheeldata']['user']['slng']);
 				$form['country_pulldown'] = $sheel->common_location->construct_country_pulldown($countryid, $res['location'], 'country', false, 'state', false, false, false, 'stateid', false, '', '', '', 'draw-select', false, false, '', 0, 'city', 'cityid');
 				$form['state_pulldown'] = '<div id="stateid">' . $sheel->common_location->construct_state_pulldown($countryid, $res['state'], 'state', false, false, 0, 'draw-select', 0, 'city', 'cityid') . '</div>';
@@ -667,31 +689,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 			if (isset($sheel->GPC['filter']) and isset($sheel->GPC['q']) and $sheel->GPC['q'] != '') {
 				switch ($sheel->GPC['filter']) {
 					case 'name': // Full name / Username
-						{
-							$sheel->GPC['q1'] = $sheel->GPC['q2'] = '';
-							if (strrchr($sheel->GPC['q'], ' ')) {
-								$tmp = explode(' ', trim($sheel->GPC['q']));
-								$sheel->GPC['q1'] = trim($tmp[0]);
-								$sheel->GPC['q2'] = trim($tmp[1]);
-								$extrasql = "AND (u.first_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.last_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.username LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR (u.first_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q1']) . "%' AND u.last_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q2']) . "%'))";
-							} else {
-								$extrasql = "AND (u.first_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.last_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.username LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%')";
-							}
-							break;
+					{
+						$sheel->GPC['q1'] = $sheel->GPC['q2'] = '';
+						if (strrchr($sheel->GPC['q'], ' ')) {
+							$tmp = explode(' ', trim($sheel->GPC['q']));
+							$sheel->GPC['q1'] = trim($tmp[0]);
+							$sheel->GPC['q2'] = trim($tmp[1]);
+							$extrasql = "AND (u.first_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.last_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.username LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR (u.first_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q1']) . "%' AND u.last_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q2']) . "%'))";
+						} else {
+							$extrasql = "AND (u.first_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.last_name LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.username LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%')";
 						}
+						break;
+					}
 					case 'location': // city, state or country or zipcode
-						{
-							$extrasql = "AND (l.location_" . $_SESSION['sheeldata']['user']['slng'] . " LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.city LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.state LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.zip_code LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%')";
-							break;
-						}
+					{
+						$extrasql = "AND (l.location_" . $_SESSION['sheeldata']['user']['slng'] . " LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.city LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.state LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%' OR u.zip_code LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%')";
+						break;
+					}
 					case 'email': {
-							$extrasql = "AND u.email LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%'";
-							break;
-						}
+						$extrasql = "AND u.email LIKE '%" . $sheel->db->escape_string($sheel->GPC['q']) . "%'";
+						break;
+					}
 					case 'customer': {
-							$extrasql = "AND u.customerid = '" . $sheel->db->escape_string($sheel->GPC['q']) . "'";
-							break;
-						}
+						$extrasql = "AND u.customerid = '" . $sheel->db->escape_string($sheel->GPC['q']) . "'";
+						break;
+					}
 				}
 			}
 			$sql = $sheel->db->query("
@@ -705,7 +727,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				ORDER BY user_id DESC
 				LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->GPC['pp']) . "," . $sheel->GPC['pp']
 			);
-			
+
 			$sql2 = $sheel->db->query("
 				SELECT
 				u.user_id

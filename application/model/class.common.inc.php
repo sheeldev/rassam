@@ -2862,5 +2862,38 @@ class common
 		$this->sheel->template->meta['headinclude'] .= ((!$this->codemirror_loaded) ? '<link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/codemirror' . (($this->sheel->config['globalfilters_jsminify']) ? '.min.css' : '.css') . '"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/dialog/dialog.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/search/matchesonscrollbar.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/fold/foldgutter.css"><link data-turbolinks-track="true" rel="stylesheet" href="' . $this->sheel->config['csscdn'] . $_SESSION['sheeldata']['user']['styleid'] . '/vendor/codemirror/addon/colorpicker/colorpicker.css"><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/codemirror' . (($this->sheel->config['globalfilters_jsminify']) ? '.min.js' : '.js') . '"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/foldcode.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/foldgutter.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/brace-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/xml-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/indent-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/markdown-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/fold/comment-fold.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/dialog/dialog.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/searchcursor.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/search.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/scroll/annotatescrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/matchesonscrollbar.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/search/jump-to-line.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorpicker.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/addon/colorpicker/colorview.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/javascript/javascript.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/xml/xml.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/css/css.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script><script type="text/javascript" data-turbolinks-track="true" src="' . $this->sheel->config['jscdn'] . 'vendor/codemirror/mode/php/php.js"></script><script>function editor_onchange(editor, editorchangeobj){console.log("content changed for " + editor.getOption(\'id\'));var filename = jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html();filename = filename.replace(\'*\', \'\');jQuery(\'#editor-tab-filename-\' + editor.getOption(\'id\')).html(filename + \'*\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'btn-disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).removeClass(\'is--disabled\');jQuery(\'#editor-save-\' + editor.getOption(\'id\')).addClass(\'btn-primary\');}</script><style>.CodeMirror{height:545px}</style>' : '');
 		$this->codemirror_loaded = true;
 	}
+
+	function getBusinessDays($startDate, $endDate) {
+		$start = new DateTime($startDate);
+		$end = new DateTime($endDate);
+		$businessDays = 0;
+		// Check if start date is after end date
+		if ($start > $end) {
+			// Swap start and end dates
+			$temp = $start;
+			$start = $end;
+			$end = $temp;
+			// Calculate business days
+			while ($start <= $end) {
+				$dayOfWeek = $start->format('N');
+				if ($dayOfWeek < 6) {
+					$businessDays++;
+				}
+				$start->add(new DateInterval('P1D'));
+			}
+			// Return negative business days since start date was after end date
+			return -$businessDays;
+		} else {
+			// Calculate business days as before
+			while ($start <= $end) {
+				$dayOfWeek = $start->format('N');
+				if ($dayOfWeek < 6) {
+					$businessDays++;
+				}
+				$start->add(new DateInterval('P1D'));
+			}
+			return $businessDays;
+		}
+	}
 }
 ?>

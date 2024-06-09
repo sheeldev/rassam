@@ -76,9 +76,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $companies[$res['bc_code']] = $res['name'];
             }
         }
-
+        $disabled = $_SESSION['sheeldata']['user']['entityid']=='0'?'':'disabled';
         $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
-        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), 'class="draw-select" onchange="this.form.submit()"');
+        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), $disabled . ' class="draw-select" onchange="this.form.submit()"');
         if (!$sheel->dynamics->init_dynamics('erCustomerList', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany))) {
         }
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
@@ -2307,7 +2307,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     }
                 }
                 if (!move_uploaded_file($_FILES['imagename']['tmp_name'], DIR_ATTACHMENTS . 'customers/' . $sheel->GPC['no'] . $ext)) {
-                    die($_FILES["imagename"]["error"]);
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'failure' . "\n" . $sheel->array2string($sheel->GPC), 'Error saving customer logo file', 'customer logo file could not be uploaded (check folder permission)');
                 } else {
                     $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'Added customer logo file', 'A new customer logo file was saved ');

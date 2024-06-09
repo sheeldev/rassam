@@ -13965,6 +13965,9 @@ input[type=checkbox].draw-checkbox,
 .draw-status__badge.purple {
     background: #8950b5
 }
+.draw-status__badge.darkred {
+    background: #D40511;
+}
 
 .draw-status__badge.amber {
     background: #FFBF00;

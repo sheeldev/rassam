@@ -49,7 +49,6 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                                 if ($apiResponse->isSuccess()) {
                                         $assemblies = $apiResponse->getData();
-                                        echo $rescustomers['customer_ref'] . ':' . count($assemblies) . "\n";
                                         foreach ($assemblies as $assembly) {
                                                 if (isset($assembly['scanType']) && isset($assembly['sequenceNo'])) {
                                                         $assembly['status'] = $assembly['sequenceNo'] . '-' . ($assembly['scanType'] == 'Scan In' ? 'In' : 'Out');

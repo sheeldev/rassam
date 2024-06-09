@@ -389,7 +389,7 @@ class admincp_users extends admincp
 	*
 	* @param	array	        array with user ids flagged for ban
 	*
-	* @return       string          Returns HTML string of users banned separated by a comma for display purposes
+	* @return       array          Returns HTML string of users banned separated by a comma for display purposes
 	*/
 	function unban_user($ids = array())
 	{
@@ -452,7 +452,7 @@ class admincp_users extends admincp
 		return array('success' => (($count > 0) ? $this->sheel->template->parse_template_phrases('success') : ''), 'errors' => (($count <= 0) ? $this->sheel->template->parse_template_phrases('errors') : ''), 'successids' => $successids, 'failedids' => $failedids);
 	}
 
-	function construct_new_member($username = '', $customerid, $roleid, $password = '', $salt = '', $email = '', $first = '', $last = '', $address = '', $address2 = '', $city = '', $state = '', $zipcode = '', $phone = '', $country = '', $dob = '',  $languageid = '', $currencyid = '', $usertimezone = '', $isadmin = 0)
+	function construct_new_member($username = '', $entityid, $customerid, $roleid, $password = '', $salt = '', $email = '', $first = '', $last = '', $address = '', $address2 = '', $city = '', $state = '', $zipcode = '', $phone = '', $country = '', $dob = '',  $languageid = '', $currencyid = '', $usertimezone = '', $isadmin = 0)
 	{
 
        
@@ -461,11 +461,12 @@ class admincp_users extends admincp
 		$usernameslug = $this->sheel->seo->construct_seo_url_name($username);
 		$this->sheel->db->query("
 			INSERT INTO " . DB_PREFIX . "users
-			(user_id, ipaddress, customerid, roleid, username, usernameslug, usernamehash, password, salt,  email, first_name, last_name, address, address2, city, state, zip_code, phone, country, date_added, status, dob, languageid, currencyid, timezone,  emailnotify, isadmin)
+			(user_id, ipaddress, customerid, entityid, roleid, username, usernameslug, usernamehash, password, salt,  email, first_name, last_name, address, address2, city, state, zip_code, phone, country, date_added, status, dob, languageid, currencyid, timezone,  emailnotify, isadmin)
 			VALUES(
 			NULL,
 			'" . $this->sheel->db->escape_string($ipaddress) . "',
             '" . $this->sheel->db->escape_string($customerid) . "',
+			'" . $this->sheel->db->escape_string($entityid) . "',
             '" . $this->sheel->db->escape_string($roleid) . "',
 			'" . $this->sheel->db->escape_string($username) . "',
 			'" . $this->sheel->db->escape_string($usernameslug) . "',

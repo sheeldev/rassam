@@ -368,6 +368,7 @@ class sessions
 				'status' => $userinfo['status'],
 				'userid' => $userinfo['user_id'],
 				'companyid' => $userinfo['companyid'],
+				'entityid' => $userinfo['entityid'],
 				'username' => $userinfo['username'],
 				'usernameslug' => $userinfo['usernameslug'],
 				'usernamehash' => $userinfo['usernamehash'],

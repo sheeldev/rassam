@@ -62,14 +62,17 @@
                                         <tr>
                                             <th width="3%"> <span><i class="fa fa-cogs" style="font-size: 16px;"></i></span> </th>
                                             <th width="3%"> <span><i class="fa fa-spinner" style="font-size: 16px;"></i></span> </th>
+                                            <th width="3%"> <span><label>{_pieces}</label></span></th>
                                             <th> <span><label>{_number}</label></span> </th>
                                             <th> <span><label>{_account}</label></span> </th>
                                             <th> <span><label>{_name}</label></span></th>
-                                            <th> <span><label>{_status}</label></span></th>
+                                            <th> <span><label>{_delivery_date}</label></span></th>
+                                            <th> <span><label>{_days}</label></span></th>
                                             <th> <span><label>{_created_by}</label></span></th>
                                             <th> <span><label>{_event_date}</label></span></th>
-                                            <th> <span><label>{_checkpoint}</label></span></th>
                                             <th> <span><label>{_time}</label></span></th>
+                                            <th> <span><label>{_status}</label></span></th>
+                                            <th> <span><label>{_checkpoint}</label></span></th>
                                             <th><span><label>{_updates}</label></span></th>
                                         </tr>
                                     </thead>
@@ -78,14 +81,19 @@
                                         <tr id="tr_selected_{customer_id}" valign="top">
                                             <td>{assembly}</td>
                                             <td>{progress}</td>
+                                            <td> <span class="fw-strong-black">{qty}</span></td>
                                             <td>{reference}</td>
                                             <td> <span>{eventidentifier}</span></td>
                                             <td> <span>{customername}</span></td>
-                                            <td class="status no-wrap"> <span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointmessage}</span></span></td>
-                                            <td class="no-wrap">{createdby}</td>
+                                            <td class="status no-wrap fw-strong-black"> <span class="no-wrap">{checkpointmessage}</span></td>
+                                            <td class="status no-wrap">{promisedDeliveryDate}</td>
+                                            <td class="no-wrap">{days}</td>
+                                            <td class="status no-wrap">{createdby}</td>
                                             <td class="status no-wrap">{createdat}</td>
-                                            <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
                                             <td class="status no-wrap">{eventtime}</td>
+                                            <td class="status no-wrap fw-strong-black"> <span class="no-wrap">{checkpointmessage}</span></td>
+                                            <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
+                                            
                                             <td><div id="toggleOrder_{reference}"><i class="fa fa-ellipsis-h" onclick="showOrderDetails('{reference}', '{eventidentifier}')" style="cursor: pointer;"></i></div></td>
                                             
                                         </tr>
