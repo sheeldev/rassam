@@ -47,16 +47,63 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'q' => $q,
     );
     $defaulcompany = '';
-    $sqldefault = $sheel->db->query("
-    SELECT bc_code
-    FROM " . DB_PREFIX . "companies 
-    WHERE isdefault='1' 
-    LIMIT 1");
-    if ($sheel->db->num_rows($sqldefault) > 0) {
-        while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
-            $defaulcompany = $res['bc_code'];
+    $disabled = '';
+    if ($_SESSION['sheeldata']['user']['entityid'] != '0') {
+        if (isset($sheel->GPC['company'])) {
+            $sheel->admincp->print_action_failed('{_no_entity_access}', $sheel->GPC['returnurl']);
+            exit();
         }
+        else {
+            $disabled = 'disabled';
+            $sqldefault = $sheel->db->query("
+                SELECT bc_code
+                FROM " . DB_PREFIX . "companies 
+                WHERE company_id = '" . $_SESSION['sheeldata']['user']['entityid'] . "' 
+                LIMIT 1");
+            if ($sheel->db->num_rows($sqldefault) > 0) {
+                while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
+                    $defaulcompany = $res['bc_code'];
+                }
+            }
+            $form['company'] = $defaulcompany;
+        }
+        if (isset($sheel->GPC['no'])) {
+            $sql = $sheel->db->query("
+            SELECT customer_id, customer_ref, company_id
+                FROM " . DB_PREFIX . "customers 
+            WHERE customer_id = '" . $sheel->GPC['no'] . "'
+            LIMIT 1
+            ");
+    
+            if ($sheel->db->num_rows($sql) > 0) {
+                $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
+                if ($customer['company_id'] != $_SESSION['sheeldata']['user']['entityid']) {
+                    $sheel->admincp->print_action_failed('{_no_entity_access}', $sheel->GPC['returnurl']);
+                    exit();
+                }
+                else {
+                    $customerno = $customer['customer_id'];
+                }
+            }
+        }
+        
+    } else {
+        if (isset($sheel->GPC['no'])) {
+            $customerno = $sheel->GPC['no'];
+        }
+        $sqldefault = $sheel->db->query("
+            SELECT bc_code
+            FROM " . DB_PREFIX . "companies 
+            WHERE isdefault='1' 
+            LIMIT 1");
+        if ($sheel->db->num_rows($sqldefault) > 0) {
+            while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
+                $defaulcompany = $res['bc_code'];
+            }
+        }
+        $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
     }
+    
 
     if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bc') {
         $customers = array();
@@ -66,7 +113,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             'account'
         );
         $companies = array();
-
+       
 
         $sql = $sheel->db->query("
         SELECT name, bc_code
@@ -76,10 +123,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $companies[$res['bc_code']] = $res['name'];
             }
         }
-        $disabled = $_SESSION['sheeldata']['user']['entityid']=='0'?'':'disabled';
-        $form['company'] = (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany);
-        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany), $disabled . ' class="draw-select" onchange="this.form.submit()"');
-        if (!$sheel->dynamics->init_dynamics('erCustomerList', (isset($sheel->GPC['company']) ? $sheel->GPC['company'] : $defaulcompany))) {
+        $form['company_pulldown'] = $sheel->construct_pulldown('company', 'company', $companies, $form['company'], $disabled . ' class="draw-select" onchange="this.form.submit()"');
+
+        if (!$sheel->dynamics->init_dynamics('erCustomerList', $form['company'])) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
         }
         $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
@@ -575,7 +623,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     }
 
                     $sheetData = $spreadsheet->getSheet('0')->toArray();
-                    $sheetData = array_filter($sheetData, function($row) {
+                    $sheetData = array_filter($sheetData, function ($row) {
                         return !empty($row[0]);
                     });
                     $fileinfo = serialize($sheetData);
@@ -1625,9 +1673,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                             $res['fit'] = '';
                             $res['cut'] = '';
                             $res['size'] = '';
-                            $res['error'] = $ismavailable;
+                            foreach ($ismavailable as $element) {
+                                $res['error'] .= print_r($element, true) . "\n";
+                            }
                         }
-
                         $res['type'] = $res['code'];
                         $suggestdata[] = $res;
                     }
@@ -1724,7 +1773,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $res['fit'] = '';
                         $res['cut'] = '';
                         $res['size'] = '';
-                        $countelement = 1;
                         foreach ($ismavailable as $element) {
                             $res['error'] .= print_r($element, true) . "\n";
                         }
@@ -2696,6 +2744,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 
     } else {
+        if ($_SESSION['sheeldata']['user']['entityid'] != '0') {
+            $entitycriteria = " AND company_id = '" . $_SESSION['sheeldata']['user']['entityid'] . "'";
+        }
+        
         $areanav = 'customers_customers';
         $vars['areanav'] = $areanav;
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'markactive') { // mark active
@@ -2813,7 +2865,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             LEFT JOIN " . DB_PREFIX . "subscription_customer sc ON c.customer_id = sc.customerid
             LEFT JOIN " . DB_PREFIX . "subscription s ON sc.subscriptionid = s.subscriptionid
             $searchview			
-            $searchcondition	
+            $searchcondition
+            $entitycriteria	
 			ORDER BY c.customer_id DESC
 			LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay']) . "," . $sheel->config['globalfilters_maxrowsdisplay'] . "
 		");
@@ -2824,7 +2877,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             LEFT JOIN " . DB_PREFIX . "subscription_customer sc ON c.customer_id = sc.customerid
             LEFT JOIN " . DB_PREFIX . "subscription s ON sc.subscriptionid = s.subscriptionid
             $searchview			
-            $searchcondition	
+            $searchcondition
+            $entitycriteria	
             ORDER BY c.customer_id DESC
 		");
         $number = (int) $sheel->db->num_rows($sql2);

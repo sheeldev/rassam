@@ -51,6 +51,8 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                         AND customer_ref = '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "'
                                         ");
                                 if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
+                                        $rescustomer = $this->sheel->db->fetch_array($sqlcustomer, DB_ASSOC);
+                                        $entityid = $rescustomer['company_id'];
                                         $sqlevent = $this->sheel->db->query("
                                                 SELECT *
                                                 FROM " . DB_PREFIX . "events
@@ -90,12 +92,13 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
 
                                                         $this->sheel->db->query("
                                                                 INSERT INTO " . DB_PREFIX . "events
-                                                                (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                 VALUES(
                                                                 '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                                 " . strtotime($order['systemModifiedAt']) . ",
                                                                 'customer',
                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                                '" . $entityid . "',
                                                                 '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
                                                                 '" . $this->sheel->db->escape_string(json_encode($order)) . "',
                                                                 '" . $order['documentType'] . "',
@@ -118,12 +121,13 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 }
                                                 $this->sheel->db->query("
                                                         INSERT INTO " . DB_PREFIX . "events
-                                                        (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                        (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                         VALUES(
                                                         '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                         " . strtotime($order['systemModifiedAt']) . ",
                                                         'customer',
                                                         '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                        '" . $entityid . "',
                                                         '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
                                                         '" . $this->sheel->db->escape_string(json_encode($order)) . "',
                                                         '" . $order['documentType'] . "',
