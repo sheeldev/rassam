@@ -309,7 +309,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				}
 				$status = ((isset($sheel->GPC['form']['status'])) ? $sheel->db->escape_string($sheel->GPC['form']['status']) : 'active');
 				$dob = ((isset($sheel->GPC['form']['dob'])) ? $sheel->db->escape_string($sheel->GPC['form']['dob']) : '0000-00-00');
-				$isadmin = ((isset($sheel->GPC['form']['isadmin'])) ? intval($sheel->GPC['form']['isadmin']) : '0');
+				$isadmin = $sheel->role->is_role_admin($sheel->GPC['form']['roleid']);
 				$useapi = ((isset($sheel->GPC['form']['useapi'])) ? intval($sheel->GPC['form']['useapi']) : '0');
 				$emailnotify = ((isset($sheel->GPC['form']['emailnotify'])) ? intval($sheel->GPC['form']['emailnotify']) : '0');
 				// detect if admin is changing status from 'moderated' to 'active'
@@ -524,7 +524,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				$form['city_pulldown'] = '<div id="cityid">' . $sheel->common_location->construct_city_pulldown($res['state'], 'city', $res['city'], false, false, 'draw-select') . '</div>';
 				$form['language_pulldown'] = $sheel->language->construct_language_pulldown('languageid', $res['languageid'], 'draw-select', 'form[languageid]');
 				$form['timezone_pulldown'] = $sheel->datetimes->timezone_pulldown('timezone', $res['timezone'], false, true, 'draw-select', 'form[timezone]');
-				$form['currency_pulldown'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', '');
+				$form['currency_pulldown'] = $sheel->currency->pulldown('', '', 'draw-select', 'form[currencyid]', 'currencyid', $res['currencyid']);
 				$form['gender_pulldown'] = $sheel->construct_pulldown('gender', 'form[gender]', array('male' => '{_male}', 'female' => '{_female}', '' => '{_unknown}'), $res['gender'], 'class="draw-select"');
 				$sqll = $sheel->db->query("
 						SELECT landingpage

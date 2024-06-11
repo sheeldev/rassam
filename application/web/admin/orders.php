@@ -50,14 +50,17 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
         switch ($sheel->GPC['filter']) {
             case 'number': {
-                $searchcondition = "AND e.reference = '" . $sheel->db->escape_string($q) . "'";
+                $searchcondition = " AND e.reference = '" . $sheel->db->escape_string($q) . "'";
                 break;
             }
             case 'account': {
-                $searchcondition = "AND e.eventidentifier = '" . $sheel->db->escape_string($q) . "'";
+                $searchcondition = " AND e.eventidentifier = '" . $sheel->db->escape_string($q) . "'";
                 break;
             }
         }
+    }
+    if ($_SESSION['sheeldata']['user']['entityid'] != '0') {
+        $searchcondition .= " AND e.entityid = '" . $_SESSION['sheeldata']['user']['entityid'] . "'";
     }
     if ($sheel->GPC['no'] == '0') {
         $currentarea = 'Orders';
@@ -94,16 +97,28 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 INNER JOIN (
                     SELECT reference, MAX(eventtime) as max_eventtime
                     FROM " . DB_PREFIX . "events
-                    WHERE eventfor = 'customer' and topic='Order' 
+                    WHERE eventfor = 'customer' and topic='Order'
                     GROUP BY reference
                 ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
-                WHERE e.eventfor = 'customer' and e.topic='Order' AND e.eventidentifier = '" . $sheel->GPC['no'] . "'
+                WHERE e.eventfor = 'customer' and e.topic='Order' AND e.eventidentifier = '" . $sheel->GPC['no'] . "' $searchcondition
                 ORDER BY max_eventtime DESC
                 ");
     }
     $events = array();
     if ($sheel->GPC['no'] != '0') {
-        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/view/' . $sheel->GPC['no'] . '/">' . $sheel->GPC['no'] . '</a> / </span> Orders';
+        $customerid = '0';
+        $sql = $sheel->db->query("
+            SELECT customer_id
+                FROM " . DB_PREFIX . "customers 
+            WHERE customer_ref = '" . $sheel->GPC['no'] . "'
+            LIMIT 1
+            ");
+    
+            if ($sheel->db->num_rows($sql) > 0) {
+                $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
+                $customerid=$customer['customer_id'];
+            }
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/view/' . $customerid . '/">' . $sheel->GPC['no'] . '</a> / </span> Orders';
     }
     while ($resEvent = $sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
         $sqlAssemblies = $sheel->db->query("

@@ -24,6 +24,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 ");
                 if ($this->sheel->db->num_rows($sqlcustomers) > 0) {
                         while ($rescustomers = $this->sheel->db->fetch_array($sqlcustomers, DB_ASSOC)) {
+                                $entityid = $rescustomers['company_id'];
                                 if (!$this->sheel->dynamics->init_dynamics('erAssemblies', $rescompanies['bc_code'])) {
                                         $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
                                 }
@@ -111,12 +112,13 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         $order = $orders[0];
                                                                         $this->sheel->db->query("
                                                                                 INSERT INTO " . DB_PREFIX . "events
-                                                                                (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                                (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                                 VALUES(
                                                                                 '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                                                 " . (strtotime($assembly['systemModifiedAt'])) . ",
                                                                                 'customer',
                                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                                                '" . $entityid . "',
                                                                                 '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
                                                                                 '" . $this->sheel->db->escape_string(json_encode($order)) . "',
                                                                                 '" . $order['documentType'] . "',
@@ -146,12 +148,13 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
                                                                                 $this->sheel->db->query("
                                                                                         INSERT INTO " . DB_PREFIX . "events
-                                                                                        (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                                        (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                                         VALUES(
                                                                                         '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
                                                                                         " . strtotime($assembly['systemModifiedAt']) . ",
                                                                                         'customer',
                                                                                         '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
+                                                                                        '" . $entityid . "',
                                                                                         '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
                                                                                         '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
                                                                                         '" . $assembly['documentType'] . "',
@@ -163,12 +166,13 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 } else {
                                                                         $this->sheel->db->query("
                                                                         INSERT INTO " . DB_PREFIX . "events
-                                                                        (systemid, eventtime, eventfor, eventidentifier, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                        (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                         VALUES(
                                                                         '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
                                                                         " . strtotime($assembly['systemModifiedAt']) . ",
                                                                         'customer',
                                                                         '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
+                                                                        '" . $entityid . "',
                                                                         '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
                                                                         '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
                                                                         '" . $assembly['documentType'] . "',

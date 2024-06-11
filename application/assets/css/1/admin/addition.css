@@ -36,6 +36,11 @@ select::-ms-expand {
 	padding:14px;
 	border:5px solid #dfdfdf
 }
+.bulk-actions-widget .bulk-action-div {
+	height: 400px; 
+	overflow-x: auto; 
+	overflow-y:auto;
+}
 @media only screen and (min-width : 150px) and (max-width : {box}px) {
 	.bulk-actions-widget > div {
 		width:90%;
@@ -88,22 +93,51 @@ select::-ms-expand {
 .bulk-actions-widget.open {
 	height: 550px; /*355px;*/
 	transition: 0.5s;
+	bottom: 40px;
 	z-index:99999
 }
-@media only screen and (min-width : 150px) and (max-width : 500px) {
+@media only screen and (min-width : 150px) and (max-width : {box}px) {
 	.bulk-actions-widget.open {
 		height: 225px;
 		transition: 0.5s;
 	}
 }
 @media only screen and (min-width : 150px) and (max-width : {box}px) {
+	#order_details.bulk-actions-widget {
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		left:10px;
+		height: 0;
+		width: 95%;
+		border-top: 0;
+		font-family: arial, sans-serif;
+		z-index: 10000;
+		font-size: 14px;
+		color: #000;
+		text-align: center;
+		line-height: 1;
+		transition: 0.5s;
+	
+	}
+	#order_details.bulk-actions-widget > div {
+		
+		text-align: left;
+		background: #fff;
+		width:90%;
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
+		height:550px;
+		padding:14px;
+		border:5px solid #dfdfdf
+	}
 	#button-combo.draw-select__button
 	{
 		margin-right: -29px;
 		margin-top: -48px;
 	}
-	#itemlocation.bulk-actions-widget.open, #promotionalshipping.bulk-actions-widget.open, #deleteconfirmation.bulk-actions-widget.open, #pointsrestrictions.bulk-actions-widget.open, #buyerrestrictions.bulk-actions-widget.open, #localpickuplocation.bulk-actions-widget.open, #localpickuplocation.bulk-actions-widget.open, #markfulfillment.bulk-actions-widget.open, #auctionbroadcast.bulk-actions-widget.open, #auctiongoingonce.bulk-actions-widget.open, #newsletter-widget.bulk-actions-widget.open {
-		height: 450px;
+	#order_details.bulk-actions-widget.open, #deleteconfirmation.bulk-actions-widget.open{
+		height: 500px;
 		transition: 0.5s;
 	}
 }

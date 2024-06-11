@@ -61,33 +61,35 @@ class common_order extends common
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
 		$html .= '<div class="draw-card__section">';
-		$html .= '<div class="table-wrapper" style=" height: 400px; overflow-x: hidden; overflow-y:scroll;">';
+		$html .= '<div class="table-wrapper" style="">';
 		$html .= '<table>';
 		$html .= '<thead>';
 		$html .= '<tr>';
 		$html .= '<th class="is-sortable" width="8%"><span><label>{_number}</label></span>' . ($warningmessage != '' ? '<span class="litegray right prl-6 pt-12 uc"><img src="' . $this->sheel->config['imgcdn'] . 'v5/img_warning.png" width="18" height="18" alt="{_info}" onclick="return display_info_message(\'\',\'' . $warningmessage . '\');" /></span>' : '') . '</th>';
 		$html .= '<th width="8%"> <span><label>{_account}</label></span> </th>';
 		$html .= '<th width="20%"> <span><label>{_name}</label></span></th>';
-		$html .= '<th width="20%"> <span><label>{_status}</label></span></th>';
+		
 		$html .= '<th width="10%"> <span><label>{_created_by}</label></span></th>';
 		$html .= '<th width="10%"> <span><label>{_created_date}</label></span></th>';
-		$html .= '<th width="10%"> <span><label>{_checkpoint}</label></span></th>';
+		
 		$html .= '<th width="14%"> <span><label>{_time}</label></span></th>';
+		$html .= '<th width="20%"> <span><label>{_status}</label></span></th>';
 		$html .= '<th width="10%"> <span><label>{_source}</label></span></th>';
+		$html .= '<th width="10%"> <span><label>{_checkpoint}</label></span></th>';
 		$html .= '</tr>';
 		$html .= '</thead>';
 		$html .= '<tbody>';
 		foreach ($events as $event) {
 			$html .= '<tr valign="top">';
-			$html .= '<td>' . $event['reference'] . '</td>';
-			$html .= '<td> <span>' . $event['eventidentifier'] . '</span></td>';
-			$html .= '<td> <span>' . $event['customername'] . '</span></td>';
-			$html .= '<td> <span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['checkpointmessage'] . '</span></span></td>';
+			$html .= '<td class="no-wrap">' . $event['reference'] . '</td>';
+			$html .= '<td class="no-wrap"> <span>' . $event['eventidentifier'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $event['customername'] . '</span></td>';
 			$html .= '<td class="no-wrap">' . $event['createdby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $event['createdat'] . '</td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $event['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['checkpointcode'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap">' . $event['eventtime'] . '</td>';
+			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $event['checkpointmessage'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($event['isfactory'] ? 'green' : $event['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['companyname'] . '</span></span></td>';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $event['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['checkpointcode'] . '</span></span></td>';
 			$html .= '</tr>';
 		}
 		$html .= '</tbody>';
@@ -136,7 +138,7 @@ class common_order extends common
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
 		$html .= '<div class="draw-card__section">';
-		$html .= '<div class="table-wrapper" style=" height: 400px; overflow-x: hidden; overflow-y:scroll;">';
+		$html .= '<div class="table-wrapper bulk-action-div" style="">';
 		$html .= '<table>';
 		$html .= '<thead>';
 		$html .= '<tr>';
@@ -146,30 +148,30 @@ class common_order extends common
 		$html .= '<th> <span><label>{_item_code}</label></span></th>';
 		$html .= '<th> <span><label>{_item_name}</label></span></th>';
 		$html .= '<th> <span><label>{_quantity}</label></span></th>';
-		$html .= '<th> <span><label>{_status}</label></span></th>';
 		$html .= '<th> <span><label>{_created_by}</label></span></th>';
 		$html .= '<th> <span><label>{_created_date}</label></span></th>';
-		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
 		$html .= '<th> <span><label>{_time}</label></span></th>';
+		$html .= '<th> <span><label>{_status}</label></span></th>';
 		$html .= '<th> <span><label>{_source}</label></span></th>';
+		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
 		$html .= '<th><span><label>{_updates}</label></span></th>';
 		$html .= '</tr>';
 		$html .= '</thead>';
 		$html .= '<tbody>';
 		foreach ($assemblies as $assembly) {
 			$html .= '<tr valign="top">';
-			$html .= '<td>' . $assembly['assemblynumber'] . '</td>';
-			$html .= '<td> <span>' . $assembly['reference'] . '</span></td>';
-			$html .= '<td> <span>' . $assembly['mo'] . '</span></td>';
-			$html .= '<td> <span>' . $assembly['itemno'] . '</span></td>';
-			$html .= '<td> <span>' . $assembly['description'] . '</span></td>';
-			$html .= '<td> <span>' . $assembly['quantity'] . '</span></td>';
-			$html .= '<td  class="status no-wrap"><span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointmessage'] . '</span></span></td>';
+			$html .= '<td class="no-wrap">' . $assembly['assemblynumber'] . '</td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['reference'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['mo'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['itemno'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['description'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['quantity'] . '</span></td>';
 			$html .= '<td class="no-wrap">' . $assembly['createdby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['createdat'] . '</td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap">' . $assembly['eventtime'] . '</td>';
+			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $assembly['checkpointmessage'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'green' : $assembly['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '<td><div id="toggleOrder"><i class="fa fa-ellipsis-h" onclick="showAssemblyScans(\'' . $assembly['assemblynumber'] . '\',\'' . $assembly['reference'] . '\', \'' . $assembly['eventidentifier'] . '\')" style="cursor: pointer;"></i></div></td>';
 			$html .= '</tr>';
 		}
@@ -215,28 +217,33 @@ class common_order extends common
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
 		$html .= '<div class="draw-card__section">';
-		$html .= '<div class="table-wrapper" style=" height: 400px; overflow-x: hidden; overflow-y:scroll;">';
+		$html .= '<div class="table-wrapper" style="">';
 		$html .= '<table>';
 		$html .= '<thead>';
 		$html .= '<tr>';
-		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
-		$html .= '<th> <span><label>{_status}</label></span></th>';
+		$html .= '<th> <span><label>{_item_code}</label></span></th>';
+		$html .= '<th> <span><label>{_item_name}</label></span></th>';
+		$html .= '<th> <span><label>{_manufacturing_order}</label></span></th>';
 		$html .= '<th> <span><label>{_created_by}</label></span></th>';
 		$html .= '<th> <span><label>{_created_date}</label></span></th>';
-
 		$html .= '<th> <span><label>{_time}</label></span></th>';
+		$html .= '<th> <span><label>{_status}</label></span></th>';
 		$html .= '<th> <span><label>{_source}</label></span></th>';
+		$html .= '<th> <span><label>{_checkpoint}</label></span></th>';
 		$html .= '</tr>';
 		$html .= '</thead>';
 		$html .= '<tbody>';
 		foreach ($assemblies as $assembly) {
 			$html .= '<tr valign="top">';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
-			$html .= '<td  class="status no-wrap"><span class="draw-status__badge subdued draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointmessage'] . '</span></span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['itemno'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['description'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['mo'] . '</span></td>';
 			$html .= '<td class="no-wrap">' . $assembly['createdby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['createdat'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['eventtime'] . '</td>';
+			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $assembly['checkpointmessage'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'green' : $assembly['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '</tr>';
 		}
 		$html .= '</tbody>';
