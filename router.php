@@ -69,6 +69,7 @@ $router->map('GET|POST', '/admin/settings/[session:cmd]/', __DIR__ . '/applicati
 $router->map('GET|POST', '/admin/settings/[photos:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_photos');
 $router->map('GET|POST', '/admin/settings/[diagnosis:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_diagnosis');
 $router->map('GET|POST', '/admin/settings/[serverinfo:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_serverinfo');
+$router->map('GET|POST', '/admin/settings/[globalupdate:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_globalupdate');
 
 $router->map('GET|POST', '/admin/reports/', __DIR__ . '/application/web/admin/reports.php', 'admin_reports');
 $router->map('GET|POST', '/admin/dashboard/', __DIR__ . '/application/web/admin/dashboard.php', 'admin_dashboard');
