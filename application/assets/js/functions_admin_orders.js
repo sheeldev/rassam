@@ -1,4 +1,5 @@
 function showOrderDetails(orderno, customerno) {  
+    jQuery('#popupshow').removeClass('hide');
     fetch_js_object("toggleOrder_"+orderno).innerHTML = '<img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" width="13" height="13" alt="{_loading}" />';
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
     var ajaxDisplay = fetch_js_object("orders_status");
@@ -34,6 +35,7 @@ function showOrderDetails(orderno, customerno) {
 }
 
 function showAssemblyDetails(orderno, customerno) {
+    jQuery('#popupshow').removeClass('hide');
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
     var ajaxDisplay = fetch_js_object("orders_status");
     ajaxDisplay.innerHTML ='';

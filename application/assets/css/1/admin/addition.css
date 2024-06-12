@@ -7,6 +7,58 @@ select::-ms-expand {
     display: none;
 }
 
+.order_events {
+	margin:0px; 
+	height: 1020px; 
+	overflow-x: auto; 
+	overflow-y:auto;
+}
+@media only screen and (min-width : 150px) and (max-width : {box}px) {
+	.order_events {
+		margin:0px; 
+		height: 450px; 
+		overflow-x: auto; 
+		overflow-y:auto;
+	}
+}
+.popup {
+	position: fixed;
+	z-index: 4000;
+	height: 2em;
+	width: 2em;
+	overflow: show;
+	margin: auto;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+.popup:before {
+	content: '';
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+.popup:not(:required) {
+	/* hide "loading..." text */
+	font: 0/0 a;
+	color: transparent;
+	text-shadow: none;
+	background-color: transparent;
+	border: 0;
+}
+.popup:not(:required):after {
+	content: '';
+	display: block;
+	font-size: 10px;
+	width: 1em;
+	height: 1em;
+	margin-top: -0.5em;
+}
 
 .bulk-actions-widget {
 	position: fixed;

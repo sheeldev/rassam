@@ -54,9 +54,9 @@
                         </div>
                     </div>
                 </div>
-                <div id="customers-results">
+                <div>
                     <div class="draw-card__section">
-                        <div class="table-wrapper">
+                        <div id="orders-results" class="table-wrapper order_events">
                             <table class="table-hover expanded">
                                     <thead>
                                         <tr>
@@ -113,7 +113,7 @@
 
 <div id="order_details" class="bulk-actions-widget">
     <div>
-        <span class=">right  bold"><a href="javascript:;" onclick="jQuery('#order_details').removeClass('open')" class="close">{_close}</a></span><br>
+        <span class=">right  bold"><a href="javascript:;" onclick="jQuery('#order_details').removeClass('open'); jQuery('#popupshow').addClass('hide')" class="close">{_close}</a></span><br>
             <div id="orders_status">
             </div>
         <div class="clear"></div>
@@ -121,6 +121,8 @@
 
     </div>
 </div>
-
+<div id="popupshow" class="hide">
+    <div class="popup"></div>
+</div>
 
 
