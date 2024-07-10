@@ -14,6 +14,7 @@
         <input type="hidden" name="staffno" value="{staff[code]}" />
         <input type="hidden" name="staffetag" value="{form[staffetag]}" />
         <input type="hidden" name="company_id" value="{form[company]}">
+        <input type="hidden" name="company_code" value="{form[companycode]}">
         <input type="hidden" name="customerNo" value="{staff[customerNo]}">
 
         <div class="header-row">
@@ -23,7 +24,7 @@
                     <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{staff[customer_id]}/">{staff[customerNo]}</a> / <a href="{https_server_admin}customers/org/{staff[customer_id]}/staffs/">{_staffs}</a> / </span> {currentarea}
 				</h1> 
                 <div class="header__primary-actions">
-                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                    <button id="savingstatus" type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                 </div>
                 <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/org/{staff[customer_id]}/staffs/">{_cancel}</a> </div>
 			</header>
@@ -88,8 +89,118 @@
                 </div>
             </div>
         </div>
-
-
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Staff measurements</h1>
+                    <p> Measurements for {staff[code]}. </div>
+            </div>
+            <div class="layout-content__main">
+                <div class="draw-card">
+                    <div class="has-bulk-actions">
+                        <div class="draw-card__section">
+                            <div class="table-wrapper">
+                                    <table class="table-hover expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="15%"><label>Measurement Category</label></th> 
+                                        <th width="15%"><label>Value</label></th> 
+                                        <th width="25%"><label>UOM</label></th> 
+                                        <th width="100%"></th> 
+                                        <th>{_action}</span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="addmeasurement" valign="top" class="">
+                                            <td width="15%" align="left">
+                                                <div class="draw-select__wrapper draw-input--has-content" id="category-wraper">
+                                                    {form[mcategory]}
+                                                </div>
+                                            </td>
+                                            <td width="15%" align="left"><input class="draw-input with-add-on" size="50" type="text" value="" name="mvalue" id="mvalue" ></td>
+                                            <td width="25%" align="left">
+                                                <div class="draw-select__wrapper draw-input--has-content" id="uom-wraper">
+                                                    {form[uom]}
+                                                </div>
+                                            </td>
+                                            <td width="100%"></td> 
+                                            <td>
+                                                <ul class="segmented">
+                                                    <li>
+                                                        <a href="javascript:;"  onclick="add_staff_measurement('{staff[code]}','{https_server_admin}settings/sizingrules/types/')" class="btn btn-slim btn--icon" title="{_save}">
+                                                        <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    <loop name="staffmeasurements">
+                                        <tr valign="top">
+                                            <input type="hidden" name="etag_{systemId}" id = "etag_{systemId}" value="{etag}" />
+                                            <td width="15%" align="left">{measurementCode}</td> 
+                                            <td width="15%" align="left">
+                                                <input class="draw-input with-add-on" size="50" type="text" value="{value}" name="mvalue_{systemId}" id="mvalue_{systemId}"  onfocus="focus_field('mvalue_{systemId}')" onchange="update_staff_details('mvalue_{systemId}','mValue','{systemId}','{form[companycode]}', '{etag}')">
+                                            </td> 
+                                            <td width="25%" align="left">
+                                                <div class="draw-select__wrapper draw-input--has-content">
+                                                    {uomCode}
+                                                </div>
+                                            </td> 
+                                            <td width="100%"></td> 
+                                            <td >
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete selected staff measurement?', 'Are you sure you want to delete the selected staff measurement?', '{systemId}', 1, 'deletemeasurement', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                            </td>
+                                        </tr>
+                                    </loop name="staffmeasurements"> 
+                                    </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-content">
+            <div class="layout-content__sidebar layout-content__first">
+                <div class="section-summary">
+                    <h1>Staff sizes</h1>
+                    <p> Sizes for {staff[code]}. </div>
+            </div>
+            <div class="layout-content__main">
+                <div class="draw-card">
+                    <div class="has-bulk-actions">
+                        <div class="draw-card__section">
+                            <div class="table-wrapper">
+                                    <table class="table-hover expanded">
+                                    <thead>
+                                    <tr>
+                                        <th width="15%"><label>Type</label></th> 
+                                        <th width="15%"><label>Size</label></th>
+                                        <th width="15%"><label>Fit</label></th> 
+                                        <th width="100%"><label>Cut</label></th> 
+                                        <th>{_action}</span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <loop name="staffsizes">
+                                        <tr id="tr_selected_{systemId}" valign="top">
+                                            <td width="15%" align="left">{sizeType}</td> 
+                                            <td width="15%" align="left">{sizeCode}</td> 
+                                            <td width="15%" align="left">{fitCode}</td> 
+                                            <td width="100%" align="left">{cutCode}</td> 
+                                            <td >
+                                                <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff measurement?', 'Are you sure you want to delete the selected staff measurement?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                            </td>
+                                        </tr>
+                                    </loop name="staffsizes"> 
+                                    </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
 </section>

@@ -5,6 +5,7 @@
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'wh'"><script>jQuery.growl.error({ title: '{_error}', message: 'The customer logo file must be at least 150 x 150 dimension.' });</script></if>
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'error'"><script>jQuery.growl.error({ title: '{_error}', message: 'Error in activating selected customer. Please contact administrator.' });</script></if>
     <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'exist'"><script>jQuery.growl.error({ title: '{_error}', message: 'The selected customer is already activated.' });</script></if>
+    <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'blocked'"><script>jQuery.growl.error({ title: '{_error}', message: 'The selected customer is blocked.' });</script></if>
 </if>
 <section>
     <script type="text/javascript">
@@ -22,7 +23,7 @@
 					<span class="breadcrumb"><a href="{https_server_admin}customers/bc/">{_customers}</a> / </span> {currentarea}
 				</h1>
 				<div class="header__primary-actions">
-                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->GPC['activated']) AND $sheel->GPC['activated'] == '1'">btn-disabled</if>" >{_activate}</button>
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="(isset($sheel->GPC['activated']) AND $sheel->GPC['activated']  == '1') OR (isset($sheel->GPC['blocked']) AND $sheel->GPC['blocked']  == '1')">btn-disabled</if>" >{_activate}</button>
                 </div>
                 
                 <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/bc/">{_cancel}</a> </div>
@@ -294,18 +295,15 @@
 											<div class="draw-select__wrapper">
                                             	{form[filter_pulldown]}
 											</div>
-											
 										</div>
-                                        
-                                            <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
-                                            <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
-                                                <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
-                                            </div>
-                                        
-                                        <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                        <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
+                                        <div class="draw-input--stylized draw-field--connected">
+                                            <span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                            <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
+                                            <a href="{https_server_admin}customers/bc/" title="{_clear}"><span class="draw-input__add-on draw-input__add-on--after"><span class=" halflings halflings-remove draw-icon" aria-hidden="true"></span></span></a>
+                                        </div>  
                                     </div>
                                     </form>
-                                    
                                 </div>
                             </div>
                         </div>

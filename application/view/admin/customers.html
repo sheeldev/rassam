@@ -555,11 +555,11 @@
 										</div>
                                         
                                             <label class="draw-label helper--visually-hidden" for="query">{_keywords}</label>
-                                            <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                            <div class="draw-input--stylized draw-field--connected">
+                                                <span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
                                                 <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
-                                            </div>
-                                        
-                                        <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                                <a href="{https_server_admin}customers/" title="{_clear}"><span class="draw-input__add-on draw-input__add-on--after"><span class=" halflings halflings-remove draw-icon" aria-hidden="true"></span></span></a>
+                                            </div> 
                                     </div>
                                     </form>
                                     

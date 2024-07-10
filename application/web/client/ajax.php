@@ -34,6 +34,7 @@ $methods = array(
 	'getorderdetails' => array('skipsession' => true),
 	'getassemblydetails' => array('skipsession' => true),
 	'getassemblyscans' => array('skipsession' => true),
+	'updatestaffdetails' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -497,6 +498,87 @@ if (isset($sheel->GPC['do'])) {
 			echo $sheel->template->parse_template_phrases('assemblyscans');
 		}
 		exit();
+	} else if ($sheel->GPC['do'] == 'updatestaffdetails') {
+		if (isset($sheel->GPC['recordid']) and !empty($sheel->GPC['recordid']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname']) and isset($sheel->GPC['newvalue'])) {
+			$sheel->template->templateregistry['error'] = '';
+			$response = '0';
+			switch ($sheel->GPC['fieldname']) {
+				case 'mValue': {
+					if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $sheel->GPC['company'])) {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+					}
+
+					$updateResponse = $sheel->dynamics->update(
+						$sheel->GPC['recordid'],
+						array(
+							"@odata.etag" => $sheel->GPC['etag'],
+							"value" => $sheel->GPC['newvalue']
+						)
+					);
+					if ($updateResponse->isSuccess()) {
+						$value = $sheel->GPC['newvalue'];
+					} else {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
+					}
+					break;
+				}
+
+				case 'uom': {
+					if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $sheel->GPC['company'])) {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+					}
+
+					$updateResponse = $sheel->dynamics->update(
+						$sheel->GPC['recordid'],
+						array(
+							"@odata.etag" => $sheel->GPC['etag'],
+							"uomCode" => $sheel->GPC['newvalue']
+						)
+					);
+					if ($updateResponse->isSuccess()) {
+						$value = $sheel->GPC['newvalue'];
+					} else {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
+					}
+					$searchcondition = '$filter=systemId eq ' . $sheel->GPC['recordid'];
+					$apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+					if ($apiResponse->isSuccess()) {
+						$measurement = $apiResponse->getData();
+					} else {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
+					}
+					$etag = $measurement['0']['@odata.etag'];
+					break;
+				}
+			}
+		} else {
+			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$response = '1';
+		}
+		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error, 'etag' => $etag)));
+
+
+
+
+
+
+
+	} else if ($sheel->GPC['do'] == 'addmeasurement') {
+		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['mcategory']) and !empty($sheel->GPC['mcategory']) and isset($sheel->GPC['mvalue']) and !empty($sheel->GPC['mvalue']) and isset($sheel->GPC['uom']) and !empty($sheel->GPC['uom'])) {
+			$sheel->template->templateregistry['error'] = '';
+			$response = '0';
+		} else {
+			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$response = '1';
+		}
+		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
 	} else if ($sheel->GPC['do'] == 'build') {
 		die('001');
 	} else if ($sheel->GPC['do'] == 'version') {
