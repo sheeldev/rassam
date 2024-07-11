@@ -7,15 +7,7 @@
     </script>
     
     <div class="section account-overview">
-        <form autocomplete="off" id="update_staff" action="{https_server_admin}customers/org/{staff[customer_id]}/staffs/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
-        <input type="hidden" name="subcmd" value="update" />
-        <input type="hidden" name="do" value="save" />
-        <input type="hidden" name="staffid" value="{staff[systemId]}" />
-        <input type="hidden" name="staffno" value="{staff[code]}" />
-        <input type="hidden" name="staffetag" value="{form[staffetag]}" />
-        <input type="hidden" name="company_id" value="{form[company]}">
-        <input type="hidden" name="company_code" value="{form[companycode]}">
-        <input type="hidden" name="customerNo" value="{staff[customerNo]}">
+        
 
         <div class="header-row">
 			<header class="header">
@@ -24,10 +16,9 @@
                     <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{staff[customer_id]}/">{staff[customerNo]}</a> / <a href="{https_server_admin}customers/org/{staff[customer_id]}/staffs/">{_staffs}</a> / </span> {currentarea}
 				</h1> 
                 <div class="header__primary-actions">
-                    <button id="savingstatus" type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                    <button id="savingstatus" class="btn">{_saved}</button>
                 </div>
-                <div class="header__secondary-actions">  <a class="btn" href="{https_server_admin}customers/org/{staff[customer_id]}/staffs/">{_cancel}</a> </div>
-			</header>
+            </header>
 		</div>
         <div class="layout-content">
             <div class="layout-content__sidebar layout-content__first">
@@ -36,6 +27,15 @@
                     <p> Details for {staff[code]}. </div>
             </div>
             <div class="layout-content__main">
+                <form autocomplete="off" id="update_staff" action="{https_server_admin}customers/org/{staff[customer_id]}/staffs/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
+                    <input type="hidden" name="subcmd" value="update" />
+                    <input type="hidden" name="do" value="save" />
+                    <input type="hidden" name="staffid" value="{staff[systemId]}" />
+                    <input type="hidden" name="staffno" value="{staff[code]}" />
+                    <input type="hidden" name="staffetag" value="{form[staffetag]}" />
+                    <input type="hidden" name="company_id" value="{form[company]}">
+                    <input type="hidden" name="company_code" value="{form[companycode]}">
+                    <input type="hidden" name="customerNo" value="{staff[customerNo]}">
                 <div class="draw-card">
                     <div class="section-content">
                         <div class="draw-card__section">
@@ -84,16 +84,32 @@
                                 </div>
                                 
                             </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div align= "right">
+                                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
+            </form>
             </div>
         </div>
+        
         <div class="layout-content">
             <div class="layout-content__sidebar layout-content__first">
                 <div class="section-summary">
                     <h1>Staff measurements</h1>
-                    <p> Measurements for {staff[code]}. </div>
+                    <p> Measurements for {staff[code]}. 
+                    <p><button name="button" onclick="toggle_add()" data-accordion-toggler-for="" class="btn">{_add}</button></p>
+            
+                </div>
             </div>
             <div class="layout-content__main">
                 <div class="draw-card">
@@ -111,13 +127,13 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        <tr id="addmeasurement" valign="top" class="">
+                                        <tr id="addmeasurement" valign="top" class="hide">
                                             <td width="15%" align="left">
                                                 <div class="draw-select__wrapper draw-input--has-content" id="category-wraper">
                                                     {form[mcategory]}
                                                 </div>
                                             </td>
-                                            <td width="15%" align="left"><input class="draw-input with-add-on" size="50" type="text" value="" name="mvalue" id="mvalue" ></td>
+                                            <td width="15%" align="left"><input class="draw-input with-add-on" size="50" type="text" value="0" name="mvalue" id="mvalue" ></td>
                                             <td width="25%" align="left">
                                                 <div class="draw-select__wrapper draw-input--has-content" id="uom-wraper">
                                                     {form[uom]}
@@ -127,7 +143,7 @@
                                             <td>
                                                 <ul class="segmented">
                                                     <li>
-                                                        <a href="javascript:;"  onclick="add_staff_measurement('{staff[code]}','{https_server_admin}settings/sizingrules/types/')" class="btn btn-slim btn--icon" title="{_save}">
+                                                        <a href="javascript:;"  onclick="add_staff_measurement('{staff[code]}','{form[companycode]}','{staff[customerNo]}', '{staff[positionCode]}' , '{staff[departmentCode]}' , '{https_server_admin}customers/org/{staff[customer_id]}/staffs/?subcmd=update&staffno={staff[code]}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_save}">
                                                         <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
                                                         </a>
                                                     </li>

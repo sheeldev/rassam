@@ -946,15 +946,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
                 $mcategory += [$code => $code . ' > ' . $name];
             }
-
             $form['department_pulldown'] = $sheel->construct_pulldown('departments', 'departments', $custdepartments, $staff['departmentCode'], 'class="draw-select"');
             $form['position_pulldown'] = $sheel->construct_pulldown('positions', 'positions', $custpositions, $staff['positionCode'], 'class="draw-select"');
             $form['gender'] = $sheel->construct_pulldown('gender', 'form[gender]', $gender, $staff['gender'], 'class="draw-select"');
             $form['company'] = $sheel->GPC['company_id'];
             $form['companycode'] = $companycode;
             $form['staffetag'] = htmlspecialchars($staff['@odata.etag']);
-            $form['uom'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, '', 'class="draw-select"');
-            $form['mcategory'] = $sheel->construct_pulldown('mcategories', 'mcategories', $mcategory, '', 'class="draw-select"');
+            $form['uom'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->sizing->get_default_uom(array_key_first($mcategory)), 'class="draw-select"');
+            $form['mcategory'] = $sheel->construct_pulldown('mcategories', 'mcategories', $mcategory, '', 'onchange="update_measurement_uom()" class="draw-select"');
             $staffmeasurements = [];
             $staffsizes = [];
 
@@ -980,9 +979,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $measurement['uomCode'] = $sheel->construct_pulldown('uom_' . $measurement['systemId'], 'uom_' . $measurement['systemId'], $uom, $measurement['uomCode'], $extra);
 
             }
-
-
-
             if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();

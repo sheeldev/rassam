@@ -35,6 +35,7 @@ $methods = array(
 	'getassemblydetails' => array('skipsession' => true),
 	'getassemblyscans' => array('skipsession' => true),
 	'updatestaffdetails' => array('skipsession' => true),
+	'getdefaultuom' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -572,9 +573,41 @@ if (isset($sheel->GPC['do'])) {
 	} else if ($sheel->GPC['do'] == 'addmeasurement') {
 		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['mcategory']) and !empty($sheel->GPC['mcategory']) and isset($sheel->GPC['mvalue']) and !empty($sheel->GPC['mvalue']) and isset($sheel->GPC['uom']) and !empty($sheel->GPC['uom'])) {
 			$sheel->template->templateregistry['error'] = '';
+			if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $sheel->GPC['company'])) {
+				$response = '1';
+				$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+			}
+			$addResponse = $sheel->dynamics->insert(
+				array(
+					"customerNo" =>  $sheel->GPC['customer'],
+					"staffCode" => $sheel->GPC['staffcode'],
+					"measurementCode" => $sheel->GPC['mcategory'],
+					"positionCode" =>  $sheel->GPC['position'],
+					"departmentCode" =>  $sheel->GPC['department'],
+					"value" => intval($sheel->GPC['mvalue']),
+					"uomCode" => $sheel->GPC['uom']
+				)
+			);
+			if ($addResponse->isSuccess()) {
+				$response = '0';
+			} else {
+				$response = '1';
+				$sheel->template->templateregistry['error'] = $addResponse->getErrorMessage();
+			}
+		} else {
+			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$response = '1';
+		}
+		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
+	} else if ($sheel->GPC['do'] == 'getdefaultuom') {
+		if (isset($sheel->GPC['mcategory']) and !empty($sheel->GPC['mcategory'])) {
+			$sheel->template->templateregistry['error'] = '';
+			$value = $sheel->sizing->get_default_uom($sheel->GPC['mcategory']) == '' ? 'CM' : $sheel->sizing->get_default_uom($sheel->GPC['mcategory']);
 			$response = '0';
 		} else {
 			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$value = 'CM';
 			$response = '1';
 		}
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
