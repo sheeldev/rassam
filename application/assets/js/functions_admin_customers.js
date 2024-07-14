@@ -176,6 +176,41 @@ function validate_staff_form() {
 	return false;
 
 }
+function update_measurement_uom(field) {
+	var mcategory = fetch_js_object(field).value;
+	var querystring = "&mcategory=" + mcategory + "&token=" + iL['TOKEN'];
+	try {
+		ajaxRequest = new XMLHttpRequest();
+	}
+	catch (e) {
+		try {
+			ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e) {
+			try {
+				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			catch (e) {
+				return false;
+			}
+		}
+	}
+	ajaxRequest.onreadystatechange = function () {
+		if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
+			var result = JSON.parse(ajaxRequest.responseText);
+			if (result.response == '1') {
+				jQuery.growl.error({ title: phrase['_error'], message: result.error });
+
+			}
+			else {
+				fetch_js_object('uoms').value = result.value;
+			}
+		}
+	}
+	ajaxRequest.open('GET', iL['AJAXURL'] + '?do=getdefaultuom' + querystring, true);
+	ajaxRequest.send(null);
+
+}
 function submit_measurement_form() {
 	haserror = false;
 	jQuery('#measurements').removeClass('error');

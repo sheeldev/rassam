@@ -566,7 +566,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheet = $spreadsheet->getSheet('1');
                 $last_row = 2;
                 foreach ($positions as $key => $value) {
-                    $sheet->setCellValue('A' . $last_row, $value['positionCode']);
+                    $sheet->setCellValue('A' . $last_row, $value['positionCode'] . '>' . $value['positionName']);
                     $sheet->setCellValue('B' . $last_row, $value['positionName']);
                     $sheet->setCellValue('C' . $last_row, $value['departmentCode']);
                     $last_row++;
@@ -574,7 +574,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheet = $spreadsheet->getSheet('2');
                 $last_row = 2;
                 foreach ($departments as $key => $value) {
-                    $sheet->setCellValue('A' . $last_row, $value['departmentCode']);
+                    $sheet->setCellValue('A' . $last_row, $value['departmentCode'] . '>' . $value['departmentName']);
                     $sheet->setCellValue('B' . $last_row, $value['departmentName']);
                     $last_row++;
                 }
@@ -784,6 +784,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
                 }
             }
+            if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'deletesize') {
+                if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
+                    $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                    exit();
+                }
+                $deleteResponse = $sheel->dynamics->delete($sheel->GPC['xid']);
+                $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Staff Size deleted', 'A customer staff Size has been successfully deleted.');
+                if ($deleteResponse->isSuccess()) {
+                    $sheel->template->templateregistry['message'] = 'A Staff Size has been successfully deleted.';
+                    die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+                } else {
+                    $sheel->template->templateregistry['message'] = $deleteResponse->getErrorMessage();
+                    die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+                }
+            }
 
 
 
@@ -894,7 +909,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $custpositions += [$code => $code . ' > ' . $name];
             }
             $tempuom = array();
+            $tempitemtypes = array();
+            $tempsizes = array();
+            $tempfits = array();
+            $tempcuts = array();
             $uom = array();
+            $itemtypes = array();
+            $sizes = array();
+            $fits = array();
+            $cuts = array();
+
             if (!$sheel->dynamics->init_dynamics('erUOM', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -918,6 +942,108 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
                 $uom += [$code => $name];
             }
+            if (!$sheel->dynamics->init_dynamics('erSizes', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$orderby=code asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $tempsizes = $apiResponse->getData();
+            } else {
+                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
+            }
+
+            foreach ($tempsizes as $key => $value) {
+
+                foreach ($value as $key1 => $value1) {
+                    if ($key1 == 'code') {
+                        $code = $value1;
+                    }
+                    if ($key1 == 'name') {
+                        $name = $value1;
+                    }
+                }
+                $sizes += [$code => $code];
+            }
+            if (!$sheel->dynamics->init_dynamics('erFits', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$orderby=code asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $tempfits = $apiResponse->getData();
+            } else {
+                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
+            }
+
+            foreach ($tempfits as $key => $value) {
+
+                foreach ($value as $key1 => $value1) {
+                    if ($key1 == 'code') {
+                        $code = $value1;
+                    }
+                    if ($key1 == 'name') {
+                        $name = $value1;
+                    }
+                }
+                $fits += [$code => $code];
+            }
+            if (!$sheel->dynamics->init_dynamics('erCuts', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$orderby=code asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $tempcuts = $apiResponse->getData();
+            } else {
+                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
+            }
+
+            foreach ($tempcuts as $key => $value) {
+
+                foreach ($value as $key1 => $value1) {
+                    if ($key1 == 'code') {
+                        $code = $value1;
+                    }
+                    if ($key1 == 'name') {
+                        $name = $value1;
+                    }
+                }
+                $cuts += [$code => $code];
+            }
+            if (!$sheel->dynamics->init_dynamics('erItemTypes', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$orderby=name asc';
+            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $tempitemtypes = $apiResponse->getData();
+            } else {
+                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
+            }
+
+            foreach ($tempitemtypes as $key => $value) {
+
+                foreach ($value as $key1 => $value1) {
+                    if ($key1 == 'name') {
+                        $code = $value1;
+                    }
+                }
+                $itemtypes += [$code => $code];
+            }
+
             $tempmcategory = array();
             $mcategory = array();
             if (!$sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode)) {
@@ -933,9 +1059,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
-    
+
             foreach ($tempmcategory as $key => $value) {
-    
+
                 foreach ($value as $key1 => $value1) {
                     if ($key1 == 'code') {
                         $code = $value1;
@@ -953,11 +1079,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $form['companycode'] = $companycode;
             $form['staffetag'] = htmlspecialchars($staff['@odata.etag']);
             $form['uom'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->sizing->get_default_uom(array_key_first($mcategory)), 'class="draw-select"');
-            $form['mcategory'] = $sheel->construct_pulldown('mcategories', 'mcategories', $mcategory, '', 'onchange="update_measurement_uom()" class="draw-select"');
+            $form['mcategory'] = $sheel->construct_pulldown('mcategories', 'mcategories', $mcategory, '', 'onchange="update_measurement_uom(\'mcategories\')" class="draw-select"');
+            $form['size'] = $sheel->construct_pulldown('sizes', 'sizes', $sizes, '', 'class="draw-select"');
+            $form['fit'] = $sheel->construct_pulldown('fits', 'fits', $fits, '', 'class="draw-select"');
+            $form['cut'] = $sheel->construct_pulldown('cuts', 'cuts', $cuts, '', 'class="draw-select"');
+            $form['itemtype'] = $sheel->construct_pulldown('itemtypes', 'itemtypes', $itemtypes, '', 'class="draw-select"');
             $staffmeasurements = [];
             $staffsizes = [];
 
-            
+
 
             if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
@@ -979,6 +1109,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $measurement['uomCode'] = $sheel->construct_pulldown('uom_' . $measurement['systemId'], 'uom_' . $measurement['systemId'], $uom, $measurement['uomCode'], $extra);
 
             }
+
+
             if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -992,7 +1124,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
-
+            $temparray = [];
+            foreach ($staffsizes as &$staffsize) {
+                $staffsize['etag'] = htmlspecialchars($staffsize['@odata.etag']);
+                foreach ($staffsize as $key => $value) {
+                    if ($key === 'sizeCode' || $key === 'fitCode' || $key === 'cutCode') {
+                        if ($key === 'sizeCode') {
+                            $temparray = $sizes;
+                        } else if ($key === 'fitCode') {
+                            $temparray = $fits;
+                        } else if ($key === 'cutCode') {
+                            $temparray = $cuts;
+                        }
+                        $extra = 'class="draw-select" onchange="update_staff_details(\'' . $key . '_' . $staffsize['systemId'] . '\',\'' . $key . '\',\'' . $staffsize['systemId'] . '\',\'' . $companycode . '\',\'' . $staffsize['etag'] . '\')"';
+                        $staffsize[$key] = $sheel->construct_pulldown($key . '_' . $staffsize['systemId'], $key . '_' . $staffsize['systemId'], $temparray, $staffsize[$key], $extra);
+                    }
+                }
+            }
 
 
 
@@ -1182,6 +1330,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     foreach ($mandatorymeasurements as $key1 => $value1) {
                         $sheet->setCellValue('A' . $last_row, $value['code']);
                         $sheet->setCellValue('B' . $last_row, $value1);
+                        $sheet->setCellValue('D' . $last_row, $sheel->sizing->get_default_uom($value1));
                         $last_row++;
                     }
                 }
@@ -1606,8 +1755,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $uom += [$code => $name];
         }
         $form['staff_pulldown'] = $sheel->construct_pulldown('staffs', 'staffs', $custstaffs, '', 'class="draw-select"');
-        $form['measurement_pulldown'] = $sheel->construct_pulldown('measurements', 'measurements', $measurements, '', 'class="draw-select"');
-        $form['uom_pulldown'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, 'CM', 'class="draw-select"');
+        $form['measurement_pulldown'] = $sheel->construct_pulldown('measurements', 'measurements', $measurements, '', 'onchange="update_measurement_uom(\'measurements\')" class="draw-select"');
+        $form['uom_pulldown'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->sizing->get_default_uom(array_key_first($measurements)), 'class="draw-select"');
         $form['value'] = '';
 
 

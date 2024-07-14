@@ -254,6 +254,8 @@
                                             </span>
                                         </th>
                                         <th width="10%"><label>Staff Code</label></th>
+                                        <th width="10%"><label>Staff Name</label></th>
+                                        <th width="5%"><label>Gender</label></th>
                                         <th width="15%"><label>Measurement Category</label></th> 
                                         <th width="15%"><label>Position</label></th> 
                                         <th width="15%"><label>Department</label></th>
@@ -268,6 +270,8 @@
                                             <td class="select"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="staffid[]" id="memssss_{systemId}" value="{systemId}" class="draw-checkbox" onchange="inlineCB.toggle(this)"><span class="draw-checkbox--styled"></span></div></td>
                                 
                                             <td width="10%" nowrap="nowrap">{staffCode}</td>
+                                            <td width="10%">{staffName}</td>
+                                            <td width="5%">{gender}</td>
                                             <td width="15%" align="left"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?subcmd=update&systemId={systemId}&company_id={customercard[company_id]}" title="{measurementCode}">{measurementCode}</a></td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="15%" align="left">{departmentName}</td> 

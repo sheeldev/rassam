@@ -127,6 +127,8 @@ class xlsx
 	function staff_xlsx_to_db($data, $customer_ref, $nextid, $userid = 0, $bulk_id = 0)
 	{
 		foreach ($data as $t) {
+			$position = explode('>', $t[2]);
+			$department = explode('>', $t[3]);
 			$this->sheel->db->query("
                         INSERT INTO " . DB_PREFIX . "bulk_tmp_staffs
                         (id, code, name, gender, positioncode, departmentcode, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
@@ -135,8 +137,8 @@ class xlsx
                         '" . $customer_ref . '-' . $nextid . "',
 						'" . $t[0] . "',
 						'" . $t[1] . "',
-						'" . $t[2] . "',
-						'" . $t[3] . "',
+						'" . $position[0] . "',
+						'" . $department[0] . "',
 						'" . $customer_ref . "',
 						'',
                         '" . $this->sheel->db->escape_string(DATETODAY) . "',
