@@ -21,6 +21,7 @@ $sheel->template->meta['jsinclude'] = array(
 $sheel->template->meta['cssinclude'] = array(
     'common',
     'spinner',
+    'addition',
     'vendor' => array(
         'font-awesome',
         'glyphicons',
@@ -38,8 +39,6 @@ if (($sidenav = $sheel->cache->fetch("sidenav_customers")) === false) {
 }
 
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
-
-
     $q = ((isset($sheel->GPC['q'])) ? o($sheel->GPC['q']) : '');
     $sheel->GPC['page'] = (!isset($sheel->GPC['page']) or isset($sheel->GPC['page']) and $sheel->GPC['page'] <= 0) ? 1 : intval($sheel->GPC['page']);
     $vars = array(
@@ -1312,6 +1311,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'measurementsample') {
+            if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+            $staffmeasurements = array();
+            $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $staffmeasurements = $apiResponse->getData();
+            } else {
+                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
+            }
+
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -1328,9 +1342,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $last_row = (int) $sheet->getHighestRow() + 1;
                 foreach ($custstaffs as $key => $value) {
                     foreach ($mandatorymeasurements as $key1 => $value1) {
+                        $foundValue = '';
+                        foreach ($staffmeasurements as $measurement) {
+                            if (isset($measurement['staffCode']) and ($measurement['staffCode'] == $value['code']) and isset($measurement['measurementCode']) and ($measurement['measurementCode'] == $value1)) {
+                                $foundValue = $measurement['value'];
+                                break;
+                            } else {
+                                $foundValue = '';
+                            }
+                        }
                         $sheet->setCellValue('A' . $last_row, $value['code']);
-                        $sheet->setCellValue('B' . $last_row, $value1);
-                        $sheet->setCellValue('D' . $last_row, $sheel->sizing->get_default_uom($value1));
+                        $sheet->setCellValue('B' . $last_row, $value['name']);
+                        $sheet->setCellValue('C' . $last_row, $value['gender']);
+                        $sheet->setCellValue('D' . $last_row, $value1);
+                        $sheet->setCellValue('E' . $last_row, $foundValue);
+                        $sheet->setCellValue('F' . $last_row, $sheel->sizing->get_default_uom($value1));
                         $last_row++;
                     }
                 }
@@ -1375,7 +1401,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $reader->setReadDataOnly(true);
                     $reader->setLoadSheetsOnly(["Sheet1"]);
                     $spreadsheet = $reader->load($file_name);
-                    if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'D') {
+                    if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'F') {
                         refresh(HTTPS_SERVER_ADMIN . 'customers/org/' . $customer['customer_id'] . '/measurements/?error=invalidff');
                     }
                     $sheetData = $spreadsheet->getSheet('0')->toArray();

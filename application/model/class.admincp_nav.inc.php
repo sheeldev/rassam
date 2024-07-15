@@ -331,7 +331,7 @@ class admincp_nav extends admincp
                                 ':'').
                                 ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_sizingrules', false) ?
                                 '
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_sizingrules" bind-event-click="" allow-default="1" href="settings/sizingrules/">Sizing Rules</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_sizingrules" bind-event-click="" allow-default="1" href="settings/sizingsystem/">Sizing System</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 ':'').
                                 ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_bc', false) ?

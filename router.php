@@ -102,10 +102,10 @@ $router->map('GET|POST', '/admin/settings/[languages:cmd]/[update|delete|default
 $router->map('GET|POST', '/admin/settings/[languages:cmd]/[import|export|add:subcmd]/', __DIR__ . '/application/web/admin/languages.php', 'admin_language_impex');
 $router->map('GET|POST', '/admin/settings/locations/', __DIR__ . '/application/web/admin/locations.php', 'admin_locations');
 $router->map('GET|POST', '/admin/settings/[locations:cmd]/[update:subcmd]/[region|country:mode]/[*:locationid]/', __DIR__ . '/application/web/admin/locations.php', 'admin_locations_update_cmd');
-$router->map('GET|POST', '/admin/settings/sizingrules/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules');
-$router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_add');
-$router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[update|delete|deleteline:subcmd]/[*:code]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_delete');
-$router->map('GET|POST', '/admin/settings/[sizingrules:cmd]/[sizesystem|deletetype|types:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingtypes');
+$router->map('GET|POST', '/admin/settings/sizingsystem/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules');
+$router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_add');
+$router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[update|delete|deleteline:subcmd]/[*:code]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_delete');
+$router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[sizesystem|deletetype|types:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingtypes');
 
 $router->map('GET|POST', '/admin/settings/bc/', __DIR__ . '/application/web/admin/bc.php', 'admin_bc');
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');

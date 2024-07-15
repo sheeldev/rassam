@@ -101,8 +101,7 @@
                     <p>Add Bulk Staff Sizes for this customer. </p>
                     <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=sizesample'" /></div>
                     <p></p>
-                    <div><input type="button" value="{_suggest_sizes_for_all}" class="btn large" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', false);" /></div>
-								
+                    <div><input type="button" value="{_suggest_sizes_for_all}" class="btn large" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', false);" /></div>		
               </div>
             </div>
             <div class="layout-content__main">
@@ -130,62 +129,68 @@
                    	    </div>    
                	    </div>
            	    </div>
-                   <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
-                   <div class="draw-card">
-                    <div class="draw-card__section">
-                        <form action="customers/org/{customercard[customer_id]}/sizes/" name="formuploadedsizes" onsubmit="forward_with_loading_nourl();" accept-charset="UTF-8" id="formuploadedsizes" method="POST"> 
-                        <div class="table-wrapper" style=" height: 400px; overflow-x: hidden; overflow-y:scroll;">
-                            <table class="table-hover expanded">
-                            <thead>
-                            <tr>
-                                <th width="17%"><label>Staff Code</label> </th>
-                                <th width="15%"><label>Position Code</label></th> 
-                                <th width="17%"><label>Department Code</label></th>
-                                <th width="15%"><label>Size</label></th> 
-                                <th width="5%"><label>Fit</label></th> 
-                                <th width="5%"><label>Cut</label></th>
-                                <th width="15%"><label>Type</label></th>
-                                <th><label>Error</label></th> 
-                                <th>{_action}</span></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <loop name="uploadedsizes">
-                                <tr valign="top">
-                                
-                                        <input name="subcmd" value="bulkupload" type="hidden" />
-                                        <input name="do" value="assign" type="hidden" />
-                                        <input name="uploadid_{id}" id="uploadedid_{id}" value="{id}" type="hidden" />
-                                        <td width="17%" nowrap="nowrap"><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input"/></td>
-                                        <td width="15%" align="left"><input name="uploadedpositioncode_{id}" id="uploadedpositioncode_{id}" value="{positioncode}" class="draw-input" /></td> 
-                                        <td width="17%" align="left"><input name="uploadeddepartmentcode_{id}" id="uploadeddepartmentcode_{id}" value="{departmentcode}" class="draw-input" /></td> 
-                                        <td width="15%" align="left"><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input" /></td> 
-                                        <td width="5%" align="left"><input name="uploadedfit_{id}" id="uploadedfit_{id}" value="{fit}" class="draw-input" /></td> 
-                                        <td width="5%" align="left"><input name="uploadedcut_{id}" id="uploadedcut_{id}" value="{cut}" class="draw-input" /></td> 
-                                        <td width="15%" align="left"><input name="uploadedtype_{id}" id="uploadedtype_{id}" value="{type}" class="draw-input" /></td> 
-                                        <td><input name="uploaderrormessage_{id}" id="uploaderrormessage_{id}" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message({id});">{_show_error}</a></td> 
-                                        <td >
-                                            <input type="button" name="update" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_size({id});"/>
-                                        </td>
-                                    
-                                </tr>
-                            </loop name="uploadedsizes"> 
-                            </tbody>
-                            </table>
-                        </div>
-                        <div class="hr-20-0-20-0"></div>
-                    
-                            <div class="draw-input-wrapper">
-                                <button name="add" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_add}</button>
-                                <a href="javascript:;" data-bind-event-click="acp_confirm_simple('cancel', 'Cancel upload staff sizes?', 'Are you sure you want to cancel the upload of staffs sizes in error?', 'customers/org/{customercard[customer_id]}/sizes/?subcmd=bulkupload&cancel=cancel')" class="btn" title="{_cancel}">{_cancel}</a>
-                            </div>
-                        </form>
-                      
-                    </div>
-                    </div>
-                    </if>
             </div>
        </div>
+       <if condition="isset($sheel->GPC['haspendinguploads']) AND ($sheel->GPC['haspendinguploads'] == '1')">
+        <div class="layout-content__main">
+                   
+            <div class="draw-card">
+             <div class="draw-card__section">
+                 <form action="customers/org/{customercard[customer_id]}/sizes/" name="formuploadedsizes" onsubmit="forward_with_loading_nourl();" accept-charset="UTF-8" id="formuploadedsizes" method="POST"> 
+                 <div class="table-wrapper" style=" height: 400px; overflow-x: auto; overflow-y:scroll;">
+                     <table class="table-hover expanded">
+                     <thead>
+                     <tr>
+                         <th><label>Staff Code</label> </th>
+                         <th ><label>Position Code</label></th> 
+                         <th ><label>Department Code</label></th>
+                         <th ><label>Size</label></th> 
+                         <th ><label>Fit</label></th> 
+                         <th ><label>Cut</label></th>
+                         <th ><label>Type</label></th>
+                         <th ><label>Error</label></th> 
+                         <th >{_action}</span></th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                     <loop name="uploadedsizes">
+                         <tr valign="top">
+                         
+                                 <input name="subcmd" value="bulkupload" type="hidden" />
+                                 <input name="do" value="assign" type="hidden" />
+                                 <input name="uploadid_{id}" id="uploadedid_{id}" value="{id}" type="hidden" />
+                                 <td  ><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input"/></td>
+                                 <td align="left" ><input name="uploadedpositioncode_{id}" id="uploadedpositioncode_{id}" value="{positioncode}" class="draw-input" /></td> 
+                                 <td align="left" ><input name="uploadeddepartmentcode_{id}" id="uploadeddepartmentcode_{id}" value="{departmentcode}" class="draw-input" /></td> 
+                                 <td align="left" ><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input" /></td> 
+                                 <td align="left" ><input name="uploadedfit_{id}" id="uploadedfit_{id}" value="{fit}" class="draw-input" /></td> 
+                                 <td align="left" ><input name="uploadedcut_{id}" id="uploadedcut_{id}" value="{cut}" class="draw-input" /></td> 
+                                 <td align="left" ><input name="uploadedtype_{id}" id="uploadedtype_{id}" value="{type}" class="draw-input" /></td> 
+                                 <td><input name="uploaderrormessage_{id}" id="uploaderrormessage_{id}" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message({id});">{_show_error}</a></td> 
+                                 <td >
+                                     <input type="button" name="update" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_size({id});"/>
+                                 </td>
+                             
+                         </tr>
+                     </loop name="uploadedsizes"> 
+                     </tbody>
+                     </table>
+                 </div>
+                 <div class="hr-20-0-20-0"></div>
+             
+                     <div class="draw-input-wrapper">
+                         <button name="add" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">{_add}</button>
+                         <a href="javascript:;" data-bind-event-click="acp_confirm_simple('cancel', 'Cancel upload staff sizes?', 'Are you sure you want to cancel the upload of staffs sizes in error?', 'customers/org/{customercard[customer_id]}/sizes/?subcmd=bulkupload&cancel=cancel')" class="btn" title="{_cancel}">{_cancel}</a>
+                     </div>
+                 </form>
+               
+             </div>
+             </div>
+             
+     </div>
+       </if>
+ 
+
             <div class="layout-content">
                 <div class="layout-content__main">
                     <div class="draw-card">

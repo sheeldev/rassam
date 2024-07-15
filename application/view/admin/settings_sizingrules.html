@@ -22,13 +22,13 @@
                     <div class="section-summary">
                         <h1>Sizing Rules</h1>
                         <p>A sizing rule defines specific criterias to auto suggest sizes from measurements.</p>
-                        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')"><p><a href="{https_server_admin}settings/sizingrules/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a></p><else /><p><a href="{https_server_admin}settings/sizingrules/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Add Rule</button></a></p><p><a href="{https_server_admin}settings/sizingrules/types/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Types Manager</button></a><a href="{https_server_admin}settings/sizingrules/sizesystem/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Size System settings</button></a></p></if>
+                        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')"><p><a href="{https_server_admin}settings/sizingsystem/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a></p><else /><p><a href="{https_server_admin}settings/sizingsystem/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Add Rule</button></a></p><p><a href="{https_server_admin}settings/sizingsystem/types/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Types Manager</button></a><a href="{https_server_admin}settings/sizingsystem/sizesystem/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Configurations</button></a></p></if>
                     </div>
                 </div>
                 
                 <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
                     <div class="layout-content__main">
-                        <form autocomplete="off" action="{https_server_admin}settings/sizingrules/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_sizingrule_form()">
+                        <form autocomplete="off" action="{https_server_admin}settings/sizingsystem/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_sizingrule_form()">
                             <input type="hidden" name="subcmd" value="add" />
                             <input type="hidden" name="do" value="save" />
                             <input type="hidden" name="impactdisabled" id="impactdisabled" value="" />
@@ -262,8 +262,8 @@
                     <div class="layout-content__main">
                         <div>
                             <ul class="draw-tab__list" role="tablist">
-                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/sizingrules/">{_male}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
-                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/sizingrules/?view=female">{_female} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/sizingsystem/">{_male}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/sizingsystem/?view=female">{_female} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
                                 <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
                                     <div class="dropdown">
                                         <ul class="draw-tab__list--vertical" role="tablist"></ul>
@@ -286,7 +286,7 @@
                                             <tbody>
                                                 <loop name="rules_rows">
                                                 <tr valign="top">
-                                                    <td width="20%"><a href="{https_server_admin}settings/sizingrules/update/{code}/?gender={gender}&impact={impact}">{code}</a><div class="type--subdued">{totalrules} rule lines, {totaltypes} types</div></td>
+                                                    <td width="20%"><a href="{https_server_admin}settings/sizingsystem/update/{code}/?gender={gender}&impact={impact}">{code}</a><div class="type--subdued">{totalrules} rule lines, {totaltypes} types</div></td>
                                                     <td>{mcname} ({mccode})
                                                     <div class="type--subdued">{_rules}: {access}</div>
                                                     <div class="type--subdued">{_gender}: {gender}</div>
@@ -297,12 +297,12 @@
                                                     <td class="tr">
                                                     <ul class="segmented">
                                                         <li>
-                                                            <a href="{https_server_admin}settings/sizingrules/update/{code}/?gender={gender}&impact={impact}" class="btn btn-slim btn--icon" title="Configure permissions for this sizingrule.">
+                                                            <a href="{https_server_admin}settings/sizingsystem/update/{code}/?gender={gender}&impact={impact}" class="btn btn-slim btn--icon" title="Configure permissions for this sizingrule.">
                                                             <span class="ico-16-svg halflings halflings-cog draw-icon" aria-hidden="true"></span>
                                                             </a>
                                                         </li>
                                                     <li>
-                                                        <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected sizingrule?', 'Are you sure you want to delete the selected sizing rule?', '{code}', 1, '', '{https_server_admin}settings/sizingrules/delete/{code}/?gender={gender}')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                        <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected sizingrule?', 'Are you sure you want to delete the selected sizing rule?', '{code}', 1, '', '{https_server_admin}settings/sizingsystem/delete/{code}/?gender={gender}')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                                     </li>
                                                     </ul>
                                                     </td>
