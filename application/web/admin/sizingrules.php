@@ -165,9 +165,17 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         
         $gender = array('M' => '{_male}', 'F' => '{_female}', 'U' => '{_unisex}');
         $form['gender'] = $sheel->construct_pulldown('form[gender]', 'form[gender]', $gender, '', 'class="draw-select"');
+        $form['category'] = $sheel->common_sizingrule->construct_category_pulldown('form[category]', '', 'class=draw-select');
+        
         $sql = $sheel->db->query("
-            SELECT id, code, needsize, gender
-            FROM " . DB_PREFIX . "size_types
+        SELECT id, code, name
+        FROM " . DB_PREFIX . "size_type_categories
+        ORDER BY  code ASC
+        ");
+        $sql = $sheel->db->query("
+            SELECT t.id, t.code, t.needsize, t.gender, c.id as categoryid, c.code as categorycode, c.name as categoryname
+            FROM " . DB_PREFIX . "size_types t
+            LEFT JOIN " . DB_PREFIX . "size_type_categories c ON t.categoryid = c.id
             ORDER BY  code ASC
             ");
         $count = 0;
@@ -178,6 +186,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $extra = 'class="draw-select" onchange="update_type_line(\'form[gender_' . $count . ']\',\'gender\',' . $row['id'] . ',' . $count . ')"';
                 $row['genderfinal'] = $sheel->construct_pulldown('form[gender_' . $count . ']', 'form[gender_' . $count . ']', $gender, $row['gender'], $extra);
                 $row['needsizefinal'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input onchange="update_type_line(\'needsize_' . $count . '\',\'needsize\',' . $row['id'] . ')" type="checkbox" class="draw-checkbox" name="needsize_' . $count . '" id="needsize_' . $count . '"' . $checked . '><span class="draw-checkbox--styled"></span></div>';
+                $extra = 'class="draw-select" onchange="update_type_line(\'form[category_' . $count . ']\',\'categoryid\',' . $row['id'] . ',' . $count . ')"';
+                $row['category'] = $sheel->common_sizingrule->construct_category_pulldown('form[category_' . $count . ']', $row['categoryid'], $extra);
                 $row['action'] =
                     '<ul class="segmented">
                             <li>
@@ -212,6 +222,48 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         );
         $sheel->template->pprint('main', $vars);
         exit();
+    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'categories') {
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Types</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Sizing Types';
+        $areanav = 'settings_sizingrules';
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/">Sizing System</a> / </span><span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/types/">{_types}</a> / </span> {_sizing_categories}';
+        $sql = $sheel->db->query("
+            SELECT id, code, name
+            FROM " . DB_PREFIX . "size_type_categories
+            ORDER BY  code ASC
+            ");
+        $count = 0;
+        if ($sheel->db->num_rows($sql) > 0) {
+            while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $count++;
+                $row['action'] =
+                    '<ul class="segmented">
+                            <li>
+                                <a href="javascript:;" data-bind-event-click="acp_confirm(\'deletecategory\', \'Delete selected category?\', \'Are you sure you want to delete the selected category?\', \'' . $row['id'] . '\', 1, \'\', \'{https_server_admin}settings/sizingsystem/\')" class="btn btn-slim btn--icon" title="{_delete}">
+                                <span class="halflings halflings-trash draw-icon" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                        </ul>';
+                $categories_rows[] = $row;
+            }
+        }
+
+
+
+        $vars['areanav'] = $areanav;
+        $vars['currentarea'] = $currentarea;
+        $vars['sidenav'] = $sidenav;
+        $vars['url'] = $_SERVER['REQUEST_URI'];
+        $sheel->template->fetch('main', 'settings_sizingtypecategories.html', 1);
+
+        $sheel->template->parse_loop(
+            'main',
+            array(
+                'categories_rows' => $categories_rows
+            )
+        );
+        $sheel->template->pprint('main', $vars);
+        exit();
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'deletetype') {
         $sheel->db->query("
         DELETE FROM " . DB_PREFIX . "size_types
@@ -219,6 +271,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         LIMIT 1
         ");
         $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizetype}';
+        die(
+            json_encode(
+                array(
+                    'response' => '1',
+                    'message' => $sheel->template->parse_template_phrases('message')
+                )
+            )
+        );
+    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'deletecategory') {
+        $sheel->db->query("
+        DELETE FROM " . DB_PREFIX . "size_type_categories
+        WHERE id = '" . $sheel->GPC['xid'] . "'
+        LIMIT 1
+        ");
+        $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizecategory}';
         die(
             json_encode(
                 array(

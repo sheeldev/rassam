@@ -20,7 +20,8 @@
                     <div class="section-summary">
                         <h1>Types Manager</h1>
                         <p>Types list is required for sizing rules and staff sizes calculation.</p>
-                        <p><a href="{https_server_admin}settings/sizingsystem/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a>&nbsp;&nbsp;<button name="button" onclick="toggle_add()" data-accordion-toggler-for="" class="btn">{_add}</button></p>
+                        <p><a href="{https_server_admin}settings/sizingsystem/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a>&nbsp;&nbsp;<button name="button" onclick="toggle_add('addtype')" data-accordion-toggler-for="" class="btn">{_add}</button></p>
+                        <p><a href="{https_server_admin}settings/sizingsystem/categories/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_sizing_categories}</button></a></p>
                     </div>
                 </div>
                 
@@ -38,6 +39,7 @@
                                         <th width="15%"><label>{_code}</label></th>
                                         <th width="8%" align="center"><label>{_size_required}</label></th>
                                         <th width="15%"><label>{_gender}</label></th>
+                                        <th width="15%"><label>{_category}</label></th>
                                         <th class="tr" width="100%"><label>{_action}</label></th>
                                     </tr>
                                 </thead>
@@ -49,6 +51,11 @@
                                         <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
                                             <div  id="value-wrapper">
                                                 {form[gender]}
+                                            </div>
+                                        </td>
+                                        <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
+                                            <div  id="value-wrapper">
+                                                {form[category]}
                                             </div>
                                         </td>
                                         <td class="tr">
@@ -69,6 +76,11 @@
                                         <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
                                             <div  id="value-wrapper">
                                                 {genderfinal}
+                                            </div>
+                                        </td>
+                                        <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
+                                            <div  id="value-wrapper">
+                                                {category}
                                             </div>
                                         </td>
                                         <td class="tr">{action}</td>

@@ -1077,7 +1077,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $form['company'] = $sheel->GPC['company_id'];
             $form['companycode'] = $companycode;
             $form['staffetag'] = htmlspecialchars($staff['@odata.etag']);
-            $form['uom'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->sizing->get_default_uom(array_key_first($mcategory)), 'class="draw-select"');
+            $form['uom'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->common_sizingrule->get_default_uom(array_key_first($mcategory)), 'class="draw-select"');
             $form['mcategory'] = $sheel->construct_pulldown('mcategories', 'mcategories', $mcategory, '', 'onchange="update_measurement_uom(\'mcategories\')" class="draw-select"');
             $form['size'] = $sheel->construct_pulldown('sizes', 'sizes', $sizes, '', 'class="draw-select"');
             $form['fit'] = $sheel->construct_pulldown('fits', 'fits', $fits, '', 'class="draw-select"');
@@ -1351,12 +1351,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                                 $foundValue = '';
                             }
                         }
+                        if ($foundValue != '') {
+                            break;
+                        }
                         $sheet->setCellValue('A' . $last_row, $value['code']);
                         $sheet->setCellValue('B' . $last_row, $value['name']);
                         $sheet->setCellValue('C' . $last_row, $value['gender']);
                         $sheet->setCellValue('D' . $last_row, $value1);
                         $sheet->setCellValue('E' . $last_row, $foundValue);
-                        $sheet->setCellValue('F' . $last_row, $sheel->sizing->get_default_uom($value1));
+                        $sheet->setCellValue('F' . $last_row, $sheel->common_sizingrule->get_default_uom($value1));
                         $last_row++;
                     }
                 }
@@ -1480,7 +1483,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                             "positionCode" => $res['positioncode'],
                             "departmentCode" => $res['departmentcode'],
                             "measurementCode" => $res['measurementcategory'],
-                            "value" => intval($res['mvalue']),
+                            "value" => floatval($res['mvalue']),
                             "uomCode" => $res['uom']
                         )
                     );
@@ -1567,7 +1570,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     "positionCode" => $staffdetails[1],
                     "departmentCode" => $staffdetails[2],
                     "measurementCode" => $sheel->GPC['measurements'],
-                    "value" => intval($sheel->GPC['form']['value']),
+                    "value" => floatval($sheel->GPC['form']['value']),
                     "uomCode" => $sheel->GPC['uoms']
 
                 )
@@ -1782,7 +1785,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $form['staff_pulldown'] = $sheel->construct_pulldown('staffs', 'staffs', $custstaffs, '', 'class="draw-select"');
         $form['measurement_pulldown'] = $sheel->construct_pulldown('measurements', 'measurements', $measurements, '', 'onchange="update_measurement_uom(\'measurements\')" class="draw-select"');
-        $form['uom_pulldown'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->sizing->get_default_uom(array_key_first($measurements)), 'class="draw-select"');
+        $form['uom_pulldown'] = $sheel->construct_pulldown('uoms', 'uoms', $uom, $sheel->common_sizingrule->get_default_uom(array_key_first($measurements)), 'class="draw-select"');
         $form['value'] = '';
 
 

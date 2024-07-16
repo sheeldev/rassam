@@ -27,7 +27,9 @@ $methods = array(
 	'heropicture' => array('skipsession' => true),
 	'updateruleline' => array('skipsession' => true),
 	'updatetypeline' => array('skipsession' => true),
+	'updatecategoryline' => array('skipsession' => true),
 	'addtypeline' => array('skipsession' => true),
+	'addcategoryline' => array('skipsession' => true),
 	'showtypes' => array('skipsession' => true),
 	'showimpactvalues' => array('skipsession' => true),
 	'showrule' => array('skipsession' => true),
@@ -385,17 +387,64 @@ if (isset($sheel->GPC['do'])) {
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
 	} else if ($sheel->GPC['do'] == 'addtypeline') {
-		if (isset($sheel->GPC['code']) and !empty($sheel->GPC['code']) and isset($sheel->GPC['gender']) and !empty($sheel->GPC['gender']) and isset($sheel->GPC['needsize'])) {
+		if (isset($sheel->GPC['code']) and !empty($sheel->GPC['code']) and isset($sheel->GPC['gender']) and !empty($sheel->GPC['gender']) and isset($sheel->GPC['category']) and !empty($sheel->GPC['category']) and isset($sheel->GPC['needsize'])) {
 			$sheel->template->templateregistry['error'] = '';
 			$response = '0';
 			$sheel->db->query("
                             INSERT INTO " . DB_PREFIX . "size_types
-                            (id, code, needsize, gender)
+                            (id, code, needsize, gender, categoryid)
                             VALUES
                             (NULL,
                             '" . $sheel->db->escape_string($sheel->GPC['code']) . "',
                             '" . $sheel->GPC['needsize'] . "',
-							'" . $sheel->GPC['gender'] . "')
+							'" . $sheel->GPC['gender'] . "',
+							'" . $sheel->GPC['category'] . "')
+                        ");
+
+			$value = $sheel->db->insert_id();
+		} else {
+			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$response = '1';
+		}
+		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
+	}  else if ($sheel->GPC['do'] == 'updatecategoryline') {
+		if (isset($sheel->GPC['recordid']) and !empty($sheel->GPC['recordid']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname']) and isset($sheel->GPC['newvalue'])) {
+			$sheel->template->templateregistry['error'] = '';
+			$response = '0';
+			$sheel->db->query("
+					UPDATE " . DB_PREFIX . "size_type_categories
+					SET `" . $sheel->GPC['fieldname'] . "` = '" . $sheel->GPC['newvalue'] . "'
+					WHERE id = '" . $sheel->GPC['recordid'] . "'
+					LIMIT 1
+					", 0, null, __FILE__, __LINE__);
+			$sql = $sheel->db->query("
+					SELECT `" . $sheel->GPC['fieldname'] . "`
+					FROM " . DB_PREFIX . "size_type_categories
+					WHERE id = '" . $sheel->GPC['recordid'] . "'
+					LIMIT 1
+					");
+			if ($sheel->db->num_rows($sql) > 0) {
+				$res = $sheel->db->fetch_array($sql, DB_ASSOC);
+				$value = $res[$sheel->GPC['fieldname']];
+			}
+		} else {
+			$sheel->template->templateregistry['error'] = '{_missing_parameters}';
+			$response = '1';
+		}
+		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
+		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
+	} else if ($sheel->GPC['do'] == 'addcategoryline') {
+		if (isset($sheel->GPC['code']) and !empty($sheel->GPC['code']) and isset($sheel->GPC['name']) and !empty($sheel->GPC['name'])) {
+			$sheel->template->templateregistry['error'] = '';
+			$response = '0';
+			$sheel->db->query("
+                            INSERT INTO " . DB_PREFIX . "size_type_categories
+                            (id, code, name)
+                            VALUES
+                            (NULL,
+                            '" . $sheel->db->escape_string($sheel->GPC['code']) . "',
+                            '" . $sheel->db->escape_string($sheel->GPC['name']) . "')
                         ");
 
 			$value = $sheel->db->insert_id();
@@ -516,7 +565,7 @@ if (isset($sheel->GPC['do'])) {
 						$sheel->GPC['recordid'],
 						array(
 							"@odata.etag" => $sheel->GPC['etag'],
-							"value" => $sheel->GPC['newvalue']
+							"value" => floatval($sheel->GPC['newvalue'])
 						)
 					);
 					if ($updateResponse->isSuccess()) {
@@ -676,7 +725,7 @@ if (isset($sheel->GPC['do'])) {
 					"measurementCode" => $sheel->GPC['mcategory'],
 					"positionCode" =>  $sheel->GPC['position'],
 					"departmentCode" =>  $sheel->GPC['department'],
-					"value" => intval($sheel->GPC['mvalue']),
+					"value" => floatval($sheel->GPC['mvalue']),
 					"uomCode" => $sheel->GPC['uom']
 				)
 			);
@@ -726,7 +775,7 @@ if (isset($sheel->GPC['do'])) {
 	} else if ($sheel->GPC['do'] == 'getdefaultuom') {
 		if (isset($sheel->GPC['mcategory']) and !empty($sheel->GPC['mcategory'])) {
 			$sheel->template->templateregistry['error'] = '';
-			$value = $sheel->sizing->get_default_uom($sheel->GPC['mcategory']) == '' ? 'CM' : $sheel->sizing->get_default_uom($sheel->GPC['mcategory']);
+			$value = $sheel->common_sizingrule->get_default_uom($sheel->GPC['mcategory']) == '' ? 'CM' : $sheel->common_sizingrule->get_default_uom($sheel->GPC['mcategory']);
 			$response = '0';
 		} else {
 			$sheel->template->templateregistry['error'] = '{_missing_parameters}';

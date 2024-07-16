@@ -1,0 +1,78 @@
+<section>
+    <script>
+    Page();
+    </script>
+    <div id="sizingrule-index" refresh="sizingrule-index" class="page has-contextual-help">
+        <div class="header-row">
+            <header class="header">
+            <h1 class="header__main">
+                <span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+                </h1>
+                <div class="header__primary-actions">
+                    <div id="savingstatus" class="mw-40">{_saved}</div>
+                </div>
+            </header>
+        </div>
+        <div class="section">
+            <div class="layout-content">
+                <div class="layout-content__sidebar layout-content__first">
+                    <div class="section-summary">
+                        <h1>{_sizing_categories} {_manager}</h1>
+                        <p>Sizing Categories list is required for sizing types combination and vaisibility.</p>
+                        <p><a href="{https_server_admin}settings/sizingsystem/types/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a>&nbsp;&nbsp;<button name="button" onclick="toggle_add('addtypecategory')" data-accordion-toggler-for="" class="btn">{_add}</button></p>
+                    </div>
+                </div>
+            
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                            <div class="table-wrapper">
+                                <table class="expanded">
+                                <thead>
+                                    <tr>
+                                        <th width="15%"><label>{_code}</label></th>
+                                        <th width="15%"><label>{_name}</label></th>
+                                        <th class="tr" width="100%"><label>{_action}</label></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 
+                                    <tr id="addtypecategory" valign="top" class="hide">
+                                        <td><input class="draw-input with-add-on" size="45" type="text" value="" name="code" id="code" ></td>
+                                        <td><input class="draw-input with-add-on" size="100" type="text" value="" name="name" id="name" ></td>
+                                        
+                                        <td class="tr">
+                                            <ul class="segmented">
+                                                <li>
+                                                    <a href="javascript:;"  onclick="add_category_line('{https_server_admin}settings/sizingsystem/categories/')" class="btn btn-slim btn--icon" title="{_save}">
+                                                    <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    
+                                    <loop name="categories_rows">
+                                    <tr valign="top">
+                                        <td><input class="draw-input with-add-on" size="45" type="text" value="{code}" name="code_{id}" id="code_{id}"  onfocus="focus_field('code_{id}')" onchange="update_category_line('code_{id}','code',{id})"></td>
+                                        <td><input class="draw-input with-add-on" size="100" type="text" value="{name}" name="name_{id}" id="name_{id}"  onfocus="focus_field('name_{id}')" onchange="update_category_line('name_{id}','name',{id})"></td>
+                                        
+                                        <td class="tr">{action}</td>
+                                    </tr>
+                                    </loop name="categories_rows">
+                                </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    
+    <div define="iLNav.setPage(['settings','settings_sizingrules']), iLPage.close()"></div>
+    
