@@ -40,6 +40,7 @@
                                         <th width="8%" align="center"><label>{_size_required}</label></th>
                                         <th width="15%"><label>{_gender}</label></th>
                                         <th width="15%"><label>{_category}</label></th>
+                                        <th width="4%" align="center"><label>{_is_default}</label></th>
                                         <th class="tr" width="100%"><label>{_action}</label></th>
                                     </tr>
                                 </thead>
@@ -58,6 +59,7 @@
                                                 {form[category]}
                                             </div>
                                         </td>
+                                        <td align="center" valign="middle"><div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" class="draw-checkbox" name="isdefault" id="isdefault"><span class="draw-checkbox--styled"></span></div></td>
                                         <td class="tr">
                                             <ul class="segmented">
                                                 <li>
@@ -71,7 +73,7 @@
                                     
                                     <loop name="types_rows">
                                     <tr valign="top">
-                                        <td><input class="draw-input with-add-on" size="50" type="text" value="{code}" name="code_{id}" id="code_{id}"  onfocus="focus_field('code_{id}')" onchange="update_type_line('code_{id}','code',{id})"></td>
+                                        <td><input class="draw-input with-add-on" size="50" type="text" value="{code}" name="code_{id}" id="code_{id}"  onfocus="focus_field('code_{id}')" onchange="update_type_line('code_{id}','code',{id}, '0', '')"></td>
                                         <td align="center" valign="middle">{needsizefinal}</td>
                                         <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
                                             <div  id="value-wrapper">
@@ -83,6 +85,7 @@
                                                 {category}
                                             </div>
                                         </td>
+                                        <td align="center" valign="middle">{isdefault}</td>
                                         <td class="tr">{action}</td>
                                     </tr>
                                     </loop name="types_rows">

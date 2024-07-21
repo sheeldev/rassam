@@ -545,8 +545,20 @@ class template
 					$code = mb_substr($this->templateregistry["$node"], $start, ($end - $start));
 					$positions[] = array('start' => $start, 'end' => $end, 'code' => $code);
 					if (preg_match_all('/' . $this->start . '([\w\d_]+)' . $this->end . '/', $code, $variablematches)) {
-						$num = count($value);
-						for ($i = 0; $i < $num; $i++) {
+						foreach ($value as $key1 => $value1) {
+							if ((!empty($value[$key1]) and is_array($value[$key1])) or (!empty($value[$key1]) and is_object($value[$key1]))) {
+								$replaceable = array();
+								foreach ($variablematches[1] as $keyv) {
+									if (isset($value[$key1][$keyv]) and !is_array($value[$key1][$keyv])) {
+										$replaceable[$this->start . $keyv . $this->end] = $value[$key1][$keyv];
+									}
+								}
+								$new_code .= str_replace(array_keys($replaceable), array_values($replaceable), $code);
+							}
+						}
+						//above updated to cope with arrays that doesnt beyond $i from 0
+						/* $num = count($value);
+						 for ($i = 0; $i < $num; $i++) {
 							if ((!empty($value[$i]) and is_array($value[$i])) or (!empty($value[$i]) and is_object($value[$i]))) {
 								$replaceable = array();
 								foreach ($variablematches[1] as $keyv) {
@@ -556,7 +568,7 @@ class template
 								}
 								$new_code .= str_replace(array_keys($replaceable), array_values($replaceable), $code);
 							}
-						}
+						} */
 						$this->templateregistry["$node"] = str_replace($start_tag . $code . $end_tag, $new_code, $this->templateregistry["$node"]);
 					}
 				}

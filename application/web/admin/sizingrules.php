@@ -173,21 +173,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         ORDER BY  code ASC
         ");
         $sql = $sheel->db->query("
-            SELECT t.id, t.code, t.needsize, t.gender, c.id as categoryid, c.code as categorycode, c.name as categoryname
+            SELECT t.id, t.code, t.needsize, t.gender, t.isdefault, c.id as categoryid, c.code as categorycode, c.name as categoryname
             FROM " . DB_PREFIX . "size_types t
             LEFT JOIN " . DB_PREFIX . "size_type_categories c ON t.categoryid = c.id
-            ORDER BY  code ASC
+            ORDER BY  categoryid, isdefault DESC
             ");
         $count = 0;
         if ($sheel->db->num_rows($sql) > 0) {
             while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
                 $count++;
                 $checked = $row['needsize'] == '1' ? 'checked="checked"' : '';
-                $extra = 'class="draw-select" onchange="update_type_line(\'form[gender_' . $count . ']\',\'gender\',' . $row['id'] . ',' . $count . ')"';
+                $extra = 'class="draw-select" onchange="update_type_line(\'form[gender_' . $count . ']\',\'gender\',' . $row['id'] . ',0,\'\')"';
                 $row['genderfinal'] = $sheel->construct_pulldown('form[gender_' . $count . ']', 'form[gender_' . $count . ']', $gender, $row['gender'], $extra);
-                $row['needsizefinal'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input onchange="update_type_line(\'needsize_' . $count . '\',\'needsize\',' . $row['id'] . ')" type="checkbox" class="draw-checkbox" name="needsize_' . $count . '" id="needsize_' . $count . '"' . $checked . '><span class="draw-checkbox--styled"></span></div>';
-                $extra = 'class="draw-select" onchange="update_type_line(\'form[category_' . $count . ']\',\'categoryid\',' . $row['id'] . ',' . $count . ')"';
+                $row['needsizefinal'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input onchange="update_type_line(\'needsize_' . $count . '\',\'needsize\',' . $row['id'] . ',0,\'\')" type="checkbox" class="draw-checkbox" name="needsize_' . $count . '" id="needsize_' . $count . '"' . $checked . '><span class="draw-checkbox--styled"></span></div>';
+                $extra = 'class="draw-select" onchange="update_type_line(\'form[category_' . $count . ']\',\'categoryid\',' . $row['id'] . ',0,\'\')"';
                 $row['category'] = $sheel->common_sizingrule->construct_category_pulldown('form[category_' . $count . ']', $row['categoryid'], $extra);
+                $checked = $row['isdefault'] == '1' ? 'checked="checked"' : '';
+                $row['isdefault'] = '<div class="draw-input-wrapper draw-input-wrapper--inline"><input onchange="update_type_line(\'isdefault_' . $count . '\',\'isdefault\',' . $row['id'] . ',1,\'{https_server_admin}settings/sizingsystem/types/\')" type="checkbox" class="draw-checkbox" name="isdefault_' . $count . '" id="isdefault_' . $count . '"' . $checked . '><span class="draw-checkbox--styled"></span></div>';
                 $row['action'] =
                     '<ul class="segmented">
                             <li>

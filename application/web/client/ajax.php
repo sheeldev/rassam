@@ -364,6 +364,22 @@ if (isset($sheel->GPC['do'])) {
 		if (isset($sheel->GPC['recordid']) and !empty($sheel->GPC['recordid']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname']) and isset($sheel->GPC['newvalue'])) {
 			$sheel->template->templateregistry['error'] = '';
 			$response = '0';
+			if ($sheel->GPC['fieldname'] == 'isdefault') {
+				$sql = $sheel->db->query("
+					SELECT categoryid
+					FROM " . DB_PREFIX . "size_types
+					WHERE id = '" . $sheel->GPC['recordid'] . "'
+					LIMIT 1
+					");
+				if ($sheel->db->num_rows($sql) > 0) {
+					$res = $sheel->db->fetch_array($sql, DB_ASSOC);
+					$sheel->db->query("
+					UPDATE " . DB_PREFIX . "size_types
+					SET isdefault = '0'
+					WHERE categoryid = '" . $res['categoryid'] . "'
+					", 0, null, __FILE__, __LINE__);
+				}
+			}
 			$sheel->db->query("
 					UPDATE " . DB_PREFIX . "size_types
 					SET `" . $sheel->GPC['fieldname'] . "` = '" . $sheel->GPC['newvalue'] . "'
@@ -387,18 +403,26 @@ if (isset($sheel->GPC['do'])) {
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
 	} else if ($sheel->GPC['do'] == 'addtypeline') {
-		if (isset($sheel->GPC['code']) and !empty($sheel->GPC['code']) and isset($sheel->GPC['gender']) and !empty($sheel->GPC['gender']) and isset($sheel->GPC['category']) and !empty($sheel->GPC['category']) and isset($sheel->GPC['needsize'])) {
+		if (isset($sheel->GPC['code']) and !empty($sheel->GPC['code']) and isset($sheel->GPC['gender']) and !empty($sheel->GPC['gender']) and isset($sheel->GPC['category']) and !empty($sheel->GPC['category']) and isset($sheel->GPC['needsize']) and isset($sheel->GPC['isdefault'])) {
 			$sheel->template->templateregistry['error'] = '';
 			$response = '0';
+			if ($sheel->GPC['isdefault'] == '1') {
+				$sheel->db->query("
+					UPDATE " . DB_PREFIX . "size_types
+					SET isdefault = '0'
+					WHERE categoryid = '" . $sheel->GPC['category'] . "'
+					", 0, null, __FILE__, __LINE__);
+			}
 			$sheel->db->query("
                             INSERT INTO " . DB_PREFIX . "size_types
-                            (id, code, needsize, gender, categoryid)
+                            (id, code, needsize, gender, categoryid, isdefault)
                             VALUES
                             (NULL,
                             '" . $sheel->db->escape_string($sheel->GPC['code']) . "',
                             '" . $sheel->GPC['needsize'] . "',
 							'" . $sheel->GPC['gender'] . "',
-							'" . $sheel->GPC['category'] . "')
+							'" . $sheel->GPC['category'] . "',
+							'" . $sheel->GPC['isdefault'] . "')
                         ");
 
 			$value = $sheel->db->insert_id();
@@ -408,7 +432,7 @@ if (isset($sheel->GPC['do'])) {
 		}
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
-	}  else if ($sheel->GPC['do'] == 'updatecategoryline') {
+	} else if ($sheel->GPC['do'] == 'updatecategoryline') {
 		if (isset($sheel->GPC['recordid']) and !empty($sheel->GPC['recordid']) and isset($sheel->GPC['fieldname']) and !empty($sheel->GPC['fieldname']) and isset($sheel->GPC['newvalue'])) {
 			$sheel->template->templateregistry['error'] = '';
 			$response = '0';
@@ -629,12 +653,12 @@ if (isset($sheel->GPC['do'])) {
 					$searchcondition = '$filter=systemId eq ' . $sheel->GPC['recordid'];
 					$apiResponse = $sheel->dynamics->select('?' . $searchcondition);
 					if ($apiResponse->isSuccess()) {
-						$measurement = $apiResponse->getData();
+						$size = $apiResponse->getData();
 					} else {
 						$response = '1';
 						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
 					}
-					$etag = $measurement['0']['@odata.etag'];
+					$etag = $size['0']['@odata.etag'];
 					break;
 				}
 				case 'fitCode': {
@@ -659,12 +683,12 @@ if (isset($sheel->GPC['do'])) {
 					$searchcondition = '$filter=systemId eq ' . $sheel->GPC['recordid'];
 					$apiResponse = $sheel->dynamics->select('?' . $searchcondition);
 					if ($apiResponse->isSuccess()) {
-						$measurement = $apiResponse->getData();
+						$size = $apiResponse->getData();
 					} else {
 						$response = '1';
 						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
 					}
-					$etag = $measurement['0']['@odata.etag'];
+					$etag = $size['0']['@odata.etag'];
 					break;
 				}
 				case 'cutCode': {
@@ -689,12 +713,12 @@ if (isset($sheel->GPC['do'])) {
 					$searchcondition = '$filter=systemId eq ' . $sheel->GPC['recordid'];
 					$apiResponse = $sheel->dynamics->select('?' . $searchcondition);
 					if ($apiResponse->isSuccess()) {
-						$measurement = $apiResponse->getData();
+						$size = $apiResponse->getData();
 					} else {
 						$response = '1';
 						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
 					}
-					$etag = $measurement['0']['@odata.etag'];
+					$etag = $size['0']['@odata.etag'];
 					break;
 				}
 			}
@@ -720,11 +744,11 @@ if (isset($sheel->GPC['do'])) {
 			}
 			$addResponse = $sheel->dynamics->insert(
 				array(
-					"customerNo" =>  $sheel->GPC['customer'],
+					"customerNo" => $sheel->GPC['customer'],
 					"staffCode" => $sheel->GPC['staffcode'],
 					"measurementCode" => $sheel->GPC['mcategory'],
-					"positionCode" =>  $sheel->GPC['position'],
-					"departmentCode" =>  $sheel->GPC['department'],
+					"positionCode" => $sheel->GPC['position'],
+					"departmentCode" => $sheel->GPC['department'],
 					"value" => floatval($sheel->GPC['mvalue']),
 					"uomCode" => $sheel->GPC['uom']
 				)
@@ -750,11 +774,11 @@ if (isset($sheel->GPC['do'])) {
 			}
 			$addResponse = $sheel->dynamics->insert(
 				array(
-					"customerNo" =>  $sheel->GPC['customer'],
+					"customerNo" => $sheel->GPC['customer'],
 					"staffCode" => $sheel->GPC['staffcode'],
 					"sizeType" => $sheel->GPC['itemtype'],
-					"positionCode" =>  $sheel->GPC['position'],
-					"departmentCode" =>  $sheel->GPC['department'],
+					"positionCode" => $sheel->GPC['position'],
+					"departmentCode" => $sheel->GPC['department'],
 					"sizeCode" => $sheel->GPC['size'],
 					"fitCode" => $sheel->GPC['fit'],
 					"cutCode" => $sheel->GPC['cut']

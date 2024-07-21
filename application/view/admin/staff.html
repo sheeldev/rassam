@@ -187,71 +187,79 @@
             </div>
             <div class="layout-content__main">
                 <div class="draw-card">
-                    <div class="has-bulk-actions">
-                        <div class="draw-card__section">
-                            <div class="table-wrapper">
-                                    <table class="table-hover expanded">
-                                    <thead>
-                                    <tr>
-                                        <th width="15%"><label>Type</label></th> 
-                                        <th width="15%"><label>Size</label></th>
-                                        <th width="15%"><label>Fit</label></th> 
-                                        <th width="15%"><label>Cut</label></th> 
-                                        <td width="100%"></td> 
-                                        <th>{_action}</span></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr id="addsize" valign="top" class="hide">
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[itemtype]}
-                                                </div>
-                                                
-                                            </td>
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[size]}
-                                                </div>
-                                            </td>
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[fit]}
-                                                </div>
-                                            </td>
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[cut]}
-                                                </div>
-                                            </td>
-                                            <td width="100%"></td> 
-                                            <td>
-                                                <ul class="segmented">
-                                                    <li>
-                                                        <a href="javascript:;"  onclick="add_staff_size('{staff[code]}','{form[companycode]}','{staff[customerNo]}', '{staff[positionCode]}' , '{staff[departmentCode]}' , '{https_server_admin}customers/org/{staff[customer_id]}/staffs/?subcmd=update&staffno={staff[code]}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_save}">
-                                                        <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
+                    <div class="draw-card__section">
+                        <loop name="catarray">
+                            <div id="rule-1">
+                                <fieldset class="mb-20">
+                                    <legend><span class="left prl-6 pt-12">{name}-{catsizeCode}-{catfitCode}-{catcutCode}</span></legend>
+                                    <div class="table-wrapper">
+                                        <table class="table-hover expanded">
+                                        <thead>
+                                        <tr>
+                                            <th width="15%"><label>Type</label></th> 
+                                            <th width="15%"><label>Size</label></th>
+                                            <th width="15%"><label>Fit</label></th> 
+                                            <th width="15%"><label>Cut</label></th> 
+                                            <th width="100%"></th> 
+                                            <th>{_action}</th>
                                         </tr>
-                                    <loop name="staffsizes">
-                                        <tr valign="top">
-                                            <input type="hidden" name="etag_{systemId}" id = "etag_{systemId}" value="{etag}" />
-                                            <td width="15%" align="left">{sizeType}</td> 
-                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{sizeCode}</div></td> 
-                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{fitCode}</div></td> 
-                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{cutCode}</div></td> 
-                                            <td width="100%"></td> 
-                                            <td >
-                                                <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete selected staff size?', 'Are you sure you want to delete the selected staff size?', '{systemId}', 1, 'deletesize', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
-                                            </td>
-                                        </tr>
-                                    </loop name="staffsizes"> 
-                                    </tbody>
-                                    </table>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="addsize" valign="top" class="hide">
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[itemtype]}
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[size]}
+                                                    </div>
+                                                </td>
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[fit]}
+                                                    </div>
+                                                </td>
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[cut]}
+                                                    </div>
+                                                </td>
+                                                <td width="100%">
+                                                    
+                                                </td> 
+                                                <td>
+                                                    <ul class="segmented">
+                                                        <li>
+                                                            <a href="javascript:;"  onclick="add_staff_size('{staff[code]}','{form[companycode]}','{staff[customerNo]}', '{staff[positionCode]}' , '{staff[departmentCode]}' , '{https_server_admin}customers/org/{staff[customer_id]}/staffs/?subcmd=update&staffno={staff[code]}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_save}">
+                                                            <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        <loop name="{id}">
+                                            <tr valign="top">
+                                                <input type="hidden" name="etag_{systemId}" id = "etag_{systemId}" value="{etag}" />
+                                                <td width="15%" align="left">{sizeType}</td> 
+                                                <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{sizeCode_type}</div></td> 
+                                                <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{fitCode_type}</div></td> 
+                                                <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{cutCode_type}</div></td> 
+                                                <td width="100%"></td> 
+                                                <td >
+                                                    <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete selected staff size?', 'Are you sure you want to delete the selected staff size?', '{systemId}', 1, 'deletesize', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                </td>
+                                            </tr>
+                                        </loop name="{id}"> 
+                                        </tbody>
+                                        </table>
+                                    </div>    
+                                </fieldset>
                             </div>
-                        </div>
+                        </loop name="catarray">
+                        
                     </div>
                 </div>
             </div>

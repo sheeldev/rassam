@@ -1124,8 +1124,37 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 exit();
             }
             $temparray = [];
+            $finalarray = [];
+            $catarray = [];
+            $sqlcat = $sheel->db->query("
+                SELECT id, code, name
+                FROM " . DB_PREFIX . "size_type_categories
+                ORDER BY  code ASC
+                ");
+            if ($sheel->db->num_rows($sqlcat) > 0) {
+                while ($rowcat = $sheel->db->fetch_array($sqlcat, DB_ASSOC)) {
+                    if (!isset($finalarray[$rowcat['id']])) {
+                        $finalarray[$rowcat['id']] = [];
+                        $catarray[] = $rowcat;
+                    }
+                }
+            }
+
             foreach ($staffsizes as &$staffsize) {
                 $staffsize['etag'] = htmlspecialchars($staffsize['@odata.etag']);
+                $sqltype = $sheel->db->query("
+                        SELECT t.categoryid, t.isdefault, c.code as categorycode, c.name as categoryname
+                        FROM " . DB_PREFIX . "size_types t
+                        LEFT JOIN " . DB_PREFIX . "size_type_categories c ON t.categoryid = c.id
+                        WHERE t.code = '" . $staffsize['sizeType'] . "'
+                        order by t.categoryid, isdefault DESC
+                        LIMIT 1
+                        ");
+                $rowtype = $sheel->db->fetch_array($sqltype, DB_ASSOC);
+                $staffsize['categoryid'] = $rowtype['categoryid'];
+                $staffsize['isdefault'] = $rowtype['isdefault'];
+                $staffsize['categorycode'] = $rowtype['categorycode'];
+                $staffsize['categoryname'] = $rowtype['categoryname'];
                 foreach ($staffsize as $key => $value) {
                     if ($key === 'sizeCode' || $key === 'fitCode' || $key === 'cutCode') {
                         if ($key === 'sizeCode') {
@@ -1136,13 +1165,33 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                             $temparray = $cuts;
                         }
                         $extra = 'class="draw-select" onchange="update_staff_details(\'' . $key . '_' . $staffsize['systemId'] . '\',\'' . $key . '\',\'' . $staffsize['systemId'] . '\',\'' . $companycode . '\',\'' . $staffsize['etag'] . '\')"';
-                        $staffsize[$key] = $sheel->construct_pulldown($key . '_' . $staffsize['systemId'], $key . '_' . $staffsize['systemId'], $temparray, $staffsize[$key], $extra);
+                        $staffsize[$key.'_type'] = $sheel->construct_pulldown($key . '_' . $staffsize['systemId'], $key . '_' . $staffsize['systemId'], $temparray, $staffsize[$key], $extra);
+                    }
+                }
+                $finalarray[$staffsize['categoryid']][] = $staffsize;
+            }
+
+            foreach ($catarray as &$cat) {
+                foreach ($staffsizes as $staffsize) {
+                    if ($staffsize['categoryid'] == $cat['id'] and $staffsize['isdefault'] == '1') {
+                        $cat['catsizeCode'] = $staffsize['sizeCode'];
+                        $cat['catfitCode'] = $staffsize['fitCode'];
+                        $cat['catcutCode'] = $staffsize['cutCode'];
                     }
                 }
             }
+            $parseArray = [
+                'catarray' => $catarray,
+                'staffmeasurements' => $staffmeasurements,
+            ];
 
+            foreach ($finalarray as $key => $value) {
+                $parseArray[$key] = $value;
+            }
 
+            
 
+          
             $areanav = 'customers_customers';
             $vars['areanav'] = $areanav;
             $currentarea = $sheel->GPC['staffno'];
@@ -1157,10 +1206,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             );
             $sheel->template->parse_loop(
                 'main',
-                array(
-                    'staffmeasurements' => $staffmeasurements,
-                    'staffsizes' => $staffsizes
-                )
+                $parseArray
             );
             $sheel->template->pprint('main', $vars);
             exit();

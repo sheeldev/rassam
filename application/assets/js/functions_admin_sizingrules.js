@@ -38,7 +38,10 @@ function toggle_add(section) {
 function add_type_line(endpoint) {
 	fetch_js_object("savingstatus").innerHTML = "Saving..."
 	var needsize = (fetch_js_object('needsize').checked)?'1':'0';
-	var querystring = "&code=" + fetch_js_object('code').value + "&needsize=" + needsize + "&gender=" + fetch_js_object('form[gender]').value + "&category=" + fetch_js_object('form[category]').value + "&token=" + iL['TOKEN'];
+	var isdefault = (fetch_js_object('isdefault').checked)?'1':'0';
+
+
+	var querystring = "&code=" + fetch_js_object('code').value + "&needsize=" + needsize + "&isdefault=" + isdefault + "&gender=" + fetch_js_object('form[gender]').value + "&category=" + fetch_js_object('form[category]').value + "&token=" + iL['TOKEN'];
 	try {
 		ajaxRequest = new XMLHttpRequest();
 	}
@@ -63,14 +66,14 @@ function add_type_line(endpoint) {
 			}
 			else{
 				fetch_js_object("savingstatus").innerHTML = "Saved.";
-				location.replace(endpoint)
+				location.replace(endpoint);
 			}
 		}
 	}
 	ajaxRequest.open('GET', iL['AJAXURL'] + '?do=addtypeline' + querystring, true);
 	ajaxRequest.send(null);
 }
-function update_type_line(fieldname, dbname, recordid) {
+function update_type_line(fieldname, dbname, recordid, forward, endpoint) {
 	var ajaxRequest;
 	var field = fetch_js_object(fieldname);
 	var originalvalue = '';
@@ -118,6 +121,9 @@ function update_type_line(fieldname, dbname, recordid) {
 				jQuery('#' + fieldname).removeClass('loading');
 				fetch_js_object("savingstatus").innerHTML = "Saved";
 				field.value = result.value;
+				if(forward == "1") {
+					location.replace(endpoint);
+				}
 			}
 		}
 	}
