@@ -1,4 +1,4 @@
-function toggle_add(section) {
+function toggle_section(section) {
 	if (fetch_js_object(section).classList.contains('hide')) {
 		jQuery('#' + section).removeClass('hide');
 	}
@@ -63,8 +63,9 @@ function add_staff_size(staffcode, company, customer, position, department, endp
 	var size = fetch_js_object('sizes').value;
 	var fit = fetch_js_object('fits').value;
 	var cut = fetch_js_object('cuts').value;
+	var bind = (fetch_js_object('bind').checked)?'1':'0';
 
-	var querystring = "&customer=" + customer + "&position=" + position + "&department=" + department + "&company=" + company + "&staffcode=" + staffcode  + "&itemtype=" + itemtype + "&size=" + size + "&fit=" + fit + "&cut=" + cut + "&token=" + iL['TOKEN'];
+	var querystring = "&customer=" + customer + "&position=" + position + "&department=" + department + "&company=" + company + "&staffcode=" + staffcode + "&itemtype=" + encodeURIComponent(itemtype) + "&size=" + size + "&fit=" + fit + "&cut=" + cut + "&bind=" + bind + "&token=" + iL['TOKEN'];
 	try {
 		ajaxRequest = new XMLHttpRequest();
 	}
@@ -90,7 +91,7 @@ function add_staff_size(staffcode, company, customer, position, department, endp
 				fetch_js_object("savingstatus").innerHTML = "Error";
 			}
 			else {
-				jQuery.growl.notice({ title: phrase['_success'], message: "A Staff Size has been successfully added." });
+				jQuery.growl.notice({ title: phrase['_success'], message: "Staff Size(s) successfully added." });
 				fetch_js_object("savingstatus").innerHTML = "Saved.";
 				location.replace(endpoint)
 			}
@@ -100,32 +101,52 @@ function add_staff_size(staffcode, company, customer, position, department, endp
 	ajaxRequest.send(null);
 }
 
-function update_staff_details(fieldname, dbname, recordid, company, etagparam) {
-	var ajaxRequest;
+function update_staff_sizes(fieldname, category, dbname, company) {
+	var systemids = fetch_js_object('systemids_' + category).value;
 	var field = fetch_js_object(fieldname);
-	var etag = fetch_js_object('etag_' + recordid);
+	const systemIdsArray = systemids.split('|');
+	systemIdsArray.forEach(systemId => {
+		update_staff_details(field.value, dbname, systemId, company, '1');
+	});
+
+}
+
+function update_staff_details(fieldname, dbname, recordid, company, param) {
+	var ajaxRequest;
 	var originalvalue = '';
-	if (field.type == 'checkbox') {
-		if (field.checked) {
-			originalvalue = '1';
+	if (param == '0') {
+		var field = fetch_js_object(fieldname);
+		if (field.type == 'checkbox') {
+			if (field.checked) {
+				originalvalue = '1';
+			}
+			else {
+				originalvalue = '0';
+			}
 		}
 		else {
-			originalvalue = '0';
+			originalvalue = field.value;
+		}
+		if (field.type == 'text') {
+			field.value = "";
+			errorclass = 'error';
+		}
+		else {
+			errorclass = 'redborder';
 		}
 	}
 	else {
-		originalvalue = field.value;
+		var field = fetch_js_object(dbname + "_" + recordid);
+		originalvalue = fieldname;
 	}
-	if (field.type == 'text') {
-		field.value = "";
-		errorclass = 'error';
-	}
-	else {
-		errorclass = 'redborder';
-	}
+	var etag = fetch_js_object('etag_' + recordid);
+
 
 	fetch_js_object("savingstatus").innerHTML = "Saving..."
-	jQuery('#' + fieldname).addClass('loading');
+	if (param == '0') {
+		jQuery('#' + fieldname).addClass('loading');
+	}
+
 	try {
 		ajaxRequest = new XMLHttpRequest();
 	}
@@ -146,9 +167,10 @@ function update_staff_details(fieldname, dbname, recordid, company, etagparam) {
 		if (ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
 			var result = JSON.parse(ajaxRequest.responseText);
 			if (result.response == '1') {
-				jQuery('#' + fieldname).removeClass('loading');
-				jQuery('#' + fieldname).addClass(errorclass);
-
+				if (param == '0') {
+					jQuery('#' + fieldname).removeClass('loading');
+					jQuery('#' + fieldname).addClass(errorclass);
+				}
 				jQuery.growl.error({ title: phrase['_error'], message: result.error });
 				fetch_js_object("savingstatus").innerHTML = "Save";
 				field.value = originalvalue;

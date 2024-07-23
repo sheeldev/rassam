@@ -728,13 +728,6 @@ if (isset($sheel->GPC['do'])) {
 		}
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error, 'etag' => $etag)));
-
-
-
-
-
-
-
 	} else if ($sheel->GPC['do'] == 'addmeasurement') {
 		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['mcategory']) and !empty($sheel->GPC['mcategory']) and isset($sheel->GPC['mvalue']) and !empty($sheel->GPC['mvalue']) and isset($sheel->GPC['uom']) and !empty($sheel->GPC['uom'])) {
 			$sheel->template->templateregistry['error'] = '';
@@ -766,29 +759,72 @@ if (isset($sheel->GPC['do'])) {
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
 	} else if ($sheel->GPC['do'] == 'addsize') {
-		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['itemtype']) and !empty($sheel->GPC['itemtype']) and isset($sheel->GPC['size']) and !empty($sheel->GPC['size']) and isset($sheel->GPC['fit']) and !empty($sheel->GPC['fit'] and isset($sheel->GPC['cut']) and !empty($sheel->GPC['cut']))) {
+		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['itemtype']) and !empty($sheel->GPC['itemtype']) and isset($sheel->GPC['size']) and !empty($sheel->GPC['size']) and isset($sheel->GPC['fit']) and !empty($sheel->GPC['fit'] and isset($sheel->GPC['cut']) and !empty($sheel->GPC['cut']) )) {
 			$sheel->template->templateregistry['error'] = '';
 			if (!$sheel->dynamics->init_dynamics('erStaffSizes', $sheel->GPC['company'])) {
 				$response = '1';
 				$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
 			}
-			$addResponse = $sheel->dynamics->insert(
-				array(
-					"customerNo" => $sheel->GPC['customer'],
-					"staffCode" => $sheel->GPC['staffcode'],
-					"sizeType" => $sheel->GPC['itemtype'],
-					"positionCode" => $sheel->GPC['position'],
-					"departmentCode" => $sheel->GPC['department'],
-					"sizeCode" => $sheel->GPC['size'],
-					"fitCode" => $sheel->GPC['fit'],
-					"cutCode" => $sheel->GPC['cut']
-				)
-			);
-			if ($addResponse->isSuccess()) {
-				$response = '0';
-			} else {
-				$response = '1';
-				$sheel->template->templateregistry['error'] = $addResponse->getErrorMessage();
+			if ($sheel->GPC['bind'] == '1') {
+				$sqltype = $sheel->db->query("
+					SELECT categoryid
+					FROM " . DB_PREFIX . "size_types		
+					WHERE code = '" . $sheel->GPC['itemtype'] . "'
+					LIMIT 1
+					");
+				$rowtype = $sheel->db->fetch_array($sqltype, DB_ASSOC);
+				
+				
+				$sqlallrec = $sheel->db->query("
+					SELECT code
+					FROM " . DB_PREFIX . "size_types		
+					WHERE categoryid = '" . $rowtype['categoryid'] . "'
+					");
+					
+
+				while ($resallrec = $sheel->db->fetch_array($sqlallrec, DB_ASSOC)) {
+					$addResponse = $sheel->dynamics->insert(
+						array(
+							"customerNo" => $sheel->GPC['customer'],
+							"staffCode" => $sheel->GPC['staffcode'],
+							"sizeType" => $resallrec['code'],
+							"positionCode" => $sheel->GPC['position'],
+							"departmentCode" => $sheel->GPC['department'],
+							"sizeCode" => $sheel->GPC['size'],
+							"fitCode" => $sheel->GPC['fit'],
+							"cutCode" => $sheel->GPC['cut']
+						)
+					);
+					
+					if ($addResponse->isSuccess()) {
+						$response = '0';
+					} else {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = $addResponse->getErrorMessage();
+						break;
+					}
+				}
+				
+			}
+			else {
+				$addResponse = $sheel->dynamics->insert(
+					array(
+						"customerNo" => $sheel->GPC['customer'],
+						"staffCode" => $sheel->GPC['staffcode'],
+						"sizeType" => $sheel->GPC['itemtype'],
+						"positionCode" => $sheel->GPC['position'],
+						"departmentCode" => $sheel->GPC['department'],
+						"sizeCode" => $sheel->GPC['size'],
+						"fitCode" => $sheel->GPC['fit'],
+						"cutCode" => $sheel->GPC['cut']
+					)
+				);
+				if ($addResponse->isSuccess()) {
+					$response = '0';
+				} else {
+					$response = '1';
+					$sheel->template->templateregistry['error'] = $addResponse->getErrorMessage();
+				}
 			}
 		} else {
 			$sheel->template->templateregistry['error'] = '{_missing_parameters}';

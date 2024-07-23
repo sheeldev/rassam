@@ -798,6 +798,25 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
                 }
             }
+            if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'deletesizes') {
+                if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
+                    $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                    exit();
+                }
+                $xidarray = explode('|', $sheel->GPC['xid']);
+                foreach ($xidarray as $xid) {
+                    $deleteResponse = $sheel->dynamics->delete($xid);
+                    $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), "success\n" . $sheel->array2string($sheel->GPC), 'Staff Size deleted', 'A customer staff Size has been successfully deleted.');
+                    if ($deleteResponse->isSuccess()) {
+                    } else {
+                        $sheel->template->templateregistry['message'] = $deleteResponse->getErrorMessage();
+                        //die(json_encode(array('response' => '0', 'message' => $sheel->template->parse_template_phrases('message'))));
+                    }
+                }
+                $sheel->template->templateregistry['message'] = 'Staff Sizes for the selected categories successfully deleted.';
+                die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
+
+            }
 
 
 
@@ -1033,6 +1052,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 exit();
             }
 
+            $sqltype1 = $sheel->db->query("
+                        SELECT code
+                        FROM " . DB_PREFIX . "size_types
+                        WHERE (gender = '" . substr($staff['gender'], 0, 1) . "'  or gender='U') AND needsize = '1'
+                        ");
+
             foreach ($tempitemtypes as $key => $value) {
 
                 foreach ($value as $key1 => $value1) {
@@ -1040,7 +1065,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $code = $value1;
                     }
                 }
-                $itemtypes += [$code => $code];
+                while ($rowtype1 = $sheel->db->fetch_array($sqltype1, DB_ASSOC)) {
+                    if ($code = $rowtype1['code'])
+                        $itemtypes += [$code => $code];
+                }
+
+
+
             }
 
             $tempmcategory = array();
@@ -1104,7 +1135,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
             foreach ($staffmeasurements as &$measurement) {
                 $measurement['etag'] = htmlspecialchars($measurement['@odata.etag']);
-                $extra = 'class="draw-select" onchange="update_staff_details(\'uom_' . $measurement['systemId'] . '\',\'uom\',\'' . $measurement['systemId'] . '\',\'' . $companycode . '\',\'' . $measurement['etag'] . '\')"';
+                $extra = 'class="draw-select" onchange="update_staff_details(\'uom_' . $measurement['systemId'] . '\',\'uom\',\'' . $measurement['systemId'] . '\',\'' . $companycode . '\',\'0\')"';
                 $measurement['uomCode'] = $sheel->construct_pulldown('uom_' . $measurement['systemId'], 'uom_' . $measurement['systemId'], $uom, $measurement['uomCode'], $extra);
 
             }
@@ -1153,6 +1184,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $rowtype = $sheel->db->fetch_array($sqltype, DB_ASSOC);
                 $staffsize['categoryid'] = $rowtype['categoryid'];
                 $staffsize['isdefault'] = $rowtype['isdefault'];
+                $staffsize['isdefaulticon'] = $rowtype['isdefault']=='1'?'<span class="fr"><img src="/application/assets/images/v5/ico_checkmark.png" border="0" alt="active" title="{_default}" /></span>':'';
                 $staffsize['categorycode'] = $rowtype['categorycode'];
                 $staffsize['categoryname'] = $rowtype['categoryname'];
                 foreach ($staffsize as $key => $value) {
@@ -1164,21 +1196,35 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         } else if ($key === 'cutCode') {
                             $temparray = $cuts;
                         }
-                        $extra = 'class="draw-select" onchange="update_staff_details(\'' . $key . '_' . $staffsize['systemId'] . '\',\'' . $key . '\',\'' . $staffsize['systemId'] . '\',\'' . $companycode . '\',\'' . $staffsize['etag'] . '\')"';
-                        $staffsize[$key.'_type'] = $sheel->construct_pulldown($key . '_' . $staffsize['systemId'], $key . '_' . $staffsize['systemId'], $temparray, $staffsize[$key], $extra);
+                        $extra = 'class="draw-select" onchange="update_staff_details(\'' . $key . '_' . $staffsize['systemId'] . '\',\'' . $key . '\',\'' . $staffsize['systemId'] . '\',\'' . $companycode . '\',\'0\')"';
+                        $staffsize[$key . '_type'] = $sheel->construct_pulldown($key . '_' . $staffsize['systemId'], $key . '_' . $staffsize['systemId'], $temparray, $staffsize[$key], $extra);
                     }
                 }
                 $finalarray[$staffsize['categoryid']][] = $staffsize;
             }
-
             foreach ($catarray as &$cat) {
-                foreach ($staffsizes as $staffsize) {
+                if (isset($finalarray[$cat['id']]) && count($finalarray[$cat['id']]) > 0) {
+                    $sheel->GPC['cat_'.$cat['id']] = 'Y';
+                }
+                else {
+                    $sheel->GPC['cat_'.$cat['id']] = 'N';
+                }
+                $systemids = '';
+                foreach ($staffsizes as &$staffsize) {
+                    if ($staffsize['categoryid'] == $cat['id']) {
+                        $systemids .= $staffsize['systemId'] . '|';
+                    }
                     if ($staffsize['categoryid'] == $cat['id'] and $staffsize['isdefault'] == '1') {
-                        $cat['catsizeCode'] = $staffsize['sizeCode'];
-                        $cat['catfitCode'] = $staffsize['fitCode'];
-                        $cat['catcutCode'] = $staffsize['cutCode'];
+                        $extra = 'class="draw-select" onchange="update_staff_sizes(\'catsizeCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'sizeCode\' , \'' . $companycode . '\')"';
+                        $cat['catsizeCode'] = $sheel->construct_pulldown('catsizeCode_' . $cat['id'], 'catsizeCode_' . $cat['id'], $sizes, $staffsize['sizeCode'], $extra);
+                        $extra = 'class="draw-select" onchange="update_staff_sizes(\'catfitCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\' , \'fitCode\'  , \'' . $companycode . '\')"';
+                        $cat['catfitCode'] = $sheel->construct_pulldown('catfitCode_' . $cat['id'], 'catfitCode_' . $cat['id'], $fits, $staffsize['fitCode'], $extra);
+                        $extra = 'class="draw-select" onchange="update_staff_sizes(\'catcutCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'cutCode\' ,\'' . $companycode . '\')"';
+                        $cat['catcutCode'] = $sheel->construct_pulldown('catcutCode_' . $cat['id'], 'catcutCode_' . $cat['id'], $cuts, $staffsize['cutCode'], $extra);
+
                     }
                 }
+                $cat['systemids'] = substr($systemids, 0, -1);
             }
             $parseArray = [
                 'catarray' => $catarray,
@@ -1189,9 +1235,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $parseArray[$key] = $value;
             }
 
-            
 
-          
+
+
             $areanav = 'customers_customers';
             $vars['areanav'] = $areanav;
             $currentarea = $sheel->GPC['staffno'];
