@@ -238,7 +238,9 @@
                                         <th width="15%"><label>Name</label></th> 
                                         <th width="15%"><label>Gender</label></th> 
                                         <th width="15%"><label>Position</label></th> 
-                                        <th width="100%"><label>Department</label></th> 
+                                        <th width="100%"><label>Department</label></th>
+                                        <th><label>Mandatory Measurements</label></th>
+                                        <th><label>Mandatory Sizes</label></th> 
                                         <th>{_action}</span></th>
                                     </tr>
                                     </thead>
@@ -252,6 +254,8 @@
                                             <td width="15%" align="left">{gender}</td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="100%" align="left">{departmentName}</td> 
+                                            <td >{meetmeasurements}</td>
+                                            <td >{meetsizes}</td>
                                             <td >
                                                 <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected customer staff?', '<label>This will delete all Staff Measurements and Sizes!</label> <br>Are you sure you want to delete the selected customer staff?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?systemid={systemId}&company_id={customercard[company_id]}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                             </td>

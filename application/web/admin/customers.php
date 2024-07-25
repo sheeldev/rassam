@@ -48,22 +48,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $defaulcompany = '';
     $disabled = '';
     if ($_SESSION['sheeldata']['user']['entityid'] != '0') {
-        if (isset($sheel->GPC['company'])) {
-            $sheel->admincp->print_action_failed('{_no_entity_access}', $sheel->GPC['returnurl']);
-            exit();
-        } else {
-            $disabled = 'disabled';
-            $sqldefault = $sheel->db->query("
+        $sqldefault = $sheel->db->query("
                 SELECT bc_code
                 FROM " . DB_PREFIX . "companies 
                 WHERE company_id = '" . $_SESSION['sheeldata']['user']['entityid'] . "' 
                 LIMIT 1");
-            if ($sheel->db->num_rows($sqldefault) > 0) {
-                while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
-                    $defaulcompany = $res['bc_code'];
-                }
+        if ($sheel->db->num_rows($sqldefault) > 0) {
+            while ($res = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
+                $defaulcompany = $res['bc_code'];
             }
-            $form['company'] = $defaulcompany;
+        }
+        $form['company'] = $defaulcompany;
+
+        if (isset($sheel->GPC['company']) && $sheel->GPC['company'] != $defaulcompany) {
+            $sheel->admincp->print_action_failed('{_no_entity_access}', $sheel->GPC['returnurl']);
+            exit();
+        } else {
+            $disabled = 'disabled';
         }
         if (isset($sheel->GPC['no'])) {
             $sql = $sheel->db->query("
@@ -1184,7 +1185,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $rowtype = $sheel->db->fetch_array($sqltype, DB_ASSOC);
                 $staffsize['categoryid'] = $rowtype['categoryid'];
                 $staffsize['isdefault'] = $rowtype['isdefault'];
-                $staffsize['isdefaulticon'] = $rowtype['isdefault']=='1'?'<span class="fr"><img src="/application/assets/images/v5/ico_checkmark.png" border="0" alt="active" title="{_default}" /></span>':'';
+                $staffsize['isdefaulticon'] = $rowtype['isdefault'] == '1' ? '<span class="fr"><img src="/application/assets/images/v5/ico_checkmark.png" border="0" alt="active" title="{_default}" /></span>' : '';
                 $staffsize['categorycode'] = $rowtype['categorycode'];
                 $staffsize['categoryname'] = $rowtype['categoryname'];
                 foreach ($staffsize as $key => $value) {
@@ -1204,10 +1205,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
             foreach ($catarray as &$cat) {
                 if (isset($finalarray[$cat['id']]) && count($finalarray[$cat['id']]) > 0) {
-                    $sheel->GPC['cat_'.$cat['id']] = 'Y';
-                }
-                else {
-                    $sheel->GPC['cat_'.$cat['id']] = 'N';
+                    $sheel->GPC['cat_' . $cat['id']] = 'Y';
+                } else {
+                    $sheel->GPC['cat_' . $cat['id']] = 'N';
                 }
                 $systemids = '';
                 foreach ($staffsizes as &$staffsize) {
@@ -1370,6 +1370,98 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if ($sheel->db->num_rows($sqlupd) > 0) {
             $sheel->GPC['haspendinguploads'] = '1';
         }
+        $tempsm = array();
+        $sm = array();
+        $sm1 = array();
+        if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=staffCode asc';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $tempsm = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+        $currentStaff = '';
+        $lastKey = array_key_last($tempsm);
+        foreach ($tempsm as $key => $value) {
+            if ($value['staffCode'] != $currentStaff and $currentStaff != '') {
+                $sm += [$currentStaff => $sm1];
+                $sm1 = array();
+            }
+            if ($key == $lastKey) {
+                $sm1 += [$value['measurementCode'] => $value['value']];
+                $sm += [$currentStaff => $sm1];
+            }
+
+            $sm1 += [$value['measurementCode'] => $value['value']];
+            $currentStaff = $value['staffCode'];
+        }
+        $tempss = array();
+        $ss = array();
+        $ss1 = array();
+        if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=staffCode asc';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $tempss = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+        $currentStaff = '';
+        $lastKey = array_key_last($tempss);
+        foreach ($tempss as $key => $value) {
+            if ($value['staffCode'] != $currentStaff and $currentStaff != '') {
+                $ss += [$currentStaff => $ss1];
+                $ss1 = array();
+            }
+            if ($key == $lastKey) {
+                $ss1 += [$value['sizeType'] => $value['sizeCode']];
+                $ss += [$currentStaff => $ss1];
+            }
+            $ss1 += [$value['sizeType'] => $value['sizeCode']];
+            $currentStaff = $value['staffCode'];
+        }
+
+        $mandatorymeasurements = explode(',', $sheel->config['mandatorymeasurements']);
+
+        foreach ($custstaffs as $keystaff => $valuestaff) {
+            $staffmeasures = $sm[$valuestaff['code']];
+            foreach ($mandatorymeasurements as $manvalues) {
+                if ($staffmeasures[$manvalues] == '' or $staffmeasures[$manvalues] == '0') {
+                    $custstaffs[$keystaff]['meetmeasurements'] = '<span class="badge badge--critical">{_not_met}</span>';
+                    break;
+                } else {
+                    $custstaffs[$keystaff]['meetmeasurements'] = '<span class="badge badge--success">{_available}</span>';
+                }
+            }
+            $sql = $sheel->db->query("
+                    SELECT code
+                    FROM " . DB_PREFIX . "size_types 
+                    WHERE  (gender = '" . substr($valuestaff['gender'], 0, 1) . "' OR gender='U') AND needsize = '1'
+                    ");
+            while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $staffsizes = $ss[$valuestaff['code']];
+                if ($staffsizes[$res['code']] == '') {
+                    $custstaffs[$keystaff]['meetsizes'] = '<span class="badge badge--critical">{_not_met}</span>';
+                    break;
+                } else {
+                    $custstaffs[$keystaff]['meetsizes'] = '<span class="badge badge--success">{_available}</span>';
+                }
+            }
+        }
+
+
+
         $sheel->template->fetch('main', 'customer-staffs.html', 1);
         $sheel->template->parse_hash(
             'main',
@@ -1971,6 +2063,29 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $companycode = $sheel->admincp_customers->get_company_name($customer['company_id'], true);
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'sizesample') {
+            if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
+                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                exit();
+            }
+            $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
+            $staffsizes = array();
+            $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition);
+            if ($apiResponse->isSuccess()) {
+                $staffsizes = $apiResponse->getData();
+            } else {
+                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                exit();
+            }
+            $types = [];
+            $sqldefault = $sheel->db->query("
+                SELECT code
+                FROM " . DB_PREFIX . "size_types		
+                WHERE isdefault = '1'
+                ");
+            while ($resdefault = $sheel->db->fetch_array($sqldefault, DB_ASSOC)) {
+                $types[] = $resdefault;
+            }
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -1979,21 +2094,34 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
                 $custstaffs = $apiResponse->getData();
-
                 $reader = new Xlsx();
                 $reader->setLoadSheetsOnly(["Sheet1"]);
                 $spreadsheet = $reader->load(DIR_OTHER . 'sizesample.xlsx');
                 $sheet = $spreadsheet->getActiveSheet();
                 $last_row = (int) $sheet->getHighestRow() + 1;
                 foreach ($custstaffs as $key => $value) {
+                    foreach ($types as $key1 => $value1) {
+                        $foundValue = '';
+                        foreach ($staffsizes as $size) {
+                            if (isset($size['staffCode']) and ($size['staffCode'] == $value['code']) and isset($size['sizeType']) and ($size['sizeType'] == $value1['code'])) {
+                                $foundValue = $size['sizeType'];
+                            } else {
+                                $foundValue = '';
+                            }
+                        }
+                        if ($foundValue != '') {
+                            break;
+                        }
+                    }
                     $sql = $sheel->db->query("
-                    SELECT code
-                    FROM " . DB_PREFIX . "size_types 
-                    WHERE  (gender = '" . substr($value['gender'], 0, 1) . "' OR gender='U') AND needsize = '1'
+                    SELECT code,name
+                    FROM " . DB_PREFIX . "size_type_categories 
                     ");
                     while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
                         $sheet->setCellValue('A' . $last_row, $value['code']);
-                        $sheet->setCellValue('E' . $last_row, $res['code']);
+                        $sheet->setCellValue('B' . $last_row, $value['name']);
+                        $sheet->setCellValue('C' . $last_row, $value['gender']);
+                        $sheet->setCellValue('G' . $last_row, $res['name']);
                         $last_row++;
                     }
                 }
@@ -2214,7 +2342,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $reader->setReadDataOnly(true);
                     $reader->setLoadSheetsOnly(["Sheet1"]);
                     $spreadsheet = $reader->load($file_name);
-                    if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'E') {
+                    if ($spreadsheet->getSheet(0)->getHighestDataColumn() != 'G') {
                         refresh(HTTPS_SERVER_ADMIN . 'customers/org/' . $customer['customer_id'] . '/sizes/?error=invalidff');
                     }
                     $sheetData = $spreadsheet->getSheet('0')->toArray();
@@ -2240,7 +2368,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     unset($fileinfo);
                     $tempcuststaffs = array();
                     $custstaffs = array();
-
                     if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                         $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                         exit();
@@ -2389,26 +2516,31 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
+            $sqlallrec = $sheel->db->query("
+					SELECT code
+					FROM " . DB_PREFIX . "size_types		
+					WHERE categoryid = '" . $sheel->GPC['typecategories'] . "'
+					");
             $staffdetails = explode('|', $sheel->GPC['staffs']);
-            $addResponse = $sheel->dynamics->insert(
-                array(
-                    "staffCode" => $staffdetails[0],
-                    "positionCode" => $staffdetails[1],
-                    "departmentCode" => $staffdetails[2],
-                    "customerNo" => $sheel->GPC['customer_ref'],
-                    "fitCode" => $sheel->GPC['fits'],
-                    "cutCode" => $sheel->GPC['cuts'],
-                    "sizeCode" => $sheel->GPC['sizes'],
-                    "sizeType" => $sheel->GPC['itemtypes']
-
-                )
-            );
-
-            if ($addResponse->isSuccess()) {
-                $sheel->GPC['note'] = 'addsuccess';
-            } else {
-                $sheel->GPC['note'] = 'adderror';
-                $vars['errorMessage'] = $addResponse->getErrorMessage();
+            while ($resallrec = $sheel->db->fetch_array($sqlallrec, DB_ASSOC)) {
+                $addResponse = $sheel->dynamics->insert(
+                    array(
+                        "staffCode" => $staffdetails[0],
+                        "positionCode" => $staffdetails[1],
+                        "departmentCode" => $staffdetails[2],
+                        "customerNo" => $sheel->GPC['customer_ref'],
+                        "fitCode" => $sheel->GPC['fits'],
+                        "cutCode" => $sheel->GPC['cuts'],
+                        "sizeCode" => $sheel->GPC['sizes'],
+                        "sizeType" => $resallrec['code']
+                    )
+                );
+                if ($addResponse->isSuccess()) {
+                    $sheel->GPC['note'] = 'addsuccess';
+                } else {
+                    $sheel->GPC['note'] = 'adderror';
+                    $vars['errorMessage'] = $addResponse->getErrorMessage();
+                }
             }
         }
         $areanav = 'customers_bc';
@@ -2615,11 +2747,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $itemtypes += [$code => $code];
         }
 
+        $typecategories = [];
+        $sqlcat = $sheel->db->query("
+                SELECT id, code, name
+                FROM " . DB_PREFIX . "size_type_categories
+                ORDER BY  code ASC
+                ");
+        if ($sheel->db->num_rows($sqlcat) > 0) {
+            while ($rowcat = $sheel->db->fetch_array($sqlcat, DB_ASSOC)) {
+                $typecategories += [$rowcat['id'] => $rowcat['code'] . ' > ' . $rowcat['name']];
+            }
+        }
+
         $form['staff_pulldown'] = $sheel->construct_pulldown('staffs', 'staffs', $custstaffs, '', 'class="draw-select"');
         $form['size_pulldown'] = $sheel->construct_pulldown('sizes', 'sizes', $sizes, '', 'class="draw-select"');
         $form['fit_pulldown'] = $sheel->construct_pulldown('fits', 'fits', $fits, 'R', 'class="draw-select"');
         $form['cut_pulldown'] = $sheel->construct_pulldown('cuts', 'cuts', $cuts, 'T', 'class="draw-select"');
         $form['itemtype_pulldown'] = $sheel->construct_pulldown('itemtypes', 'itemtypes', $itemtypes, '', 'class="draw-select"');
+        $form['typecategory_pulldown'] = $sheel->construct_pulldown('typecategories', 'typecategories', $typecategories, '', 'class="draw-select"');
         $form['value'] = '';
 
 
@@ -2746,11 +2891,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $customer['tz'] = $res['timezone'];
                 $customer['currency'] = $res['currencyid'];
                 $customer['subscription'] = $sheel->subscription->getname($res['subscriptionid']);
-                ;
             }
         }
-
-
         if (isset($sheel->GPC['activate']) and $sheel->GPC['activate'] == 'yes' and $sheel->GPC['activated'] == '0') {
             $payload = array();
             $ext = mb_substr($_FILES['imagename']['name'], strpos($_FILES['imagename']['name'], '.'), strlen($_FILES['imagename']['name']) - 1);
