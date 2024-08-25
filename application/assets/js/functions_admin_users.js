@@ -41,7 +41,7 @@ function verify_acp_user(mode)
 		jQuery('#user_last_name').addClass('error');
 		return false;
 	}
-	if (jQuery('#user_dob').val().length <= 0)
+/* 	if (jQuery('#user_dob').val().length <= 0)
 	{
 		jQuery('#user_dob').addClass('error');
 		return false;
@@ -54,7 +54,7 @@ function verify_acp_user(mode)
 			jQuery('#user_dob').addClass('error');
 			return false;
 		}
-	}
+	} */
 
 	if (jQuery('#user_email').val().length <= 0)
 	{
@@ -83,12 +83,12 @@ function verify_acp_user(mode)
 	}
 
 
-	if (jQuery('#form_customerid').val() < 0)
+/* 	if (jQuery('#form_customerid').val() < 0)
 	{
 		jQuery('#customer-wrapper').addClass('redborder');
 		jQuery('#form_customerid').addClass('error');
 		return false;
-	}
+	} */
 	
 	if (jQuery('#user_phone').val().length <= 0)
 	{
