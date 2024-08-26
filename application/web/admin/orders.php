@@ -65,7 +65,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     if ($sheel->GPC['no'] == '0') {
         $currentarea = 'Orders';
         $sqlEvents = $sheel->db->query("
-                SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
@@ -75,10 +75,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     GROUP BY reference
                 ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
                 WHERE e.eventfor = 'customer' and e.topic='Order' $searchcondition
-                ORDER BY max_eventtime DESC
+                ORDER BY createdtime DESC
                 LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->GPC['pp']) . "," . $sheel->GPC['pp']);
         $sqlEventsCount = $sheel->db->query("
-                SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
@@ -88,10 +88,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     GROUP BY reference
                 ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
                 WHERE e.eventfor = 'customer' and e.topic='Order' $searchcondition
-                ORDER BY max_eventtime DESC");
+                ORDER BY createdtime DESC");
     } else {
         $sqlEvents = $sheel->db->query("
-                SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
@@ -101,7 +101,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     GROUP BY reference
                 ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
                 WHERE e.eventfor = 'customer' and e.topic='Order' AND e.eventidentifier = '" . $sheel->GPC['no'] . "' $searchcondition
-                ORDER BY max_eventtime DESC
+                ORDER BY createdtime DESC
                 ");
     }
     $events = array();
@@ -185,10 +185,40 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $resEventData = json_decode($resEvent['eventdata'], true);
         $resEvent['customername'] = $resEventData['sellToCustomerName'];
         $resEvent['createdby'] = $resEventData['createdUser'];
-        $resEvent['promisedDeliveryDate'] = $resEventData['promisedDeliveryDate'];
-        $resEvent['createdat'] = $sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
+        $resEvent['promisedDeliveryDate'] = $resEventData['promisedDeliveryDate'] == '0001-01-01' ? $resEventData['requestedDeliveryDate'] : $resEventData['promisedDeliveryDate'];
+        $resEvent['createdat'] = $sheel->common->print_date($resEvent['createdtime'], 'Y-m-d H:i:s', 0, 0, '');
         $resEvent['eventtime'] = $sheel->common->print_date($resEvent['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
-        $resEvent['days'] = $resEventData['promisedDeliveryDate'] == '0001-01-01' ? '0' : $sheel->common->getBusinessDays(date('Y-m-d'),$resEventData['promisedDeliveryDate'],);
+        
+
+        
+
+        $days = intval($resEvent['promisedDeliveryDate'] == '0001-01-01' ? '0' : $sheel->common->getBusinessDays(date('Y-m-d'),$resEvent['promisedDeliveryDate']));
+        //echo $days.'<br>';
+        if ($days <= 0) {
+            if ($resEvent['promisedDeliveryDate'] != '0001-01-01') {
+                $sqlcheckpointid = $sheel->db->query("
+                    SELECT id
+                    FROM " .  DB_PREFIX . "checkpoints_sequence
+                    WHERE checkpointid ='" . $resEvent['checkpointid'] . "' and fromid = '" . $resEvent['entityid'] . "' and isend = 1
+                    LIMIT 1
+                ");
+                if ($sheel->db->num_rows($sqlcheckpointid) > 0) {
+                    $resEvent['days'] = '<span class="draw-status__badge darkred draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $sheel->common->getBusinessDays(date('Y-m-d', $resEvent['max_eventtime']),$resEvent['promisedDeliveryDate']) . '</span></span>';
+                }
+                else {
+                    $resEvent['days'] = '<span class="draw-status__badge darkred draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $days . '</span></span>';
+                }
+            }
+            else {
+                $resEvent['days'] = '<span class="draw-status__badge darkred draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $days . '</span></span>';
+            }
+        }
+        else if ($days > 0 && $days <= 10) {
+            $resEvent['days'] = '<span class="draw-status__badge amber draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $days . '</span></span>';
+        }
+        else if ($days > 10){
+            $resEvent['days'] = '<span class="draw-status__badge green draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $days . '</span></span>';
+        }
         $events[] = $resEvent;
     }
     //die ();

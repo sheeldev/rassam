@@ -6,8 +6,24 @@ $cronlog = '';
 
 $this->sheel->timer->start();
 
+/* $query = $this->sheel->db->query("
+SELECT eventid, systemid, eventdata
+FROM " . DB_PREFIX . "events 
+WHERE createdtime='0'
+");
 
-$sqlcompany = $this->sheel->db->query("
+if ($this->sheel->db->num_rows($query) > 0) {
+        while ($row = $this->sheel->db->fetch_array($query, DB_ASSOC)) {
+                $order = json_decode($row['eventdata'], true);
+                $this->sheel->db->query("
+                            UPDATE " . DB_PREFIX . "events
+                            SET createdtime = '" . $order['systemCreatedAt'] . "'
+                            WHERE eventid = '" . $row['eventid'] . "'
+                            ", 0, null, __FILE__, __LINE__);
+        }
+}
+die ('test'); */
+/* $sqlcompany = $this->sheel->db->query("
         SELECT *
         FROM " . DB_PREFIX . "companies
         WHERE status = 'active'
@@ -81,7 +97,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $cronlog .= $apiResponse->getErrorMessage() . ', ';
                 }
         }
-}
+} */
 if (!empty($cronlog)) {
         $cronlog = mb_substr($cronlog, 0, -2);
 }

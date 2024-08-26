@@ -13,6 +13,7 @@ class common_order extends common
 		$quoteexist = false;
 		$warningmessage = '';
 		$warningcount = 0;
+		$html='';
 		$sqlEvents = $this->sheel->db->query("
                 SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, e.companyid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, comp.name as companyname, comp.isfactory as isfactory
                 FROM " . DB_PREFIX . "events e
@@ -88,7 +89,7 @@ class common_order extends common
 			$html .= '<td class="status no-wrap">' . $event['createdat'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $event['eventtime'] . '</td>';
 			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $event['checkpointmessage'] . '</span></span></td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($event['isfactory'] ? 'green' : $event['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['companyname'] . '</span></span></td>';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($event['isfactory'] ? 'purple' : '') . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['companyname'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $event['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $event['checkpointcode'] . '</span></span></td>';
 			$html .= '</tr>';
 		}
@@ -103,6 +104,7 @@ class common_order extends common
 
 	function get_assembly_details($orderno, $customerno)
 	{
+		$html='';
 		$sqlAssemblies = $this->sheel->db->query("
 			SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, e.companyid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, comp.name as companyname, comp.isfactory as isfactory
 			FROM " . DB_PREFIX . "events e
@@ -170,7 +172,7 @@ class common_order extends common
 			$html .= '<td class="status no-wrap">' . $assembly['createdat'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['eventtime'] . '</td>';
 			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $assembly['checkpointmessage'] . '</span></span></td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'green' : $assembly['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'purple' : '') . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '<td><div id="toggleOrder"><i class="fa fa-ellipsis-h" onclick="showAssemblyScans(\'' . $assembly['assemblynumber'] . '\',\'' . $assembly['reference'] . '\', \'' . $assembly['eventidentifier'] . '\')" style="cursor: pointer;"></i></div></td>';
 			$html .= '</tr>';
@@ -186,6 +188,7 @@ class common_order extends common
 
 	function get_assembly_scans($assemblyno, $orderno, $customerno)
 	{
+		$html='';
 		$sqlAssemblies = $this->sheel->db->query("
 			SELECT e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, e.companyid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, comp.name as companyname, comp.isfactory as isfactory
 			FROM " . DB_PREFIX . "events e
@@ -242,7 +245,7 @@ class common_order extends common
 			$html .= '<td class="status no-wrap">' . $assembly['createdat'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['eventtime'] . '</td>';
 			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $assembly['checkpointmessage'] . '</span></span></td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'green' : $assembly['color']) . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
+			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'purple' : '') . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . $assembly['color'] . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['checkpointcode'] . '</span></span></td>';
 			$html .= '</tr>';
 		}

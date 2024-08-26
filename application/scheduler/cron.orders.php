@@ -89,13 +89,13 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         $checkpoint = $rescheckpoint['checkpointid'];
                                                                 }
                                                         }
-
                                                         $this->sheel->db->query("
                                                                 INSERT INTO " . DB_PREFIX . "events
-                                                                (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                                (systemid, eventtime, createdtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                 VALUES(
                                                                 '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                                 " . strtotime($order['systemModifiedAt']) . ",
+                                                                " . strtotime($order['systemCreatedAt']) . ",
                                                                 'customer',
                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
                                                                 '" . $entityid . "',
@@ -121,10 +121,11 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 }
                                                 $this->sheel->db->query("
                                                         INSERT INTO " . DB_PREFIX . "events
-                                                        (systemid, eventtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                        (systemid, eventtime, createdtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                         VALUES(
                                                         '" . $this->sheel->db->escape_string($order['systemId']) . "',
                                                         " . strtotime($order['systemModifiedAt']) . ",
+                                                        " . strtotime($order['systemCreatedAt']) . ",
                                                         'customer',
                                                         '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
                                                         '" . $entityid . "',
