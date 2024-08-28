@@ -3225,6 +3225,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'refresh' and isset($sheel->GPC['no']) and $sheel->GPC['no'] != '') {
         $customer = array();
+        $customertemp = array();
         $companycode = $defaulcompany;
         $sql = $sheel->db->query("
             SELECT customer_ref
@@ -3244,13 +3245,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
-            $customer = $apiResponse->getData();
+            $customertemp = $apiResponse->getData();
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
             exit();
         }
-        $customer = $customer['0'];
+        $customer = $customertemp['0'];
         $payload = array();
         $payload['customer_id'] = $sheel->GPC['no'];
         $payload['customerref'] = $customer['number'];

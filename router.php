@@ -112,6 +112,7 @@ $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/adm
 $router->map('GET|POST', '/admin/settings/automation/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation');
 $router->map('GET|POST', '/admin/settings/[automation:cmd]/[add:subcmd]/task/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_add');
 $router->map('GET|POST', '/admin/settings/[automation:cmd]/[delete|update|run:subcmd]/task/[*:cronid]/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_cmd');
+$router->map('GET|POST', '/admin/settings/[automation:cmd]/[configurations:subcmd]/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_config');
 $router->map('GET|POST', '/admin/sessions/', __DIR__ . '/application/web/admin/sessions.php', 'admin_connections');
 
 

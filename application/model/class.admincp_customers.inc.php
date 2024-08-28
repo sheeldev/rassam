@@ -175,7 +175,7 @@ class admincp_customers extends admincp
     function refresh_customer($payload)
     {
         $refreshed = false;
-        $customerid = intval($payload['customer_id']);
+        $customerid = $payload['customer_id'];
         $this->sheel->db->query("UPDATE " . DB_PREFIX . "customers
         SET customer_ref = '" . $this->sheel->db->escape_string($payload['customerref']) . "',
             customername = '" . $this->sheel->db->escape_string($payload['customername']) . "',

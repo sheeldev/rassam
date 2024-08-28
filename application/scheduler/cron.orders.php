@@ -6,7 +6,6 @@ $cronlog = '';
 
 $this->sheel->timer->start();
 
-
 $sqlcompany = $this->sheel->db->query("
         SELECT *
         FROM " . DB_PREFIX . "companies

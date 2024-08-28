@@ -46,7 +46,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                         WHERE status = 'active' 
                                         AND customer_ref = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "'
                                         ");
-                                if ($this->sheel->db->num_rows($sqlcustomers) > 0) {
+                                if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
                                         $rescustomer = $this->sheel->db->fetch_array($sqlcustomer, DB_ASSOC);
                                         $entityid = $rescustomer['company_id'];
                                         $assembly['documentType'] = 'Assembly';

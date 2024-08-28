@@ -48,6 +48,7 @@ class common_order extends common
 					$warningmessage .= '<b>' . $warningcount . '. </b>{_quote_not_found}<br>';
 				}
 			}
+			$resEvent['icno'] = $resEventData['icCustomerSONo'] != '' ? $resEventData['no'] : '';
 			$resEvent['customername'] = $resEventData['sellToCustomerName'];
 			$resEvent['createdby'] = $resEventData['createdUser'];
 			$resEvent['createdat'] = $this->sheel->common->print_date($resEventData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
@@ -62,7 +63,7 @@ class common_order extends common
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
 		$html .= '<div class="draw-card__section">';
-		$html .= '<div class="table-wrapper" style="">';
+		$html .= '<div class="table-wrapper bulk-action-div" style="">';
 		$html .= '<table>';
 		$html .= '<thead>';
 		$html .= '<tr>';
@@ -84,7 +85,7 @@ class common_order extends common
 			$html .= '<tr valign="top">';
 			$html .= '<td class="no-wrap">' . $event['reference'] . '</td>';
 			$html .= '<td class="no-wrap"> <span>' . $event['eventidentifier'] . '</span></td>';
-			$html .= '<td class="no-wrap"> <span>' . $event['customername'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $event['customername'] . ($event['icno'] != '' ? ' <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $event['icno'] . '</span>':'') . '</span></td>';
 			$html .= '<td class="no-wrap">' . $event['createdby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $event['createdat'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $event['eventtime'] . '</td>';
