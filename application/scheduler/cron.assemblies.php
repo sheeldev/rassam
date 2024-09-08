@@ -20,14 +20,14 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
                 }
                 $sqlEventTime = $this->sheel->db->query("
-                        SELECT MAX(eventtime) AS max_eventtime
+                        SELECT MAX(createdtime) AS max_eventtime
                         FROM " . DB_PREFIX . "events
                         WHERE companyid = '" . $rescompanies['company_id'] . "' and topic = 'Assembly'
                         ");
                 $maxEventTime = '0';
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['max_eventtime'] !== null) {
-                        $maxEventTime = $resEventTime['max_eventtime'] + 1;
+                        $maxEventTime = $resEventTime['max_eventtime'] + 5;
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
                 }

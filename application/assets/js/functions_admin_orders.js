@@ -1,4 +1,17 @@
-function showOrderDetails(orderno, customerno) {  
+function showOrderDetails(orderno, customerno) {
+    var selectedvalue = fetch_js_object("selected_tr");
+    if (selectedvalue.innerHTML == '') {
+        jQuery('#tr_selected_' + orderno).removeClass('table-tr-hover');
+        jQuery('#tr_selected_' + orderno).addClass('table-tr-click');
+        selectedvalue.innerHTML = orderno;
+    }
+    else {
+        jQuery('#tr_selected_' + selectedvalue.innerHTML).removeClass('table-tr-click');
+        jQuery('#tr_selected_' + orderno).removeClass('table-tr-hover');
+        jQuery('#tr_selected_' + orderno).addClass('table-tr-click');
+        selectedvalue.innerHTML = orderno;
+    }
+    
     jQuery('#popupshow').removeClass('hide');
     fetch_js_object("toggleOrder_"+orderno).innerHTML = '<img src="' + iL['CDNIMG'] + 'v5/ico_working.gif" width="13" height="13" alt="{_loading}" />';
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
@@ -35,6 +48,18 @@ function showOrderDetails(orderno, customerno) {
 }
 
 function showAssemblyDetails(orderno, customerno) {
+    var selectedvalue = fetch_js_object("selected_tr");
+    if (selectedvalue.innerHTML == '') {
+        jQuery('#tr_selected_' + orderno).removeClass('table-tr-hover');
+        jQuery('#tr_selected_' + orderno).addClass('table-tr-click');
+        selectedvalue.innerHTML = orderno;
+    }
+    else {
+        jQuery('#tr_selected_' + selectedvalue.innerHTML).removeClass('table-tr-click');
+        jQuery('#tr_selected_' + orderno).removeClass('table-tr-hover');
+        jQuery('#tr_selected_' + orderno).addClass('table-tr-click');
+        selectedvalue.innerHTML = orderno;
+    }
     jQuery('#popupshow').removeClass('hide');
     var querystring = "&orderno=" + orderno + "&customerno=" + customerno + "&token=" + iL['TOKEN'];
     var ajaxDisplay = fetch_js_object("orders_status");

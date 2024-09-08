@@ -57,7 +57,7 @@
                 <div>
                     <div class="draw-card__section">
                         <div id="orders-results" class="table-wrapper order_events">
-                            <table class="table-hover expanded">
+                            <table class="expanded">
                                     <thead>
                                         <tr>
                                             <th width="3%"> <span><i class="fa fa-cogs" style="font-size: 16px;"></i></span> </th>
@@ -78,7 +78,7 @@
                                     </thead>
                                     <tbody>
                                         <loop name="events">
-                                        <tr id="tr_selected_{customer_id}" valign="top">
+                                        <tr class="table-tr-hover" id="tr_selected_{reference}" valign="top">
                                             <td >{assembly}</td>
                                             <td>{progress}</td>
                                             <td> <span class="fw-strong-black">{qty}</span></td>
@@ -90,8 +90,8 @@
                                             <td class="status no-wrap">{createdby}</td>
                                             <td class="status no-wrap">{createdat}</td>
                                             <td class="status no-wrap">{eventtime}</td>
-                                            <td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">{checkpointmessage}</span></td>
-                                            <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{checkpointcode}</span></span></td>
+                                            <td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">{lastcheckpointmessage}</span></td>
+                                            <td class="status no-wrap"><span class="draw-status__badge {color} draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">{lastcheckpoint}</span></span></td>
                                             
                                             <td><div id="toggleOrder_{reference}"><i class="fa fa-ellipsis-h" onclick="showOrderDetails('{reference}', '{eventidentifier}')" style="cursor: pointer;"></i></div></td>
                                             
@@ -121,6 +121,8 @@
 
     </div>
 </div>
+<span id="selected_tr" class="hide">
+</span>
 <div id="popupshow" class="hide">
     <div class="popup"></div>
 </div>

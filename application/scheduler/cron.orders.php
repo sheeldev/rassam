@@ -19,14 +19,14 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $cronlog .= 'Inactive Dynamics API erSales for company ' . $rescompanies['name'] . ', ';
                 }
                 $sqlEventTime = $this->sheel->db->query("
-                        SELECT MAX(eventtime) AS max_eventtime
+                        SELECT MAX(createdtime) AS max_eventtime
                         FROM " . DB_PREFIX . "events
                         WHERE companyid = '" . $rescompanies['company_id'] . "' AND (topic = 'Order' Or topic = 'Quote')
                         ");
                 $maxEventTime = '0';
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['max_eventtime'] !== null) {
-                        $maxEventTime = $resEventTime['max_eventtime'] + 1;
+                        $maxEventTime = $resEventTime['max_eventtime'] + 5;
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
                 }
@@ -53,10 +53,10 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                         $rescustomer = $this->sheel->db->fetch_array($sqlcustomer, DB_ASSOC);
                                         $entityid = $rescustomer['company_id'];
                                         $sqlevent = $this->sheel->db->query("
-                                                SELECT *
+                                                SELECT eventdata
                                                 FROM " . DB_PREFIX . "events
                                                 WHERE systemid = '" . $order['systemId'] . "'
-                                                ORDER BY eventtime DESC
+                                                ORDER BY eventtime DESC, eventid DESC
                                                 LIMIT 1
                                                 ");
                                         if ($this->sheel->db->num_rows($sqlevent) > 0) {
