@@ -11241,6 +11241,13 @@ tfoot td {
     border: none
 }
 
+.table-tr-click td {
+    background: #c4c4c4;
+}
+.table-tr-hover:hover td {
+    background: #f3f5f5;
+}
+
 .table-hover tr:hover td {
     background: #f3f5f5;
 }

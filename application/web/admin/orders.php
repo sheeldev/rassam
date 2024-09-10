@@ -74,7 +74,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
-                    SELECT reference, MAX(eventtime) as max_eventtime
+                    SELECT reference, MIN(eventtime) as max_eventtime
                     FROM " . DB_PREFIX . "events
                     WHERE eventfor = 'customer' and topic='Order' 
                     GROUP BY reference
@@ -88,7 +88,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
-                    SELECT reference, MAX(eventtime) as max_eventtime
+                    SELECT reference, MIN(eventtime) as max_eventtime
                     FROM " . DB_PREFIX . "events
                     WHERE eventfor = 'customer' and topic='Order' 
                     GROUP BY reference
@@ -102,7 +102,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 INNER JOIN (
-                    SELECT reference, MAX(eventtime) as max_eventtime
+                    SELECT reference, MIN(eventtime) as max_eventtime
                     FROM " . DB_PREFIX . "events
                     WHERE eventfor = 'customer' and topic='Order'
                     GROUP BY reference

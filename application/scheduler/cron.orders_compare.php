@@ -23,7 +23,7 @@ if ($this->sheel->db->num_rows($query) > 0) {
         }
 }
 die ('test'); */
-/* $sqlcompany = $this->sheel->db->query("
+$sqlcompany = $this->sheel->db->query("
         SELECT *
         FROM " . DB_PREFIX . "companies
         WHERE status = 'active'
@@ -35,7 +35,18 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 if (!$this->sheel->dynamics->init_dynamics('erSales', $rescompanies['bc_code'])) {
                         $cronlog .= 'Inactive Dynamics API erSales for company ' . $rescompanies['name'] . ', ';
                 }
-                $maxEventTime = $rescompanies['eventstart'];
+                $sqlEventTime = $this->sheel->db->query("
+                        SELECT MIN(createdtime) AS min_eventtime
+                        FROM " . DB_PREFIX . "events
+                        WHERE companyid = '" . $rescompanies['company_id'] . "' AND (topic = 'Order')
+                        ");
+                $maxEventTime = '0';
+                $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
+                if ($resEventTime['min_eventtime'] !== null) {
+                        $maxEventTime = $resEventTime['min_eventtime'] + 5;
+                } else {
+                        $maxEventTime = $rescompanies['eventstart'];
+                }
                 $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                 $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso . '';
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
@@ -43,25 +54,23 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $orders = $apiResponse->getData();
                         $systemIdsFromOrders = array_column($orders, 'systemId');
                         $query = "
-                                SELECT e1.systemid, e1.eventdata
-                                FROM " . DB_PREFIX . "events e1
-                                INNER JOIN (
-                                        SELECT systemid, MAX(eventtime) AS max_eventtime
-                                        FROM " . DB_PREFIX . "events
-                                        WHERE companyid = '" . $rescompanies['company_id'] . "' AND topic = 'Orders'
-                                        GROUP BY systemid
-                                ) e2 ON e1.systemid = e2.systemid AND e1.eventtime = e2.max_eventtime
+                                SELECT systemid, eventdata, reference
+                                FROM " . DB_PREFIX . "events
+                                WHERE companyid = '" . $rescompanies['company_id'] . "' AND topic = 'Order' 
+                                AND checkpointid in (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Order' AND (triggeredon = 'Open' or triggeredon = 'Released'))
+                                GROUP BY systemid
+                                ORDER BY createdtime DESC
                         ";
                         $result = $this->sheel->db->query($query);
-
                         while ($row = $this->sheel->db->fetch_array($result, DB_ASSOC)) {
                                 $order = json_decode($row['eventdata'], true);
+                                $entityid = $rescompanies['company_id'];
                                 if (!in_array($row['systemid'], $systemIdsFromOrders)) {
                                         $checkpoint = 0;
                                         $sqlcheckpoint = $this->sheel->db->query("
                                                 SELECT checkpointid
                                                 FROM " . DB_PREFIX . "checkpoints
-                                                WHERE type = '" . $order['documentType'] . "' AND triggeredon = 'Deleted'
+                                                WHERE type = '" . $order['documentType'] . "' AND triggeredon = 'Archived'
                                                 LIMIT 1
                                                 ");
                                         if ($this->sheel->db->num_rows($sqlcheckpoint) > 0) {
@@ -69,35 +78,40 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 $checkpoint = $rescheckpoint['checkpointid'];
                                         }
                                         $checkQuery = "
-                                                SELECT 1
+                                                SELECT systemid
                                                 FROM " . DB_PREFIX . "events
                                                 WHERE checkpointid = '" . $checkpoint . "' AND systemid = '" . $this->sheel->db->escape_string($row['systemid']) . "'
                                                 LIMIT 1
-                                        ";
+                                                ";
                                         $checkResult = $this->sheel->db->query($checkQuery);
                                         if ($this->sheel->db->num_rows($checkResult) == 0) {
                                                 $this->sheel->db->query("
                                                         INSERT INTO " . DB_PREFIX . "events
-                                                        (systemid, eventtime, eventfor, eventidentifier, eventdata, topic, istriggered, checkpointid, companyid)
+                                                        (systemid, eventtime, createdtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                         VALUES(
-                                                        '" . $this->sheel->db->escape_string($row['systemid']) . "',
+                                                        '" . $row['systemid'] . "',
                                                         " . TIMESTAMPNOW . ",
+                                                        " . strtotime($order['systemCreatedAt']) . ",
                                                         'customer',
-                                                        '" . $order['sellToCustomerNo'] . "',
+                                                        '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                        '" . $entityid . "',
+                                                        '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
                                                         '" . $this->sheel->db->escape_string(json_encode($order)) . "',
-                                                        'Orders',
+                                                        '" . $order['documentType'] . "',
                                                         '0',
                                                         '" . $checkpoint . "',
                                                         '" . $rescompanies['company_id'] . "'
                                                         )", 0, null, __FILE__, __LINE__);
                                         }
                                 }
+
+
                         }
                 } else {
                         $cronlog .= $apiResponse->getErrorMessage() . ', ';
                 }
         }
-} */
+}
 if (!empty($cronlog)) {
         $cronlog = mb_substr($cronlog, 0, -2);
 }
