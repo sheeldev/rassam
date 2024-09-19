@@ -1,6 +1,6 @@
 <?php
 define('LOCATION', 'admin');
-require_once (DIR_CLASSES . '/vendor/office/autoload.php');
+require_once(DIR_CLASSES . '/vendor/office/autoload.php');
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 if (isset($match['params'])) {
@@ -1459,7 +1459,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
             }
         }
-
+        usort($custstaffs, function ($a, $b) {
+            preg_match_all('!\d+!', $a['code'], $matchesA);
+            preg_match_all('!\d+!', $b['code'], $matchesB);
+            $numA = (int) end($matchesA[0]);
+            $numB = (int) end($matchesB[0]);
+            return $numA - $numB;
+        });
 
 
         $sheel->template->fetch('main', 'customer-staffs.html', 1);
@@ -2030,7 +2036,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if ($sheel->db->num_rows($sqlupd) > 0) {
             $sheel->GPC['haspendinguploads'] = '1';
         }
-
+        
+        
         $sheel->template->fetch('main', 'staff-measurements.html', 1);
         $sheel->template->parse_hash(
             'main',
@@ -3203,6 +3210,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
             exit();
         }
+        usort($staff, function ($a, $b) {
+            preg_match_all('!\d+!', $a['code'], $matchesA);
+            preg_match_all('!\d+!', $b['code'], $matchesB);
+            $numA = (int) end($matchesA[0]);
+            $numB = (int) end($matchesB[0]);
+            return $numA - $numB;
+        });
         $sheel->template->fetch('main', 'customers.html', 1);
         $sheel->template->parse_hash(
             'main',
