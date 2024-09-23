@@ -1530,8 +1530,22 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $spreadsheet = $reader->load(DIR_OTHER . 'measurementsample.xlsx');
                 $sheet = $spreadsheet->getActiveSheet();
                 $last_row = (int) $sheet->getHighestRow() + 1;
+                $tempmeasurements = array();
                 foreach ($custstaffs as $key => $value) {
                     foreach ($mandatorymeasurements as $key1 => $value1) {
+                        if (!$sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode)) {
+                            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                            exit();
+                        }
+                        $searchcondition = '$filter=code eq \'' . $value1 . '\' ';
+                        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                        if ($apiResponse->isSuccess()) {
+                            $tempmeasurements = $apiResponse->getData();
+                        } else {
+                            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                            exit();
+                        }
                         $foundValue = '';
                         foreach ($staffmeasurements as $measurement) {
                             if (isset($measurement['staffCode']) and ($measurement['staffCode'] == $value['code']) and isset($measurement['measurementCode']) and ($measurement['measurementCode'] == $value1)) {
@@ -1547,7 +1561,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $sheet->setCellValue('A' . $last_row, $value['code']);
                         $sheet->setCellValue('B' . $last_row, $value['name']);
                         $sheet->setCellValue('C' . $last_row, $value['gender']);
-                        $sheet->setCellValue('D' . $last_row, $value1);
+                        $sheet->setCellValue('D' . $last_row, $value1 . '>' . $tempmeasurements['0']['name']);
                         $sheet->setCellValue('E' . $last_row, $foundValue);
                         $sheet->setCellValue('F' . $last_row, $sheel->common_sizingrule->get_default_uom($value1));
                         $last_row++;
@@ -1983,7 +1997,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
             exit();
         }
-        $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
+        //$pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
 
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
@@ -2017,6 +2031,17 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
             exit();
         }
+        usort($staffmeasurements, function ($a, $b) {
+            preg_match_all('!\d+!', $a['staffCode'], $matchesA);
+            preg_match_all('!\d+!', $b['staffCode'], $matchesB);
+            $numA = (int) end($matchesA[0]);
+            $numB = (int) end($matchesB[0]);
+            return $numA - $numB;
+        });
+        $totalItems = count($staffmeasurements);
+        $totalPages = ceil($totalItems / $sheel->config['globalfilters_maxrowsdisplay']);
+        $offset = ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'];
+        $pagedstaffmeasurements = array_slice($staffmeasurements, $offset, $sheel->config['globalfilters_maxrowsdisplay']);
         $pageurl = PAGEURL;
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
 
@@ -2036,8 +2061,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if ($sheel->db->num_rows($sqlupd) > 0) {
             $sheel->GPC['haspendinguploads'] = '1';
         }
-        
-        
         $sheel->template->fetch('main', 'staff-measurements.html', 1);
         $sheel->template->parse_hash(
             'main',
@@ -2050,7 +2073,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_loop(
             'main',
             array(
-                'staffmeasurements' => $staffmeasurements,
+                'staffmeasurements' => $pagedstaffmeasurements,
                 'uploadedmeaasurements' => $uploadedmeaasurements
             )
         );
@@ -2193,6 +2216,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     ");
                     while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
                         $res['staffcode'] = $valuecust['code'];
+                        $res['staffname'] = $valuecust['name'];
                         $res['positioncode'] = $valuecust['positionCode'];
                         $res['departmentcode'] = $valuecust['departmentCode'];
                         $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
@@ -2293,6 +2317,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 ");
                 while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
                     $res['staffcode'] = $valuecust['code'];
+                    $res['staffname'] = $valuecust['name'];
                     $res['positioncode'] = $valuecust['positionCode'];
                     $res['departmentcode'] = $valuecust['departmentCode'];
                     $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
@@ -2779,7 +2804,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
             exit();
         }
-        $pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
+        //$pagination = '&$skip=' . ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'] . '&$top=' . $sheel->config['globalfilters_maxrowsdisplay'];
 
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
@@ -2817,12 +2842,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
             exit();
         }
+        usort($staffsizes, function ($a, $b) {
+            preg_match_all('!\d+!', $a['staffCode'], $matchesA);
+            preg_match_all('!\d+!', $b['staffCode'], $matchesB);
+            $numA = (int) end($matchesA[0]);
+            $numB = (int) end($matchesB[0]);
+            return $numA - $numB;
+        });
+        $totalItems = count($staffsizes);
+        $totalPages = ceil($totalItems / $sheel->config['globalfilters_maxrowsdisplay']);
+        $offset = ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'];
+        $pagedstaffsizes = array_slice($staffsizes, $offset, $sheel->config['globalfilters_maxrowsdisplay']);
         $pageurl = PAGEURL;
         $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
 
         $uploadedsizes = array();
         $sqlupd = $sheel->db->query("
-            SELECT id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors
+            SELECT id, staffcode, staffname, positioncode, departmentcode, fit, cut, size, type, customerno, errors
                 FROM " . DB_PREFIX . "bulk_tmp_sizes
             WHERE customerno = '" . $customer['customer_ref'] . "' AND uploaded = '0'
             ORDER BY staffcode, type
@@ -2849,7 +2885,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_loop(
             'main',
             array(
-                'staffsizes' => $staffsizes,
+                'staffsizes' => $pagedstaffsizes,
                 'uploadedsizes' => $uploadedsizes
             )
         );
@@ -3431,7 +3467,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $searchview			
             $searchcondition
             $entitycriteria	
-			ORDER BY c.customer_id DESC
+			ORDER BY c.customer_ref ASC
 			LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay']) . "," . $sheel->config['globalfilters_maxrowsdisplay'] . "
 		");
 
@@ -3443,7 +3479,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $searchview			
             $searchcondition
             $entitycriteria	
-            ORDER BY c.customer_id DESC
+            ORDER BY c.customer_ref ASC
 		");
         $number = (int) $sheel->db->num_rows($sql2);
         $form['number'] = number_format($number);

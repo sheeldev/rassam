@@ -17,6 +17,7 @@ class xlsx
 	function size_xlsx_to_db($data, $staffs, $customer_ref, $userid = 0, $bulk_id = 0)
 	{
 		if ($bulk_id > 0) {
+			
 			foreach ($data as $t) {
 				$sqlcat = $this->sheel->db->query("
 					SELECT id
@@ -34,13 +35,14 @@ class xlsx
 				while ($resallrec = $this->sheel->db->fetch_array($sqlallrec, DB_ASSOC)) {
 					$stmt = $this->sheel->db->prepare("
 						INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
-						(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+						(id, staffcode, staffname, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
 						VALUES (
 							NULL,
-							?, ?, ?, ?, ?, ?, ?, ?, '[No Errors]',?, '0', ?, ?
+							?, ?, ?, ?, ?, ?, ?, ?, ?, '[No Errors]',?, '0', ?, ?
 						)
 						ON DUPLICATE KEY UPDATE
 							staffcode = " . DB_PREFIX . "bulk_tmp_sizes.staffcode,
+							staffname = " . DB_PREFIX . "bulk_tmp_sizes.staffname,
 							positioncode = " . DB_PREFIX . "bulk_tmp_sizes.positioncode,
 							departmentcode = " . DB_PREFIX . "bulk_tmp_sizes.departmentcode,
 							fit = " . DB_PREFIX . "bulk_tmp_sizes.fit,
@@ -54,8 +56,9 @@ class xlsx
 							bulk_id = " . DB_PREFIX . "bulk_tmp_sizes.bulk_id
 					");
 					$stmt->bind_param(
-						"sssssssssss",
+						"ssssssssssss",
 						trim($t[0]),
+						trim($t[1]),
 						trim($staffdetails[0]),
 						trim($staffdetails[1]),
 						trim($t[3]),
@@ -75,10 +78,11 @@ class xlsx
 			foreach ($data as $t) {
 				$stmt = $this->sheel->db->query("
 					INSERT INTO " . DB_PREFIX . "bulk_tmp_sizes
-					(id, staffcode, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
+					(id, staffcode, staffname, positioncode, departmentcode, fit, cut, size, type, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
 					VALUES (
 						NULL,
 						'" . $t['staffcode'] . "',
+						'" . $t['staffname'] . "',
 						'" . $t['positioncode'] . "',
 						'" . $t['departmentcode'] . "',
 						'" . $t['fit'] . "',
@@ -94,6 +98,7 @@ class xlsx
 					)
 					ON DUPLICATE KEY UPDATE
 					staffcode = " . DB_PREFIX . "bulk_tmp_sizes.staffcode,
+					staffname = " . DB_PREFIX . "bulk_tmp_sizes.staffname,
 					positioncode = " . DB_PREFIX . "bulk_tmp_sizes.positioncode,
 					departmentcode = " . DB_PREFIX . "bulk_tmp_sizes.departmentcode,
 					fit = " . DB_PREFIX . "bulk_tmp_sizes.fit,
@@ -114,13 +119,14 @@ class xlsx
 	{
 		foreach ($data as $t) {
 			$staffdetails = explode('|', $staffs[$t[0]]);
+			$measurement = explode('>', $t[3]);
 			$this->sheel->db->query("
                         INSERT INTO " . DB_PREFIX . "bulk_tmp_measurements
                         (id, staffcode, measurementcategory, positioncode, departmentcode, mvalue, uom, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
                         VALUES (
                         NULL,
 						'" . $t[0] . "',
-						'" . $t[3] . "',
+						'" . $measurement[0] . "',
 						'" . $staffdetails[0] . "',
 						'" . $staffdetails[1] . "',
 						'" . $t[4] . "',
