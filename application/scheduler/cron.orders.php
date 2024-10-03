@@ -39,7 +39,6 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 if (isset($order['shipped']) && $order['shipped'] == 'true') {
                                         $order['status'] = 'Shipped';
                                         if (isset($order['shippedNotInvoiced']) && $order['shippedNotInvoiced'] != 'true') {
-
                                                 $order['status'] = 'Completed';
                                         }
                                 }
@@ -65,6 +64,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 $differences = array_diff_assoc($order, $eventdata);
                                                 if (!empty($differences)) {
                                                         $checkpoint = 0;
+                                                        $updatestime = strtotime($order['systemModifiedAt']);
                                                         if (!isset($differences['status'])) {
                                                                 $sqlcheckpoint = $this->sheel->db->query("
                                                                 SELECT checkpointid
@@ -76,6 +76,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         $rescheckpoint = $this->sheel->db->fetch_array($sqlcheckpoint, DB_ASSOC);
                                                                         $checkpoint = $rescheckpoint['checkpointid'];
                                                                 }
+                                                                $updatestime = strtotime($order['systemModifiedAt']) - 5;
                                                         } else {
                                                                 $sqlcheckpoint = $this->sheel->db->query("
                                                                 SELECT checkpointid
@@ -93,7 +94,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 (systemid, eventtime, createdtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                                                 VALUES(
                                                                 '" . $this->sheel->db->escape_string($order['systemId']) . "',
-                                                                " . strtotime($order['systemModifiedAt']) . ",
+                                                                " . $updatestime . ",
                                                                 " . strtotime($order['systemCreatedAt']) . ",
                                                                 'customer',
                                                                 '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',

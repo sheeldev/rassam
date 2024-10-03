@@ -1531,6 +1531,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheet = $spreadsheet->getActiveSheet();
                 $last_row = (int) $sheet->getHighestRow() + 1;
                 $tempmeasurements = array();
+                usort($custstaffs, function ($a, $b) {
+                    preg_match_all('!\d+!', $a['code'], $matchesA);
+                    preg_match_all('!\d+!', $b['code'], $matchesB);
+                    $numA = (int) end($matchesA[0]);
+                    $numB = (int) end($matchesB[0]);
+                    return $numA - $numB;
+                });
                 foreach ($custstaffs as $key => $value) {
                     foreach ($mandatorymeasurements as $key1 => $value1) {
                         if (!$sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode)) {
@@ -2057,7 +2064,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
             $uploadedmeaasurements[] = $res;
         }
-
+        usort($uploadedmeaasurements, function ($a, $b) {
+            preg_match_all('!\d+!', $a['staffcode'], $matchesA);
+            preg_match_all('!\d+!', $b['staffcode'], $matchesB);
+            $numA = (int) end($matchesA[0]);
+            $numB = (int) end($matchesB[0]);
+            return $numA - $numB;
+        });
         if ($sheel->db->num_rows($sqlupd) > 0) {
             $sheel->GPC['haspendinguploads'] = '1';
         }
@@ -2129,6 +2142,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $spreadsheet = $reader->load(DIR_OTHER . 'sizesample.xlsx');
                 $sheet = $spreadsheet->getActiveSheet();
                 $last_row = (int) $sheet->getHighestRow() + 1;
+                usort($custstaffs, function ($a, $b) {
+                    preg_match_all('!\d+!', $a['code'], $matchesA);
+                    preg_match_all('!\d+!', $b['code'], $matchesB);
+                    $numA = (int) end($matchesA[0]);
+                    $numB = (int) end($matchesB[0]);
+                    return $numA - $numB;
+                });
                 foreach ($custstaffs as $key => $value) {
                     foreach ($types as $key1 => $value1) {
                         $foundValue = '';

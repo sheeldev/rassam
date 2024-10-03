@@ -27,7 +27,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 $maxEventTime = '0';
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['max_eventtime'] !== null) {
-                        $maxEventTime = $resEventTime['max_eventtime'] + 5;
+                        $maxEventTime = $resEventTime['max_eventtime'];
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
                 }
