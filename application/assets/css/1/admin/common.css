@@ -1054,6 +1054,7 @@ hr {
 
 html,
 body {
+    overflow: auto;
     height: 100%;
     margin: 0;
     padding: 0;

@@ -26,11 +26,12 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 $maxEventTime = '0';
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['max_eventtime'] !== null) {
-                        $maxEventTime = $resEventTime['max_eventtime'] + 5;
+                        $maxEventTime = $resEventTime['max_eventtime'];
+                        $maxEventTimeIso = (new DateTime('today'))->format('Y-m-d\TH:i:s.u\Z');
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
+                        $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                 }
-                $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                 $searchcondition = '$filter=(documentType eq \'Quote\' or documentType eq \'Order\') and systemModifiedAt gt ' . $maxEventTimeIso . '';
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {

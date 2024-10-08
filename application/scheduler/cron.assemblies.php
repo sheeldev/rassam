@@ -16,9 +16,7 @@ $searchcondition = '';
 $assemblies = array();
 if ($this->sheel->db->num_rows($sqlcompany) > 0) {
         while ($rescompanies = $this->sheel->db->fetch_array($sqlcompany, DB_ASSOC)) {
-                if (!$this->sheel->dynamics->init_dynamics('erAssemblies', $rescompanies['bc_code'])) {
-                        $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
-                }
+
                 $sqlEventTime = $this->sheel->db->query("
                         SELECT MAX(createdtime) AS max_eventtime
                         FROM " . DB_PREFIX . "events
@@ -28,13 +26,81 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['max_eventtime'] !== null) {
                         $maxEventTime = $resEventTime['max_eventtime'];
+                        $maxEventTimeIso = (new DateTime('today'))->format('Y-m-d\TH:i:s.u\Z');
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
+                        $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                 }
-                $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
-
-                //$searchcondition = '$filter=sourceNo eq \'SO-AVR24-01181\'';
                 $searchcondition = '$filter=systemModifiedAt gt ' . $maxEventTimeIso;
+                //$searchcondition = '$filter=sourceNo eq \'SO-AVR24-01322\'';
+
+                if (!$this->sheel->dynamics->init_dynamics('erAssembliesAll', $rescompanies['bc_code'])) {
+                        $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
+                }
+                $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
+                if ($apiResponse->isSuccess()) {
+                        $assemblies = $apiResponse->getData();
+                        foreach ($assemblies as $assembly) {
+                                $assembly['status'] = '0-In';
+                                $sqlcustomer = $this->sheel->db->query("
+                                        SELECT c.*, cp.bc_code, cp.name as bc_name
+                                        FROM " . DB_PREFIX . "customers c
+                                        LEFT JOIN " . DB_PREFIX . "companies cp ON c.company_id = cp.company_id
+                                        WHERE c.status = 'active' 
+                                        AND c.customer_ref = '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "'
+                                        LIMIT 1");
+
+                                if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
+                                        $rescustomer = $this->sheel->db->fetch_array($sqlcustomer, DB_ASSOC);
+                                        $entityid = $rescustomer['company_id'];
+                                        $assembly['documentType'] = 'Assembly';
+                                        $sqlevent = $this->sheel->db->query("
+                                                SELECT eventid
+                                                FROM " . DB_PREFIX . "events
+                                                WHERE systemid = '" . $assembly['systemId'] . "'
+                                                ORDER BY eventtime DESC
+                                                LIMIT 1
+                                                ");
+                                        if ($this->sheel->db->num_rows($sqlevent) == 0) {
+                                                $checkpoint = 0;
+                                                $sqlcheckpoint = $this->sheel->db->query("
+                                                        SELECT checkpointid
+                                                        FROM " . DB_PREFIX . "checkpoints
+                                                        WHERE type = '" . $assembly['documentType'] . "' AND triggeredon = '" . $assembly['status'] . "'
+                                                        LIMIT 1
+                                                        ");
+                                                if ($this->sheel->db->num_rows($sqlcheckpoint) > 0) {
+                                                        $rescheckpoint = $this->sheel->db->fetch_array($sqlcheckpoint, DB_ASSOC);
+                                                        $checkpoint = $rescheckpoint['checkpointid'];
+                                                        $this->sheel->db->query("
+                                                        INSERT INTO " . DB_PREFIX . "events
+                                                        (systemid, eventtime, createdtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
+                                                        VALUES(
+                                                        '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
+                                                        " . strtotime($assembly['systemModifiedAt']) . ",
+                                                        " . strtotime($assembly['systemCreatedAt']) . ",
+                                                        'customer',
+                                                        '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
+                                                        '" . $entityid . "',
+                                                        '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
+                                                        '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
+                                                        '" . $assembly['documentType'] . "',
+                                                        '0',
+                                                        '" . $checkpoint . "',
+                                                        '" . $rescompanies['company_id'] . "'
+                                                        )", 0, null, __FILE__, __LINE__);
+                                                }
+
+                                        }
+                                }
+                        }
+                } else {
+                        $cronlog .= $apiResponse->getErrorMessage() . ', ';
+                }
+
+                if (!$this->sheel->dynamics->init_dynamics('erAssemblies', $rescompanies['bc_code'])) {
+                        $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
+                }
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
                         $assemblies = $apiResponse->getData();

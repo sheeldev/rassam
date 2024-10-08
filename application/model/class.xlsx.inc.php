@@ -120,7 +120,8 @@ class xlsx
 		foreach ($data as $t) {
 			$staffdetails = explode('|', $staffs[$t[0]]);
 			$measurement = explode('>', $t[3]);
-			$this->sheel->db->query("
+			if($t[4] != '0' && $t[4] != ''){
+				$this->sheel->db->query("
                         INSERT INTO " . DB_PREFIX . "bulk_tmp_measurements
                         (id, staffcode, measurementcategory, positioncode, departmentcode, mvalue, uom, customerno, errors, dateuploaded, uploaded, user_id, bulk_id)
                         VALUES (
@@ -138,6 +139,8 @@ class xlsx
 						'" . $userid . "',
 						'" . $bulk_id . "')
                     ", 0, null, __FILE__, __LINE__);
+			}
+			
 		}
 	}
 

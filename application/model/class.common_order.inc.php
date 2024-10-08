@@ -119,7 +119,7 @@ class common_order extends common
 		$previousassembly = '';
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
-			$resAssemblies['assemblynumber'] = $resAssemblyData['no'];
+			$resAssemblies['assemblynumber'] = $resAssemblyData['assemblyNo'];
 			$resAssemblies['customername'] = $resAssemblyData['sellToCustomerName'];
 			$resAssemblies['description'] = $resAssemblyData['description'];
 			$resAssemblies['itemno'] = $resAssemblyData['itemNo'];
@@ -137,7 +137,7 @@ class common_order extends common
 			}
 		}
 		usort($assemblies, function ($a, $b) {
-			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
+			return strcmp($a['assemblynumber'], $b['assemblynumber']);
 		});
 		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a></span> / {_assemblies}</h1>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
@@ -187,7 +187,7 @@ class common_order extends common
 		$html .= '<div>';
 		$html .= '</div>';
 		$html .= '</div>';
-		return $html;
+		return" $html";
 	}
 
 	function get_assembly_scans($assemblyno, $orderno, $customerno)

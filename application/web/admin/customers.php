@@ -1562,16 +1562,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                                 $foundValue = '';
                             }
                         }
-                        if ($foundValue != '') {
-                            break;
+                        if ($foundValue == '') {
+                            $sheet->setCellValue('A' . $last_row, $value['code']);
+                            $sheet->setCellValue('B' . $last_row, $value['name']);
+                            $sheet->setCellValue('C' . $last_row, $value['gender']);
+                            $sheet->setCellValue('D' . $last_row, $value1 . '>' . $tempmeasurements['0']['name']);
+                            $sheet->setCellValue('E' . $last_row, $foundValue);
+                            $sheet->setCellValue('F' . $last_row, $sheel->common_sizingrule->get_default_uom($value1));
+                            $last_row++;
                         }
-                        $sheet->setCellValue('A' . $last_row, $value['code']);
-                        $sheet->setCellValue('B' . $last_row, $value['name']);
-                        $sheet->setCellValue('C' . $last_row, $value['gender']);
-                        $sheet->setCellValue('D' . $last_row, $value1 . '>' . $tempmeasurements['0']['name']);
-                        $sheet->setCellValue('E' . $last_row, $foundValue);
-                        $sheet->setCellValue('F' . $last_row, $sheel->common_sizingrule->get_default_uom($value1));
-                        $last_row++;
                     }
                 }
                 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
