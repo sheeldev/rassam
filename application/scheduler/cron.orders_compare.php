@@ -43,7 +43,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 $maxEventTime = '0';
                 $resEventTime = $this->sheel->db->fetch_array($sqlEventTime, DB_ASSOC);
                 if ($resEventTime['min_eventtime'] !== null) {
-                        $maxEventTime = $resEventTime['min_eventtime'] + 5;
+                        $maxEventTime = $resEventTime['min_eventtime'];
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
                 }
@@ -64,7 +64,14 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $result = $this->sheel->db->query($query);
                         while ($row = $this->sheel->db->fetch_array($result, DB_ASSOC)) {
                                 $order = json_decode($row['eventdata'], true);
-                                $entityid = $rescompanies['company_id'];
+                                $sqlcustomer = $this->sheel->db->query("
+                                        SELECT *
+                                        FROM " . DB_PREFIX . "customers 
+                                        WHERE status = 'active' 
+                                        AND customer_ref = '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "'
+                                        ");
+                                $rescustomer = $this->sheel->db->fetch_array($sqlcustomer, DB_ASSOC);
+                                $entityid = $rescustomer['company_id'];
                                 if (!in_array($row['systemid'], $systemIdsFromOrders)) {
                                         $checkpoint = 0;
                                         $sqlcheckpoint = $this->sheel->db->query("

@@ -1215,11 +1215,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $systemids .= $staffsize['systemId'] . '|';
                     }
                     if ($staffsize['categoryid'] == $cat['id'] and $staffsize['isdefault'] == '1') {
-                        $extra = 'class="draw-select" onchange="update_staff_sizes(\'catsizeCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'sizeCode\' , \'' . $companycode . '\')"';
+                        $extra = 'class="draw-select w-125" onchange="update_staff_sizes(\'catsizeCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'sizeCode\' , \'' . $companycode . '\')"';
                         $cat['catsizeCode'] = $sheel->construct_pulldown('catsizeCode_' . $cat['id'], 'catsizeCode_' . $cat['id'], $sizes, $staffsize['sizeCode'], $extra);
-                        $extra = 'class="draw-select" onchange="update_staff_sizes(\'catfitCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\' , \'fitCode\'  , \'' . $companycode . '\')"';
+                        $extra = 'class="draw-select w-125" onchange="update_staff_sizes(\'catfitCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\' , \'fitCode\'  , \'' . $companycode . '\')"';
                         $cat['catfitCode'] = $sheel->construct_pulldown('catfitCode_' . $cat['id'], 'catfitCode_' . $cat['id'], $fits, $staffsize['fitCode'], $extra);
-                        $extra = 'class="draw-select" onchange="update_staff_sizes(\'catcutCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'cutCode\' ,\'' . $companycode . '\')"';
+                        $extra = 'class="draw-select w-125" onchange="update_staff_sizes(\'catcutCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'cutCode\' ,\'' . $companycode . '\')"';
                         $cat['catcutCode'] = $sheel->construct_pulldown('catcutCode_' . $cat['id'], 'catcutCode_' . $cat['id'], $cuts, $staffsize['cutCode'], $extra);
 
                     }

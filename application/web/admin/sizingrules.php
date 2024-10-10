@@ -99,7 +99,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             while ($row = $result->fetch_assoc()) {
                 $count++;
                 $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/update/' . $row['code'] . '/?gender=' . $row['gender'] . '">{_update}</a>';
-                $extra = 'class="draw-select" onchange="update_rule_line(\'form[impactvalue_' . $count . ']\',\'impactvalue\',' . $row['id'] . ')"';
+                $extra = 'class="draw-select w-160" onchange="update_rule_line(\'form[impactvalue_' . $count . ']\',\'impactvalue\',' . $row['id'] . ')"';
                 $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_' . $count . ']', 'form[impactvalue_' . $count . ']', $impactvaluearray, $row['impactvalue'], $extra);
                 $row['rulenumber'] = $count;
                 $row['action'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'deleteline\', \'Delete selected rule line?\', \'Are you sure you want to delete the selected rule line? This action cannot be reversed and therefore cannot be undone.\', \'' . $row['id'] . '\', 1, \'\', \'{https_server_admin}settings/sizingsystem/deleteline/' . $row['code'] . '/\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';

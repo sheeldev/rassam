@@ -156,7 +156,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
                 if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
                     $assemblycount++;
-                    $qty = $qty + intval($resAssemblyData['quantity']); //to be used at a later stage
+                    $qty = $qty + intval($resAssemblyData['quantity']);
                     $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
                     $assemblies[] = $resAssemblies;
                 }

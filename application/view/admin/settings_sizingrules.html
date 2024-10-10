@@ -220,13 +220,14 @@
                                             <th width="8%"><label>{_type}</label></th>
                                             <th width="5%"><label>{_gender}</label></th>
                                             <th width="7%"><label>{_measurement}</label></th>
-                                            <th width="20%"><label>{_value_low}</label></th>
-                                            <th width="20%"><label>{_value_high}</label></th>
+                                            <th width="10%"><label>{_value_low}</label></th>
+                                            <th width="10%"><label>{_value_high}</label></th>
                                             <th width="5%"><label>{_unit}</label></th>
                                             <th width="5%"><label>{_impact}</label></th>
-                                            <th width="20%"><label>{_impact} {_value}</label></th>
+                                            <th width="25%"><label>{_impact} {_value}</label></th>
                                             <th width="10%"><label>{_rank}</label></th>
-                                            <th width="100%"><label>{_action}</label></th>
+                                            <th width="100%"></th> 
+                                            <th><span class="bold">{_action}</span></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -246,6 +247,7 @@
                                                 </div>
                                             </div></td>
                                             <td><input class="draw-input with-add-on" size="2" type="number" value="{rulerank}" name="rank_{rulenumber}" id="rank_{rulenumber}" onfocus="focus_field('rank_{rulenumber}')" onchange="update_rule_line('rank_{rulenumber}','rank',{id})"></td>
+                                            <td width="100%"></td> 
                                             <td>{action}</td>
                                         </tr>
                                         </loop name="rules_rows">
