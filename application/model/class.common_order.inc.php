@@ -118,6 +118,7 @@ class common_order extends common
 		");
 		$previousassembly = '';
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
+			static $processedAssemblies = array();
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
 			$resAssemblies['assemblynumber'] = $resAssemblyData['assemblyNo'];
 			$resAssemblies['customername'] = $resAssemblyData['sellToCustomerName'];
@@ -129,7 +130,7 @@ class common_order extends common
 			$resAssemblies['modifiedby'] = $resAssemblyData['modifiedUser'];
 			$resAssemblies['createdat'] = $this->sheel->common->print_date($resAssemblyData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
 			$resAssemblies['eventtime'] = $this->sheel->common->print_date($resAssemblies['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
-			static $processedAssemblies = array();
+			
 			if ($previousassembly != $resAssemblyData['assemblyNo'] and !isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
 				$processedAssemblies[$resAssemblyData['assemblyNo']] = true;
 				$previousassembly = $resAssemblyData['assemblyNo'];

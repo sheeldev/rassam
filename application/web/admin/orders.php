@@ -150,10 +150,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $qty = 0;
         $previousassembly = '';
         if ($sheel->db->num_rows($sqlAssemblies) > 0) {
+            $processedAssemblies = [];
             while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
                 $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
-                static $processedAssemblies = array();
-
                 if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
                     $assemblycount++;
                     $qty = $qty + intval($resAssemblyData['quantity']);
