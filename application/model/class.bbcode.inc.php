@@ -499,7 +499,7 @@ class bbcode
                         $in_quote = false;
                         $nested = array();
                         while ($pos < $len) {
-                                $c = $output {$pos}; // get the current character
+                                $c = $output [$pos]; // get the current character
                                 if ($tag) {
                                         $tag .= $c;
                                         if ($c == ']') {

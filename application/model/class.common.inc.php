@@ -2176,6 +2176,7 @@ class common
 	}
 	function convert_integer_to_words($x)
 	{
+		$word = '';
 		$nwords = array(
 			'zero',
 			'one',

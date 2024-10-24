@@ -1,4 +1,8 @@
 <?php
+/* $requestUri = $_SERVER['REQUEST_URI'];
+$parts = explode('/', $requestUri);
+$firstPart = $parts[1];
+define('LOCATION', $firstPart); */
 define('SKIP_SESSION', false);
 define('MCRYPT_MODE_CBC', 'CBC');
 define('REFERRER', 'SHEEL');

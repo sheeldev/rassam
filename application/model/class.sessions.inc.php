@@ -5,7 +5,6 @@ if (defined('LOCATION') and LOCATION == 'admin') {
 	define('IN_ADMIN_CP', false);
 }
 define('SESSIONHOST', mb_substr(IPADDRESS, 0, 15));
-
 /**
  * Session class to perform the majority of session functionality in sheel.
  *
@@ -33,11 +32,9 @@ class sessions
 	{
 		if (!session_id()) {
 			if (isset($this->sheel->GPC['sessid']) and !empty($this->sheel->GPC['sessid'])) { // mobile or external app session id (obtained by rpc)
-				
 				session_start($this->sheel->GPC['sessid']);
 			} else { // web visitor
 				session_start();
-				
 			}
 			$this->handle_language_style_changes();
 			$this->init_remembered_session();
@@ -153,11 +150,15 @@ class sessions
 			} else if ($session['sheeldata']['user']['ismobile'] == '1') {
 				$expiry = "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_mobileguesttimeout'] * 60)) . "',";
 			} else {
-				$expiry = ((IN_ADMIN_CP and $session['sheeldata']['user']['isadmin']) ? "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_admintimeout'] * 60)) . "'," : "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_membertimeout'] * 60)) . "',");
+				//$expiry = ((IN_ADMIN_CP and $session['sheeldata']['user']['isadmin']) ? "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_admintimeout'] * 60)) . "'," : "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_membertimeout'] * 60)) . "',");
+				$expiry = (($session['sheeldata']['user']['isadmin']) ? "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_admintimeout'] * 60)) . "'," : "'" . (TIMESTAMPNOW + ($this->sheel->config['globalserversession_membertimeout'] * 60)) . "',");
 			}
 			$userid = "'" . $session['sheeldata']['user']['userid'] . "',";
-			$isuser = ((IN_ADMIN_CP and $session['sheeldata']['user']['isadmin']) ? "'0'," : "'1',");
-			$isadmin = ((IN_ADMIN_CP and $session['sheeldata']['user']['isadmin']) ? "'1'," : "'0',");
+			$isuser = (($session['sheeldata']['user']['isadmin']) ? "'0'," : "'1',");
+			$isadmin = (($session['sheeldata']['user']['isadmin']) ? "'1'," : "'0',");
+/* 			$isuser = ((IN_ADMIN_CP and $session['sheeldata']['user']['isadmin']) ? "'0'," : "'1',");
+			$isadmin = ((IN_ADMIN_CP and $session['sheeldata']['user']['isadmin']) ? "'1'," : "'0',"); */
+
 			$isrobot = "'0',";
 			$iserror = "'0',";
 		} else { // guests

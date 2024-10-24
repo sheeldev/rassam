@@ -632,7 +632,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                 switch ($markposition) {
                                         case 'TOPLEFT': {
                                                         $xcord = $markpadding;
-                                                        $ycord = ($fontsize + $markpadding);
+                                                        $ycord = ($font_size + $markpadding);
                                                         break;
                                                 }
                                         case 'TOPCENTER': {
@@ -642,7 +642,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                                 }
                                         case 'TOPRIGHT': {
                                                         $xcord = ($source_image_width - $textwidth) - $markpadding;
-                                                        $ycord = ($fontsize + $markpadding);
+                                                        $ycord = ($font_size + $markpadding);
                                                         break;
                                                 }
                                         case 'MIDLEFT': {
@@ -662,7 +662,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                                 }
                                         case 'BOTLEFT': {
                                                         $xcord = $markpadding;
-                                                        $ycord = ($source_image_height - $textheight) + ($fontsize - $markpadding);
+                                                        $ycord = ($source_image_height - $textheight) + ($font_size - $markpadding);
                                                         break;
                                                 }
                                         case 'BOTCENTER': {
@@ -672,7 +672,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                                 }
                                         case 'BOTRIGHT': {
                                                         $xcord = ($source_image_width - $textwidth) - $markpadding;
-                                                        $ycord = ($source_image_height - $textheight) + ($fontsize - $markpadding);
+                                                        $ycord = ($source_image_height - $textheight) + ($font_size - $markpadding);
                                                         break;
                                                 }
                                 }
@@ -790,6 +790,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
         function validate_size()
         {
                 $newfilename = '';
+                $fileinfo = [];;
                 $this->pictureresized = $this->watermarked = false;
                 $this->exif = '';
                 $this->picturehash = '';
@@ -1308,10 +1309,10 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                         $gd_palette = "";
                         $j = 0;
                         while ($j < $palette_size) {
-                                $b = $palette { $j++};
-                                $g = $palette { $j++};
-                                $r = $palette { $j++};
-                                $a = $palette { $j++};
+                                $b = $palette [$j++];
+                                $g = $palette [$j++];
+                                $r = $palette [$j++];
+                                $a = $palette [$j++];
                                 $gd_palette .= "$r$g$b$a";
                         }
                         $gd_palette .= str_repeat("\x00\x00\x00\x00", 256 - $ncolor);
@@ -1326,9 +1327,9 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                 $gd_scan_line = "";
                                 $j = 0;
                                 while ($j < $scan_line_size) {
-                                        $b = $scan_line { $j++};
-                                        $g = $scan_line { $j++};
-                                        $r = $scan_line { $j++};
+                                        $b = $scan_line [$j++];
+                                        $g = $scan_line [$j++];
+                                        $r = $scan_line [$j++];
                                         $gd_scan_line .= "\x00$r$g$b";
                                 }
                         } else if ($bits == 8) {
@@ -1337,7 +1338,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                 $gd_scan_line = "";
                                 $j = 0;
                                 while ($j < $scan_line_size) {
-                                        $byte = ord($scan_line { $j++});
+                                        $byte = ord($scan_line [$j++]);
                                         $p1 = chr($byte >> 4);
                                         $p2 = chr($byte & 0x0F);
                                         $gd_scan_line .= "$p1$p2";
@@ -1347,7 +1348,7 @@ var ' . $attachmentlist . ' = window.parent.document.getElementById("' . $attach
                                 $gd_scan_line = "";
                                 $j = 0;
                                 while ($j < $scan_line_size) {
-                                        $byte = ord($scan_line { $j++});
+                                        $byte = ord($scan_line [$j++]);
                                         $p1 = chr((int) (($byte & 0x80) != 0));
                                         $p2 = chr((int) (($byte & 0x40) != 0));
                                         $p3 = chr((int) (($byte & 0x20) != 0));

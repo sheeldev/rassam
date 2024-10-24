@@ -48,6 +48,17 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'name'
     );
     $searchcondition = '';
+    $outcheckpoint = 0;
+    $sqloutcheckpoint = $sheel->db->query("
+                        SELECT checkpointid
+                        FROM " . DB_PREFIX . "checkpoints
+                        WHERE type = 'Assembly' AND triggeredon = '0-Out'
+                        LIMIT 1
+                        ");
+    if ($sheel->db->num_rows($sqloutcheckpoint) > 0) {
+        $resoutcheckpoint = $sheel->db->fetch_array($sqloutcheckpoint, DB_ASSOC);
+        $outcheckpoint = $resoutcheckpoint['checkpointid'];
+    }
     if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
         switch ($sheel->GPC['filter']) {
             case 'number': {
@@ -141,23 +152,33 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $resEvent['lastcheckpointmessage'] = $resEventLastCheckpoint['checkpointmessage'];
         $resEvent['color'] = $resEventLastCheckpoint['color'];
         $sqlAssemblies = $sheel->db->query("
-                    SELECT eventdata
+                    SELECT eventdata, checkpointid
                     FROM " . DB_PREFIX . "events e
                     WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly'
                     ORDER BY eventtime DESC
                 ");
         $assemblycount = 0;
+        $deletedassemblycount = 0;
         $qty = 0;
         $previousassembly = '';
         if ($sheel->db->num_rows($sqlAssemblies) > 0) {
             $processedAssemblies = [];
             while ($resAssemblies = $sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
                 $resAssemblyData = json_decode($resAssemblies['eventdata'], true);
-                if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
+                if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']]) && $resAssemblies['checkpointid'] != $outcheckpoint) {
                     $assemblycount++;
-                    $qty = $qty + intval($resAssemblyData['quantity']);
+                    $qty += intval($resAssemblyData['quantity']);
                     $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
                     $assemblies[] = $resAssemblies;
+                } else if (!isset($processedAssemblies[$resAssemblyData['assemblyNo']]) && $resAssemblies['checkpointid'] == $outcheckpoint) {
+                    $deletedassemblycount++;
+                    $assemblycount++;
+                    $processedAssemblies[$resAssemblyData['assemblyNo']] = true;
+                } else if (isset($processedAssemblies[$resAssemblyData['assemblyNo']]) && $resAssemblies['checkpointid'] == $outcheckpoint) {
+                    $aqty -= intval($resAssemblyData['quantity']);
+                    if (($key = array_search($resAssemblyData['assemblyNo'], $assemblies)) !== false) {
+                        unset($assemblies[$key]);
+                    }
                 }
             }
         }
@@ -176,6 +197,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         ");
 
         $finishedqty = $sheel->db->num_rows($sqlFinishedAssemblies);
+        
         if ($assemblycount == 0 && $finishedqty == 0) {
             $progresspercent = 0;
         } else if ($finishedqty > $assemblycount && $assemblycount > 0 && $finishedqty > 0) {
@@ -197,14 +219,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         } else if ($progresspercent == 100) {
             $color = 'green';
         }
+        
         $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
         $resEvent['progress'] = '<span class="draw-status__badge ' . $color . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $progresspercent . '%</span></span>';
 
         $resEventData = json_decode($resEvent['eventdata'], true);
         $resEventLastCheckpointData = json_decode($resEventLastCheckpoint['eventdata'], true);
         $qty1 = (isset($resEventLastCheckpointData['totalQuantity']) && $resEventLastCheckpointData['totalQuantity'] > 0 && $qty == 0) ? $resEventLastCheckpointData['totalQuantity'] : $resEventLastCheckpointData['totalQuantity'];
-        
-        $resEvent['qty'] = 'A:' . $qty . '<br>' . 'T:'. $qty1;
+
+        $resEvent['qty'] = 'A:' . $qty . '<br>' . 'T:' . $qty1;
         $resEvent['customername'] = $resEventData['sellToCustomerName'];
         $resEvent['createdby'] = $resEventData['createdUser'];
         $resEvent['promisedDeliveryDate'] = $resEventData['promisedDeliveryDate'] == '0001-01-01' ? $resEventData['requestedDeliveryDate'] : $resEventData['promisedDeliveryDate'];

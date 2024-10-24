@@ -30,6 +30,7 @@ $sheel->template->meta['cssinclude'] = array(
         'balloon'
     )
 );
+
 $sheel->template->meta['areatitle'] = 'Admin CP | Customers';
 $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Customers';
 
@@ -2362,8 +2363,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
             }
             $sheel->xlsx->size_xlsx_to_db($suggestdata, $custstaffs, $customer['customer_ref'], $_SESSION['sheeldata']['user']['userid'], 0);
-
-
         }
         if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'bulkupload') {
             if (isset($sheel->GPC['cancel']) and $sheel->GPC['cancel'] == 'cancel') { // user cancelled bulk upload

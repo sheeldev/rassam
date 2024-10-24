@@ -6,6 +6,7 @@ $cronlog = '';
 
 $this->sheel->timer->start();
 $checkpoint = 0;
+$entityid = 0;
 $orders = [];
 $sqlcheckpoint = $this->sheel->db->query("
                         SELECT checkpointid
@@ -37,7 +38,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 AND c2.triggeredon = 'Active'
                         )";
                 $sqlEvents = $this->sheel->db->query("
-                        SELECT e.reference, e.eventidentifier, e.eventdata as eventdata
+                        SELECT e.reference, e.eventidentifier, e.eventdata as eventdata, e.eventidentifier
                         FROM " . DB_PREFIX . "events e
                         LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                         INNER JOIN (
@@ -52,6 +53,15 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         ORDER BY createdtime DESC");
 
                 while ($resEvent = $this->sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
+                        $sqlcustomer = $this->sheel->db->query("
+                                SELECT company_id
+                                FROM " . DB_PREFIX . "customers
+                                WHERE status = 'active' AND customer_ref = '" . $resEvent['eventidentifier'] . "'
+                                LIMIT 1");
+                        if ($this->sheel->db->num_rows($sqlcustomer) > 0) {
+                                $rescustomer = $this->sheel->db->fetch_array($sqlcustomer, DB_ASSOC);
+                        }
+                        $entityid = $rescustomer['company_id'];
                         $assemblies = [];
                         $resEventData = json_decode($resEvent['eventdata'], true);
                         $tqty = (isset($resEventData['totalQuantity']) && $resEventData['totalQuantity'] > 0) ? $resEventData['totalQuantity'] : 0;
@@ -59,7 +69,6 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 SELECT eventdata, checkpointid
                                 FROM " . DB_PREFIX . "events e
                                 WHERE eventfor = 'customer' AND eventidentifier = '" . $resEvent['eventidentifier'] . "' AND reference = '" . $resEvent['reference'] . "' and topic='Assembly'
-                                AND checkpointid in (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' AND triggeredon = '0-In')
                                 ORDER BY eventtime DESC
                                 ");
                         $assemblycount = 0;
@@ -86,12 +95,12 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 }
                         }
                         if ($aqty > $tqty && $tqty > 0) {
-                                //echo $resEvent['reference'] . ' - ' . $tqty . ' - ' . $aqty . "\n";
                                 $orders[] = [
                                         'reference' => $resEventData['no'],
                                         'icreference' => $resEventData['icCustomerSONo'] != '' ? $resEventData['icCustomerSONo'] : $resEventData['no'],
                                         'isic' => $resEventData['icCustomerSONo'] != '' ? true : false,
                                         'assemblies' => $assemblies,
+                                        'entityid' => $entityid,
                                         'tqty' => $tqty,
                                         'aqty' => $aqty
                                 ];
@@ -99,8 +108,6 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 }
         }
 }
-
-
 $sqlfactory = $this->sheel->db->query("
         SELECT *
         FROM " . DB_PREFIX . "companies
@@ -119,12 +126,13 @@ if ($this->sheel->db->num_rows($sqlcheckpoint) > 0) {
         $checkpoint = $rescheckpoint['checkpointid'];
 }
 if ($this->sheel->db->num_rows($sqlfactory) > 0) {
-
+        $newAssemblies = [];
         while ($resfactories = $this->sheel->db->fetch_array($sqlfactory, DB_ASSOC)) {
                 if (!$this->sheel->dynamics->init_dynamics('erAssembliesAll', $resfactories['bc_code'])) {
                         $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
                 }
                 foreach ($orders as $order) {
+
 
                         $searchcondition = '$filter=sourceType eq \'Order\' and sourceNo eq \'' . $order['reference'] . '\'';
 
@@ -135,42 +143,46 @@ if ($this->sheel->db->num_rows($sqlfactory) > 0) {
                         } else {
                                 $cronlog .= $apiResponse->getErrorMessage() . ', ';
                         }
-                        $orderAssemblies = array_column($order['assemblies'], 'assemblyNo');
-                        foreach ($assembliesfrombc as $bcAssembly) {
-                                if (!in_array($bcAssembly['no'], $orderAssemblies)) {
+                        $orderAssemblies = array_column($assembliesfrombc, 'assemblyNo');
+
+                        foreach ($order['assemblies'] as $bcAssembly) {
+
+                                if (!in_array($bcAssembly['assemblyNo'], $orderAssemblies)) {
                                         $newAssemblies[] = [
-                                                'assemblyNo' => $order['assemblies'][0]['assemblyNo'],
-                                                'assemblyData' => $order['assemblies'][0]['assemblyData']
+                                                'assemblyNo' => $bcAssembly['assemblyNo'],
+                                                'assemblyData' => $bcAssembly['assemblyData'],
+                                                'entityid' => $order['entityid']
                                         ];
                                 }
                         }
                 }
-
                 foreach ($newAssemblies as $newAssembly) {
                         $assembly = json_decode($newAssembly['assemblyData'], true);
-                        /* $this->sheel->db->query("
+                        unset($assembly['sequenceNo']);
+                        unset($assembly['scanType']);
+                        unset($assembly['id']);
+                        $modifiedTimePlus5Seconds = strtotime($assembly['systemModifiedAt']) + 5;
+                        $this->sheel->db->query("
                                 INSERT INTO " . DB_PREFIX . "events
                                 (systemid, eventtime, createdtime, eventfor, eventidentifier, entityid, reference, eventdata, topic, istriggered, checkpointid, companyid)
                                 VALUES(
                                 '" . $this->sheel->db->escape_string($assembly['systemId']) . "',
-                                " . strtotime($assembly['systemModifiedAt']) . ",
+                                " . $modifiedTimePlus5Seconds . ",
                                 " . strtotime($assembly['systemCreatedAt']) . ",
                                 'customer',
                                 '" . ($assembly['icSourceNo'] != '' ? $assembly['icSourceNo'] : $assembly['sellToCustomerNo']) . "',
-                                '" . $entityid . "',
+                                '" . $newAssembly['entityid'] . "',
                                 '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "',
                                 '" . $this->sheel->db->escape_string(json_encode($assembly)) . "',
                                 '" . $assembly['documentType'] . "',
                                 '0',
                                 '" . $checkpoint . "',
                                 '" . $resfactories['company_id'] . "'
-                                )", 0, null, __FILE__, __LINE__); */
-                        
+                                )", 0, null, __FILE__, __LINE__);
+
                 }
         }
 }
-
-
 if (!empty($cronlog)) {
         $cronlog = mb_substr($cronlog, 0, -2);
 }

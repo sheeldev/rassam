@@ -51,7 +51,7 @@ class xlsx
 							type = " . DB_PREFIX . "bulk_tmp_sizes.type,
 							customerno = " . DB_PREFIX . "bulk_tmp_sizes.customerno,
 							dateuploaded = " . DB_PREFIX . "bulk_tmp_sizes.dateuploaded,
-							uploaded = " . DB_PREFIX . "bulk_tmp_sizes.uploaded,
+							uploaded = 0,
 							user_id = " . DB_PREFIX . "bulk_tmp_sizes.user_id,
 							bulk_id = " . DB_PREFIX . "bulk_tmp_sizes.bulk_id
 					");
@@ -108,7 +108,7 @@ class xlsx
 					customerno = " . DB_PREFIX . "bulk_tmp_sizes.customerno,
 					errors = " . DB_PREFIX . "bulk_tmp_sizes.errors,
 					dateuploaded =" . DB_PREFIX . "bulk_tmp_sizes.dateuploaded,
-					uploaded = " . DB_PREFIX . "bulk_tmp_sizes.uploaded,
+					uploaded = 0,
 					user_id = " . DB_PREFIX . "bulk_tmp_sizes.user_id,
 					bulk_id = " . DB_PREFIX . "bulk_tmp_sizes.bulk_id
 				");
