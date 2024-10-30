@@ -339,10 +339,8 @@ class dynamics
           $requestHeaders[] = "If-Match: " . $payload['@odata.etag'];
           $payload = json_encode($payload);
         }
-
         curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
       }
-      
       curl_setopt($curl, CURLOPT_HTTPHEADER, $requestHeaders);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);

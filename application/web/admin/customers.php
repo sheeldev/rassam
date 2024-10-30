@@ -2329,6 +2329,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     }
                     $sm += [$code => $name];
                 }
+
+                $uomconversions = json_decode($sheel->config['uomconversiontodefault'], true);
+                foreach ($sm as $keysm => &$valuesm) {
+                    if (isset($uomconversions[$valuesm['uomCode']])) {
+                        list($conversion, $touom) = explode('|', $uomconversions[$valuesm['uomCode']]);
+                        if ($valuesm['uomCode'] == 'FT') {
+                            list($feet, $inches) = explode('.', $valuesm['value']);
+                            $totalInches = ($feet * 12) + $inches;
+                            $valuesm['value'] = $totalInches * 2.54;
+                            $valuesm['uomCode'] = $touom;
+                        } else {
+                            $valuesm['value'] = $valuesm['value'] * $conversion;
+                            $valuesm['uomCode'] = $touom;
+                        }
+                    }
+                }
+
                 $sqlupd = $sheel->db->query("
                     SELECT id, code, gender
                         FROM " . DB_PREFIX . "size_types

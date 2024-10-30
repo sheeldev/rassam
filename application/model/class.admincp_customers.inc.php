@@ -378,7 +378,7 @@ class admincp_customers extends admincp
                                         $return[$keysm] = $res['code'] . ': [Required Measurement ' . $keysm . ' cannot be 0]<br>';
                                     }
                                 } else {
-                                    $return[$keysm] =  $res['code'] . ': [' . $keysm . ' Measurement not Found]<br>';
+                                    $return[$keysm] = $res['code'] . ': [' . $keysm . ' Measurement not Found]<br>';
                                 }
                             }
                         }
@@ -391,17 +391,17 @@ class admincp_customers extends admincp
                     ", 0, null, __FILE__, __LINE__);
 
                     if ($this->sheel->db->num_rows($sqlinterval) == 0) {
-                        $return[$keysm] =  $res['code'] . ': [Required Measurement ' .  $res['mccode'] .' cannot be smaller or greater than fixed rule intervals]<br>';
+                        $return[$keysm] = $res['code'] . ': [Required Measurement ' . $res['mccode'] . ' cannot be smaller or greater than fixed rule intervals]<br>';
                     }
                 } else {
                     if (!isset($return[$currentmccode])) {
                         $sm = $measurements[$currentmccode];
                         if (is_array($sm)) {
                             if ($sm['uomCode'] != $res['uom']) {
-                                $return[$currentmccode] =  $res['code'] . ': [Required Measurement ' . $currentmccode . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
+                                $return[$currentmccode] = $res['code'] . ': [Required Measurement ' . $currentmccode . ' UOM cannot be in ' . $sm['uomCode'] . ']<br>';
                             }
                             if ($sm['value'] == '0') {
-                                $return[$currentmccode] =  $res['code'] . ': [Required Measurement ' . $currentmccode . ' cannot be 0]<br>';
+                                $return[$currentmccode] = $res['code'] . ': [Required Measurement ' . $currentmccode . ' cannot be 0]<br>';
                             } else {
                                 $sqlinterval = $this->sheel->db->query("
                                     SELECT id
@@ -409,11 +409,11 @@ class admincp_customers extends admincp
                                     WHERE active='1' AND gender = '" . $gender . "' AND type = '" . $type . "' AND code = '" . $res['code'] . "' AND (mvaluelow <= '" . $sm['value'] . "' AND mvaluehigh >='" . $sm['value'] . "')
                                 ", 0, null, __FILE__, __LINE__);
                                 if ($this->sheel->db->num_rows($sqlinterval) == 0) {
-                                    $return[$currentmccode] =  $res['code'] . ': [Required Measurement ' . $currentmccode . ' cannot be smaller or greater than fixed rule intervals]<br>';
+                                    $return[$currentmccode] = $res['code'] . ': [Required Measurement ' . $currentmccode . ' cannot be smaller or greater than fixed rule intervals]<br>';
                                 }
                             }
                         } else {
-                            $return[$currentmccode] =  $res['code'] . ': [' . $currentmccode . ' Measurement not Found]<br>';
+                            $return[$currentmccode] = $res['code'] . ': [' . $currentmccode . ' Measurement not Found]<br>';
                         }
                     }
                 }
