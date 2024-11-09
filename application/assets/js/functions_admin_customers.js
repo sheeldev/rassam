@@ -55,8 +55,8 @@ function fetch_size_post_form(obj, id)
 						"&department=" + jQuery('#uploadeddepartmentcode_'+ id).val()+
 						"&fit=" + jQuery('#uploadedfit_'+ id).val()+
 						"&cut=" + jQuery('#uploadedcut_'+ id).val()+
-						"&size=" + jQuery('#uploadedsize_'+ id).val()+
-						"&type=" + jQuery('#uploadedtype_'+ id).val();
+						"&size=" + urlencode(jQuery('#uploadedsize_'+ id).val())+
+						"&type=" + urlencode(jQuery('#uploadedtype_'+ id).val());
         xhr = new AJAX_Handler(true);
 		xhr.send(iL['AJAXURL'], parameters);
         xhr.onreadystatechange(function() {

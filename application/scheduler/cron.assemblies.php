@@ -32,7 +32,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                 }
                 $searchcondition = '$filter=sourceType eq \'Order\' and systemModifiedAt gt ' . $maxEventTimeIso;
-                //$searchcondition = '$filter=sourceNo eq \'SO-AVR24-01367\'';
+                //$searchcondition = '$filter=sourceNo eq \'SO-AVR24-01398\'';
 
                 if (!$this->sheel->dynamics->init_dynamics('erAssembliesAll', $rescompanies['bc_code'])) {
                         $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
