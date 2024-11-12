@@ -2832,11 +2832,7 @@ img.disabled {
 .breadcrumb {
     color: #798c9c;
 
-    padding- {
-        template_textalignment
-    }
-
-    : 0px
+    padding-{template_textalignment}: 0px;
 }
 
 .breadcrumb a,
@@ -10720,19 +10716,11 @@ a.breadcrumb:focus {
 }
 
 .draw-input.with-add-on {
-    padding- {
-        template_textalignment_alt
-    }
-
-    :35px
+    padding-{template_textalignment_alt}:35px;
 }
 
 .draw-input.with-add-on-left {
-    padding- {
-        template_textalignment
-    }
-
-    :40px
+    padding-{template_textalignment}:40px;
 }
 
 .draw-input,
@@ -19582,25 +19570,11 @@ th.sorted-asc>span:before {
 }
 
 .spent-progress {
-    clear: {
-        template_textalignment
-    }
-
-    ;
+    clear: { template_textalignment};
     margin-top:4px;
-
-    margin- {
-        template_textalignment_alt
-    }
-
-    :6px;
+    margin-{template_textalignment_alt}:6px;
     margin-bottom:0px;
-
-    margin- {
-        template_textalignment
-    }
-
-    :0px;
+    margin-{template_textalignment}:0px;
     height: 8px;
     padding: 3px;
     background: #ebebeb;
@@ -19611,10 +19585,7 @@ th.sorted-asc>span:before {
     0 1px white;
     display:inline-block;
     width:75px;
-
-    float: {
-        template_textalignment
-    }
+    float:{template_textalignment}
 }
 
 .spent-progress-bar {
@@ -20255,26 +20226,11 @@ img.mw50x50 {
     border-radius: 3px;
     cursor: pointer;
     padding: 6px;
-
-    float: {
-        template_textalignment
-    }
-
-    ;
+    float: {template_textalignment};
     margin-top:4px;
-
-    margin- {
-        template_textalignment_alt
-    }
-
-    :6px;
+    margin-{template_textalignment_alt}:6px;
     margin-bottom:4px;
-
-    margin- {
-        template_textalignment
-    }
-
-    :0;
+    margin-{template_textalignment}:0;
     color: #000;
     font-size: 10px;
     border: 1px solid #ccc
@@ -20294,12 +20250,7 @@ img.mw50x50 {
     position: fixed;
     z-index: 8000;
     bottom: 0;
-
-        {
-        template_textalignment_alt
-    }
-
-    : 8px;
+    {template_textalignment_alt}: 8px;
     height: 0;
     overflow: visible;
     display: flex;
@@ -20329,20 +20280,12 @@ img.mw50x50 {
 
 .mh4,
 .mr4 {
-    margin- {
-        template_textalignment_alt
-    }
-
-    : 16px
+    margin-{template_textalignment_alt}: 16px
 }
 
 .mh4,
 .ml4 {
-    margin- {
-        template_textalignment
-    }
-
-    : 16px
+    margin-{template_textalignment}: 16px
 }
 
 .msg-overlay-bubble-header {
@@ -20363,12 +20306,7 @@ img.mw50x50 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    margin- {
-        template_textalignment_alt
-    }
-
-    : 8px
+    margin-{template_textalignment_alt}: 8px
 }
 
 .flex-row {
@@ -20399,20 +20337,12 @@ img.mw50x50 {
 
 .mh2,
 .mr2 {
-    margin- {
-        template_textalignment_alt
-    }
-
-    : 8px
+    margin-{template_textalignment_alt}: 8px
 }
 
 .mh2,
 .ml2 {
-    margin- {
-        template_textalignment
-    }
-
-    : 8px
+    margin-{template_textalignment}: 8px
 }
 
 .msg-overlay-bubble-header__primary-text {
@@ -20429,11 +20359,7 @@ img.mw50x50 {
     transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     transition-duration: 167ms;
 
-    margin- {
-        template_textalignment
-    }
-
-    : auto;
+    margin-{template_textalignment}: auto;
     flex-shrink: 0;
     opacity: 1
 }
@@ -20532,11 +20458,7 @@ img.mw50x50 {
     width: 100%;
     height: 100%;
 
-    padding- {
-        template_textalignment
-    }
-
-    : 12px;
+    padding-{template_textalignment}: 12px;
     cursor: pointer;
     overflow: hidden;
     left: 0;
@@ -20608,11 +20530,7 @@ img.mw50x50 {
     height: auto;
     padding: 8px 20px 8px 8px;
 
-    margin- {
-        template_textalignment
-    }
-
-    : 4px;
+    margin-{template_textalignment}: 4px;
 }
 
 .msg-conversation-card__content {
@@ -20687,11 +20605,7 @@ img.mw50x50 {
     display: flex;
     margin-right: auto;
 
-    text-align: {
-        template_textalignment_alt
-    }
-
-    ;
+    text-align: {template_textalignment_alt};
 }
 
 .flex-grow-1 {
@@ -20700,11 +20614,7 @@ img.mw50x50 {
 
 .ph2,
 .pl2 {
-    padding- {
-        template_textalignment
-    }
-
-    : 8px
+    padding-{template_textalignment}: 8px;
 }
 
 .msg-conversation-card__unread-count {
@@ -20712,12 +20622,7 @@ img.mw50x50 {
     line-height: 16px;
     min-width: 10px;
     padding: 0 4px;
-
-    margin- {
-        template_textalignment
-    }
-
-    : 4px;
+    margin-{template_textalignment}: 4px;
     border-radius: 16px;
     background-color: #ff9229;
     color:#fff
@@ -20726,12 +20631,7 @@ img.mw50x50 {
 input.msg-overlay-list-bubble-search__search-typeahead-input {
     width: calc(100% - 24px);
     margin: 8px 12px;
-
-    padding- {
-        template_textalignment_alt
-    }
-
-    : 28px
+    padding-{template_textalignment_alt}: 28px
 }
 
 input.msg-overlay-list-bubble-search__search-typeahead-input:focus {
@@ -20808,12 +20708,7 @@ input.loading {
     background-clip: content-box;
     border: 3px solid transparent;
     border-radius: 49.9%;
-
-    float: {
-        template_textalignment
-    }
-
-    ;
+    float: {template_textalignment};
     position: relative;
     width: 28px;
     height: 28px;
@@ -20836,12 +20731,7 @@ input.loading {
 
 .presence-entity__indicator--size-2 {
     bottom: 3px;
-
-        {
-        template_textalignment_alt
-    }
-
-    : 3px;
+    {template_textalignment_alt}: 3px;
 }
 
 .presence-entity__indicator {

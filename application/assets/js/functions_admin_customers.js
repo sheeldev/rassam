@@ -28,11 +28,11 @@ function init_page()
 function forward_with_loading(url, specific) {
 	if (!specific) {
 		jQuery('#refreshloading').removeClass('hide');
-		location.href=url;
+		location.replace(url);
 	}
 	else {
 		jQuery('#refreshloading').removeClass('hide');
-		location.href=url+'&specific='+jQuery('#staffs').val();
+		location.replace(url+'&specific='+jQuery('#staffs').val());
 	}
 	
 
@@ -43,20 +43,35 @@ function forward_with_loading_nourl() {
 function update_uploded_size(uploadid)
 {
         jQuery('#refreshloading').removeClass('hide');
-        setTimeout(fetch_size_post_form(this.parentNode, uploadid), 500);
+        setTimeout(fetch_size_post_form(this.parentNode, uploadid, 'update'), 500);
         
 }
-function fetch_size_post_form(obj, id)
+function delete_uploded_size(uploadid)
 {
-        var parameters = "do=updatebulksize" +
-						"&id=" + jQuery('#uploadedid_'+ id).val() +
-						"&staffcode=" + jQuery('#uploadedstaffcode_'+ id).val() +
-						"&position=" + jQuery('#uploadedpositioncode_'+ id).val() +
-						"&department=" + jQuery('#uploadeddepartmentcode_'+ id).val()+
-						"&fit=" + jQuery('#uploadedfit_'+ id).val()+
-						"&cut=" + jQuery('#uploadedcut_'+ id).val()+
-						"&size=" + urlencode(jQuery('#uploadedsize_'+ id).val())+
-						"&type=" + urlencode(jQuery('#uploadedtype_'+ id).val());
+        jQuery('#refreshloading').removeClass('hide');
+        setTimeout(fetch_size_post_form(this.parentNode, uploadid, 'delete'), 500);
+        
+}
+function fetch_size_post_form(obj, id, action)
+{
+		if (action == 'update'){
+			var parameters = "do=updatebulksize" +
+			"&id=" + jQuery('#uploadedid_'+ id).val() +
+			"&delete=No" + 
+			"&staffcode=" + jQuery('#uploadedstaffcode_'+ id).val() +
+			"&position=" + jQuery('#uploadedpositioncode_'+ id).val() +
+			"&department=" + jQuery('#uploadeddepartmentcode_'+ id).val()+
+			"&fit=" + jQuery('#uploadedfit_'+ id).val()+
+			"&cut=" + jQuery('#uploadedcut_'+ id).val()+
+			"&size=" + urlencode(jQuery('#uploadedsize_'+ id).val())+
+			"&type=" + urlencode(jQuery('#uploadedtype_'+ id).val());
+		}
+		else if (action == 'delete'){
+			var parameters = "do=updatebulksize" +
+			"&delete=Yes" + 
+			"&id=" + jQuery('#uploadedid_'+ id).val();
+		}
+        
         xhr = new AJAX_Handler(true);
 		xhr.send(iL['AJAXURL'], parameters);
         xhr.onreadystatechange(function() {
@@ -75,6 +90,9 @@ function fetch_size_post_form(obj, id)
 				{
 					jQuery('#refreshloading').addClass('hide');
 					jQuery.growl.notice({title: phrase['_success'], message: result.message});
+					if (action == 'delete'){
+						jQuery('#tr_'+ id).remove();
+					}
 				}
 			}
 			xhr.handler.abort();

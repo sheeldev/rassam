@@ -7,6 +7,7 @@ $sheel->template->meta['jsinclude'] = array(
     'header' => array(
         'functions',
         'admin',
+        'admin_dashboard',
         'inline',
         'vendor/chartist',
         'vendor/growl'
@@ -24,7 +25,8 @@ $sheel->template->meta['cssinclude'] = array(
         'chartist',
         'balloon',
         'growl'
-    )
+    ),
+    'dashboard'
 );
 
 

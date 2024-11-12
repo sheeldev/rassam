@@ -177,6 +177,7 @@ function update_staff_details(fieldname, dbname, recordid, company, param) {
 			}
 			else {
 				fetch_js_object("savingstatus").innerHTML = "Saved";
+				jQuery('#' + fieldname).removeClass('loading');
 				etag.value = result.etag;
 				field.value = result.value;
 			}

@@ -339,8 +339,8 @@ function add_rule(fieldname) {
 	var rulenumber = parseInt(fetch_js_object('active_rules').value, 10) + 1;
 	var divruleid = "rule-" + rulenumber;
 	jQuery('#' + divruleid).removeClass('hide');
-	if (rulenumber > 10) {
-		jQuery.growl.error({ title: phrase['_error'], message: 'Maximum 10 Rules allowed' });
+	if (rulenumber > 15) {
+		jQuery.growl.error({ title: phrase['_error'], message: 'Maximum 15 Rules allowed' });
 	}
 	else {
 		try {

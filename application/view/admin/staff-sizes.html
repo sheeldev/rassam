@@ -86,7 +86,7 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-input-wrapper">
                                     <button name="submit" type="submit" class="btn btn-primary js-btn-primary js-btn-loadable has-loading">Add Staff Size</button>
-                                    <button type="button" class="btn btn-primary" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', true);"><span>{_suggest_sizes}</span></button>
+                                    <button type="button" class="btn btn-primary" onclick="forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', true);"><span>{_suggest_sizes}</span></button>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                     <p>Add Bulk Staff Sizes for this customer. </p>
                     <div><input type="button" value="{_download_sample}" class="btn large" onclick="location.href='customers/org/{customercard[customer_id]}/sizes/?subcmd=sizesample'" /></div>
                     <p></p>
-                    <div><input type="button" value="{_suggest_sizes_for_all}" class="btn large" onclick="return forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', false);" /></div>		
+                    <div><input type="button" value="{_suggest_sizes_for_all}" class="btn large" onclick="forward_with_loading('customers/org/{customercard[customer_id]}/sizes/?subcmd=suggest', false);" /></div>		
               </div>
             </div>
             <div class="layout-content__main">
@@ -155,22 +155,22 @@
                      </thead>
                      <tbody>
                      <loop name="uploadedsizes">
-                         <tr valign="top">
+                         <tr valign="top" id="tr_{id}">
                          
                                  <input name="subcmd" value="bulkupload" type="hidden" />
                                  <input name="do" value="assign" type="hidden" />
                                  <input name="uploadid_{id}" id="uploadedid_{id}" value="{id}" type="hidden" />
-                                 <td  width="8%"><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input w-150"/></td>
+                                 <td  width="8%"><input name="uploadedstaffcode_{id}" id="uploadedstaffcode_{id}" value="{staffcode}" class="draw-input w-150"  onchange="update_uploded_size({id});"//></td>
                                  <td  width="10%" class="no-wrap">{staffname}</td>
-                                 <td align="left" width="6%"><input name="uploadedpositioncode_{id}" id="uploadedpositioncode_{id}" value="{positioncode}" class="draw-input w-50" /></td> 
-                                 <td align="left" width="6%"><input name="uploadeddepartmentcode_{id}" id="uploadeddepartmentcode_{id}" value="{departmentcode}" class="draw-input w-50" /></td> 
-                                 <td align="left" width="8%"><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input w-125" /></td> 
-                                 <td align="left" width="6%"><input name="uploadedfit_{id}" id="uploadedfit_{id}" value="{fit}" class="draw-input w-40" /></td> 
-                                 <td align="left" width="6%"><input name="uploadedcut_{id}" id="uploadedcut_{id}" value="{cut}" class="draw-input w-40" /></td> 
-                                 <td align="left" width="8%"><input name="uploadedtype_{id}" id="uploadedtype_{id}" value="{type}" class="draw-input w-150" /></td> 
+                                 <td align="left" width="6%"><input name="uploadedpositioncode_{id}" id="uploadedpositioncode_{id}" value="{positioncode}" class="draw-input w-50"  onchange="update_uploded_size({id});"//></td> 
+                                 <td align="left" width="6%"><input name="uploadeddepartmentcode_{id}" id="uploadeddepartmentcode_{id}" value="{departmentcode}" class="draw-input w-50"  onchange="update_uploded_size({id});"//></td> 
+                                 <td align="left" width="8%"><input name="uploadedsize_{id}" id="uploadedsize_{id}" value="{size}" class="draw-input w-125"  onchange="update_uploded_size({id});"//></td> 
+                                 <td align="left" width="6%"><input name="uploadedfit_{id}" id="uploadedfit_{id}" value="{fit}" class="draw-input w-40"  onchange="update_uploded_size({id});"//></td> 
+                                 <td align="left" width="6%"><input name="uploadedcut_{id}" id="uploadedcut_{id}" value="{cut}" class="draw-input w-40"  onchange="update_uploded_size({id});"//></td> 
+                                 <td align="left" width="8%"><input name="uploadedtype_{id}" id="uploadedtype_{id}" value="{type}" class="draw-input w-150" onchange="update_uploded_size({id});"/></td> 
                                  <td align="left" width="6%"><input name="uploaderrormessage_{id}" id="uploaderrormessage_{id}" value="{errors}" type="hidden" /><a href="javascript:;" class="btn btn-slim" title="{errors}"  onclick="return display_error_message({id});">{_show_error}</a></td> 
                                  <td align="left" width="100%">
-                                     <input type="button" name="update" value="{_update}" class="btn btn-slim" title="{_update}" onclick="return update_uploded_size({id});"/>
+                                     <input type="button" name="update" value="{_delete}" class="btn btn-slim" title="{_delete}" onclick="delete_uploded_size({id});"/>
                                  </td>
                              
                          </tr>

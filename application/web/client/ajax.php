@@ -132,22 +132,35 @@ if (isset($sheel->GPC['do'])) {
 	} else if ($sheel->GPC['do'] == 'updatebulksize') {
 		if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0) {
 			if (isset($sheel->GPC['id']) and $sheel->GPC['id'] > 0) {
-				$sheel->db->query("
-				UPDATE " . DB_PREFIX . "bulk_tmp_sizes
-				SET staffcode = '" . $sheel->GPC['staffcode'] . "',
-					positioncode = '" . $sheel->GPC['position'] . "',
-					departmentcode = '" . $sheel->GPC['department'] . "',
-					fit = '" . $sheel->GPC['fit'] . "',
-					cut = '" . $sheel->GPC['cut'] . "',
-					size = '" . $sheel->GPC['size'] . "',
-					type = '" . $sheel->GPC['type'] . "'
-				WHERE id = '" . $sheel->GPC['id'] . "'
-				", 0, null, __FILE__, __LINE__);
-				$result = array(
-					'error' => '0',
-					'message' => 'Record Updated',
-					'timestamp' => ''
-				);
+				if (isset($sheel->GPC['delete']) and $sheel->GPC['delete'] == 'Yes'){
+					$sheel->db->query("
+					DELETE FROM " . DB_PREFIX . "bulk_tmp_sizes
+					WHERE id = '" . $sheel->GPC['id'] . "'
+					", 0, null, __FILE__, __LINE__);
+					$result = array(
+						'error' => '0',
+						'message' => 'Record Deleted',
+						'timestamp' => ''
+					);
+				}
+				else {
+					$sheel->db->query("
+					UPDATE " . DB_PREFIX . "bulk_tmp_sizes
+					SET staffcode = '" . $sheel->GPC['staffcode'] . "',
+						positioncode = '" . $sheel->GPC['position'] . "',
+						departmentcode = '" . $sheel->GPC['department'] . "',
+						fit = '" . $sheel->GPC['fit'] . "',
+						cut = '" . $sheel->GPC['cut'] . "',
+						size = '" . $sheel->GPC['size'] . "',
+						type = '" . $sheel->GPC['type'] . "'
+					WHERE id = '" . $sheel->GPC['id'] . "'
+					", 0, null, __FILE__, __LINE__);
+					$result = array(
+						'error' => '0',
+						'message' => 'Record Updated',
+						'timestamp' => ''
+					);
+				}
 			} else {
 				$result = array(
 					'error' => '1',

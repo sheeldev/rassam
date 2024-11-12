@@ -195,7 +195,31 @@
                                             <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
                                         </fieldset>
                                     </div>
-                                
+                                    <div id="rule-11" class="hide">
+                                        <fieldset class="mb-20">
+                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                        </fieldset>
+                                    </div>
+                                    <div id="rule-12" class="hide">
+                                        <fieldset class="mb-20">
+                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                        </fieldset>
+                                    </div>
+                                    <div id="rule-13" class="hide">
+                                        <fieldset class="mb-20">
+                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                        </fieldset>
+                                    </div>
+                                    <div id="rule-14" class="hide">
+                                        <fieldset class="mb-20">
+                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                        </fieldset>
+                                    </div>
+                                    <div id="rule-15" class="hide">
+                                        <fieldset class="mb-20">
+                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
+                                        </fieldset>
+                                    </div>
                                     <div><button type="button" class="btn btn-primary" onclick="add_rule('form[impact]')"><span>{_add_rule}</span></button>&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="remove_rule('form[impact]')" class="btn btn-secondary btn-small">{_remove_rule}</a></div>
 
                                 </div>
@@ -224,7 +248,7 @@
                                             <th width="10%"><label>{_value_high}</label></th>
                                             <th width="5%"><label>{_unit}</label></th>
                                             <th width="5%"><label>{_impact}</label></th>
-                                            <th width="25%"><label>{_impact} {_value}</label></th>
+                                            <th width="20%"><label>{_impact} {_value}</label></th>
                                             <th width="10%"><label>{_rank}</label></th>
                                             <th width="100%"></th> 
                                             <th><span class="bold">{_action}</span></th>
@@ -241,10 +265,8 @@
                                             <td><input class="draw-input with-add-on" size="50" type="text" value="{mvaluehigh}" name="valuehigh_{rulenumber}" id="valuehigh_{rulenumber}" onfocus="focus_field('valuehigh_{rulenumber}')" onchange="update_rule_line('valuehigh_{rulenumber}','mvaluehigh',{id})"></td>
                                             <td>{uom}</td>
                                             <td>{impact}</td>
-                                            <td><div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
-                                                <div  id="value-wrapper">
+                                            <td><div class="draw-select__wrapper draw-input--has-content w-300" id="value-wraper">
                                                     {impactvaluefinal}
-                                                </div>
                                             </div></td>
                                             <td><input class="draw-input with-add-on" size="2" type="number" value="{rulerank}" name="rank_{rulenumber}" id="rank_{rulenumber}" onfocus="focus_field('rank_{rulenumber}')" onchange="update_rule_line('rank_{rulenumber}','rank',{id})"></td>
                                             <td width="100%"></td> 

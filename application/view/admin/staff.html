@@ -113,10 +113,9 @@
             </div>
             <div class="layout-content__main">
                 <div class="draw-card">
-                    <div class="has-bulk-actions">
                         <div class="draw-card__section">
                             <div class="table-wrapper">
-                                    <table class="table-hover expanded">
+                                    <table class="expanded">
                                     <thead>
                                     <tr>
                                         <th width="15%"><label>Measurement Category</label></th> 
@@ -135,7 +134,7 @@
                                             </td>
                                             <td width="15%" align="left"><input class="draw-input with-add-on" size="50" type="text" value="0" name="mvalue" id="mvalue" ></td>
                                             <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content" id="uom-wraper">
+                                                <div class="draw-select__wrapper draw-input--has-content  minw-110" id="uom-wraper">
                                                     {form[uom]}
                                                 </div>
                                             </td>
@@ -158,7 +157,7 @@
                                                 <input class="draw-input with-add-on" size="50" type="text" value="{value}" name="mvalue_{systemId}" id="mvalue_{systemId}"  onfocus="focus_field('mvalue_{systemId}')" onchange="update_staff_details('mvalue_{systemId}','mValue','{systemId}','{form[companycode]}', '0')">
                                             </td> 
                                             <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
+                                                <div class="draw-select__wrapper draw-input--has-content  minw-160">
                                                     {uomCode}
                                                 </div>
                                             </td> 
@@ -172,7 +171,7 @@
                                     </table>
                             </div>
                         </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -192,7 +191,7 @@
                             <fieldset class="mb-20">
                                 <legend><span class="left prl-6 pt-12">{_add}</span></legend>
                                 <div class="table-wrapper">
-                                    <table class="table-hover expanded">
+                                    <table class="expanded">
                                     <thead>
                                     <tr>
                                         <th width="15%"><label>Type</label></th> 
@@ -254,7 +253,7 @@
                                     <fieldset class="mb-20">
                                         <legend><span class="left prl-6 pt-12">{name}</span></legend>
                                         <div class="table-wrapper" id="sizecat_{code}">
-                                            <table class="table-hover expanded">
+                                            <table class="expanded">
                                             <thead>
                                             <tr>
                                                 <td width="25%"></th> 
@@ -269,10 +268,10 @@
                                                 <div>
                                                     <tr valign="top">
                                                         <input type="hidden" name="systemids_{code}" id = "systemids_{code}" value="{systemids}" />
-                                                        <td width="25%" align="left"><button class="btn" onclick="toggle_section('sizecatdetails_{code}')">{_details}</button></td> 
-                                                        <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content">{catsizeCode}</div></td> 
-                                                        <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{catfitCode}</div></td> 
-                                                        <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{catcutCode}</div></td> 
+                                                        <td width="25%" align="left"><button class="btn btn--icon" onclick="toggle_section('sizecatdetails_{code}')"><svg class="draw-icon draw-icon--16 draw-icon--blue" aria-labelledby="draw-menu-16-title" role="img"><title>{_details}</title><use xlink:href="#draw-menu-16" /></svg></button></td> 
+                                                        <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-110">{catsizeCode}</div></td> 
+                                                        <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{catfitCode}</div></td> 
+                                                        <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{catcutCode}</div></td> 
                                                         <td width="100%"></td> 
                                                         <td >
                                                             <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete staff sizes for {name}?', 'Are you sure you want to delete all staff sizes for {name}?', '{systemids}', 1, 'deletesizes', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
@@ -285,7 +284,7 @@
                                         </div>
                                         <div class="table-wrapper hide" id="sizecatdetails_{code}">
                                             <div class="hr-20-0-20-0"></div>
-                                            <table class="table-hover expanded">
+                                            <table class="expanded">
                                             <thead>
                                             <tr>
                                                 <th width="25%"><label>Type</label></th> 
@@ -302,9 +301,9 @@
                                                         <tr valign="top">
                                                             <input type="hidden" name="etag_{systemId}" id = "etag_{systemId}" value="{etag}" />
                                                             <td width="25%" align="left">{sizeType}{isdefaulticon}</td> 
-                                                            <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content">{sizeCode_type}</div></td> 
-                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{fitCode_type}</div></td> 
-                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content">{cutCode_type}</div></td> 
+                                                            <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-110">{sizeCode_type}</div></td> 
+                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{fitCode_type}</div></td> 
+                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{cutCode_type}</div></td> 
                                                             <td width="100%"></td> 
                                                             <td >
                                                                 <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete selected staff size?', 'Are you sure you want to delete the selected staff size?', '{systemId}', 1, 'deletesize', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
