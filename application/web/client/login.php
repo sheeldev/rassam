@@ -36,7 +36,7 @@ $sheel->template->meta['cssinclude'] = array(
 );
 $sheel->template->meta['area'] = 'login';
 
-$sheel->template->meta['navcrumb'] = array($sheel->ilpage['login'] => $sheel->ilcrumbs[$sheel->ilpage['login']]);
+$sheel->template->meta['navcrumb'] = array($sheel->slpage['login'] => $sheel->ilcrumbs[$sheel->slpage['login']]);
 
 $redirect = isset($sheel->GPC['redirect']) ? strip_tags($sheel->GPC['redirect']) : '';
 
@@ -251,7 +251,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 	);
 
 	$sheel->template->fetch_popup('main', 'login_password_renewal.html');
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 	$sheel->template->pprint('main', $vars);
 	exit();
 
@@ -294,7 +294,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 				'header_text' => '{_recover_my_password}'
 			);
 			$sheel->template->fetch_popup('main', 'login_password_change.html');
-			$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+			$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 			$sheel->template->pprint('main', $vars);
 			exit();
 		} else {
@@ -344,7 +344,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 				'header_text' => '{_recover_my_password}'
 			);
 			$sheel->template->fetch_popup('main', 'login_password_after_otp.html');
-			$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+			$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 			$sheel->template->pprint('main', $vars);
 			exit();
 		} else {
@@ -436,7 +436,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 		'header_text' => '{_ip_reset}'
 	);
 	$sheel->template->fetch_popup('main', 'login_ipaddress_renewal.html');
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 	$sheel->template->pprint('main', $vars);
 	exit();
 } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_do-ip-change' and isset($sheel->GPC['email']) and !empty($sheel->GPC['email'])) { // user requesting ip preference change
@@ -454,7 +454,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 		$username = stripslashes($res['username']);
 		$vars = array('email' => $email, 'username' => $username);
 		$sheel->template->fetch_popup('main', 'login_ipaddress_change.html');
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	} else {
@@ -561,7 +561,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == '_pw-renew') { // renew 
 		);
 
 		$sheel->template->fetch_popup('main', 'login.html');
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	}

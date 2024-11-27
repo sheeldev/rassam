@@ -104,7 +104,7 @@ class common_location extends common
 		$divideby = ceil($count / $columns);
 		for ($i = 0; $i < $count; $i++)
 		{
-			$html .= '<td><div class="blue"><a href="' . HTTP_SERVER . $this->sheel->ilpage['search'] . '?mode=product&amp;sort=01&amp;country=' . o($country) . '&amp;state=' . o($state) . '&amp;city=' . o($cities[$i]['city']) . '&amp;classifieds=1" nofollow="nofollow">' . o($cities[$i]['city']) . '</a>&nbsp;<span class="litegray">(' . $cities[$i]['itemcount'] . ')</span></div></td>';
+			$html .= '<td><div class="blue"><a href="' . HTTP_SERVER . $this->sheel->slpage['search'] . '?mode=product&amp;sort=01&amp;country=' . o($country) . '&amp;state=' . o($state) . '&amp;city=' . o($cities[$i]['city']) . '&amp;classifieds=1" nofollow="nofollow">' . o($cities[$i]['city']) . '</a>&nbsp;<span class="litegray">(' . $cities[$i]['itemcount'] . ')</span></div></td>';
 			if (($counter % $columns) == $divideby)
 			{
 				$html .= '</tr>';

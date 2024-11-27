@@ -1,18 +1,6 @@
 <?php
-/**
-* AdminCP Dashboard class to fetch the information bits on the Admin Control Panel Dashboard
-*
-* @package      Sheel\AdminCP\Dashboard
-* @version      1.0.0.0
-* @author       Sheel
-*/
 class admincp_dashboard extends admincp
 {
-	/**
-	* Function to fetch important dashboard template variables for information and overview
-	*
-	* @return      array
-	*/
 	function fetch()
 	{
 		$dashboard = array();
@@ -36,7 +24,7 @@ class admincp_dashboard extends admincp
 	function fetch_diskspace()
 	{
 		$return = array();
-		$content = $this->sheel->fetch_curl_string($this->sheel->config['billing_endpoint'] . LICENSEKEY . '/freespace/');
+		$content = $this->sheel->fetch_curl_string($this->sheel->config['system_endpoint'] . '/freespace/');
 		if ($content['response']['code'] == 200)
 		{
 			$xml = simpleXML_load_string($content['body']);

@@ -250,7 +250,7 @@
         </div>
     </div>
     </form>
-    <div define="iLNav.setPage(['customers','customers_bc']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['customers','customers_bc']), sLPage.close()"></div>
 </section>
 <else />
 <section>
@@ -264,9 +264,7 @@
                     <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
                     {_customers}
               	</h1>
-                <div class="header__primary-actions"> 
-                    {prevnext}
-                </div>
+                
                 
                 
                 <div class="header__secondary-actions">
@@ -276,8 +274,8 @@
             </header>
     </div>
     
-    <div class="draw-grid draw-grid--outer-grid">
-        <div class="draw-grid__cell">
+    <div class="layout-content">
+        <div class="layout-content__main">
             <div class="draw-card">
                 <div class="has-bulk-actions">
                     <div context="filterer">
@@ -301,7 +299,10 @@
                                             <span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
                                             <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
                                             <a href="{https_server_admin}customers/bc/" title="{_clear}"><span class="draw-input__add-on draw-input__add-on--after"><span class=" halflings halflings-remove draw-icon" aria-hidden="true"></span></span></a>
-                                        </div>  
+                                        </div> 
+                                        <div class="right"> 
+                                            {prevnext}
+                                        </div> 
                                     </div>
                                     </form>
                                 </div>
@@ -354,7 +355,7 @@
     
     
     </div>
-    <div define="iLNav.setPage(['customers','customers_bc']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['customers','customers_bc']), sLPage.close()"></div>
 </section>
 </if>
 

@@ -55,7 +55,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		);
 		$sheel->template->fetch('main', 'users_bulkmailer.html', 1);
 		$sheel->template->parse_loop('main', $loops);
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage, 'form' => (isset($form) ? $form : '')));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'form' => (isset($form) ? $form : '')));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	} else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'bulkmailer/export') {
@@ -811,7 +811,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 	$sheel->template->fetch('main', 'users.html', 1);
 	$sheel->template->parse_loop('main', $loops);
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage, 'form' => (isset($form) ? $form : '')));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'form' => (isset($form) ? $form : '')));
 	$sheel->template->pprint('main', $vars);
 	exit();
 } else {

@@ -160,7 +160,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
         unset($customer);
-        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
             'account' => '{_account}',
@@ -181,7 +181,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'form' => $form
             )
         );
@@ -324,7 +324,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'customercard' => $customer,
                 'form' => $form
             )
@@ -510,7 +510,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'customercard' => $customer,
                 'form' => $form
             )
@@ -1134,7 +1134,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
-
             foreach ($staffmeasurements as &$measurement) {
                 $measurement['etag'] = htmlspecialchars($measurement['@odata.etag']);
                 $extra = 'class="draw-select" onchange="update_staff_details(\'uom_' . $measurement['systemId'] . '\',\'uom\',\'' . $measurement['systemId'] . '\',\'' . $companycode . '\',\'0\')"';
@@ -1473,7 +1472,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'customercard' => $customer,
                 'form' => $form
             )
@@ -1506,6 +1505,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
+        
             $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
             $staffmeasurements = array();
             $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition);
@@ -1516,11 +1516,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
-
+        
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
+        
             $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=code asc';
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
@@ -1531,7 +1532,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $spreadsheet = $reader->load(DIR_OTHER . 'measurementsample.xlsx');
                 $sheet = $spreadsheet->getActiveSheet();
                 $last_row = (int) $sheet->getHighestRow() + 1;
-                $tempmeasurements = array();
+                $measurementCategories = [];
+                if ($sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode)) {
+                    foreach ($mandatorymeasurements as $value1) {
+                        $searchcondition = '$filter=code eq \'' . $value1 . '\' ';
+                        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                        if ($apiResponse->isSuccess()) {
+                            $measurementCategories[$value1] = $apiResponse->getData()[0];
+                        } else {
+                            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                            exit();
+                        }
+                    }
+                } else {
+                    $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                    exit();
+                }
+        
                 usort($custstaffs, function ($a, $b) {
                     preg_match_all('!\d+!', $a['code'], $matchesA);
                     preg_match_all('!\d+!', $b['code'], $matchesB);
@@ -1539,51 +1557,38 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $numB = (int) end($matchesB[0]);
                     return $numA - $numB;
                 });
-                foreach ($custstaffs as $key => $value) {
-                    foreach ($mandatorymeasurements as $key1 => $value1) {
-                        if (!$sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode)) {
-                            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                            exit();
-                        }
-                        $searchcondition = '$filter=code eq \'' . $value1 . '\' ';
-                        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-                        if ($apiResponse->isSuccess()) {
-                            $tempmeasurements = $apiResponse->getData();
-                        } else {
-                            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                            exit();
-                        }
+        
+                foreach ($custstaffs as $value) {
+                    foreach ($mandatorymeasurements as $value1) {
                         $foundValue = '';
                         foreach ($staffmeasurements as $measurement) {
                             if (isset($measurement['staffCode']) and ($measurement['staffCode'] == $value['code']) and isset($measurement['measurementCode']) and ($measurement['measurementCode'] == $value1)) {
                                 $foundValue = $measurement['value'];
                                 break;
-                            } else {
-                                $foundValue = '';
                             }
                         }
                         if ($foundValue == '') {
                             $sheet->setCellValue('A' . $last_row, $value['code']);
                             $sheet->setCellValue('B' . $last_row, $value['name']);
                             $sheet->setCellValue('C' . $last_row, $value['gender']);
-                            $sheet->setCellValue('D' . $last_row, $value1 . '>' . $tempmeasurements['0']['name']);
+                            $sheet->setCellValue('D' . $last_row, $value1 . '>' . $measurementCategories[$value1]['name']);
                             $sheet->setCellValue('E' . $last_row, $foundValue);
                             $sheet->setCellValue('F' . $last_row, $sheel->common_sizingrule->get_default_uom($value1));
                             $last_row++;
                         }
                     }
                 }
+        
                 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
                 $writer->save(DIR_TMP . 'xlsx/measurementsample-' . $customer['customer_ref'] . '.xlsx');
                 $samplefile = file_get_contents(DIR_TMP . 'xlsx/measurementsample-' . $customer['customer_ref'] . '.xlsx');
                 $sheel->common->download_file($samplefile, "measurementsample-" . $customer['customer_ref'] . ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
+        
             } else {
                 $samplefile = file_get_contents(DIR_OTHER . 'measurementsample.xlsx');
                 $sheel->common->download_file($samplefile, "measurementsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             }
-
+        
             exit();
         }
 
@@ -1889,6 +1894,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $uom = array();
         $searchfilters = array(
             'staff',
+            'name',
             'measurement',
             'position',
             'department'
@@ -1896,6 +1902,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
             'staff' => '{_staff}',
+            'name' => '{_name}',
             'measurement' => '{_measurement}',
             'position' => '{_position}',
             'department' => '{_department}'
@@ -2009,7 +2016,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'staff': {
-                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and contains( staffCode, \'' . $sheel->db->escape_string($q) . '\')';
+                    break;
+                }
+                case 'name': {
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and contains( staffName,  \'' . $sheel->db->escape_string($q) . '\')';
                     break;
                 }
                 case 'measurement': {
@@ -2043,6 +2054,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             preg_match_all('!\d+!', $b['staffCode'], $matchesB);
             $numA = (int) end($matchesA[0]);
             $numB = (int) end($matchesB[0]);
+            if ($numA === $numB) {
+                return strcmp($a['measurementCode'], $b['measurementCode']);
+            }
             return $numA - $numB;
         });
         $totalItems = count($staffmeasurements);
@@ -2050,7 +2064,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $offset = ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'];
         $pagedstaffmeasurements = array_slice($staffmeasurements, $offset, $sheel->config['globalfilters_maxrowsdisplay']);
         $pageurl = PAGEURL;
-        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
 
         $uploadedmeaasurements = array();
         $sqlupd = $sheel->db->query("
@@ -2078,7 +2092,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'customercard' => $customer,
                 'form' => $form
             )
@@ -2587,18 +2601,19 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
+            
+            $staffdetails = explode('|', $sheel->GPC['staffs']);
             $sqlallrec = $sheel->db->query("
 					SELECT code
 					FROM " . DB_PREFIX . "size_types		
-					WHERE categoryid = '" . $sheel->GPC['typecategories'] . "'
+					WHERE categoryid = '" . $sheel->GPC['typecategories'] . "' AND (gender = '" .$staffdetails[1] . "' Or gender='U')
 					");
-            $staffdetails = explode('|', $sheel->GPC['staffs']);
             while ($resallrec = $sheel->db->fetch_array($sqlallrec, DB_ASSOC)) {
                 $addResponse = $sheel->dynamics->insert(
                     array(
                         "staffCode" => $staffdetails[0],
-                        "positionCode" => $staffdetails[1],
-                        "departmentCode" => $staffdetails[2],
+                        "positionCode" => $staffdetails[2],
+                        "departmentCode" => $staffdetails[3],
                         "customerNo" => $sheel->GPC['customer_ref'],
                         "fitCode" => $sheel->GPC['fits'],
                         "cutCode" => $sheel->GPC['cuts'],
@@ -2633,6 +2648,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $uom = array();
         $searchfilters = array(
             'staff',
+            'name',
             'size',
             'position',
             'department',
@@ -2641,6 +2657,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
             'staff' => '{_staff}',
+            'name' => '{_name}',
             'size' => '{_size}',
             'position' => '{_position}',
             'department' => '{_department}',
@@ -2675,6 +2692,15 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $code = $code . '|' . $value1;
                 }
                 if ($key1 == 'positionCode') {
+                    $code = $code . '|' . $value1;
+                }
+                if ($key1 == 'gender') {
+                    if ($value1=='Male') {
+                        $value1 = 'M';
+                    }
+                    if ($value1=='Female') {
+                        $value1 = 'F';
+                    }
                     $code = $code . '|' . $value1;
                 }
 
@@ -2848,7 +2874,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if (isset($sheel->GPC['filter']) and !empty($sheel->GPC['filter']) and in_array($sheel->GPC['filter'], $searchfilters) and !empty($q)) {
             switch ($sheel->GPC['filter']) {
                 case 'staff': {
-                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and staffCode eq \'' . $sheel->db->escape_string($q) . '\'';
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and contains( staffCode, \'' . $sheel->db->escape_string($q) . '\')';
+                    break;
+                }
+                case 'name': {
+                    $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\' and contains( staffName,  \'' . $sheel->db->escape_string($q) . '\')';
                     break;
                 }
                 case 'size': {
@@ -2893,7 +2923,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $offset = ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'];
         $pagedstaffsizes = array_slice($staffsizes, $offset, $sheel->config['globalfilters_maxrowsdisplay']);
         $pageurl = PAGEURL;
-        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
 
         $uploadedsizes = array();
         $sqlupd = $sheel->db->query("
@@ -2916,7 +2946,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'customercard' => $customer,
                 'form' => $form
             )
@@ -3072,7 +3102,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'form' => $form,
                 'customercard' => $customer
             )
@@ -3296,7 +3326,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->parse_hash(
             'main',
             array(
-                'ilpage' => $sheel->ilpage,
+                'slpage' => $sheel->slpage,
                 'customercard' => $customer,
                 'form' => $form
             )
@@ -3542,14 +3572,14 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $pageurl = PAGEURL;
-        $vars['prevnext'] = $sheel->admincp->pagination($number, $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl);
+        $vars['prevnext'] = $sheel->admincp->pagination($number, $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
 
         $form['view'] = (isset($sheel->GPC['view']) ? $sheel->GPC['view'] : '');
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
             'account' => '{_account}',
             'name' => '{_name}',
-            'date' => '{_date_added} (YYYY-MM-DD)'
+            'date' => '{_date_added}'
         );
         $form['filter_pulldown'] = $sheel->construct_pulldown('filter', 'filter', $filter_options, (isset($sheel->GPC['filter']) ? $sheel->GPC['filter'] : ''), 'class="draw-select"');
         $form['q'] = (isset($sheel->GPC['q']) ? $sheel->GPC['q'] : '');
@@ -3566,7 +3596,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $sheel->template->parse_hash(
         'main',
         array(
-            'ilpage' => $sheel->ilpage,
+            'slpage' => $sheel->slpage,
             'form' => $form
         )
     );

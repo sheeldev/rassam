@@ -611,6 +611,15 @@ if (isset($sheel->GPC['do'])) {
 						$response = '1';
 						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
 					}
+					$searchcondition = '$filter=systemId eq ' . $sheel->GPC['recordid'];
+					$apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+					if ($apiResponse->isSuccess()) {
+						$measurement = $apiResponse->getData();
+					} else {
+						$response = '1';
+						$sheel->template->templateregistry['error'] = $updateResponse->getErrorMessage();
+					}
+					$etag = $measurement['0']['@odata.etag'];
 					break;
 				}
 
@@ -791,7 +800,7 @@ if (isset($sheel->GPC['do'])) {
 				$sqlallrec = $sheel->db->query("
 					SELECT code
 					FROM " . DB_PREFIX . "size_types		
-					WHERE categoryid = '" . $rowtype['categoryid'] . "'
+					WHERE categoryid = '" . $rowtype['categoryid'] . "' AND (gender = '" .$sheel->GPC['gender']. "' OR gender='U')
 					");
 					
 

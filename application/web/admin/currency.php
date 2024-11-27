@@ -179,7 +179,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $vars['sidenav'] = $sidenav;
     $sheel->template->fetch('main', 'currency.html', 1);
     $sheel->template->parse_loop('main', array('currencies' => $currencies), false);
-    $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage, 'form' => $form));
+    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'form' => $form));
     $sheel->template->pprint('main', $vars);
     exit();
 }

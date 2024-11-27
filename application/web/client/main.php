@@ -191,7 +191,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'content' and isset($she
             $sheel->template->parse_hash(
                 'main',
                 array(
-                    'ilpage' => $sheel->ilpage
+                    'slpage' => $sheel->slpage
                 )
             );
             $sheel->template->pprint('main', $vars);

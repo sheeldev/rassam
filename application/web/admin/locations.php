@@ -511,7 +511,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'main',
         array(
             'form' => (isset($form) ? $form : array()),
-            'ilpage' => $sheel->ilpage
+            'slpage' => $sheel->slpage
         )
     );
     $vars = array(

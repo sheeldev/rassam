@@ -78,7 +78,7 @@ $loops = array(
 	'homepageheros' => $homepageheros
 );
 $sheel->template->fetch('main', 'home.html');
-$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 $sheel->template->parse_loop('main', $loops, false);
 $sheel->template->pprint('main', $vars);
 exit();

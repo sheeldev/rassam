@@ -208,7 +208,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	);
     $sheel->template->parse_hash('main', array(
 		'form' => (isset($form) ? $form : array()),
-		'ilpage' => $sheel->ilpage
+		'slpage' => $sheel->slpage
 	));
     $sheel->template->parse_loop('main', array('attachments' => $attachments));
 

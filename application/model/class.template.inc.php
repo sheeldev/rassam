@@ -441,7 +441,7 @@ class template
 	 * Function for parsing {hash[key]} style tags for links throughout the templates by Dexter Tad-y
 	 *
 	 * @param       string       node
-	 * @param       array        hash names ( array('ilpage' => $this->sheel->ilpage) )
+	 * @param       array        hash names ( array('slpage' => $this->sheel->slpage) )
 	 * @param       integer      parse globals
 	 * @param       string       custom template data (optional)
 	 */

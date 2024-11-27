@@ -203,7 +203,7 @@ if (isset($sheel->GPC['view']) and !empty($sheel->GPC['view'])) {
     }
     unset($returnurl);
     $sheel->template->fetch_popup('main', 'register3.html');
-    $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
     $sheel->template->pprint('main', array('onclick' => $onclick, 'header_text' => '{_registration}'));
     exit();
 }
@@ -277,7 +277,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
                 'header_text' => '{_registration}'
             );
             $sheel->template->fetch_popup('main', 'register1.html');
-            $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+            $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
             $sheel->template->pprint('main', $vars);
             exit();
         } else {
@@ -300,7 +300,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
                 'header_text' => '{_registration}'
             );
             $sheel->template->fetch_popup('main', 'registration.html');
-            $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+            $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
             $sheel->template->pprint('main', $vars);
             exit();
         }
@@ -433,7 +433,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
                 'username_blocked_note' => ((!empty($username_blocked_note)) ? $username_blocked_note : '')
             );
             $sheel->template->fetch_popup('main', 'register1.html');
-            $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+            $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
             $sheel->template->pprint('main', $vars);
             exit();
         } else { // step 2
@@ -464,7 +464,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
 
 
             $sheel->template->fetch_popup('main', 'register2.html');
-            $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+            $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
             $sheel->template->pprint('main', $vars);
             exit();
         }
@@ -603,7 +603,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
             );
 
             $sheel->template->fetch_popup('main', 'register2.html');
-            $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+            $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
             $sheel->template->pprint('main', $vars);
             exit();
         } else { //final step
@@ -695,7 +695,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'register') {
 
     );
     $sheel->template->fetch_popup('main', 'registration.html');
-    $sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
     $sheel->template->pprint('main', $vars);
     exit();
 }

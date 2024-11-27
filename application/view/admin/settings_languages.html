@@ -47,7 +47,7 @@
                                         
                                             <loop name="installedlanguages">
                                             <tr valign="top">
-                                                <td width="20%"><a href="{https_server_admin}settings/languages/update/{languageid}/" title="{charset}">{title}</a><!--<a href="javascript:void(0)" onclick=Attach("{ilpage[language]}?cmd=phrase-reference&amp;languageid={languageid}") class="smaller">{_phrases}</a>--></td>
+                                                <td width="20%"><a href="{https_server_admin}settings/languages/update/{languageid}/" title="{charset}">{title}</a><!--<a href="javascript:void(0)" onclick=Attach("{slpage[language]}?cmd=phrase-reference&amp;languageid={languageid}") class="smaller">{_phrases}</a>--></td>
                                                 <td><span class="type--subdued" title="{locale}">{textdirection}</span>
                                                  <div class="type--subdued">Installed {installdate}</div>
                                                  <div class="type--subdued">Last import {lastimport}</div>
@@ -332,4 +332,4 @@
         
     </section></if>
     
-    <div define="iLNav.setPage(['settings','settings_languages']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['settings','settings_languages']), sLPage.close()"></div>

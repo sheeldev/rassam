@@ -109,6 +109,20 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         '" . $checkpoint . "',
                                                         '" . $rescompanies['company_id'] . "'
                                                         )", 0, null, __FILE__, __LINE__);
+                                                $sqlanalysis = $this->sheel->db->query("
+                                                        SELECT analysisid
+                                                        FROM " . DB_PREFIX . "analysis
+                                                        WHERE systemid = '" . $order['systemId'] . "'
+                                                        AND analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
+                                                        LIMIT 1
+                                                        ");
+                                                if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
+                                                        $this->sheel->db->query("
+                                                        UPDATE " . DB_PREFIX . "analysis
+                                                        SET isarchived = '1'
+                                                        WHERE systemid = '" . $order['systemId'] . "'
+                                                        ");
+                                                }
                                         }
                                 }
 

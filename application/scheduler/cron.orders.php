@@ -41,6 +41,20 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                         $order['status'] = 'Shipped';
                                         if (isset($order['shippedNotInvoiced']) && $order['shippedNotInvoiced'] != 'true') {
                                                 $order['status'] = 'Completed';
+                                                $sqlanalysis = $this->sheel->db->query("
+                                                                SELECT analysisid
+                                                                FROM " . DB_PREFIX . "analysis
+                                                                WHERE systemid = '" . $order['systemId'] . "'
+                                                                AND analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
+                                                                LIMIT 1
+                                                                ");
+                                                if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
+                                                        $this->sheel->db->query("
+                                                                UPDATE " . DB_PREFIX . "analysis
+                                                                SET isfinished = '1'
+                                                                WHERE systemid = '" . $order['systemId'] . "'
+                                                        ");
+                                                }
                                         }
                                 }
                                 $sqlcustomer = $this->sheel->db->query("
@@ -112,9 +126,9 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         $sqlanalysis = $this->sheel->db->query("
                                                                 SELECT analysisid
                                                                 FROM " . DB_PREFIX . "analysis
-                                                                WHERE systemid = '" . $order['systemId'] . "'
+                                                                WHERE analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
                                                                 LIMIT 1
-                                                                ");
+                                                                ");    
                                                         if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
                                                                 $this->sheel->db->query("
                                                                         INSERT INTO " . DB_PREFIX . "analysis

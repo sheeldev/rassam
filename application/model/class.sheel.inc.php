@@ -18,7 +18,7 @@ class sheel
      * @var $GPC
      */
     var $GPC = array();
-    var $ilpage = array();
+    var $slpage = array();
     var $show = array();
     var $config = array();
     var $curlerrors = array();
@@ -758,7 +758,7 @@ class sheel
 
         $this->template->fetch('main', 'print_notice.html');
         $this->template->parse_hash('main', array(
-            'ilpage' => $this->ilpage
+            'slpage' => $this->slpage
         )
         );
         $this->template->pprint('main', array(
@@ -820,7 +820,7 @@ class sheel
 
         $this->template->fetch_popup('main', 'print_notice_popup.html');
         $this->template->parse_hash('main', array(
-            'ilpage' => $this->ilpage
+            'slpage' => $this->slpage
         )
         );
         $this->template->meta['navcrumb'] = array();
@@ -868,7 +868,7 @@ class sheel
 
         $this->template->fetch_popup('main', 'print_notice_popup_login.html');
         $this->template->parse_hash('main', array(
-            'ilpage' => $this->ilpage
+            'slpage' => $this->slpage
         )
         );
         $this->template->meta['navcrumb'] = array();

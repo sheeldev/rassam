@@ -21,6 +21,16 @@ select::-ms-expand {
 		overflow-y:auto;
 	}
 }
+
+.onlydesktop {
+	display:inline-block;
+}
+
+@media only screen and (min-width : 150px) and (max-width : 600px) {
+	.onlydesktop {
+		display:none;
+	}
+}
 .popup {
 	position: fixed;
 	z-index: 4000;
@@ -782,6 +792,9 @@ span.arrow {
 }
 .w-195 {
 	width:195px
+}
+.mw-20 {
+	max-width:20px
 }
 .mw-40 {
 	max-width:40px

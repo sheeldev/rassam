@@ -25,7 +25,7 @@ $sheel->template->meta['cssinclude'] = array(
 		'growl'
 	)
 );
-$sheel->template->meta['navcrumb'] = array($sheel->ilpage['login'] => $sheel->ilcrumbs[$sheel->ilpage['login']]);
+$sheel->template->meta['navcrumb'] = array($sheel->slpage['login'] => $sheel->ilcrumbs[$sheel->slpage['login']]);
 $cmd = $sidenav = '';
 
 if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
@@ -52,7 +52,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 	}
 	$vars = array('admin_cookie' => $admin_cookie, 'sidenav' => '');
 	$sheel->template->fetch('main', 'login_pwrenew.html', 1);
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 	$sheel->template->pprint('main', $vars);
 	exit();
 } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'renew-password-otp') {
@@ -90,7 +90,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 			'sidenav' => ''
 		);
 		$sheel->template->fetch('main', 'login_pwotp.html', 1);
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	} else {
@@ -102,7 +102,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 			'sidenav' => ''
 		);
 		$sheel->template->fetch('main', 'login_pwrenew.html', 1);
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 	}
 } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'renew-password-after-otp' and isset($sheel->GPC['otp']) and isset($sheel->GPC['email'])) { // user validating otp
@@ -141,7 +141,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 					'sidenav' => ''
 				);
 				$sheel->template->fetch('main', 'login_pwotp.html', 1);
-				$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+				$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 				$sheel->template->pprint('main', $vars);
 				exit();
 			}
@@ -159,7 +159,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 		'sidenav' => ''
 	);
 	$sheel->template->fetch('main', 'login_pwotp_after.html', 1);
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 	$sheel->template->pprint('main', $vars);
 	exit();
 
@@ -184,7 +184,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 			'sidenav' => ''
 		);
 		$sheel->template->fetch('main', 'login_pwotp_after.html', 1);
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	}
@@ -207,7 +207,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 		$redirect = '/admin/';
 		$vars = array('username' => $username, 'password' => $password, 'redirect' => $redirect, 'sidenav' => '');
 		$sheel->template->fetch('main', 'login.html', 1);
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	} else {
@@ -219,7 +219,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 			'sidenav' => ''
 		);
 		$sheel->template->fetch('main', 'login_pwotp_after.html', 1);
-		$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+		$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 		$sheel->template->pprint('main', $vars);
 		exit();
 	}
@@ -244,7 +244,7 @@ if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'signout') {
 	}
 	$vars = array('username' => $username, 'password' => $password, 'redirect' => $redirect, 'sidenav' => '');
 	$sheel->template->fetch('main', 'login.html', 1);
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 	$sheel->template->pprint('main', $vars);
 	exit();
 }

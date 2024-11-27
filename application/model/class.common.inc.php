@@ -1722,7 +1722,7 @@ class common
 		} else {
 			$array['title'] = '{_unknown}';
 			$array['description'] = 'n/a';
-			$array['url'] = $this->sheel->ilpage['nonprofits'];
+			$array['url'] = $this->sheel->slpage['nonprofits'];
 		}
 		return $array;
 	}

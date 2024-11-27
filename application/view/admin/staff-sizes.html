@@ -216,7 +216,9 @@
                                                         <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
                                                         <a href="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" title="{_clear}"><span class="draw-input__add-on draw-input__add-on--after"><span class=" halflings halflings-remove draw-icon" aria-hidden="true"></span></span></a>
                                                     </div>
-                                            
+                                                    <div class="right"> 
+                                                        {prevnext}
+                                                    </div>
 
                                             </div>
                                             </form>
@@ -227,9 +229,7 @@
                             </div>
                             
                         <div class="draw-card__section">
-                            <div class="right"> 
-                                {prevnext}
-                            </div>
+                            
                                 <div class="table-wrapper">
                                     <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/" id="formsizes" accept-charset="UTF-8" method="get">
                                     <table class="table-hover expanded">
@@ -324,7 +324,7 @@
             </div>
         </div>
     </div>
-    <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['customers','customers_customers']), sLPage.close()"></div>
     <div id="refreshloading" class="hide">
         <div class="loading">{_loading}&#8230;</div>
     </div>

@@ -13,9 +13,6 @@
               	<div class="header__primary-actions"> 
                    <a class="btn btn-primary" href="{https_server_admin}customers/bc/">{_add_customer}</a>    
                 </div>
-                <div class="header__primary-actions"> 
-                    {prevnext}
-                </div>
                 
                 
                 <div class="header__secondary-actions">
@@ -60,8 +57,10 @@
                                             <div class="draw-input--stylized draw-field--connected"><span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
                                                 <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
                                             </div>
-                                        
-                                        <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                            <div class="segmented draw-field--connected--no-flex saved-search-actions-next" id="saved-search-actions-next" refresh="saved-search-actions-next"> </div>
+                                            <div class="right"> 
+                                                {prevnext}
+                                            </div> 
                                     </div>
                                     </form>
                                     
@@ -164,7 +163,7 @@
     </div>
     </div>
     </div>
-    <div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['customers','customers_customers']), sLPage.close()"></div>
 
 <else />
 <if condition="isset($sheel->GPC['cmd']) AND ($sheel->GPC['cmd'] == 'view')">
@@ -503,7 +502,7 @@
         </div>      
     </form>
     </div>
-<div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+<div define="iLNav.setPage(['customers','customers_customers']), sLPage.close()"></div>
 <else />
     <div id="customers-index" class="page has-contextual-help customers-page">
         <div class="header-row">
@@ -515,9 +514,7 @@
               	<div class="header__primary-actions"> 
                    <a class="btn btn-primary" href="{https_server_admin}customers/bc/">{_add_customer}</a>    
                 </div>
-                <div class="header__primary-actions"> 
-                    {prevnext}
-                </div>
+
                 
                 
                 <div class="header__secondary-actions">
@@ -559,6 +556,9 @@
                                                 <span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
                                                 <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
                                                 <a href="{https_server_admin}customers/" title="{_clear}"><span class="draw-input__add-on draw-input__add-on--after"><span class=" halflings halflings-remove draw-icon" aria-hidden="true"></span></span></a>
+                                            </div> 
+                                            <div class="right"> 
+                                                {prevnext}
                                             </div> 
                                     </div>
                                     </form>
@@ -668,7 +668,7 @@
     
     </div>
 
-<div define="iLNav.setPage(['customers','customers_customers']), iLPage.close()"></div>
+<div define="iLNav.setPage(['customers','customers_customers']), sLPage.close()"></div>
 </if>
 </if>
 </section>

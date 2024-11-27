@@ -650,7 +650,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 		
 	);
 
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage,'form' => (isset($form) ? $form : array())));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage,'form' => (isset($form) ? $form : array())));
 	$sheel->template->pprint('main', $vars);
 	exit();
 } else {

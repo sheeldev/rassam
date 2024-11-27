@@ -346,12 +346,12 @@ class email
 		$fromname = ((empty($fromname)) ? SITE_NAME : $fromname);
 		$subject = trim($subject);
 		$subject = strip_tags($subject);
-		$subject = $this->sheel->template->parse_hash('emailtemplate', array('ilpage' => $this->sheel->ilpage), 1, $subject);
+		$subject = $this->sheel->template->parse_hash('emailtemplate', array('slpage' => $this->sheel->slpage), 1, $subject);
 		$subject = $this->sheel->template->parse_template_phrases('emailtemplate');
 		$subject = $this->sheel->bbcode->strip_bb_tags($subject);
 		$subject = str_replace(array("&lt;", "&gt;", '&amp;', '&#039;', '&quot;', '&lt;', '&gt;', '&euro;', '&pound;'), array("<", ">", '&', '\'', '"', '<', '>', '€', '£'), htmlspecialchars_decode($subject, ENT_NOQUOTES));
 		$message = preg_replace("#(\r\n|\r|\n)#s", $delimiter, trim($message));
-		$message = $this->sheel->template->parse_hash('emailtemplate', array('ilpage' => $this->sheel->ilpage), 1, $message);
+		$message = $this->sheel->template->parse_hash('emailtemplate', array('slpage' => $this->sheel->slpage), 1, $message);
 		$message = $this->sheel->template->parse_template_phrases('emailtemplate');
 		$message = $this->sheel->bbcode->strip_bb_tags($message);
 		$message = str_replace(array("&lt;", "&gt;", '&amp;', '&#039;', '&quot;', '&lt;', '&gt;', '&euro;', '&pound;'), array("<", ">", '&', '\'', '"', '<', '>', '€', '£'), htmlspecialchars_decode($message, ENT_NOQUOTES));

@@ -17,7 +17,7 @@
             <div class="header__secondary-actions"> <a class="btn" href="{https_server_admin}users/update/{form[userid]}/">{_cancel}</a> </div>
         </header>
     </div>
-    <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['users','users']), sLPage.close()"></div>
     <else />
     <if condition="isset($sheel->GPC['cmd']) AND ($sheel->GPC['cmd'] == 'add' OR $sheel->GPC['cmd'] == 'update')">
     <div id="users-new" class="page">
@@ -514,7 +514,7 @@
             </div>
             <!-- audit -->
             </if>
-            <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
+            <div define="iLNav.setPage(['users','users']), sLPage.close()"></div>
             
     <else />
     
@@ -728,7 +728,7 @@
         </div>
         </form>
     </div>
-    <div define="iLNav.setPage(['users','users']), iLPage.close()"></div>
+    <div define="iLNav.setPage(['users','users']), sLPage.close()"></div>
     </if>
     </if>
     </section>

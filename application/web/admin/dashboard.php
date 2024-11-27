@@ -28,21 +28,81 @@ $sheel->template->meta['cssinclude'] = array(
     ),
     'dashboard'
 );
-
+$sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Dashboard</div>';
+$sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Dashboard';
 
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
     if (($sidenav = $sheel->cache->fetch("sidenav_dashboard")) === false) {
         $sidenav = $sheel->admincp_nav->print('dashboard');
         $sheel->cache->store("sidenav_dashboard", $sidenav);
     }
-    $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Dashboard</div>';
-    $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Dashboard';
+    $sheel->GPC['period'] = ((isset($sheel->GPC['period']) and !empty($sheel->GPC['period'])) ? $sheel->GPC['period'] : 'last7days');
+    $period = '{_last_7_days}';
+    $periods = array(
+        'today' => array(
+            'title' => '{_today}',
+        ),
+        'yesterday' => array(
+            'title' => '{_yesterday}',
+        ),
+        'last7days' => array(
+            'title' => '{_last_7_days}',
+        ),
+        'last30days' => array(
+            'title' => '{_last_30_days}',
+        ),
+        'last60days' => array(
+            'title' => '{_last_60_days}',
+        ),
+        'last90days' => array(
+            'title' => '{_last_90_days}',
+        ),
+        'last365days' => array(
+            'title' => '{_last_365_days}',
+        )
+    );
+    foreach ($periods as $key => $value) {
+        $parr[$key] = $value['title'];
+        $parrs[] = $key;
+    }
+    if (!in_array($sheel->GPC['period'], $parrs)) {
+        $sheel->GPC['period'] = 'last7days';
+    }
 
-    $vars['sidenav'] = $sidenav;
+    $periodpulldown = $sheel->construct_pulldown('period', 'period', $parr, $sheel->GPC['period'], 'class="draw-select" onchange="this.form.submit()"');
+    unset($parr);
+    if (isset($sheel->GPC['period']) and isset($periods[$sheel->GPC['period']]['title'])) {
+        $period = $periods[$sheel->GPC['period']]['title'];
+    }
+
+    $stats = $sheel->admincp->stats('home', $sheel->GPC['period']);
+
+	$visitors['visitors'] = $stats['visitors']['visitors'];
+	$visitors['uniquevisitors'] = $stats['visitors']['uniquevisitors'];
+	$visitors['label'] = $stats['visitors']['label'];
+	$visitors['series'] = $stats['visitors']['series'];
+	$visitors['pageviews'] = $stats['visitors']['pageviews'];
+
+	$loops = array(
+		'topcountries' => $stats['stats']['topcountries'],
+		'topdevices' => $stats['stats']['topdevices'],
+		'topbrowsers' => $stats['stats']['topbrowsers'],
+		'trafficsources' => $stats['stats']['trafficsources'],
+		'toplandingpages' => $stats['stats']['toplandingpages'],
+		'mostactive' => $stats['visitors']['mostactive']
+	);
+
+
+    $vars = array(
+        'sidenav' => $sidenav,
+        'period' => $period,
+        'periodpulldown' => $periodpulldown
+    );
     $vars['url'] = $_SERVER['REQUEST_URI'];
     $sheel->template->fetch('main', 'dashboard.html', 1);
+    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'visitors' => $visitors, 'statistics' => $statistics));
 
-
+    $sheel->template->parse_loop('main', $loops, false);
     $sheel->template->pprint('main', $vars);
     exit();
 } else {

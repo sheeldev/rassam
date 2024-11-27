@@ -96,7 +96,7 @@ class admincp
                 $this->sheel->log_event($userid, basename(__FILE__), $details);
                 $this->sheel->template->meta['jsinclude'] = array('header' => array('functions', 'admin'), 'footer' => array());
                 $this->sheel->template->fetch('main', 'action_success.html', 1);
-                $this->sheel->template->parse_hash('main', array('ilpage' => $this->sheel->ilpage));
+                $this->sheel->template->parse_hash('main', array('slpage' => $this->sheel->slpage));
                 $this->sheel->template->pprint('main', array('notice' => $notice, 'admurl' => $admurl, 'sidenav' => $sidenav));
                 exit();
         }
@@ -119,7 +119,7 @@ class admincp
                 $this->sheel->log_event($userid, basename(__FILE__), $details);
                 $this->sheel->template->meta['jsinclude'] = array('header' => array('functions', 'admin'), 'footer' => array());
                 $this->sheel->template->fetch('main', 'action_failed.html', 1);
-                $this->sheel->template->parse_hash('main', array('ilpage' => $this->sheel->ilpage));
+                $this->sheel->template->parse_hash('main', array('slpage' => $this->sheel->slpage));
                 $this->sheel->template->pprint('main', array('error' => $error, 'admurl' => $admurl, 'sidenav' => $sidenav));
                 exit();
         }
@@ -1782,7 +1782,7 @@ class admincp
          *
          * @return      string         HTML representation of the page navigator
          */
-        function pagination($number = 0, $rowlimit = 10, $page = 0, $scriptpage = '', $custompagename = 'page')
+        function pagination($number = 0, $rowlimit = 10, $page = 0, $scriptpage = '', $custompagename = 'page', $showpage = 0)
         {
                 $html = '<ul class="segmented" context="adjacent">';
                 if (empty($custompagename)) {
@@ -1803,23 +1803,44 @@ class admincp
                 } else if (substr($scriptpage, -1) == '&') {
                         $scriptpage = substr($scriptpage, 0, -1); // removing ending &
                 }
+                $urlfirstpage = $scriptpage . ((strrchr($scriptpage, '?') == false) ? '?' : '&') . $custompagename . '=1&amp;pp=' . $rowlimit;
+                $urllastpage = $scriptpage . ((strrchr($scriptpage, '?') == false) ? '?' : '&') . $custompagename . '=' . $totalpages . '&amp;pp=' . $rowlimit;
                 $url1 = (($page <= 1) ? 'javascript:;' : $scriptpage . ((strrchr($scriptpage, '?') == false) ? '?' : '&') . $custompagename . '=' . ($page - 1) . '&amp;pp=' . $rowlimit);
                 $url2 = (($page > 1 and $totalpages == $page) ? 'javascript:;' : $scriptpage . ((strrchr($scriptpage, '?') == false) ? '?' : '&') . $custompagename . '=' . ($page + 1) . '&amp;pp=' . $rowlimit);
-
+                if ($showpage == 1) {
+                        $html .= '<li>
+                                        <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page <= 1) ? ' disabled' : '') . '" href="' . $urlfirstpage . '">
+                                        <span class="tooltip-container"></span>
+                                        <span class="page-down"></span>
+                                        </a>
+                                </li>';
+                }
                 $html .= '<li>
-                        <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page <= 1) ? ' disabled' : '') . '" href="' . $url1 . '">
-                            <span class="tooltip-container"></span>
-                            <span class="page-prev"></span>
-                        </a>
-                    </li>';
+                                <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page <= 1) ? ' disabled' : '') . '" href="' . $url1 . '">
+                                <span class="tooltip-container"></span>
+                                <span class="page-prev"></span>
+                                </a>
+                        </li>';
 
+                if ($showpage == 1) {
+                        $totalPages = ceil($number / $rowlimit);
+                        $html .= '<div class="onlydesktop"><li><div class="btn"><span>'  . $page . ' of ' . $totalPages . '</span></div></li></div>';
+                }
                 $html .= '<li>
                         <a class="btn tooltip tooltip-bottom js-draw-btn' . (($page > 1 and $totalpages == $page) ? ' disabled' : '') . '" href="' . $url2 . '">
                             <span class="tooltip-container"></span>
                             <span class="page-next"></span>
                         </a>
-                    </li></ul>';
-
+                    </li>';
+                if ($showpage == 1) {
+                        $html .= '<li>
+                                        <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page > 1 and $totalpages == $page) ? ' disabled' : '') . '" href="' . $urllastpage . '">
+                                        <span class="tooltip-container"></span>
+                                        <span class="page-up"></span>
+                                        </a>
+                                </li>';
+                }
+                $html .= '</ul>';
                 return $html;
         }
 

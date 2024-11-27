@@ -346,7 +346,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $settings = $sheel->admincp->construct_admin_input('automation', HTTPS_SERVER_ADMIN . 'settings/automation/confirgurations/', '', $buttons);
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Automation Configurations</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Automations Configurations';
-        $areanav = 'settings_sizingrules';
+        $areanav = 'settings_automation';
         $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/automation/">Automation</a> / </span> {_configurations}';
         $vars['areanav'] = $areanav;
         $vars['currentarea'] = $currentarea;

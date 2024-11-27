@@ -13,7 +13,7 @@ class admincp_nav extends admincp
         $recentsearches = $this->recent_searches();
         $customerscount = $this->sheel->customerscount();
 
-        $html = '<div id="NavDrawer" class="nav-drawer" define="{iLPage: new Sheel.Drawer(this)}">
+        $html = '<div id="NavDrawer" class="nav-drawer" define="{sLPage: new Sheel.Drawer(this)}">
         <nav role="navigation" class="draw-nav draw-nav--is-expanded" define="{iLNav: new Sheel.Navi(this)}" bind-event-mouseenter="iLNav.onMouseEnter(this)" bind-event-mouseleave="iLNav.onMouseLeave(this)" bind-class="{\'draw-nav--show-overflow\': globalSearch.expanded}">
                 <div class="draw-nav__panel draw-nav__panel--primary" bind-event-mouseenter="iLNav.onMouseEnter(this)">
                         <header class="draw-nav__logo draw-nav__logo">

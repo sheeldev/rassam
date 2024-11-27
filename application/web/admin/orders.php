@@ -289,7 +289,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $sheel->template->parse_hash(
         'main',
         array(
-            'ilpage' => $sheel->ilpage,
+            'slpage' => $sheel->slpage,
             'form' => $form
         )
     );

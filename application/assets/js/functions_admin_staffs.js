@@ -56,16 +56,19 @@ function add_staff_measurement(staffcode, company, customer, position, departmen
 
 }
 
-function add_staff_size(staffcode, company, customer, position, department, endpoint) {
+function add_staff_size(staffcode, gender, company, customer, position, department, endpoint) {
 	fetch_js_object("savingstatus").innerHTML = "Saving..."
 	open_backdrop();
+	if (gender == 'Male') { gender = 'M'} 
+	if (gender == 'Female') { gender = 'F'}
+
 	var itemtype = fetch_js_object('itemtypes').value;
 	var size = fetch_js_object('sizes').value;
 	var fit = fetch_js_object('fits').value;
 	var cut = fetch_js_object('cuts').value;
-	var bind = (fetch_js_object('bind').checked)?'1':'0';
+	var bind = (fetch_js_object('bind').checked) ? '1' : '0';
 
-	var querystring = "&customer=" + customer + "&position=" + position + "&department=" + department + "&company=" + company + "&staffcode=" + staffcode + "&itemtype=" + encodeURIComponent(itemtype) + "&size=" + size + "&fit=" + fit + "&cut=" + cut + "&bind=" + bind + "&token=" + iL['TOKEN'];
+	var querystring = "&customer=" + customer + "&position=" + position + "&department=" + department + "&company=" + company + "&staffcode=" + staffcode +  "&gender=" + gender + "&itemtype=" + encodeURIComponent(itemtype) + "&size=" + size + "&fit=" + fit + "&cut=" + cut + "&bind=" + bind + "&token=" + iL['TOKEN'];
 	try {
 		ajaxRequest = new XMLHttpRequest();
 	}
@@ -177,7 +180,10 @@ function update_staff_details(fieldname, dbname, recordid, company, param) {
 			}
 			else {
 				fetch_js_object("savingstatus").innerHTML = "Saved";
-				jQuery('#' + fieldname).removeClass('loading');
+				if (field.type == 'text') {
+					jQuery('#' + fieldname).removeClass('loading');
+				}
+				
 				etag.value = result.etag;
 				field.value = result.value;
 			}

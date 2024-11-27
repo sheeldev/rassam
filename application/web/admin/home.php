@@ -24,7 +24,6 @@ $sheel->template->meta['cssinclude'] = array(
 	'common'
 );
 // #### setup default breadcrumb ###############################################
-$sheel->template->meta['navcrumb'] = array($sheel->ilpage['dashboard'] => $sheel->ilcrumbs[$sheel->ilpage['dashboard']]);
 $sheel->template->meta['areatitle'] = '{_admin_cp_dashboard}';
 $sheel->template->meta['pagetitle'] = SITE_NAME . ' - {_admin_cp_dashboard}';
 
@@ -35,7 +34,7 @@ $sheel->template->meta['pagetitle'] = SITE_NAME . ' - {_admin_cp_dashboard}';
 //$sheel->show['diskspacewarning']='1';
 
 if (($sidenav = $sheel->cache->fetch("sidenav_dashboard")) === false) {
-	$sidenav = $sheel->admincp_nav->print($sheel->ilpage['dashboard']);
+	$sidenav = $sheel->admincp_nav->print($sheel->slpage['dashboard']);
 	$sheel->cache->store("sidenav_dashboard", $sidenav);
 }
 
@@ -106,7 +105,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	// notices
 
 	$sheel->template->fetch('main', 'home.html', 1);
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage, 'currency' => $currency, 'visitors' => $visitors, 'revenue' => $revenue, 'sales' => $sales, 'percent' => $percent, 'space' => $space, 'statistics' => $statistics));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'currency' => $currency, 'visitors' => $visitors, 'revenue' => $revenue, 'sales' => $sales, 'percent' => $percent, 'space' => $space, 'statistics' => $statistics));
 	$sheel->template->parse_loop('main', $loops, false);
 	$sheel->template->pprint('main', $vars);
 	exit();

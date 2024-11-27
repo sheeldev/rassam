@@ -292,7 +292,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata'][
 	);
 
 	$sheel->template->fetch('main', 'sessions.html', 1);
-	$sheel->template->parse_hash('main', array('ilpage' => $sheel->ilpage));
+	$sheel->template->parse_hash('main', array('slpage' => $sheel->slpage));
 	$sheel->template->parse_loop('main', $loops);
 	$sheel->template->pprint('main', $vars);
 	exit();
