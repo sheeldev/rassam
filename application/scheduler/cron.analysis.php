@@ -30,7 +30,7 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                         $totalquantity = $resData['totalQuantity'];
                 }
         }
-        if ($totalquantity > 0 && $totalquantity < $ordersizebrackets[0]) {
+        if ($totalquantity >= 0 && $totalquantity < $ordersizebrackets[0]) {
                 $issmall = 1;
         } else if ($totalquantity >= $ordersizebrackets[0] && $totalquantity < $ordersizebrackets[1]) {
                 $ismedium = 1;

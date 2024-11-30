@@ -10,6 +10,8 @@ $sheel->template->meta['jsinclude'] = array(
         'admin_dashboard',
         'inline',
         'vendor/chartist',
+        'vendor/chartistlegend',
+        'vendor/chartisttooltip',
         'vendor/growl'
     ),
     'footer' => array(
@@ -23,6 +25,7 @@ $sheel->template->meta['cssinclude'] = array(
         'font-awesome',
         'glyphicons',
         'chartist',
+        'chartisttooltip',
         'balloon',
         'growl'
     ),
@@ -75,13 +78,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $period = $periods[$sheel->GPC['period']]['title'];
     }
 
-    $stats = $sheel->admincp->stats('home', $sheel->GPC['period']);
+    $stats = $sheel->admincp_dashboard->stats('dashboard', $sheel->GPC['period']);
 
-	$visitors['visitors'] = $stats['visitors']['visitors'];
-	$visitors['uniquevisitors'] = $stats['visitors']['uniquevisitors'];
-	$visitors['label'] = $stats['visitors']['label'];
-	$visitors['series'] = $stats['visitors']['series'];
-	$visitors['pageviews'] = $stats['visitors']['pageviews'];
+	$orders['totalorders'] = $stats['orders']['totalorders'];
+    $orders['totalquantity'] = $stats['orders']['totalquantity'];
+    $orders['invoiced'] = $stats['orders']['invoiced'];
+    $orders['archived'] = $stats['orders']['archived'];
+    $orders['smallorders'] = $stats['orders']['smallorders'];
+    $orders['mediumorders'] = $stats['orders']['mediumorders'];
+    $orders['largeorders'] = $stats['orders']['largeorders'];
+
+	$orders['label'] = $stats['orders']['label'];
+	$orders['series'] = $stats['orders']['series'];
 
 	$loops = array(
 		'topcountries' => $stats['stats']['topcountries'],
@@ -96,11 +104,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $vars = array(
         'sidenav' => $sidenav,
         'period' => $period,
-        'periodpulldown' => $periodpulldown
+        'periodpulldown' => $periodpulldown,
+        'orders1' => $orders['label'],
+        'orders2' => $orders['series']
     );
     $vars['url'] = $_SERVER['REQUEST_URI'];
     $sheel->template->fetch('main', 'dashboard.html', 1);
-    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'visitors' => $visitors, 'statistics' => $statistics));
+    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'orders' => $orders,  'statistics' => $statistics));
 
     $sheel->template->parse_loop('main', $loops, false);
     $sheel->template->pprint('main', $vars);

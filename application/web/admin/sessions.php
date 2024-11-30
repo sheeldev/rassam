@@ -72,7 +72,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata'][
 		while ($row = $sheel->db->fetch_array($sqlguest, DB_ASSOC))
 		{
 			$row['checkbox'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'kick\', \'Kick session by ' . $row['ipaddress'] . '?\', \'Are you sure you want to kick this session?\', \'' . $row['ipaddress'] . '\', 1, \'\', \'\')" class="btn btn-slim btn--icon" title="Kick Session"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
-			$row['username'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/update/' . $row['userid'] . '/">' . $sheel->fetch_user('username', $row['userid']) . '</a>';
+			$row['username'] = '<a href="' . HTTPS_SERVER_ADMIN . 'users/update/' . $row['userid'] . '/">' . $sheel->fetch_user('username', $row['userid']) . '</a>';
 			$row['location_title'] = stripslashes($row['title']);
 			$row['location'] = '<a href="' . (!empty($row['url']) ? substr(HTTPS_SERVER, 0, -1) . o($row['url']) : HTTPS_SERVER) . '" target="_blank" title="' . (!empty($row['url']) ? o($sheel->print_string_wrap($row['url'], 75)) : HTTPS_SERVER) . '">' . $row['location_title'] . '</a>';
 			$row['os'] = $sheel->common->fetch_os_name($row['agent'], true);
@@ -128,7 +128,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata'][
 		while ($row = $sheel->db->fetch_array($sqlmember, DB_ASSOC))
 		{
 			$row['checkbox'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'kick\', \'Kick session by ' . $row['ipaddress'] . '?\', \'Are you sure you want to kick this session?\', \'' . $row['ipaddress'] . '\', 1, \'\', \'\')" class="btn btn-slim btn--icon" title="Kick Session"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
-			$row['username'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/update/' . $row['userid'] . '/">' . $sheel->fetch_user('username', $row['userid']) . '</a>';
+			$row['username'] = '<a href="' . HTTPS_SERVER_ADMIN . 'users/update/' . $row['userid'] . '/">' . $sheel->fetch_user('username', $row['userid']) . '</a>';
 			$row['location_title'] = stripslashes($row['title']);
 			$row['location'] = '<a href="' . (!empty($row['url']) ? substr(HTTPS_SERVER, 0, -1) . o($row['url']) : HTTPS_SERVER) . '" target="_blank" title="' . (!empty($row['url']) ? o($sheel->print_string_wrap($row['url'], 75)) : HTTPS_SERVER) . '">' . $row['location_title'] . '</a>';
 			$row['os'] = $sheel->common->fetch_os_name($row['agent'], true);
@@ -181,7 +181,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) AND $_SESSION['sheeldata'][
 		while ($row = $sheel->db->fetch_array($sqladmin, DB_ASSOC))
 		{
 			$row['checkbox'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'kick\', \'Kick session by ' . $row['ipaddress'] . '?\', \'Are you sure you want to kick this session?\', \'' . $row['ipaddress'] . '\', 1, \'\', \'\')" class="btn btn-slim btn--icon" title="Kick Session"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
-			$row['username'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/update/' . $row['userid'] . '/">' . $sheel->fetch_user('username', $row['userid']) . '</a>';
+			$row['username'] = '<a href="' . HTTPS_SERVER_ADMIN . 'users/update/' . $row['userid'] . '/">' . $sheel->fetch_user('username', $row['userid']) . '</a>';
 			$row['location_title'] = stripslashes($row['title']);
 			$row['location'] = '<a href="' . (!empty($row['url']) ? substr(HTTPS_SERVER, 0, -1) . o($row['url']) : HTTPS_SERVER) . '" target="_blank" title="' . (!empty($row['url']) ? o($sheel->print_string_wrap($row['url'], 75)) : HTTPS_SERVER) . '">' . $row['location_title'] . '</a>';
 			$row['os'] = $sheel->common->fetch_os_name($row['agent'], true);

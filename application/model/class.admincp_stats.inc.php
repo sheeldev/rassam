@@ -242,34 +242,50 @@ class admincp_stats extends admincp
 		}
 		if ($what == 'dashboard')
 		{
-			if ($do == 'visitors' OR $do == 'uniquevisitors' OR $do == 'pageviews')
+			if ($do == 'totalorders' OR $do == 'totalquantity' OR $do == 'invoiced' OR $do == 'archived' OR $do == 'smallorders' OR $do == 'mediumorders' OR $do == 'largeorders')
 			{
 				$sql = $this->sheel->db->query("
-					SELECT COUNT(DISTINCT ipaddress) AS uniquevisitors, COUNT(*) AS visitors, SUM(pageviews) AS pageviews
-					FROM " . DB_PREFIX . "visits
-					WHERE " . $this->period_to_sql('`date`', $period) . "
+					SELECT COUNT(analysisreference) AS totalorders , SUM(totalquantity) AS totalquantity,  SUM(isfinished) AS invoiced, SUM(isarchived) AS archived, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+					FROM " . DB_PREFIX . "analysis
+					WHERE " . $this->period_to_sql('`createdtime`', $period,'',true) . "
 				");
 				$res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
-				if ($do == 'visitors')
+				if ($do == 'totalorders')
 				{
-					return number_format($res['visitors']);
+					return number_format($res['totalorders']);
 				}
-				else if ($do == 'uniquevisitors')
+				else if ($do == 'totalquantity')
 				{
-					return number_format($res['uniquevisitors']);
+					return number_format($res['totalquantity']);
 				}
-				else if ($do == 'pageviews')
+				else if ($do == 'invoiced')
 				{
-					return number_format($res['pageviews']);
+					return number_format($res['invoiced']);
+				}
+				else if ($do == 'archived')
+				{
+					return number_format($res['archived']);
+				}
+				else if ($do == 'smallorders')
+				{
+					return number_format($res['smallorders']);
+				}
+				else if ($do == 'mediumorders')
+				{
+					return number_format($res['mediumorders']);
+				}
+				else if ($do == 'largeorders')
+				{
+					return number_format($res['largeorders']);
 				}
 			}
-			else if ($do == 'visitorlabel')
+			else if ($do == 'orderlabel')
 			{
 				return $this->period_to_label($period);
 			}
-			else if ($do == 'visitorseries')
+			else if ($do == 'orderseries')
 			{
-				return $this->period_to_series('visitors', $period);
+				return $this->period_to_series('orders', $period);
 			}
 			else if ($do == 'mostactive') // Morning, Afternoon, Evening, Night
 			{
@@ -2446,13 +2462,14 @@ class admincp_stats extends admincp
 			$seriesb .= ']';
 			$return = $seriesa . $seriesb;
 		}
-		else if ($what == 'listings')
+		else if ($what == 'orders')
 		{
 			switch ($period)
 			{
 				case 'today':
 				case 'yesterday':
 				{
+					
 					$series = array(
 						'0' => array('open' => 0, 'ended' => 0),
 						'4' => array('open' => 0, 'ended' => 0),
@@ -2465,45 +2482,23 @@ class admincp_stats extends admincp
 					$sql = $this->sheel->db->query("
 						SELECT
 						CASE
-							WHEN HOUR(date_added) BETWEEN 0  AND 3  AND TIME(date_added) BETWEEN '00:00:00' AND '03:59:59' THEN '0'
-							WHEN HOUR(date_added) BETWEEN 4  AND 7  AND TIME(date_added) BETWEEN '04:00:00' AND '07:59:59' THEN '4'
-							WHEN HOUR(date_added) BETWEEN 8  AND 11 AND TIME(date_added) BETWEEN '08:00:00' AND '11:59:59' THEN '8'
-							WHEN HOUR(date_added) BETWEEN 12 AND 15 AND TIME(date_added) BETWEEN '12:00:00' AND '15:59:59' THEN '12'
-							WHEN HOUR(date_added) BETWEEN 16 AND 19 AND TIME(date_added) BETWEEN '16:00:00' AND '19:59:59' THEN '16'
-							WHEN HOUR(date_added) BETWEEN 20 AND 22 AND TIME(date_added) BETWEEN '20:00:00' AND '22:59:59' THEN '20'
-							WHEN HOUR(date_added) = 23 AND TIME(date_added) BETWEEN '23:00:00' AND '23:59:59' THEN '23'
-						END AS hour, COUNT(*) AS open
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_added', $period) . "
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) BETWEEN 0  AND 3  AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '00:00:00' AND '03:59:59' THEN '0'
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) BETWEEN 4  AND 7  AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '04:00:00' AND '07:59:59' THEN '4'
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) BETWEEN 8  AND 11 AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '08:00:00' AND '11:59:59' THEN '8'
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) BETWEEN 12 AND 15 AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '12:00:00' AND '15:59:59' THEN '12'
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) BETWEEN 16 AND 19 AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '16:00:00' AND '19:59:59' THEN '16'
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) BETWEEN 20 AND 22 AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '20:00:00' AND '22:59:59' THEN '20'
+							WHEN HOUR(FROM_UNIXTIME(createdtime)) = 23 AND TIME(FROM_UNIXTIME(createdtime)) BETWEEN '23:00:00' AND '23:59:59' THEN '23'
+						END AS hour, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+						FROM " . DB_PREFIX . "analysis
+						WHERE " . $this->period_to_sql('createdtime', $period, '', true) . "
 						GROUP BY hour
 						HAVING hour IS NOT NULL
-						ORDER BY HOUR(date_added) ASC
+						ORDER BY HOUR(FROM_UNIXTIME(createdtime)) ASC
 					");
 					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
 					{
-						$series[$res['hour']] = array('open' => $res['open'], 'ended' => 0);
-					}
-					$sql = $this->sheel->db->query("
-						SELECT
-						CASE
-							WHEN HOUR(date_end) BETWEEN 0  AND 3  AND TIME(date_end) BETWEEN '00:00:00' AND '03:59:59' THEN '0'
-							WHEN HOUR(date_end) BETWEEN 4  AND 7  AND TIME(date_end) BETWEEN '04:00:00' AND '07:59:59' THEN '4'
-							WHEN HOUR(date_end) BETWEEN 8  AND 11 AND TIME(date_end) BETWEEN '08:00:00' AND '11:59:59' THEN '8'
-							WHEN HOUR(date_end) BETWEEN 12 AND 15 AND TIME(date_end) BETWEEN '12:00:00' AND '15:59:59' THEN '12'
-							WHEN HOUR(date_end) BETWEEN 16 AND 19 AND TIME(date_end) BETWEEN '16:00:00' AND '19:59:59' THEN '16'
-							WHEN HOUR(date_end) BETWEEN 20 AND 22 AND TIME(date_end) BETWEEN '20:00:00' AND '22:59:59' THEN '20'
-							WHEN HOUR(date_end) = 23 AND TIME(date_end) BETWEEN '23:00:00' AND '23:59:59' THEN '23'
-						END AS hour, COUNT(*) AS ended
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_end', $period) . "
-							AND date_end <= CURDATE()
-						GROUP BY hour
-						HAVING hour IS NOT NULL
-						ORDER BY HOUR(date_end) ASC
-					");
-					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
-					{
-						$series[$res['hour']]['ended'] = $res['ended'];
+						$series[$res['hour']] = array('small' => $res['smallorders'], 'medium' => $res['mediumorders'], 'large' => $res['largeorders']);
 					}
 					break;
 				}
@@ -2513,29 +2508,19 @@ class admincp_stats extends admincp
 					$timestamp = TIMESTAMPNOW;
 					for ($i = 0; $i < 7; $i++)
 					{
-						$series[date('Y-m-d', $timestamp)] = array('open' => 0, 'ended' => 0);
+						$series[date('j', $timestamp)] = array('small' => 0, 'medium' => 0, 'large' => 0);
 						$timestamp -= 24 * 3600;
 					}
 					$sql = $this->sheel->db->query("
-						SELECT DATE(date_added) AS day, COUNT(*) AS open
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_added', $period) . "
+						SELECT DAY(FROM_UNIXTIME(createdtime)) AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+						FROM " . DB_PREFIX . "analysis
+						WHERE " . $this->period_to_sql('createdtime', $period, '', true) . "
 						GROUP BY day
+						ORDER BY createdtime ASC
 					");
 					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
 					{
-						$series[$res['day']]['open'] = $res['open'];
-					}
-					$sql = $this->sheel->db->query("
-						SELECT DATE(date_end) AS day, COUNT(*) AS ended
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_end', $period) . "
-							AND date_end <= CURDATE()
-						GROUP BY day
-					");
-					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
-					{
-						$series[$res['day']]['ended'] = $res['ended'];
+						$series[$res['day']] = array('small' => $res['smallorders'], 'medium' => $res['mediumorders'], 'large' => $res['largeorders']);
 					}
 					$series = array_reverse($series);
 					break;
@@ -2549,55 +2534,25 @@ class admincp_stats extends admincp
 					for ($i = 0; $i < 7; $i++)
 					{
 						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$case .= "WHEN date_added BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 5)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
-						$series[date('Y-m-d', $timestamp)] = array('open' => 0, 'ended' => 0);
+						$case .= "WHEN FROM_UNIXTIME(createdtime) BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 5)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
+						$series[date('Y-m-d', $timestamp)] = array('small' => 0, 'medium' => 0, 'large' => 0);
 						$timestamp -= 24 * 3600 * 5;
 					}
 					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
 					$sql = $this->sheel->db->query("
 						SELECT
 						CASE
 						$case
-						END AS day, COUNT(*) AS open
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_added', $period, '35') . "
+						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+						FROM " . DB_PREFIX . "analysis
+						WHERE " . $this->period_to_sql('createdtime', $period, '35', true) . "
 						GROUP BY day
 						HAVING day IS NOT NULL
-						ORDER BY date_added ASC
+						ORDER BY createdtime ASC
 					");
 					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
 					{
-						$series[$res['day']]['open'] = $res['open'];
-					}
-					$timestamp = TIMESTAMPNOW;
-					$x = 0;
-					$case = '';
-					$dayin = '';
-					for ($i = 0; $i < 7; $i++)
-					{
-						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$case .= "WHEN date_end BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 5)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
-						$series[date('Y-m-d', $timestamp)]['ended'] = 0;
-						$timestamp -= 24 * 3600 * 5;
-					}
-					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
-					$sql = $this->sheel->db->query("
-						SELECT
-						CASE
-						$case
-						END AS day, COUNT(*) AS ended
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_end', $period, '35') . "
-							AND date_end <= CURDATE()
-						GROUP BY day
-						HAVING day IS NOT NULL
-						ORDER BY date_end ASC
-					");
-					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
-					{
-						$series[$res['day']]['ended'] = $res['ended'];
+						$series[$res['day']] = array('small' => $res['smallorders'], 'medium' => $res['mediumorders'], 'large' => $res['largeorders']);
 					}
 					$series = array_reverse($series);
 					break;
@@ -2611,56 +2566,27 @@ class admincp_stats extends admincp
 					for ($i = 0; $i < 7; $i++)
 					{
 						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$case .= "WHEN date_added BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 10)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
-						$series[date('Y-m-d', $timestamp)] = array('open' => 0, 'ended' => 0);
+						$case .= "WHEN FROM_UNIXTIME(createdtime) BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 10)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
+						$series[date('Y-m-d', $timestamp)] = array('small' => 0, 'medium' => 0, 'large' => 0);
 						$timestamp -= 24 * 3600 * 10;
 					}
 					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
 					$sql = $this->sheel->db->query("
 						SELECT
 						CASE
 						$case
-						END AS day, COUNT(*) AS open
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_added', $period, '65') . "
+						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+						FROM " . DB_PREFIX . "analysis
+						WHERE " . $this->period_to_sql('createdtime', $period, '65', true) . "
 						GROUP BY day
 						HAVING day IS NOT NULL
-						ORDER BY date_added ASC
+						ORDER BY createdtime ASC
 					");
 					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
 					{
-						$series[$res['day']]['open'] = $res['open'];
+						$series[$res['day']] = array('small' => $res['smallorders'], 'medium' => $res['mediumorders'], 'large' => $res['largeorders']);
 					}
-					$dayin = '';
-					$case = '';
-					$timestamp = TIMESTAMPNOW;
-					$x = 0;
-					for ($i = 0; $i < 7; $i++)
-					{
-						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$case .= "WHEN date_end BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 10)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
-						$series[date('Y-m-d', $timestamp)]['ended'] = 0;
-						$timestamp -= 24 * 3600 * 10;
-					}
-					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
-					$sql = $this->sheel->db->query("
-						SELECT
-						CASE
-						$case
-						END AS day, COUNT(*) AS ended
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_end', $period, '65') . "
-							AND date_end <= CURDATE()
-						GROUP BY day
-						HAVING day IS NOT NULL
-						ORDER BY date_end ASC
-					");
-					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
-					{
-						$series[$res['day']]['ended'] = $res['ended'];
-					}
+					
 					$series = array_reverse($series);
 					break;
 				}
@@ -2673,55 +2599,25 @@ class admincp_stats extends admincp
 					for ($i = 0; $i < 7; $i++)
 					{
 						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$series[date('Y-m-d', $timestamp)]['open'] = 0;
-						$case .= "WHEN date_added BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 15)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
+						$series[date('Y-m-d', $timestamp)] = array('small' => 0, 'medium' => 0, 'large' => 0);
+						$case .= "WHEN FROM_UNIXTIME(createdtime) BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 15)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
 						$timestamp -= 24 * 3600 * 15;
 					}
 					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
 					$sql = $this->sheel->db->query("
 						SELECT
 						CASE
 						$case
-						END AS day, COUNT(*) AS open
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_added', $period, '65') . "
+						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+						FROM " . DB_PREFIX . "analysis
+						WHERE " . $this->period_to_sql('createdtime', $period, '95', true) . "
 						GROUP BY day
 						HAVING day IS NOT NULL
-						ORDER BY date_added ASC
+						ORDER BY createdtime ASC
 					");
 					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
 					{
-						$series[$res['day']]['open'] = $res['open'];
-					}
-					$dayin = '';
-					$case = '';
-					$timestamp = TIMESTAMPNOW;
-					$x = 0;
-					for ($i = 0; $i < 7; $i++)
-					{
-						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$series[date('Y-m-d', $timestamp)]['ended'] = 0;
-						$case .= "WHEN date_end BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 15)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
-						$timestamp -= 24 * 3600 * 15;
-					}
-					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
-					$sql = $this->sheel->db->query("
-						SELECT
-						CASE
-						$case
-						END AS day, COUNT(*) AS ended
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_end', $period, '65') . "
-							AND date_end <= CURDATE()
-						GROUP BY day
-						HAVING day IS NOT NULL
-						ORDER BY date_end ASC
-					");
-					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
-					{
-						$series[$res['day']]['ended'] = $res['ended'];
+						$series[$res['day']] = array('small' => $res['smallorders'], 'medium' => $res['mediumorders'], 'large' => $res['largeorders']);
 					}
 					$series = array_reverse($series);
 					break;
@@ -2735,55 +2631,25 @@ class admincp_stats extends admincp
 					for ($i = 0; $i < 7; $i++)
 					{
 						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$series[date('Y-m-d', $timestamp)] = array('open' => 0, 'ended' => 0);
-						$case .= "WHEN date_added BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 60)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
+						$series[date('Y-m-d', $timestamp)] = array('small' => 0, 'medium' => 0, 'large' => 0);
+						$case .= "WHEN FROM_UNIXTIME(createdtime) BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 60)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
 						$timestamp -= 24 * 3600 * 60;
 					}
 					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
 					$sql = $this->sheel->db->query("
 						SELECT
 						CASE
 						$case
-						END AS day, COUNT(*) AS open
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_added', $period, '375') . "
+						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
+						FROM " . DB_PREFIX . "analysis
+						WHERE " . $this->period_to_sql('createdtime', $period, '375',true) . "
 						GROUP BY day
 						HAVING day IS NOT NULL
-						ORDER BY date_added ASC
+						ORDER BY createdtime ASC
 					");
 					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
 					{
-						$series[$res['day']]['open'] = $res['open'];
-					}
-					$dayin = '';
-					$case = '';
-					$timestamp = TIMESTAMPNOW;
-					$x = 0;
-					for ($i = 0; $i < 7; $i++)
-					{
-						$dayin .= "'" . date('Y-m-d', $timestamp) . "',";
-						$series[date('Y-m-d', $timestamp)]['ended'] = 0;
-						$case .= "WHEN date_end BETWEEN '" . date('Y-m-d', ($timestamp - 24 * 3600 * 60)) . " 00:00:00' AND '" . date('Y-m-d', $timestamp) . " 23:59:59' THEN '" . date('Y-m-d', $timestamp) . "' ";
-						$timestamp -= 24 * 3600 * 60;
-					}
-					$dayin = substr($dayin, 0, -1);
-					$series = array_reverse($series);
-					$sql = $this->sheel->db->query("
-						SELECT
-						CASE
-						$case
-						END AS day, COUNT(*) AS ended
-						FROM " . DB_PREFIX . "projects
-						WHERE " . $this->period_to_sql('date_end', $period, '375') . "
-							AND date_end <= CURDATE()
-						GROUP BY day
-						HAVING day IS NOT NULL
-						ORDER BY date_end ASC
-					");
-					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC))
-					{
-						$series[$res['day']]['ended'] = $res['ended'];
+						$series[$res['day']] = array('small' => $res['smallorders'], 'medium' => $res['mediumorders'], 'large' => $res['largeorders']);
 					}
 					$series = array_reverse($series);
 					break;
@@ -2791,16 +2657,21 @@ class admincp_stats extends admincp
 			}
 			$seriesa = '[';
 			$seriesb = '[';
+			$seriesc = '[';
 			foreach ($series AS $day => $array)
 			{
-				$seriesa .= "'" . $array['open'] . "',";
-				$seriesb .= "'" . $array['ended'] . "',";
+				$seriesa .= "'" . $array['small'] . "',";
+				$seriesb .= "'" . $array['medium'] . "',";
+				$seriesc .= "'" . $array['large'] . "',";
 			}
 			$seriesa = substr($seriesa, 0, -1);
 			$seriesb = substr($seriesb, 0, -1);
+			$seriesc = substr($seriesc, 0, -1);
 			$seriesa .= '],';
-			$seriesb .= ']';
-			$return = $seriesa . $seriesb;
+			$seriesb .= '],';
+			$seriesc .= ']';
+			$return = $seriesa . $seriesb . $seriesc;
+			
 		}
 		else if ($what == 'revenue')
 		{
@@ -4624,49 +4495,99 @@ class admincp_stats extends admincp
 		}
 		return $return;
 	}
-	private function period_to_sql($column = '', $period = '', $overide = '')
+	private function period_to_sql($column = '', $period = '', $overide = '', $istime = false)
 	{
 		switch ($period)
 		{
 			case 'today':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") = CURDATE()";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') = CURDATE()";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") = CURDATE()";
+				}
 			}
 			case 'yesterday':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") = (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '1') . " DAY)";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') = (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '1') . " DAY)";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") = (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '1') . " DAY)";
+				}
 			}
 			case 'last7days':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '7') . " DAY)";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '7') . " DAY)";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '7') . " DAY)";
+				}
 			}
 			case 'last30days':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '30') . " DAY)";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '30') . " DAY)";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '30') . " DAY)";
+				}
 			}
 			case 'last60days':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '60') . " DAY)";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '60') . " DAY)";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '60') . " DAY)";
+				}
 			}
 			case 'last90days':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '90') . " DAY)";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '90') . " DAY)";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '90') . " DAY)";
+				}
 			}
 			case 'last365days':
 			{
-				return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '365') . " DAY)";
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '365') . " DAY)";
+				}
+				else
+				{
+					return "DATE(" . $this->sheel->db->escape_string($column) . ") > (CURDATE() - INTERVAL " . ((!empty($overide)) ? $overide : '365') . " DAY)";
+				}
 			}
 			case 'alltime':
 			{
+				if ($istime)
+				{
+					return "DATE_FORMAT(FROM_UNIXTIME(" . $this->sheel->db->escape_string($column) . "), '%Y-%m-%e') != ''";
+				}
+				else
+				{
 				return "DATE(" . $this->sheel->db->escape_string($column) . ") != ''";
+				}
 			}
 		}
 	}
 }
-
-/*======================================================================*\
-|| ####################################################################
-|| # Downloaded: Sun, Jun 16th, 2019
-|| ####################################################################
-\*======================================================================*/
 ?>

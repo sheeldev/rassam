@@ -57,7 +57,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                 SELECT systemid, eventdata, reference
                                 FROM " . DB_PREFIX . "events
                                 WHERE companyid = '" . $rescompanies['company_id'] . "' AND topic = 'Order' 
-                                AND checkpointid in (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Order' AND (triggeredon = 'Open' or triggeredon = 'Released'))
+                                AND checkpointid in (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Order' AND (triggeredon = 'Open' or triggeredon = 'Released' or triggeredon = 'Completed'))
                                 GROUP BY systemid
                                 ORDER BY createdtime DESC
                         ";
