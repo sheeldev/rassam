@@ -58,11 +58,10 @@ class admincp_dashboard extends admincp
 					'series' => $this->sheel->admincp_stats->fetch($what, $period, 'orderseries')
 				),
 				'stats' => array(
-					'topcountries' => $this->sheel->admincp_stats->fetch($what, $period, 'topcountries'),
-					'topdevices' => $this->sheel->admincp_stats->fetch($what, $period, 'topdevices'),
-					'topbrowsers' => $this->sheel->admincp_stats->fetch($what, $period, 'topbrowsers'),
-					'trafficsources' => $this->sheel->admincp_stats->fetch($what, $period, 'trafficsources'),
-					'toplandingpages' => $this->sheel->admincp_stats->fetch($what, $period, 'toplandingpages')
+					'topcustomers' => $this->sheel->admincp_stats->fetch($what, $period, 'topcustomers'),
+					'topentities' => $this->sheel->admincp_stats->fetch($what, $period, 'topentities'),
+					'ordersizes' => $this->sheel->admincp_stats->fetch($what, $period, 'ordersizes'),
+					'analysis' => $this->sheel->admincp_stats->fetch($what, $period, 'analysis'),
 				)
 			);
 		}

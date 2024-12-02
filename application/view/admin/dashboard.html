@@ -224,17 +224,49 @@
                 <header class="draw-card__header">
                     <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
                         <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_top_countries}</h2>
+                            <h2 class="draw-heading">{_order_sizes}</h2>
+                        </div>
+                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                    </div>
+                </header>
+                <section class="draw-card__section">
+                    <div id="DashboardOnlineOrderSizes" class="dashboard-widget">
+                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                            <tbody>
+                                <loop name="ordersizes">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
+                                        </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
+                                            {count} </td>
+                                    </tr>
+                                </loop name="ordersizes">
+                            </tbody>
+                        </table>
+                        <if condition="isset($sheel->show['ordersizes']) AND $sheel->show['ordersizes'] == false">
+                            <h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3>
+                        </if>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="draw-grid__cell draw-grid__cell--third">
+            <div class="draw-card">
+                <header class="draw-card__header">
+                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                        <div class="draw-grid__cell">
+                            <h2 class="draw-heading">{_top_customers}</h2>
                         </div>
                         <div class="draw-grid__cell draw-grid__cell--no-flex"> <span
                                 class="type--subdued">{period}</span> </div>
                     </div>
                 </header>
                 <div class="draw-card__section">
-                    <div id="DashboardOnlineCountryTraffic" class="dashboard-widget">
+                    <div id="DashboardOnlineToCustomers" class="dashboard-widget">
                         <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
                             <tbody>
-                                <loop name="topcountries">
+                                <loop name="topcustomers">
                                     <tr>
                                         <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
                                         <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
@@ -243,10 +275,10 @@
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
                                             {count} </td>
                                     </tr>
-                                </loop name="topcountries">
+                                </loop name="topcustomers">
                             </tbody>
                         </table>
-                        <if condition="isset($sheel->show['topcountries']) AND $sheel->show['topcountries'] == false">
+                        <if condition="isset($sheel->show['topccustomers']) AND $sheel->show['topccustomers'] == false">
                             <h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3>
                         </if>
                     </div>
@@ -259,7 +291,7 @@
                 <header class="draw-card__header">
                     <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
                         <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_top_browsers}</h2>
+                            <h2 class="draw-heading">{_top_companies}</h2>
                         </div>
                         <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
                     </div>
@@ -268,7 +300,7 @@
                     <div id="DashboardOnlineDeviceBrowser" class="dashboard-widget">
                         <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
                             <tbody>
-                                <loop name="topbrowsers">
+                                <loop name="topentities">
                                     <tr>
                                         <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
                                         <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
@@ -277,31 +309,35 @@
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
                                             {count} </td>
                                     </tr>
-                                </loop name="topbrowsers">
+                                </loop name="topentities">
                             </tbody>
                         </table>
-                        <if condition="isset($sheel->show['topbrowsers']) AND $sheel->show['topbrowsers'] == false">
+                        <if condition="isset($sheel->show['topentities']) AND $sheel->show['topentities'] == false">
                             <h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3>
                         </if>
                     </div>
                 </section>
             </div>
         </div>
+
+    </div>
+
+    <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
         <div class="draw-grid__cell draw-grid__cell--third">
             <div class="draw-card">
                 <header class="draw-card__header">
                     <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
                         <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_traffic_sources}</h2>
+                            <h2 class="draw-heading">{_orders_analysis}</h2>
                         </div>
                         <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
                     </div>
                 </header>
                 <section class="draw-card__section">
-                    <div id="DashboardOnlineTrafficSources" class="dashboard-widget">
+                    <div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">
                         <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
                             <tbody>
-                                <loop name="trafficsources">
+                                <loop name="analysis">
                                     <tr>
                                         <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
                                         </td>
@@ -309,47 +345,10 @@
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
                                             {count} </td>
                                     </tr>
-                                </loop name="trafficsources">
+                                </loop name="analysis">
                             </tbody>
                         </table>
-                        <if condition="isset($sheel->show['trafficsources']) AND $sheel->show['trafficsources'] == false">
-                            <h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3>
-                        </if>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </div>
-
-    <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
-        <div class="draw-grid__cell draw-grid__cell--third">
-
-            <div class="draw-card">
-                <header class="draw-card__header">
-                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
-                        <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_top_device_types}</h2>
-                        </div>
-                        <div class="draw-grid__cell draw-grid__cell--no-flex"> <span
-                                class="type--subdued">{period}</span> </div>
-                    </div>
-                </header>
-                <section class="draw-card__section channel-stats">
-                    <div id="DashboardOnlineDeviceFormFactors" class="dashboard-widget">
-                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
-                            <tbody>
-                                <loop name="topdevices">
-                                    <tr>
-                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
-                                        </td>
-                                        <td class="dashboard-source-list__number"> {percent}% </td>
-                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
-                                    </tr>
-                                </loop name="topdevices">
-                            </tbody>
-                        </table>
-                        <if condition="isset($sheel->show['topcountries']) AND $sheel->show['topcountries'] == false">
+                        <if condition="isset($sheel->show['analysis']) AND $sheel->show['analysis'] == false">
                             <h3 class="dashboard__empty__desc">{_there_were_no_visitors_during_this_period}</h3>
                         </if>
                     </div>
@@ -361,7 +360,7 @@
                 <header class="draw-card__header">
                     <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
                         <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_top_landing_pages}</h2>
+                            <h2 class="draw-heading">{_assemblies_analysis}</h2>
                         </div>
                         <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
                     </div>

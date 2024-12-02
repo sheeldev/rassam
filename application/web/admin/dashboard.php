@@ -92,12 +92,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	$orders['series'] = $stats['orders']['series'];
 
 	$loops = array(
-		'topcountries' => $stats['stats']['topcountries'],
-		'topdevices' => $stats['stats']['topdevices'],
-		'topbrowsers' => $stats['stats']['topbrowsers'],
-		'trafficsources' => $stats['stats']['trafficsources'],
-		'toplandingpages' => $stats['stats']['toplandingpages'],
-		'mostactive' => $stats['visitors']['mostactive']
+		'topcustomers' => $stats['stats']['topcustomers'],
+		'topentities' => $stats['stats']['topentities'],
+		'ordersizes' => $stats['stats']['ordersizes'],
+        'analysis' => $stats['stats']['analysis'],
 	);
 
 

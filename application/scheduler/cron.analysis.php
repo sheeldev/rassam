@@ -17,6 +17,7 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
         $issmall = 0;
         $ismedium = 0;
         $islarge = 0;
+        $quoteexist = 0;
         $sqlEvents = $this->sheel->db->query("
                 SELECT e.eventid, e.eventtime, e.eventdata, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, COALESCE(cs.sequence,'0') as sequence, cs.isend, cs.isarchive
                 FROM " . DB_PREFIX . "events e
@@ -28,6 +29,9 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 $resData = json_decode($resEvents['eventdata'], true);
                 if ($totalquantity == 0 || $totalqunatity <> $resData['TotalQuantity']) {
                         $totalquantity = $resData['totalQuantity'];
+                }
+                if (isset($resData['quoteNo']) and $resData['quoteNo'] != '') {
+                        $quoteexist = 1;
                 }
         }
         if ($totalquantity >= 0 && $totalquantity < $ordersizebrackets[0]) {
@@ -42,7 +46,8 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 SET totalquantity = '" . $totalquantity . "',
                 issmall = '" . $issmall . "',
                 ismedium = '" . $ismedium . "',
-                islarge = '" . $islarge . "'
+                islarge = '" . $islarge . "',
+                hasquote = '" . $quoteexist . "'
                 WHERE analysisid = '" . $resanalysis['analysisid'] . "'
         ");
         $sqlLastEvent = $this->sheel->db->query("

@@ -922,13 +922,11 @@ class common
 		}
 		return $rand;
 	}
-	/**
-	 * Function to fetch the active web browser name.
-	 *
-	 * @param       string        text
-	 *
-	 * @return      string
-	 */
+
+	function fetch_company_logo()
+	{
+		return '<img src="' . $this->sheel->config['imgcdn'] . 'acp/favicon.png" border="0" alt="" />';
+	}
 	function fetch_browser_name($showicon = 0, $readname = '')
 	{
 		if (isset($readname) and $readname != '') {

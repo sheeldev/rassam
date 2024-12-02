@@ -264,7 +264,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $form['number'] = number_format($number);
 
     $pageurl = PAGEURL;
-    $prevnext = $sheel->admincp->pagination($number, $sheel->GPC['pp'], $sheel->GPC['page'], $pageurl);
+    $prevnext = $sheel->admincp->pagination($number, $sheel->GPC['pp'], $sheel->GPC['page'], $pageurl,'',1);
     $filter_options = array(
         '' => '{_select_filter} &ndash;',
         'account' => '{_account}',

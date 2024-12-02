@@ -551,5 +551,11 @@ class admincp_customers extends admincp
             'staffs' => $staffs
         );
     }
+
+    
+	function print_customer_logo($logo)
+	{
+        return '<span title="' . $logo . '"><img src="' . $this->sheel->config['imguploadscdn'] . 'customers/' . $logo . '" border="0" alt="" /></span>';
+	}
 }
 ?>
