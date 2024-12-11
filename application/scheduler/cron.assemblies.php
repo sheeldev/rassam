@@ -32,10 +32,10 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                         $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
                 }
                 $searchcondition = '$filter=sourceType eq \'Order\' and systemModifiedAt gt ' . $maxEventTimeIso;
-                //$searchcondition = '$filter=sourceNo eq \'SO-AVR24-01398\'';
+                //$searchcondition = '$filter=sourceNo eq \'SO-AVR24-01612\'';
 
                 if (!$this->sheel->dynamics->init_dynamics('erAssembliesAll', $rescompanies['bc_code'])) {
-                        $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
+                        $cronlog .= 'Inactive Dynamics API erAssembliesAll for company ' . $rescompanies['name'] . ', ';
                 }
                 $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                 if ($apiResponse->isSuccess()) {
@@ -133,7 +133,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                 $sqlactive = $this->sheel->db->query("
                                                         SELECT COUNT(eventid) as event_count
                                                         FROM " . DB_PREFIX . "events
-                                                        WHERE reference = '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "' AND topic = 'Assembly'
+                                                        WHERE reference = '" . ($assembly['icCustomerSONo'] != '' ? $assembly['icCustomerSONo'] : $assembly['sourceNo']) . "' AND topic = 'Assembly' AND checkpointid not in (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' AND triggeredon = '0-In')
                                                         ");
                                                 $resactive = $this->sheel->db->fetch_array($sqlactive, DB_ASSOC);
                                                 $sqlOrders = $this->sheel->db->query("

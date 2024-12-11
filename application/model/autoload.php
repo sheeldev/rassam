@@ -1,12 +1,5 @@
 <?php
 /**
-* @package      sheel\General
-* @version		1.0.0.0
-* @author       sheel
-*/
-
-
-/**
  * Function to create a cookie entry
  *
  * @param	string	        cookie name

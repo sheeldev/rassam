@@ -1,11 +1,4 @@
 <?php
-/**
- * Currency class to perform the majority of currency related functions in sheel
- *
- * @package      sheel\Currency
- * @version      6.0.0.622
- * @author       sheel
- */
 class currency
 {
 	protected $sheel;

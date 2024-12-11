@@ -58,6 +58,7 @@ class admincp_dashboard extends admincp
 					'series' => $this->sheel->admincp_stats->fetch($what, $period, 'orderseries')
 				),
 				'stats' => array(
+					'topdestinations' => $this->sheel->admincp_stats->fetch($what, $period, 'topdestinations'),
 					'topcustomers' => $this->sheel->admincp_stats->fetch($what, $period, 'topcustomers'),
 					'topentities' => $this->sheel->admincp_stats->fetch($what, $period, 'topentities'),
 					'ordersizes' => $this->sheel->admincp_stats->fetch($what, $period, 'ordersizes'),

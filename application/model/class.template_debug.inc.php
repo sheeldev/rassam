@@ -1,11 +1,4 @@
 <?php
-/**
-* Template debug helper functions for the footer stats display.
-*
-* @package      sheel\Template\Debug
-* @version      6.0.0.622
-* @author       sheel
-*/
 class template_debug extends template
 {
 	function print($node = '')

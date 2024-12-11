@@ -4,13 +4,6 @@ if (!class_exists('sheel_database')) {
 	exit;
 }
 
-/**
- * MySQLi database class to perform the majority of database related functions in sheel.
- *
- * @package      sheel\Database\MySQLi
- * @version      6.0.0.622
- * @author       sheel
- */
 class database extends sheel_database
 {
 	var $enablecache;

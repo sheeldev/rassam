@@ -1,11 +1,4 @@
 <?php
-/**
-* Subscription class to perform the majority of subscription functionality in sheel.
-*
-* @package      sheel\Membership\Plan
-* @version      6.0.0.622
-* @author       sheel
-*/
 class subscription_plan extends subscription
 {
 	/**

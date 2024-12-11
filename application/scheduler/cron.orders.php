@@ -122,13 +122,15 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 '" . $rescompanies['company_id'] . "'
                                                                 )", 0, null, __FILE__, __LINE__);
                                                 }
+                                                
                                                 if ($order['documentType'] == 'Order') {
                                                         $sqlanalysis = $this->sheel->db->query("
                                                                 SELECT analysisid
                                                                 FROM " . DB_PREFIX . "analysis
                                                                 WHERE analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
                                                                 LIMIT 1
-                                                                ");    
+                                                                "); 
+                                                                
                                                         if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
                                                                 $this->sheel->db->query("
                                                                         INSERT INTO " . DB_PREFIX . "analysis
@@ -144,7 +146,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         '" . $order['documentType'] . "',
                                                                         '0',
                                                                         '0',
-                                                                        '" . $rescompanies['company_id'] . "'
+                                                                        '" . $entityid . "'
                                                                         )", 0, null, __FILE__, __LINE__);
                                                         }
                                                 }
@@ -178,22 +180,30 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                         '" . $rescompanies['company_id'] . "'
                                                         )", 0, null, __FILE__, __LINE__);
                                                 if ($order['documentType'] == 'Order') {
-                                                        $this->sheel->db->query("
-                                                                INSERT INTO " . DB_PREFIX . "analysis
-                                                                (systemid, createdtime, modifiedtime, analysisfor, analysisidentifier, entityid, analysisreference, topic, isfinished, isarchived, companyid)
-                                                                VALUES(
-                                                                '" . $this->sheel->db->escape_string($order['systemId']) . "',
-                                                                " . strtotime($order['systemCreatedAt']) . ",
-                                                                " . strtotime($order['systemModifiedAt']) . ",
-                                                                'customer',
-                                                                '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
-                                                                '" . $entityid . "',
-                                                                '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
-                                                                '" . $order['documentType'] . "',
-                                                                '0',
-                                                                '0',
-                                                                '" . $rescompanies['company_id'] . "'
-                                                                )", 0, null, __FILE__, __LINE__);
+                                                        $sqlanalysis = $this->sheel->db->query("
+                                                                SELECT analysisid
+                                                                FROM " . DB_PREFIX . "analysis
+                                                                WHERE analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
+                                                                LIMIT 1
+                                                                "); 
+                                                        if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
+                                                                $this->sheel->db->query("
+                                                                        INSERT INTO " . DB_PREFIX . "analysis
+                                                                        (systemid, createdtime, modifiedtime, analysisfor, analysisidentifier, entityid, analysisreference, topic, isfinished, isarchived, companyid)
+                                                                        VALUES(
+                                                                        '" . $this->sheel->db->escape_string($order['systemId']) . "',
+                                                                        " . strtotime($order['systemCreatedAt']) . ",
+                                                                        " . strtotime($order['systemModifiedAt']) . ",
+                                                                        'customer',
+                                                                        '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
+                                                                        '" . $entityid . "',
+                                                                        '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
+                                                                        '" . $order['documentType'] . "',
+                                                                        '0',
+                                                                        '0',
+                                                                        '" . $entityid . "'
+                                                                        )", 0, null, __FILE__, __LINE__);
+                                                        }
                                                 }
 
                                         }

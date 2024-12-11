@@ -42,7 +42,7 @@ define('DB_COLLATE', 'utf8_general_ci');   # <<< database collation (default utf
 /**
 * Master cache information
 */
-define('CACHE_ENGINE', 'none'); // none, filecache, apc, memcached
+define('CACHE_ENGINE', 'filecache'); // none, filecache, apc, memcached
 define('CACHE_EXPIRY', '300');
 define('CACHE_PREFIX', DB_PREFIX);
 

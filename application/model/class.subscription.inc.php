@@ -1,11 +1,4 @@
 <?php
-/**
- * Membership class to perform the majority of membership functionality in sheel.
- *
- * @package      sheel\Membership
- * @version      6.0.0.622
- * @author       sheel
- */
 class subscription
 {
         protected $sheel;

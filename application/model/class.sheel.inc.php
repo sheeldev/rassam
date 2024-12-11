@@ -1,12 +1,5 @@
 <?php
 
-/**
- * sheel class to perform the majority of the main common sheel functions.
- *
- * @package sheel\sheel
- * @version 6.0.0.622
- * @author sheel
- */
 class sheel
 {
 

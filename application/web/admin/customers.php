@@ -819,15 +819,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 die(json_encode(array('response' => '1', 'message' => $sheel->template->parse_template_phrases('message'))));
 
             }
-
-
-
-
-
             if (($key = array_search('spinner', $sheel->template->meta['cssinclude'])) !== false) {
                 unset($sheel->template->meta['cssinclude'][$key]);
             }
-
             $companycode = $sheel->admincp_customers->get_company_name($sheel->GPC['company_id'], true);
             if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
                 if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
@@ -858,6 +852,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $custdepartments = array();
             $tempcustpositions = array();
             $custpositions = array();
+        
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -865,244 +860,85 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $searchcondition = '$filter=code eq \'' . $sheel->GPC['staffno'] . '\'';
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
-                $staff = $apiResponse->getData();
+                $staff = $apiResponse->getData()[0];
             } else {
                 $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
-            $staff = $staff['0'];
             $staff['customer_id'] = $sheel->admincp_customers->get_customer_id($staff['customerNo']);
             $gender = array('Male' => '{_male}', 'Female' => '{_female}');
-            if (!$sheel->dynamics->init_dynamics('erCustomerDepartments', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $searchcondition = '$filter=customerNo eq \'' . $staff['customerNo'] . '\'&$orderby=departmentCode asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempcustdepartments = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-
-            foreach ($tempcustdepartments as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'departmentCode') {
-                        $code = $value1;
+            $entities = [
+                'erCustomerDepartments' => 'departments',
+                'erCustomerPositions' => 'positions',
+                'erUOM' => 'uom',
+                'erSizes' => 'sizes',
+                'erFits' => 'fits',
+                'erCuts' => 'cuts',
+                'erItemTypes' => 'itemtypes',
+                'erMeasurementCategories' => 'mcategory'
+            ];
+            $data = [];
+            foreach ($entities as $entity => $key) {
+                if (($sheel->cache->fetch($entity)) === false) {
+                    if (!$sheel->dynamics->init_dynamics($entity, $companycode)) {
+                        $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+                        exit();
                     }
-                    if ($key1 == 'departmentName') {
-                        $name = $value1;
+                    if ($key == 'departments') {
+                        $searchcondition = '$filter=customerNo eq \'' . $staff['customerNo'] . '\'&$orderby=departmentCode asc';
+                    } elseif ($key == 'positions') {
+                        $searchcondition = '$filter=customerNo eq \'' . $staff['customerNo'] . '\'&$orderby=positionCode asc';
+                    } else if ($key == 'mcategory') {
+                        $searchcondition = '$orderby=name asc';
+                    } else if ($key == 'itemtypes') {
+                        $searchcondition = '$orderby=name asc';
+                    } else {
+                        $searchcondition = '$orderby=code asc';
                     }
-                }
-                $custdepartments += [$code => $code . ' > ' . $name];
-            }
-
-
-            if (!$sheel->dynamics->init_dynamics('erCustomerPositions', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $searchcondition = '$filter=customerNo eq \'' . $staff['customerNo'] . '\'&$orderby=positionCode asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempcustpos = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-
-            foreach ($tempcustpos as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'positionCode') {
-                        $code = $value1;
-                    }
-                    if ($key1 == 'positionName') {
-                        $name = $value1;
+                    $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+                    if ($apiResponse->isSuccess()) {
+                        $data[$key] = $apiResponse->getData();
+                        $sheel->cache->store($entity, $data[$key],10);
+                    } else {
+                        $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+                        $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+                        exit();
                     }
                 }
-                $custpositions += [$code => $code . ' > ' . $name];
-            }
-            $tempuom = array();
-            $tempitemtypes = array();
-            $tempsizes = array();
-            $tempfits = array();
-            $tempcuts = array();
-            $uom = array();
-            $itemtypes = array();
-            $sizes = array();
-            $fits = array();
-            $cuts = array();
-
-            if (!$sheel->dynamics->init_dynamics('erUOM', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $apiResponse = $sheel->dynamics->select('');
-            if ($apiResponse->isSuccess()) {
-                $tempuom = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-            foreach ($tempuom as $key => $value) {
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'code') {
-                        $code = $value1;
-                    }
-                    if ($key1 == 'name') {
-                        $name = $value1;
-                    }
+                else {
+                    $data[$key] = $sheel->cache->fetch($entity);
                 }
-                $uom += [$code => $name];
+                
             }
-            if (!$sheel->dynamics->init_dynamics('erSizes', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
+            foreach ($data['departments'] as $value) {
+                $custdepartments[$value['departmentCode']] = $value['departmentCode'] . ' > ' . $value['departmentName'];
             }
-            $searchcondition = '$orderby=code asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempsizes = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
+        
+            foreach ($data['positions'] as $value) {
+                $custpositions[$value['positionCode']] = $value['positionCode'] . ' > ' . $value['positionName'];
             }
-
-            foreach ($tempsizes as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'code') {
-                        $code = $value1;
-                    }
-                    if ($key1 == 'name') {
-                        $name = $value1;
-                    }
-                }
-                $sizes += [$code => $code];
-            }
-            if (!$sheel->dynamics->init_dynamics('erFits', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $searchcondition = '$orderby=code asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempfits = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-
-            foreach ($tempfits as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'code') {
-                        $code = $value1;
-                    }
-                    if ($key1 == 'name') {
-                        $name = $value1;
-                    }
-                }
-                $fits += [$code => $code];
-            }
-            if (!$sheel->dynamics->init_dynamics('erCuts', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $searchcondition = '$orderby=code asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempcuts = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-
-            foreach ($tempcuts as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'code') {
-                        $code = $value1;
-                    }
-                    if ($key1 == 'name') {
-                        $name = $value1;
-                    }
-                }
-                $cuts += [$code => $code];
-            }
-            if (!$sheel->dynamics->init_dynamics('erItemTypes', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $searchcondition = '$orderby=name asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempitemtypes = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-
+            $uom = array_column($data['uom'], 'name', 'code');
+            $sizes = array_column($data['sizes'], 'code', 'code');
+            $fits = array_column($data['fits'], 'code', 'code');
+            $cuts = array_column($data['cuts'], 'code', 'code');
             $sqltype1 = $sheel->db->query("
-                        SELECT code
-                        FROM " . DB_PREFIX . "size_types
-                        WHERE (gender = '" . substr($staff['gender'], 0, 1) . "'  or gender='U') AND needsize = '1'
-                        ");
-
-            foreach ($tempitemtypes as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'name') {
-                        $code = $value1;
-                    }
-                }
+                SELECT code
+                FROM " . DB_PREFIX . "size_types
+                WHERE (gender = '" . substr($staff['gender'], 0, 1) . "'  or gender='U') AND needsize = '1'
+            ");
+            $itemtypes = [];
+            foreach ($data['itemtypes'] as $value) {
                 while ($rowtype1 = $sheel->db->fetch_array($sqltype1, DB_ASSOC)) {
-                    if ($code = $rowtype1['code'])
-                        $itemtypes += [$code => $code];
-                }
-
-
-
-            }
-
-            $tempmcategory = array();
-            $mcategory = array();
-            if (!$sheel->dynamics->init_dynamics('erMeasurementCategories', $companycode)) {
-                $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $searchcondition = '$orderby=name asc';
-            $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
-            if ($apiResponse->isSuccess()) {
-                $tempmcategory = $apiResponse->getData();
-            } else {
-                $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
-                $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
-                exit();
-            }
-
-            foreach ($tempmcategory as $key => $value) {
-
-                foreach ($value as $key1 => $value1) {
-                    if ($key1 == 'code') {
-                        $code = $value1;
-                    }
-                    if ($key1 == 'name') {
-                        $name = $value1;
+                    if ($value['name'] == $rowtype1['code']) {
+                        $itemtypes[$value['name']] = $value['name'];
                     }
                 }
-                $mcategory += [$code => $code . ' > ' . $name];
+            }
+        
+            $mcategory = [];
+            foreach ($data['mcategory'] as $value) {
+                $mcategory[$value['code']] = $value['code'] . ' > ' . $value['name'];
             }
             $form['department_pulldown'] = $sheel->construct_pulldown('departments', 'departments', $custdepartments, $staff['departmentCode'], 'class="draw-select"');
             $form['position_pulldown'] = $sheel->construct_pulldown('positions', 'positions', $custpositions, $staff['positionCode'], 'class="draw-select"');

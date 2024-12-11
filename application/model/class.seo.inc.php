@@ -1,11 +1,4 @@
 <?php
-/**
- * Search Engine Friendly URL class to perform the majority of seo/sef functionality in sheel.
- *
- * @package      sheel\Seo
- * @version      6.0.0.622
- * @author       sheel
- */
 class seo
 {
 	protected $sheel;
