@@ -224,7 +224,7 @@
                 <header class="draw-card__header">
                     <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
                         <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_order_sizes}</h2>
+                            <h2 class="draw-heading">{_orders_analysis}</h2>
                         </div>
                         <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
                     </div>
@@ -242,6 +242,15 @@
                                             {count} </td>
                                     </tr>
                                 </loop name="ordersizes">
+                                <loop name="analysis">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
+                                        </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
+                                            {count} </td>
+                                    </tr>
+                                </loop name="analysis">
                             </tbody>
                         </table>
                         <if condition="isset($sheel->show['ordersizes']) AND $sheel->show['ordersizes'] == false">
@@ -402,15 +411,14 @@
                     <div id="DashboardOnlineTopLandingPagePaths" class="dashboard-widget">
                         <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
                             <tbody>
-                                <loop name="toplandingpages">
+                                <loop name="assembliescategories">
                                     <tr>
-                                        <td class="dashboard-source-list__title"> <a href="{url}" target="_blank"
-                                                title="{title}">{title}</a> </td>
+                                        <td class="dashboard-source-list__title"> {title}</td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
                                             {count} </td>
                                     </tr>
-                                </loop name="toplandingpages">
+                                </loop name="assembliescategories">
                             </tbody>
                         </table>
                         <if condition="isset($sheel->show['toplandingpages']) AND $sheel->show['toplandingpages'] == false">

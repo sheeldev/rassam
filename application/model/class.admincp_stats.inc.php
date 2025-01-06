@@ -210,6 +210,14 @@ class admincp_stats extends admincp
 							WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 						");
 			$sum = $this->sheel->db->num_rows($sqltotal);
+			$sqlassemblytotal = $this->sheel->db->query("
+				SELECT SUM(totalquantity) AS totalquantity
+				FROM " . DB_PREFIX . "analysis_records
+				WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) .") 
+				AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
+			");
+			$ressum = $this->sheel->db->fetch_array($sqlassemblytotal, DB_ASSOC);
+			$sumassemblies = $ressum['totalquantity'];
 
 			if ($do == 'totalorders' or $do == 'totalquantity' or $do == 'invoiced' or $do == 'archived' or $do == 'smallorders' or $do == 'mediumorders' or $do == 'largeorders') {
 				$sql = $this->sheel->db->query("
@@ -277,7 +285,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.analysisidentifier
 					ORDER BY count DESC
-					LIMIT 5
+					LIMIT 7
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topcustomers'] = true;
@@ -305,7 +313,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.entityid
 					ORDER BY count DESC
-					LIMIT 5
+					LIMIT 7
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topentities'] = true;
@@ -322,6 +330,33 @@ class admincp_stats extends admincp
 					}
 				}
 				return $topentities;
+			} else if ($do == 'assembliescategories') {
+				$this->sheel->show['assembliescategories'] = false;
+				$assembliescategories = array();
+				$sql = $this->sheel->db->query("
+					SELECT category as name, SUM(totalquantity) AS count
+					FROM " . DB_PREFIX . "analysis_records
+					WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) .")
+					AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
+					GROUP BY category
+					ORDER BY count DESC
+					LIMIT 10
+				");
+				if ($this->sheel->db->num_rows($sql) > 0) {
+					$this->sheel->show['assembliescategories'] = true;
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+						$res['percent'] = '0.0';
+						$assembliescategoriesx[] = $res;
+					}
+					foreach ($assembliescategoriesx as $key => $array) {
+						$percent = sprintf("%01.1f", ($array['count'] / $sumassemblies) * 100);
+						$assembliescategories[$key]['icon'] = $this->sheel->common->fetch_company_logo();
+						$assembliescategories[$key]['title'] = $array['name'];
+						$assembliescategories[$key]['percent'] = $percent;
+						$assembliescategories[$key]['count'] = $array['count'];
+					}
+				}
+				return $assembliescategories;
 			} else if ($do == 'ordersizes') {
 				$this->sheel->show['ordersizes'] = false;
 				$ordersizes = array();

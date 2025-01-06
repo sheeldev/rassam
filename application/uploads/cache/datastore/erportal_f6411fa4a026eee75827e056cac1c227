@@ -56,7 +56,7 @@
                                                                         <h2>You can search for anything � settings, customers and more.</h2>
                                                                 </div>
                                                                 <!-- recent keywords -->
-                                                                
+                                                                <div class="global-search__recent"><h4 class="global-search__list-heading">Recent searches</h4><ul class="global-search__list"><li class="global-search__list-item"> <a href="javascript:;" bind-event-click="setSearch('customers')">customers</a> </li><li class="global-search__list-item"> <a href="javascript:;" bind-event-click="setSearch('orders')">orders</a> </li></ul></div>
                                                                  <!-- recent keywords -->
                                                         </div>
                                                 </div>
@@ -84,7 +84,7 @@
                                                 <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">{_customers}</span>
                                                 <span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Customers" title="{_customers}" refresh-always="">
-                                                    <span class="draw-nav__badge-content" id="customerscount">651</span>
+                                                    <span class="draw-nav__badge-content" id="customerscount">656</span>
                                                 </span>
                                                 <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
                                                         <use xlink:href="#draw-chevron"></use>
@@ -97,7 +97,7 @@
                                                 <span class="glyphicons glyphicons-user draw-icon" aria-hidden="true"></span>
                                                 <span class="draw-nav__text">{_users}</span>
                                                 <span class="draw-nav__badge sheelColor draw-nav__badge--adjacent-chevron" id="iLNav_Users" title="{users}" refresh-always="">
-                                                    <span class="draw-nav__badge-content" id="usercount">17</span>
+                                                    <span class="draw-nav__badge-content" id="usercount">20</span>
                                                 </span>
                                                 <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
                                                         <use xlink:href="#draw-chevron"></use>
@@ -122,7 +122,7 @@
                                             <span class="glyphicons glyphicons-door draw-icon" aria-hidden="true"></span>
                                             <span class="draw-nav__text">Who's Online</span>
                                             <span class="draw-nav__badge green draw-nav__badge--adjacent-chevron" id="iLNav_WhosOnline" title="Visitors online" refresh-always="">
-                                                <span class="draw-nav__badge-content">3</span>
+                                                <span class="draw-nav__badge-content">6</span>
                                             </span>
                                             <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
                                             </svg>

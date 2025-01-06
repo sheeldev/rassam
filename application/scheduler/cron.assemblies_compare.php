@@ -25,7 +25,6 @@ $sqlcompany = $this->sheel->db->query("
         ");
 $searchcondition = '';
 if ($this->sheel->db->num_rows($sqlcompany) > 0) {
-
         while ($rescompanies = $this->sheel->db->fetch_array($sqlcompany, DB_ASSOC)) {
 
                 $searchcondition = " AND e.entityid = '" . $rescompanies['company_id'] . "'";
@@ -114,17 +113,6 @@ $sqlfactory = $this->sheel->db->query("
         WHERE status = 'active' and isfactory ='1'
         ");
 $searchcondition = '';
-$checkpoint = 0;
-$sqlcheckpoint = $this->sheel->db->query("
-        SELECT checkpointid
-        FROM " . DB_PREFIX . "checkpoints
-        WHERE type = 'Assembly' AND triggeredon = '0-Out'
-        LIMIT 1
-        ");
-if ($this->sheel->db->num_rows($sqlcheckpoint) > 0) {
-        $rescheckpoint = $this->sheel->db->fetch_array($sqlcheckpoint, DB_ASSOC);
-        $checkpoint = $rescheckpoint['checkpointid'];
-}
 if ($this->sheel->db->num_rows($sqlfactory) > 0) {
         $newAssemblies = [];
         while ($resfactories = $this->sheel->db->fetch_array($sqlfactory, DB_ASSOC)) {
@@ -132,19 +120,14 @@ if ($this->sheel->db->num_rows($sqlfactory) > 0) {
                         $cronlog .= 'Inactive Dynamics API erAssemblies for company ' . $rescompanies['name'] . ', ';
                 }
                 foreach ($orders as $order) {
-
-
                         $searchcondition = '$filter=sourceType eq \'Order\' and sourceNo eq \'' . $order['reference'] . '\'';
-
                         $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
                         if ($apiResponse->isSuccess()) {
                                 $assembliesfrombc = $apiResponse->getData();
-
                         } else {
                                 $cronlog .= $apiResponse->getErrorMessage() . ', ';
                         }
                         $orderAssemblies = array_column($assembliesfrombc, 'assemblyNo');
-
                         foreach ($order['assemblies'] as $bcAssembly) {
 
                                 if (!in_array($bcAssembly['assemblyNo'], $orderAssemblies)) {
