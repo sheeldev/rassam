@@ -2679,7 +2679,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
             $itemtypes += [$code => $code];
         }
-
         $typecategories = [];
         $sqlcat = $sheel->db->query("
                 SELECT id, code, name
@@ -2691,7 +2690,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $typecategories += [$rowcat['id'] => $rowcat['code'] . ' > ' . $rowcat['name']];
             }
         }
-
         $form['staff_pulldown'] = $sheel->construct_pulldown('staffs', 'staffs', $custstaffs, '', 'class="draw-select"');
         $form['size_pulldown'] = $sheel->construct_pulldown('sizes', 'sizes', $sizes, '', 'class="draw-select"');
         $form['fit_pulldown'] = $sheel->construct_pulldown('fits', 'fits', $fits, 'R', 'class="draw-select"');
@@ -2773,7 +2771,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
             $uploadedsizes[] = $res;
         }
-
         if ($sheel->db->num_rows($sqlupd) > 0) {
             $sheel->GPC['haspendinguploads'] = '1';
         }

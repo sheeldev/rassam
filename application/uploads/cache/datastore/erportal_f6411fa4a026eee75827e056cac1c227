@@ -122,7 +122,7 @@
                                             <span class="glyphicons glyphicons-door draw-icon" aria-hidden="true"></span>
                                             <span class="draw-nav__text">Who's Online</span>
                                             <span class="draw-nav__badge green draw-nav__badge--adjacent-chevron" id="iLNav_WhosOnline" title="Visitors online" refresh-always="">
-                                                <span class="draw-nav__badge-content">6</span>
+                                                <span class="draw-nav__badge-content">2</span>
                                             </span>
                                             <svg class="draw-icon draw-icon--16 draw-nav__chevron draw-icon--no-nudge">
                                             </svg>

@@ -69,6 +69,7 @@
                             </div>
 
                         </div>
+                        
                         <div class="draw-grid__cell">
                             <div id="DashboardOrdersGraph" class="reports-chart interactive dashboard-widget">
                                 <!-- 416 x 210 -->
@@ -239,7 +240,7 @@
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
+                                            <a href="{url}" title="{title}">{count}</a></td>
                                     </tr>
                                 </loop name="ordersizes">
                                 <loop name="analysis">
@@ -248,7 +249,7 @@
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
+                                            <a href="{url}" title="{title}">{count}</a></td>
                                     </tr>
                                 </loop name="analysis">
                             </tbody>
@@ -370,7 +371,7 @@
                 <header class="draw-card__header">
                     <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
                         <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_orders_analysis}</h2>
+                            <h2 class="draw-heading">{_events_analysis}</h2>
                         </div>
                         <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
                     </div>
@@ -379,7 +380,7 @@
                     <div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">
                         <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
                             <tbody>
-                                <loop name="analysis">
+                                <loop name="assembliesevents">
                                     <tr>
                                         <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
                                         </td>
@@ -387,10 +388,10 @@
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
                                             {count} </td>
                                     </tr>
-                                </loop name="analysis">
+                                </loop name="assembliesevents">
                             </tbody>
                         </table>
-                        <if condition="isset($sheel->show['analysis']) AND $sheel->show['analysis'] == false">
+                        <if condition="isset($sheel->show['assembliesevents']) AND $sheel->show['assembliesevents'] == false">
                             <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
                         </if>
                     </div>
@@ -421,7 +422,7 @@
                                 </loop name="assembliescategories">
                             </tbody>
                         </table>
-                        <if condition="isset($sheel->show['toplandingpages']) AND $sheel->show['toplandingpages'] == false">
+                        <if condition="isset($sheel->show['toplandingpages']) AND $sheel->show['assembliescategories'] == false">
                             <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
                         </if>
                     </div>

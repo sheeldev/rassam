@@ -107,6 +107,106 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 WHERE e.eventfor = 'customer' and e.topic='Order' $searchcondition
                 GROUP BY e.reference
                 ORDER BY createdtime DESC");
+    } else if ($sheel->GPC['no'] == '-1') {
+
+        if (isset($sheel->GPC['analysis'])) {
+            if ($sheel->GPC['analysis'] == 'small') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE issmall = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'medium') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE ismedium = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'large') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE islarge = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'ontime') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isfinished = '1' AND isarchived = '1' AND isontime = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'notontime') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isfinished = '1' AND isarchived = '1' AND isontime = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'closed') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isfinished = '1' AND isarchived = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'deleted') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isfinished = '0' AND isarchived = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'invoicednotarchived') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isfinished = '1' AND isarchived = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            }  else if ($sheel->GPC['analysis'] == 'noquote') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE hasquote='0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            }  else if ($sheel->GPC['analysis'] == 'inactive') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isactive = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'active') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE isactive = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else {
+
+            }
+            $sqlEvents = $sheel->db->query("
+                SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                FROM " . DB_PREFIX . "events e
+                LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
+                INNER JOIN (
+                    SELECT reference, MIN(eventtime) as max_eventtime
+                    FROM " . DB_PREFIX . "events
+                    WHERE eventfor = 'customer' and topic='Order'
+                    GROUP BY reference
+                ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
+                WHERE e.eventfor = 'customer' and e.topic='Order' AND e.reference IN (" . $sql . ") $searchcondition
+                GROUP BY e.reference
+                ORDER BY createdtime DESC
+                LIMIT " . (($sheel->GPC['page'] - 1) * $sheel->GPC['pp']) . "," . $sheel->GPC['pp']);
+            $sqlEventsCount = $sheel->db->query("
+                SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
+                FROM " . DB_PREFIX . "events e
+                LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
+                INNER JOIN (
+                    SELECT reference, MIN(eventtime) as max_eventtime
+                    FROM " . DB_PREFIX . "events
+                    WHERE eventfor = 'customer' and topic='Order' 
+                    GROUP BY reference
+                ) r ON e.reference = r.reference AND e.eventtime = r.max_eventtime
+                WHERE e.eventfor = 'customer' and e.topic='Order' AND e.reference IN (" . $sql . ") $searchcondition
+                GROUP BY e.reference
+                ORDER BY createdtime DESC");
+        }
     } else {
         $sqlEvents = $sheel->db->query("
                 SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
@@ -197,7 +297,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         ");
 
         $finishedqty = $sheel->db->num_rows($sqlFinishedAssemblies);
-        
+
         if ($assemblycount == 0 && $finishedqty == 0) {
             $progresspercent = 0;
         } else if ($finishedqty > $assemblycount && $assemblycount > 0 && $finishedqty > 0) {
@@ -219,7 +319,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         } else if ($progresspercent == 100) {
             $color = 'green';
         }
-        
+
         $resEvent['assembly'] = '<span class="draw-status__badge draw-status__badge--adjacent-chevron" ' . ($assemblycount > 0 ? 'onclick="showAssemblyDetails(\'' . $resEvent['reference'] . '\', \'' . $resEvent['eventidentifier'] . '\')" style="cursor: pointer;"' : '') . '><span class="draw-status__badge-content">' . $assemblycount . '</span></span>';
         $resEvent['progress'] = '<span class="draw-status__badge ' . $color . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $progresspercent . '%</span></span>';
 
@@ -264,7 +364,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $form['number'] = number_format($number);
 
     $pageurl = PAGEURL;
-    $prevnext = $sheel->admincp->pagination($number, $sheel->GPC['pp'], $sheel->GPC['page'], $pageurl,'',1);
+    $prevnext = $sheel->admincp->pagination($number, $sheel->GPC['pp'], $sheel->GPC['page'], $pageurl, '', 1);
     $filter_options = array(
         '' => '{_select_filter} &ndash;',
         'account' => '{_account}',

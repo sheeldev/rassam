@@ -255,7 +255,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.countrycode
 					ORDER BY count DESC
-					LIMIT 10
+					LIMIT 15
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topdestinations'] = true;
@@ -285,7 +285,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.analysisidentifier
 					ORDER BY count DESC
-					LIMIT 7
+					LIMIT 10
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topcustomers'] = true;
@@ -313,7 +313,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.entityid
 					ORDER BY count DESC
-					LIMIT 7
+					LIMIT 10
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topentities'] = true;
@@ -340,7 +340,7 @@ class admincp_stats extends admincp
 					AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 					GROUP BY category
 					ORDER BY count DESC
-					LIMIT 10
+					LIMIT 15
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['assembliescategories'] = true;
@@ -357,6 +357,35 @@ class admincp_stats extends admincp
 					}
 				}
 				return $assembliescategories;
+			} else if ($do == 'assembliesevents') {
+				$this->sheel->show['assembliesevents'] = false;
+				$assembliescategories = array();
+				$sql = $this->sheel->db->query("
+					SELECT ar.lastcheckpoint, SUM(ar.totalquantity) AS count, c.message as name
+					FROM " . DB_PREFIX . "analysis_records ar
+					LEFT JOIN " . DB_PREFIX . "checkpoints c ON ar.lastcheckpoint = c.checkpointid
+					LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and ar.companyid = cs.fromid
+					WHERE ar.recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) .")
+					AND ar.lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
+					GROUP BY ar.lastcheckpoint
+					ORDER BY cs.sequence ASC
+					LIMIT 15
+				");
+				if ($this->sheel->db->num_rows($sql) > 0) {
+					$this->sheel->show['assembliesevents'] = true;
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+						$res['percent'] = '0.0';
+						$assemblieseventsx[] = $res;
+					}
+					foreach ($assemblieseventsx as $key => $array) {
+						$percent = sprintf("%01.1f", ($array['count'] / $sumassemblies) * 100);
+						$assembliesevents[$key]['icon'] = $this->sheel->common->fetch_company_logo();
+						$assembliesevents[$key]['title'] = $array['name'];
+						$assembliesevents[$key]['percent'] = $percent;
+						$assembliesevents[$key]['count'] = $array['count'];
+					}
+				}
+				return $assembliesevents;
 			} else if ($do == 'ordersizes') {
 				$this->sheel->show['ordersizes'] = false;
 				$ordersizes = array();
@@ -385,6 +414,7 @@ class admincp_stats extends admincp
 					foreach ($ordersizesx as $key => $array) {
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$ordersizes[$key]['title'] = '{_' . $array['sizes'] . '}';
+						$ordersizes[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=' . $array['sizes'] . '&period=' . $period;
 						$ordersizes[$key]['percent'] = $percent;
 						$ordersizes[$key]['count'] = $array['count'];
 					}
@@ -462,7 +492,53 @@ class admincp_stats extends admincp
 				$sql = $this->sheel->db->query("
 					SELECT
 					CASE
+					WHEN `isfinished` = '0' AND `isarchived` = '1' THEN 'deleted'
+					END AS analysis,
+					COUNT(DISTINCT analysisreference) AS count
+					FROM " . DB_PREFIX . "analysis
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '0' AND isarchived = '1'
+					GROUP BY analysis
+					ORDER BY count DESC
+				");
+				if ($this->sheel->db->num_rows($sql) > 0) {
+					$this->sheel->show['analysis'] = true;
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+						$res['percent'] = '0.0';
+						$analysisx[] = $res;
+					}
+				} else {
+					$this->sheel->show['analysis'] = true;
+					$analysisx[] = array('analysis' => 'deleted', 'count' => 0);
+				}
+
+
+				$sql = $this->sheel->db->query("
+					SELECT
+					CASE
 					WHEN `isfinished` = '1' AND `isarchived` = '1' THEN 'closed'
+					END AS analysis,
+					COUNT(DISTINCT analysisreference) AS count
+					FROM " . DB_PREFIX . "analysis
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '1'
+					GROUP BY analysis
+					ORDER BY count DESC
+				");
+				if ($this->sheel->db->num_rows($sql) > 0) {
+					$this->sheel->show['analysis'] = true;
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+						$res['percent'] = '0.0';
+						$analysisx[] = $res;
+					}
+				} else {
+					$this->sheel->show['analysis'] = true;
+					$analysisx[] = array('analysis' => 'closed', 'count' => 0);
+				}
+
+				$sql = $this->sheel->db->query("
+					SELECT
+					CASE
+					WHEN `isfinished` = '1' AND `isarchived` = '1' AND isontime = '1' THEN 'ontime'
+					WHEN `isfinished` = '1' AND `isarchived` = '1' AND isontime = '0' THEN 'notontime'
 					END AS analysis,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
@@ -488,9 +564,13 @@ class admincp_stats extends admincp
 						$percent = sprintf("%01.1f", 0);
 					}
 					$analysis[$key]['title'] = '{_' . $value['analysis'] . '}';
+					$analysis[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=' . $value['analysis'] . '&period=' . $period;
 					$analysis[$key]['percent'] = $percent;
 					$analysis[$key]['count'] = $value['count'];
 				}
+
+				
+
 				return $analysis;
 			}
 		}
@@ -970,7 +1050,7 @@ class admincp_stats extends admincp
 		}
 		return $return;
 	}
-	private function period_to_sql($column = '', $period = '', $overide = '', $istime = false)
+	public function period_to_sql($column = '', $period = '', $overide = '', $istime = false)
 	{
 		switch ($period) {
 			case 'today': {

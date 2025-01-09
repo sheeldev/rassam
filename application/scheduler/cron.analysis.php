@@ -19,6 +19,7 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
         $islarge = 0;
         $quoteexist = 0;
         $activeorder = 0;
+        $isontime = 0;
         $country = '';
         if ($resanalysis['hasquote'] == '1') {
                 $quoteexist = 1;
@@ -30,16 +31,25 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and e.entityid = cs.fromid
                 WHERE e.topic='Order' AND e.reference = '" . $resanalysis['analysisreference'] . "'
                 ORDER BY eventtime ASC, eventid ASC");
+        $days = 0;
         while ($resEvents = $this->sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
                 $resData = json_decode($resEvents['eventdata'], true);
-                $resCheckpointCode = $resEvents['checkpointcode'];
-                if ($totalquantity == 0 || $totalqunatity <> $resData['TotalQuantity']) {
+                if ($resEvents['isend'] == '1' and $resEvents['isarchive'] == '0') {
+                        $days = intval($resData['promisedDeliveryDate'] == '0001-01-01' ? '0' : $this->sheel->common->getBusinessDays(date('Y-m-d', $resEvents['eventtime']), $resData['promisedDeliveryDate']));
+                        if ($days < 0) {
+                                $isontime = 0;
+                        }
+                        else {
+                                $isontime = 1;
+                        }
+                } 
+                if ($totalquantity == 0 || $totalquantity <> $resData['TotalQuantity']) {
                         $totalquantity = $resData['totalQuantity'];
                 }
                 if (isset($resData['quoteNo']) and $resData['quoteNo'] != '' and $quoteexist == 0) {
                         $quoteexist = 1;
                 }
-                if ($resCheckpointCode == 'AVO') {
+                if ($resEvents['checkpointcode'] == 'AVO') {
                         $activeorder = 1;
                 }
                 if (isset($resData['sellToCountryRegionCode']) and $resData['sellToCountryRegionCode'] != '') {
@@ -135,7 +145,8 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 ismedium = '" . $ismedium . "',
                 islarge = '" . $islarge . "',
                 hasquote = '" . $quoteexist . "',
-                isactive = '" . $activeorder . "'
+                isactive = '" . $activeorder . "',
+                isontime = '" . $isontime . "'
                 WHERE analysisid = '" . $resanalysis['analysisid'] . "'
         ");
         $sqlLastEvent = $this->sheel->db->query("
@@ -143,7 +154,7 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 FROM " . DB_PREFIX . "events e
                 LEFT JOIN " . DB_PREFIX . "checkpoints c ON e.checkpointid = c.checkpointid
                 LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and e.entityid = cs.fromid
-                WHERE e.topic='Order' AND e.reference = '" . $resanalysis['analysisreference'] . "' and  cs.isend = '1'
+                WHERE e.topic='Order' AND e.reference = '" . $resanalysis['analysisreference'] . "' and  cs.isend = '1' and cs.isarchive = '0'
                 ORDER BY eventtime DESC, eventid DESC LIMIT 1");
         if ($this->sheel->db->num_rows($sqlLastEvent) == 1) {
                 $this->sheel->db->query("

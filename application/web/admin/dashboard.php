@@ -94,6 +94,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	$loops = array(
         'topdestinations' => $stats['stats']['topdestinations'],
         'assembliescategories' => $stats['stats']['assembliescategories'],
+        'assembliesevents' => $stats['stats']['assembliesevents'],
 		'topcustomers' => $stats['stats']['topcustomers'],
 		'topentities' => $stats['stats']['topentities'],
 		'ordersizes' => $stats['stats']['ordersizes'],
@@ -108,7 +109,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'orders1' => $orders['label'],
         'orders2' => $orders['series']
     );
-    $vars['url'] = $_SERVER['REQUEST_URI'];
+    
     $sheel->template->fetch('main', 'dashboard.html', 1);
     $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'orders' => $orders,  'statistics' => $statistics));
 

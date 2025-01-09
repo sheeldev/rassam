@@ -44,7 +44,7 @@ $router->map('GET|POST', '/admin/users/', __DIR__ . '/application/web/admin/user
 $router->map('GET|POST', '/admin/users/[update:cmd]/[*:userid]/[*:view]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_user_view');
 $router->map('GET|POST', '/admin/users/[update|switch:cmd]/[*:userid]/', __DIR__ . '/application/web/admin/users.php', 'admin_update_user');
 $router->map('GET|POST', '/admin/users/[add|verifications|violations|audit:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_add');
-$router->map('GET|POST', '/admin/users/[bulkmailer|bulkmailer/export:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_bulkmailer');
+$router->map('GET|POST', '/admin/users/[bulkmailer|bulkmailer/[export:cmd]/', __DIR__ . '/application/web/admin/users.php', 'admin_users_bulkmailer');
 $router->map('GET|POST', '/admin/users/roles/', __DIR__ . '/application/web/admin/roles.php', 'admin_role');
 $router->map('GET|POST', '/admin/users/[roles:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_add');
 $router->map('GET|POST', '/admin/users/[roles:cmd]/[delete|update:subcmd]/[*:roleid]/', __DIR__ . '/application/web/admin/roles.php', 'admin_role_cmd');
@@ -73,6 +73,7 @@ $router->map('GET|POST', '/admin/settings/[globalupdate:cmd]/', __DIR__ . '/appl
 
 $router->map('GET|POST', '/admin/reports/', __DIR__ . '/application/web/admin/reports.php', 'admin_reports');
 $router->map('GET|POST', '/admin/dashboard/', __DIR__ . '/application/web/admin/dashboard.php', 'admin_dashboard');
+$router->map('GET|POST', '/admin/dashboard/[*:view]/', __DIR__ . '/application/web/admin/dashboard.php', 'admin_dashboard_cmd');
 
 $router->map('GET|POST', '/admin/settings/[mail:cmd]/', __DIR__ . '/application/web/admin/settings.php', 'admin_settings_email');
 $router->map('GET|POST', '/admin/settings/emails/', __DIR__ . '/application/web/admin/emailtemplates.php', 'admin_email_templates');
