@@ -9,7 +9,6 @@ $this->sheel->timer->start();
 $sqlanalysis = $this->sheel->db->query("
                 SELECT *
                 FROM " . DB_PREFIX . "analysis
-                WHERE isfinished = '0' or isarchived = '0'
         ");
 $ordersizebrackets = explode("|", $this->sheel->config['ordermagnitude']);
 while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
@@ -34,15 +33,18 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
         $days = 0;
         while ($resEvents = $this->sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
                 $resData = json_decode($resEvents['eventdata'], true);
+                $deliverydate = $resData['promisedDeliveryDate'] == '0001-01-01' ? $resData['requestedDeliveryDate'] : $resData['promisedDeliveryDate'];
+                $date = new DateTime($deliverydate);
+                $weekNumber = $date->format('W');
+                $yearnumber = $date->format('Y');
                 if ($resEvents['isend'] == '1' and $resEvents['isarchive'] == '0') {
-                        $days = intval($resData['promisedDeliveryDate'] == '0001-01-01' ? '0' : $this->sheel->common->getBusinessDays(date('Y-m-d', $resEvents['eventtime']), $resData['promisedDeliveryDate']));
+                        $days = intval($deliverydate == '0001-01-01' ? '0' : $this->sheel->common->getBusinessDays(date('Y-m-d', $resEvents['eventtime']), $deliverydate));
                         if ($days < 0) {
                                 $isontime = 0;
-                        }
-                        else {
+                        } else {
                                 $isontime = 1;
                         }
-                } 
+                }
                 if ($totalquantity == 0 || $totalquantity <> $resData['TotalQuantity']) {
                         $totalquantity = $resData['totalQuantity'];
                 }
@@ -146,7 +148,11 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 islarge = '" . $islarge . "',
                 hasquote = '" . $quoteexist . "',
                 isactive = '" . $activeorder . "',
-                isontime = '" . $isontime . "'
+                isontime = '" . $isontime . "',
+                shipweek = '" . $weekNumber . "',
+                shipyear = '" . $yearnumber . "',
+                deliveryweek = '" . $weekNumber . "',
+                deliveryyear = '" . $yearnumber . "'
                 WHERE analysisid = '" . $resanalysis['analysisid'] . "'
         ");
         $sqlLastEvent = $this->sheel->db->query("

@@ -93,6 +93,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
 	$loops = array(
         'topdestinations' => $stats['stats']['topdestinations'],
+        'deliveries' => $stats['stats']['deliveries'],
         'assembliescategories' => $stats['stats']['assembliescategories'],
         'assembliesevents' => $stats['stats']['assembliesevents'],
 		'topcustomers' => $stats['stats']['topcustomers'],

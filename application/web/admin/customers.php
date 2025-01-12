@@ -3350,7 +3350,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     break;
                 }
                 case 'account': {
-                    $searchcondition = "AND (c.customer_ref = '" . $sheel->db->escape_string($q) . "' OR c.account_number = '" . $sheel->db->escape_string($q) . "')";
+                    $searchcondition = "AND (c.customer_ref LIKE '%" . $sheel->db->escape_string($q) . "%' OR c.account_number LIKE '%" . $sheel->db->escape_string($q) . "%')";
                     break;
                 }
 

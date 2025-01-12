@@ -79,7 +79,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $searchcondition .= " AND e.entityid = '" . $_SESSION['sheeldata']['user']['entityid'] . "'";
     }
     if ($sheel->GPC['no'] == '0') {
-        $currentarea = 'Orders';
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/">{_customers}</a> / </span>Orders';
         $sqlEvents = $sheel->db->query("
                 SELECT e.eventid, e.eventidentifier, e.entityid, e.eventtime as max_eventtime, e.createdtime as createdtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color
                 FROM " . DB_PREFIX . "events e
@@ -108,7 +108,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 GROUP BY e.reference
                 ORDER BY createdtime DESC");
     } else if ($sheel->GPC['no'] == '-1') {
-
+        $currentarea = '<a href="' . HTTPS_SERVER_ADMIN . 'dashboard/">{_dashboard}</a> / </span>Orders / {_' . $sheel->GPC['analysis'] . '}';
         if (isset($sheel->GPC['analysis'])) {
             if ($sheel->GPC['analysis'] == 'small') {
                 $sql = "
@@ -158,13 +158,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     FROM " . DB_PREFIX . "analysis
                     WHERE isfinished = '1' AND isarchived = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
                 ";
-            }  else if ($sheel->GPC['analysis'] == 'noquote') {
+            } else if ($sheel->GPC['analysis'] == 'noquote') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE hasquote='0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
                 ";
-            }  else if ($sheel->GPC['analysis'] == 'inactive') {
+            } else if ($sheel->GPC['analysis'] == 'inactive') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
@@ -175,6 +175,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isactive = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'deliveries') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE deliveryweek = '" . $sheel->GPC['week'] . "' AND deliveryyear = '" . $sheel->GPC['year'] . "' AND (isfinished = '0' AND isarchived = '0')
                 ";
             } else {
 
@@ -224,7 +230,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 ");
     }
     $events = array();
-    if ($sheel->GPC['no'] != '0') {
+    if ($sheel->GPC['no'] != '0' and $sheel->GPC['no'] != '-1') {
         $customerid = '0';
         $sql = $sheel->db->query("
             SELECT customer_id
@@ -237,7 +243,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $customer = $sheel->db->fetch_array($sql, DB_ASSOC);
             $customerid = $customer['customer_id'];
         }
-        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/view/' . $customerid . '/">' . $sheel->GPC['no'] . '</a> / </span> Orders';
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/">{_customers}</a> / </span><span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'customers/view/' . $customerid . '/">' . $sheel->GPC['no'] . '</a> / </span> Orders';
     }
     while ($resEvent = $sheel->db->fetch_array($sqlEvents, DB_ASSOC)) {
         $sqlEventLastCheckpoint = $sheel->db->query("

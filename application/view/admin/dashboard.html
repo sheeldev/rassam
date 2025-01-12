@@ -206,14 +206,46 @@
                                         labels: [{orders1}],
                                         series: [{orders2}]
                                     }
-
-
                                     new Chartist.Bar('#DashboardOrdersGraph', data, options);
-
-
                                 </script>
                             </div>
                         </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+        <div class="draw-grid__cell draw-grid__cell--full">
+            <div class="draw-card" >
+                <header class="draw-card__header">
+                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                        <div class="draw-grid__cell">
+                            <h2 class="draw-heading">{_undelivered_delivery_promises}</h2>
+                        </div>
+                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued"></div>
+                    </div>
+                </header>
+                <section class="draw-card__section">
+                    <div style="overflow-y:auto;">
+                        <ul class="draw-tab__list">
+                            <loop name="deliveries">
+                                <li class="draw-tab draw-tab--is-active">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>{_week} {title}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><a href="{url}" title="{title}"><span class="cbadge lineitems cbadge-notification">{count}</span></a>&nbsp;<span class="cbadge lineitems cbadge-notification">{totalquantity}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </li>
+                            </loop name="deliveries">
+                        </ul>
                     </div>
                 </section>
             </div>
@@ -259,6 +291,107 @@
                         </if>
                     </div>
                 </section>
+            </div>
+        </div>
+        <div class="draw-grid__cell draw-grid__cell--third">
+            <div class="draw-card">
+                <header class="draw-card__header">
+                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                        <div class="draw-grid__cell">
+                            <h2 class="draw-heading">{_events_analysis}</h2>
+                        </div>
+                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                    </div>
+                </header>
+                <section class="draw-card__section">
+                    <div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">
+                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                            <tbody>
+                                <loop name="assembliesevents">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
+                                        </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
+                                            {count} </td>
+                                    </tr>
+                                </loop name="assembliesevents">
+                            </tbody>
+                        </table>
+                        <if condition="isset($sheel->show['assembliesevents']) AND $sheel->show['assembliesevents'] == false">
+                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
+                        </if>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="draw-grid__cell draw-grid__cell--third">
+            <div class="draw-card">
+                <header class="draw-card__header">
+                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                        <div class="draw-grid__cell">
+                            <h2 class="draw-heading">{_assemblies_analysis}</h2>
+                        </div>
+                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
+                    </div>
+                </header>
+                <section class="draw-card__section channel-stats">
+                    <div id="DashboardOnlineTopLandingPagePaths" class="dashboard-widget">
+                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                            <tbody>
+                                <loop name="assembliescategories">
+                                    <tr>
+                                        <td class="dashboard-source-list__title"> {title}</td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
+                                            {count} </td>
+                                    </tr>
+                                </loop name="assembliescategories">
+                            </tbody>
+                        </table>
+                        <if condition="isset($sheel->show['toplandingpages']) AND $sheel->show['assembliescategories'] == false">
+                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
+                        </if>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+        <div class="draw-grid__cell draw-grid__cell--third">
+            <div class="draw-card">
+                <header class="draw-card__header">
+                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                        <div class="draw-grid__cell">
+                            <h2 class="draw-heading">{_top_destinations}</h2>
+                        </div>
+                        <div class="draw-grid__cell draw-grid__cell--no-flex"> <span
+                                class="type--subdued">{period}</span> </div>
+                    </div>
+                </header>
+                <div class="draw-card__section">
+                    <div id="DashboardOnlineToDestinations" class="dashboard-widget">
+                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                            <tbody>
+                                <loop name="topdestinations">
+                                    <tr>
+                                        <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
+                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
+                                        </td>
+                                        <td class="dashboard-source-list__number"> {percent}% </td>
+                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
+                                            {count} </td>
+                                    </tr>
+                                </loop name="topdestinations">
+                            </tbody>
+                        </table>
+                        <if condition="isset($sheel->show['topdestinations']) AND $sheel->show['topdestinations'] == false">
+                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
+                        </if>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="draw-grid__cell draw-grid__cell--third">
@@ -322,107 +455,6 @@
                             </tbody>
                         </table>
                         <if condition="isset($sheel->show['topentities']) AND $sheel->show['topentities'] == false">
-                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
-                        </if>
-                    </div>
-                </section>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
-        <div class="draw-grid__cell draw-grid__cell--third">
-            <div class="draw-card">
-                <header class="draw-card__header">
-                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
-                        <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_top_destinations}</h2>
-                        </div>
-                        <div class="draw-grid__cell draw-grid__cell--no-flex"> <span
-                                class="type--subdued">{period}</span> </div>
-                    </div>
-                </header>
-                <div class="draw-card__section">
-                    <div id="DashboardOnlineToDestinations" class="dashboard-widget">
-                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
-                            <tbody>
-                                <loop name="topdestinations">
-                                    <tr>
-                                        <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
-                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
-                                        </td>
-                                        <td class="dashboard-source-list__number"> {percent}% </td>
-                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
-                                    </tr>
-                                </loop name="topdestinations">
-                            </tbody>
-                        </table>
-                        <if condition="isset($sheel->show['topdestinations']) AND $sheel->show['topdestinations'] == false">
-                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
-                        </if>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="draw-grid__cell draw-grid__cell--third">
-            <div class="draw-card">
-                <header class="draw-card__header">
-                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
-                        <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_events_analysis}</h2>
-                        </div>
-                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
-                    </div>
-                </header>
-                <section class="draw-card__section">
-                    <div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">
-                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
-                            <tbody>
-                                <loop name="assembliesevents">
-                                    <tr>
-                                        <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
-                                        </td>
-                                        <td class="dashboard-source-list__number"> {percent}% </td>
-                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
-                                    </tr>
-                                </loop name="assembliesevents">
-                            </tbody>
-                        </table>
-                        <if condition="isset($sheel->show['assembliesevents']) AND $sheel->show['assembliesevents'] == false">
-                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
-                        </if>
-                    </div>
-                </section>
-            </div>
-        </div>
-        <div class="draw-grid__cell draw-grid__cell--third">
-            <div class="draw-card">
-                <header class="draw-card__header">
-                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
-                        <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_assemblies_analysis}</h2>
-                        </div>
-                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
-                    </div>
-                </header>
-                <section class="draw-card__section channel-stats">
-                    <div id="DashboardOnlineTopLandingPagePaths" class="dashboard-widget">
-                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
-                            <tbody>
-                                <loop name="assembliescategories">
-                                    <tr>
-                                        <td class="dashboard-source-list__title"> {title}</td>
-                                        <td class="dashboard-source-list__number"> {percent}% </td>
-                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
-                                    </tr>
-                                </loop name="assembliescategories">
-                            </tbody>
-                        </table>
-                        <if condition="isset($sheel->show['toplandingpages']) AND $sheel->show['assembliescategories'] == false">
                             <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
                         </if>
                     </div>

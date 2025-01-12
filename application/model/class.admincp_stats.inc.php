@@ -213,7 +213,7 @@ class admincp_stats extends admincp
 			$sqlassemblytotal = $this->sheel->db->query("
 				SELECT SUM(totalquantity) AS totalquantity
 				FROM " . DB_PREFIX . "analysis_records
-				WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) .") 
+				WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . ") 
 				AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 			");
 			$ressum = $this->sheel->db->fetch_array($sqlassemblytotal, DB_ASSOC);
@@ -255,7 +255,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.countrycode
 					ORDER BY count DESC
-					LIMIT 15
+					LIMIT 5
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topdestinations'] = true;
@@ -275,6 +275,34 @@ class admincp_stats extends admincp
 					}
 				}
 				return $topdestinations;
+			} else if ($do == 'deliveries') {
+				$this->sheel->show['deliveries'] = false;
+				$deliveries = array();
+				$today = new DateTime();
+				$week = $today->format('W');
+				$year = $today->format('Y');
+				$sql = $this->sheel->db->query("
+					SELECT deliveryweek, deliveryyear, COUNT(analysisreference) AS count, sum(totalquantity) as totalquantity
+					FROM " . DB_PREFIX . "analysis
+					WHERE deliveryweek >= '" . $week . "' AND deliveryyear >= '" . $year . "' AND (isfinished = '0' AND isarchived = '0')
+					GROUP BY deliveryweek, deliveryyear
+					ORDER BY deliveryweek, deliveryyear asc
+					LIMIT 15
+				");
+				if ($this->sheel->db->num_rows($sql) > 0) {
+					$this->sheel->show['deliveries'] = true;
+					$sum = 0;
+					while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+						$deliveriesx[] = $res;
+					}
+					foreach ($deliveriesx as $key => $array) {
+						$deliveries[$key]['title'] = $array['deliveryweek'] . '-' . $array['deliveryyear'];
+						$deliveries[$key]['count'] = $array['count'];
+						$deliveries[$key]['totalquantity'] = $array['totalquantity'];
+						$deliveries[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=deliveries&week=' .  $array['deliveryweek'] . '&year=' . $array['deliveryyear'];
+					}
+				}
+				return $deliveries;
 			} else if ($do == 'topcustomers') {
 				$this->sheel->show['topcustomers'] = false;
 				$topcustomers = array();
@@ -285,7 +313,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.analysisidentifier
 					ORDER BY count DESC
-					LIMIT 10
+					LIMIT 5
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topcustomers'] = true;
@@ -313,7 +341,7 @@ class admincp_stats extends admincp
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
 					GROUP BY a.entityid
 					ORDER BY count DESC
-					LIMIT 10
+					LIMIT 5
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topentities'] = true;
@@ -336,7 +364,7 @@ class admincp_stats extends admincp
 				$sql = $this->sheel->db->query("
 					SELECT category as name, SUM(totalquantity) AS count
 					FROM " . DB_PREFIX . "analysis_records
-					WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) .")
+					WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . ")
 					AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 					GROUP BY category
 					ORDER BY count DESC
@@ -365,7 +393,7 @@ class admincp_stats extends admincp
 					FROM " . DB_PREFIX . "analysis_records ar
 					LEFT JOIN " . DB_PREFIX . "checkpoints c ON ar.lastcheckpoint = c.checkpointid
 					LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and ar.companyid = cs.fromid
-					WHERE ar.recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) .")
+					WHERE ar.recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . ")
 					AND ar.lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 					GROUP BY ar.lastcheckpoint
 					ORDER BY cs.sequence ASC
@@ -569,7 +597,7 @@ class admincp_stats extends admincp
 					$analysis[$key]['count'] = $value['count'];
 				}
 
-				
+
 
 				return $analysis;
 			}
