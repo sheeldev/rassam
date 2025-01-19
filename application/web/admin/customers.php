@@ -160,7 +160,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
         unset($customer);
-        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl, '', 1);
         $filter_options = array(
             '' => '{_select_filter} &ndash;',
             'account' => '{_account}',
@@ -852,7 +852,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $custdepartments = array();
             $tempcustpositions = array();
             $custpositions = array();
-        
+
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -899,22 +899,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
                     if ($apiResponse->isSuccess()) {
                         $data[$key] = $apiResponse->getData();
-                        $sheel->cache->store($entity, $data[$key],10);
+                        $sheel->cache->store($entity, $data[$key], 10);
                     } else {
                         $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
                         $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                         exit();
                     }
-                }
-                else {
+                } else {
                     $data[$key] = $sheel->cache->fetch($entity);
                 }
-                
+
             }
             foreach ($data['departments'] as $value) {
                 $custdepartments[$value['departmentCode']] = $value['departmentCode'] . ' > ' . $value['departmentName'];
             }
-        
+
             foreach ($data['positions'] as $value) {
                 $custpositions[$value['positionCode']] = $value['positionCode'] . ' > ' . $value['positionName'];
             }
@@ -922,20 +921,23 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sizes = array_column($data['sizes'], 'code', 'code');
             $fits = array_column($data['fits'], 'code', 'code');
             $cuts = array_column($data['cuts'], 'code', 'code');
+            $itemtypes = [];
+            $itemtypesdb = [];
             $sqltype1 = $sheel->db->query("
                 SELECT code
                 FROM " . DB_PREFIX . "size_types
                 WHERE (gender = '" . substr($staff['gender'], 0, 1) . "'  or gender='U') AND needsize = '1'
             ");
-            $itemtypes = [];
+            while ($rowtype1 = $sheel->db->fetch_array($sqltype1, DB_ASSOC)) {
+                $itemtypesdb [] = $rowtype1['code'];
+            }
             foreach ($data['itemtypes'] as $value) {
-                while ($rowtype1 = $sheel->db->fetch_array($sqltype1, DB_ASSOC)) {
-                    if ($value['name'] == $rowtype1['code']) {
+                foreach ($itemtypesdb as $rowtype1) {
+                    if ($value['name'] == $rowtype1) {
                         $itemtypes[$value['name']] = $value['name'];
                     }
                 }
             }
-        
             $mcategory = [];
             foreach ($data['mcategory'] as $value) {
                 $mcategory[$value['code']] = $value['code'] . ' > ' . $value['name'];
@@ -954,9 +956,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $form['itemtype'] = $sheel->construct_pulldown('itemtypes', 'itemtypes', $itemtypes, '', 'class="draw-select"');
             $staffmeasurements = [];
             $staffsizes = [];
-
-
-
             if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
@@ -1184,7 +1183,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
             }
         }
-
         foreach ($tempids as $key => $value) {
             $ids[] = $value[2];
         }
@@ -1197,12 +1195,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             WHERE customerno = '" . $customer['customer_ref'] . "' AND uploaded = '0'
             ORDER BY code
         ");
-
         while ($res = $sheel->db->fetch_array($sqlupd, DB_ASSOC)) {
 
             $uploadedstaffs[] = $res;
         }
-
         if ($sheel->db->num_rows($sqlupd) > 0) {
             $sheel->GPC['haspendinguploads'] = '1';
         }
@@ -1341,7 +1337,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
-        
+
             $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'';
             $staffmeasurements = array();
             $apiResponse = $sheel->dynamics->select('?$count=true&' . $searchcondition);
@@ -1352,12 +1348,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
-        
+
             if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
-        
+
             $searchcondition = '$filter=customerNo eq \'' . $customer['customer_ref'] . '\'&$orderby=code asc';
             $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
             if ($apiResponse->isSuccess()) {
@@ -1385,7 +1381,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                     exit();
                 }
-        
+
                 usort($custstaffs, function ($a, $b) {
                     preg_match_all('!\d+!', $a['code'], $matchesA);
                     preg_match_all('!\d+!', $b['code'], $matchesB);
@@ -1393,7 +1389,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $numB = (int) end($matchesB[0]);
                     return $numA - $numB;
                 });
-        
+
                 foreach ($custstaffs as $value) {
                     foreach ($mandatorymeasurements as $value1) {
                         $foundValue = '';
@@ -1414,17 +1410,17 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         }
                     }
                 }
-        
+
                 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
                 $writer->save(DIR_TMP . 'xlsx/measurementsample-' . $customer['customer_ref'] . '.xlsx');
                 $samplefile = file_get_contents(DIR_TMP . 'xlsx/measurementsample-' . $customer['customer_ref'] . '.xlsx');
                 $sheel->common->download_file($samplefile, "measurementsample-" . $customer['customer_ref'] . ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        
+
             } else {
                 $samplefile = file_get_contents(DIR_OTHER . 'measurementsample.xlsx');
                 $sheel->common->download_file($samplefile, "measurementsample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             }
-        
+
             exit();
         }
 
@@ -1900,7 +1896,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $offset = ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'];
         $pagedstaffmeasurements = array_slice($staffmeasurements, $offset, $sheel->config['globalfilters_maxrowsdisplay']);
         $pageurl = PAGEURL;
-        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl, '', 1);
 
         $uploadedmeaasurements = array();
         $sqlupd = $sheel->db->query("
@@ -2437,12 +2433,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
             }
-            
+
             $staffdetails = explode('|', $sheel->GPC['staffs']);
             $sqlallrec = $sheel->db->query("
 					SELECT code
 					FROM " . DB_PREFIX . "size_types		
-					WHERE categoryid = '" . $sheel->GPC['typecategories'] . "' AND (gender = '" .$staffdetails[1] . "' Or gender='U')
+					WHERE categoryid = '" . $sheel->GPC['typecategories'] . "' AND (gender = '" . $staffdetails[1] . "' Or gender='U')
 					");
             while ($resallrec = $sheel->db->fetch_array($sqlallrec, DB_ASSOC)) {
                 $addResponse = $sheel->dynamics->insert(
@@ -2531,10 +2527,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $code = $code . '|' . $value1;
                 }
                 if ($key1 == 'gender') {
-                    if ($value1=='Male') {
+                    if ($value1 == 'Male') {
                         $value1 = 'M';
                     }
-                    if ($value1=='Female') {
+                    if ($value1 == 'Female') {
                         $value1 = 'F';
                     }
                     $code = $code . '|' . $value1;
@@ -2757,7 +2753,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $offset = ($sheel->GPC['page'] - 1) * $sheel->config['globalfilters_maxrowsdisplay'];
         $pagedstaffsizes = array_slice($staffsizes, $offset, $sheel->config['globalfilters_maxrowsdisplay']);
         $pageurl = PAGEURL;
-        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
+        $vars['prevnext'] = $sheel->admincp->pagination($apiResponse->getRecordCount(), $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl, '', 1);
 
         $uploadedsizes = array();
         $sqlupd = $sheel->db->query("
@@ -3024,6 +3020,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $departments = $apiResponse->getData();
+            foreach ($departments as $keydepartment => $valuedepartment) {
+                $sqlorderanalysis = $sheel->db->query("
+                        SELECT a.analysisidentifier, a.analysisreference, a.isfinished, a.isarchived, al.itemno
+                        FROM " . DB_PREFIX . "analysis a
+                        LEFT JOIN " . DB_PREFIX . "analysis_lines al ON a.analysisreference = al.lineidentifier
+                        WHERE a.analysisidentifier = '" . $valuedepartment['customerNo'] . "' AND al.allocationtype = 'Department' AND al.allocationcode = '" . $valuedepartment['departmentCode'] . "'
+                    ");
+                if ($sheel->db->num_rows($sqlorderanalysis) == 0) {
+                    $departments[$keydepartment]['orders'] = '<span class="badge badge--attention">{_no_orders}</span>';
+                } else {
+                    while ($resorderanalysis = $sheel->db->fetch_array($sqlorderanalysis, DB_ASSOC)) {
+                        if ($resorderanalysis['isfinished'] == '0' and $resorderanalysis['isarchived'] == '0') {
+                            $departments[$keydepartment]['orders'] = '<span class="badge badge--success">{_active}</span>';
+                            break;
+                        } else {
+                            $departments[$keydepartment]['orders'] = '<span class="badge badge--warning">{_completed}</span>';
+                        }
+                    }
+                }
+            }
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
@@ -3039,6 +3055,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
         if ($apiResponse->isSuccess()) {
             $positions = $apiResponse->getData();
+            foreach ($positions as $keyposition => $valueposition) {
+                $sqlorderanalysis = $sheel->db->query("
+                        SELECT a.analysisidentifier, a.analysisreference, a.isfinished, a.isarchived, al.itemno, al.allocationtype, al.allocationcode
+                        FROM " . DB_PREFIX . "analysis a
+                        LEFT JOIN " . DB_PREFIX . "analysis_lines al ON a.analysisreference = al.lineidentifier
+                        WHERE a.analysisidentifier = '" . $valueposition['customerNo'] . "' AND al.allocationtype = 'Position' AND al.allocationcode = '" . $valueposition['positionCode'] . "'
+                    ");
+                if ($sheel->db->num_rows($sqlorderanalysis) == 0) {
+                    $positions[$keyposition]['orders'] = '<span class="badge badge--attention">{_no_orders}</span>';
+                } else {
+                    while ($resorderanalysis = $sheel->db->fetch_array($sqlorderanalysis, DB_ASSOC)) {
+                        if ($resorderanalysis['isfinished'] == '0' and $resorderanalysis['isarchived'] == '0') {
+                            $positions[$keyposition]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--success" >{_active}</span></a>';
+                            break;
+                        } else {
+                            $positions[$keyposition]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?completed=1&analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--warning">{_completed}</span></a>';
+                        }
+                    }
+                }
+            }
         } else {
             $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
@@ -3118,6 +3154,25 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         if ($apiResponse->isSuccess()) {
             $staff = $apiResponse->getData();
             foreach ($staff as $keystaff => $valuestaff) {
+                $sqlorderanalysis = $sheel->db->query("
+                        SELECT a.analysisidentifier, a.analysisreference, a.isfinished, a.isarchived, al.itemno, al.allocationtype, al.allocationcode
+                        FROM " . DB_PREFIX . "analysis a
+                        LEFT JOIN " . DB_PREFIX . "analysis_lines al ON a.analysisreference = al.lineidentifier
+                        WHERE a.analysisidentifier = '" . $valuestaff['customerNo'] . "' AND al.allocationtype = 'Staff' AND al.allocationcode = '" . $valuestaff['code'] . "'
+                    ");
+                if ($sheel->db->num_rows($sqlorderanalysis) == 0) {
+                    $staff[$keystaff]['orders'] = '<span class="badge badge--attention">{_no_orders}</span>';
+                } else {
+                    while ($resorderanalysis = $sheel->db->fetch_array($sqlorderanalysis, DB_ASSOC)) {
+                        if ($resorderanalysis['isfinished'] == '0' and $resorderanalysis['isarchived'] == '0') {
+
+                            $staff[$keystaff]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--success" >{_active}</span></a>';
+                            break;
+                        } else {
+                            $staff[$keystaff]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?completed=1&analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--warning">{_completed}</span></a>';
+                        }
+                    }
+                }
                 $staffmeasures = $sm[$valuestaff['code']];
                 foreach ($mandatorymeasurements as $manvalues) {
                     if ($staffmeasures[$manvalues] == '' or $staffmeasures[$manvalues] == '0') {
@@ -3405,7 +3460,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         }
 
         $pageurl = PAGEURL;
-        $vars['prevnext'] = $sheel->admincp->pagination($number, $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl,'',1);
+        $vars['prevnext'] = $sheel->admincp->pagination($number, $sheel->config['globalfilters_maxrowsdisplay'], $sheel->GPC['page'], $pageurl, '', 1);
 
         $form['view'] = (isset($sheel->GPC['view']) ? $sheel->GPC['view'] : '');
         $filter_options = array(

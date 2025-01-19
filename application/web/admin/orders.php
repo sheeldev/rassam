@@ -182,6 +182,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     FROM " . DB_PREFIX . "analysis
                     WHERE deliveryweek = '" . $sheel->GPC['week'] . "' AND deliveryyear = '" . $sheel->GPC['year'] . "' AND (isfinished = '0' AND isarchived = '0')
                 ";
+            } else if ($sheel->GPC['analysis'] == 'allocations') {
+                if (isset($sheel->GPC['completed']) and $sheel->GPC['completed'] == '1') {
+                    $sql = "
+                    SELECT a.analysisreference
+                    FROM " . DB_PREFIX . "analysis a
+                    LEFT JOIN " . DB_PREFIX . "analysis_lines al ON a.analysisreference = al.lineidentifier
+                    WHERE a.analysisidentifier = '" . $sheel->GPC['customer'] . "' AND al.allocationtype = '". $sheel->GPC['allocationtype'] . "' AND al.allocationcode = '" . $sheel->GPC['allocationcode'] . "' AND (isfinished = '1' OR isarchived = '1')
+                    GROUP BY a.analysisreference
+                ";  
+                } else {
+                    $sql = "
+                    SELECT a.analysisreference
+                    FROM " . DB_PREFIX . "analysis a
+                    LEFT JOIN " . DB_PREFIX . "analysis_lines al ON a.analysisreference = al.lineidentifier
+                    WHERE a.analysisidentifier = '" . $sheel->GPC['customer'] . "' AND al.allocationtype = '". $sheel->GPC['allocationtype'] . "' AND al.allocationcode = '" . $sheel->GPC['allocationcode'] . "' AND (isfinished = '0' AND isarchived = '0')
+                    GROUP BY a.analysisreference
+                ";
+                }
             } else {
 
             }

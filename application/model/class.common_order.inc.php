@@ -13,7 +13,7 @@ class common_order extends common
 		$quoteexist = false;
 		$warningmessage = '';
 		$warningcount = 0;
-		$html='';
+		$html = '';
 		$sqlEvents = $this->sheel->db->query("
                 SELECT e.eventid, e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, e.companyid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, comp.name as companyname, comp.isfactory as isfactory
                 FROM " . DB_PREFIX . "events e
@@ -72,10 +72,10 @@ class common_order extends common
 		$html .= '<th class="is-sortable" width="8%"><span><label>{_number}</label></span>' . ($warningmessage != '' ? '<span class="litegray right prl-6 pt-12 uc"><img src="' . $this->sheel->config['imgcdn'] . 'v5/img_warning.png" width="18" height="18" alt="{_info}" onclick="return display_info_message(\'\',\'' . $warningmessage . '\');" /></span>' : '') . '</th>';
 		$html .= '<th width="8%"> <span><label>{_account}</label></span> </th>';
 		$html .= '<th width="20%"> <span><label>{_name}</label></span></th>';
-		
+
 		$html .= '<th width="10%"> <span><label>{_updated_by}</label></span></th>';
 		$html .= '<th width="10%"> <span><label>{_date}</label></span></th>';
-		
+
 		$html .= '<th width="14%"> <span><label>{_time}</label></span></th>';
 		$html .= '<th width="20%"> <span><label>{_status}</label></span></th>';
 		$html .= '<th width="10%"> <span><label>{_source}</label></span></th>';
@@ -87,7 +87,7 @@ class common_order extends common
 			$html .= '<tr valign="top">';
 			$html .= '<td class="no-wrap">' . $event['reference'] . '</td>';
 			$html .= '<td class="no-wrap"> <span>' . $event['eventidentifier'] . '</span></td>';
-			$html .= '<td class="no-wrap"> <span>' . $event['customername'] . ($event['icno'] != '' ? ' <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $event['icno'] . '</span>':'') . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $event['customername'] . ($event['icno'] != '' ? ' <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $event['icno'] . '</span>' : '') . '</span></td>';
 			$html .= '<td class="no-wrap">' . $event['modifiedby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $event['createdat'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $event['eventtime'] . '</td>';
@@ -107,7 +107,7 @@ class common_order extends common
 
 	function get_assembly_details($orderno, $customerno)
 	{
-		$html='';
+		$html = '';
 		$sqlAssemblies = $this->sheel->db->query("
 			SELECT e.eventid, e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, e.companyid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, comp.name as companyname, comp.isfactory as isfactory
 			FROM " . DB_PREFIX . "events e
@@ -120,6 +120,19 @@ class common_order extends common
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
 			static $processedAssemblies = array();
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
+			$resAssemblies['allocationtype']= '-';
+			$resAssemblies['allocationcode']= '-';
+			$sqlallocation = $this->sheel->db->query("
+					SELECT  allocationtype, allocationcode
+					FROM " . DB_PREFIX . "analysis_lines
+					WHERE linereference = '" . $resAssemblyData['assemblyNo'] . "'
+					LIMIT 1
+				");
+			if ($this->sheel->db->num_rows($sqlallocation) > 0) {
+				$resallocation = $this->sheel->db->fetch_array($sqlallocation, DB_ASSOC);
+				$resAssemblies['allocationtype'] = $resallocation['allocationtype'];
+				$resAssemblies['allocationcode'] = $resallocation['allocationcode'];
+			}
 			$resAssemblies['assemblynumber'] = $resAssemblyData['assemblyNo'];
 			$resAssemblies['customername'] = $resAssemblyData['sellToCustomerName'];
 			$resAssemblies['description'] = $resAssemblyData['description'];
@@ -130,7 +143,7 @@ class common_order extends common
 			$resAssemblies['modifiedby'] = $resAssemblyData['modifiedUser'];
 			$resAssemblies['createdat'] = $this->sheel->common->print_date($resAssemblyData['systemCreatedAt'], 'Y-m-d H:i:s', 0, 0, '');
 			$resAssemblies['eventtime'] = $this->sheel->common->print_date($resAssemblies['max_eventtime'], 'Y-m-d H:i:s', 0, 0, '');
-			
+
 			if ($previousassembly != $resAssemblyData['assemblyNo'] and !isset($processedAssemblies[$resAssemblyData['assemblyNo']])) {
 				$processedAssemblies[$resAssemblyData['assemblyNo']] = true;
 				$previousassembly = $resAssemblyData['assemblyNo'];
@@ -155,8 +168,9 @@ class common_order extends common
 		$html .= '<th> <span><label>{_item_code}</label></span></th>';
 		$html .= '<th> <span><label>{_item_name}</label></span></th>';
 		$html .= '<th> <span><label>{_quantity}</label></span></th>';
+		$html .= '<th> <span><label>{_allocation_type}</label></span></th>';
+		$html .= '<th> <span><label>{_allocation_code}</label></span></th>';
 		$html .= '<th> <span><label>{_updated_by}</label></span></th>';
-		$html .= '<th> <span><label>{_date}</label></span></th>';
 		$html .= '<th> <span><label>{_time}</label></span></th>';
 		$html .= '<th> <span><label>{_status}</label></span></th>';
 		$html .= '<th> <span><label>{_source}</label></span></th>';
@@ -173,8 +187,9 @@ class common_order extends common
 			$html .= '<td class="no-wrap"> <span>' . $assembly['itemno'] . '</span></td>';
 			$html .= '<td class="no-wrap"> <span>' . $assembly['description'] . '</span></td>';
 			$html .= '<td class="no-wrap"> <span>' . $assembly['quantity'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['allocationtype'] . '</span></td>';
+			$html .= '<td class="no-wrap"> <span>' . $assembly['allocationcode'] . '</span></td>';
 			$html .= '<td class="no-wrap">' . $assembly['createdby'] . '</td>';
-			$html .= '<td class="status no-wrap">' . $assembly['modifiedby'] . '</td>';
 			$html .= '<td class="status no-wrap">' . $assembly['eventtime'] . '</td>';
 			$html .= '<td class="status no-wrap"> <span class="badge badge--complete fw-strong-black" style="max-width:150px;white-space: nowrap;text-overflow: ellipsis">' . $assembly['checkpointmessage'] . '</span></span></td>';
 			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($assembly['isfactory'] ? 'purple' : '') . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $assembly['companyname'] . '</span></span></td>';
@@ -188,12 +203,12 @@ class common_order extends common
 		$html .= '<div>';
 		$html .= '</div>';
 		$html .= '</div>';
-		return" $html";
+		return " $html";
 	}
 
 	function get_assembly_scans($assemblyno, $orderno, $customerno)
 	{
-		$html='';
+		$html = '';
 		$sqlAssemblies = $this->sheel->db->query("
 			SELECT e.eventid, e.eventidentifier, e.eventtime as max_eventtime, e.eventdata as eventdata, e.reference as reference, e.checkpointid, e.companyid, c.code as checkpointcode, c.message as checkpointmessage, c.topic as color, comp.name as companyname, comp.isfactory as isfactory
 			FROM " . DB_PREFIX . "events e
@@ -221,7 +236,7 @@ class common_order extends common
 		usort($assemblies, function ($a, $b) {
 			return strtotime($b['eventtime']) - strtotime($a['eventtime']);
 		});
-		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a> / <a href="javascript:;" onclick="showAssemblyDetails(\'' . $orderno . '\', \'' . $customerno . '\')">{_assemblies}</a> / </span>'.$assemblyno.'</h1>';
+		$html .= '<div><h1><span class="' . ($this->sheel->config["template_textdirection"] == 'ltr' ? 'right' : 'left') . ' bold"></span><span class="breadcrumb"><a href="javascript:;" onclick="showOrderDetails(\'' . $orderno . '\', \'' . $customerno . '\')">' . $orderno . '</a> / <a href="javascript:;" onclick="showAssemblyDetails(\'' . $orderno . '\', \'' . $customerno . '\')">{_assemblies}</a> / </span>' . $assemblyno . '</h1>';
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';

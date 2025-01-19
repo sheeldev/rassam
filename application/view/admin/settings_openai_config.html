@@ -1,0 +1,34 @@
+<section>
+<script>
+Page();
+</script>
+<div id="settings-general" class="page">
+	<form autocomplete="off" action="{https_server_admin}settings/globalupdate/" accept-charset="UTF-8" method="post">
+		<input type="hidden" name="subcmd" value="_update-config-settings" />
+        <input type="hidden" name="return" value="{url}" />
+		<div class="header-row">
+			<header class="header">
+				<h1 class="header__main">
+					<span class="glyphicons glyphicons-settings draw-icon" aria-hidden="true"></span>
+					<span class="breadcrumb"><a href="{https_server_admin}settings/">{_settings}</a> / </span> {currentarea}
+				</h1>
+				<div class="header__primary-actions">
+					<button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+				</div>
+			</header>
+		</div>
+        
+        {settings}
+        
+        <div class="section">
+            <div class="draw-grid draw-grid--right-aligned">
+                <div class="draw-grid__cell draw-grid__cell--no-flex">
+                    <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                </div>
+            </div>
+        </div>  
+	</form>
+</div>
+</section>
+
+<div define="iLNav.setPage(['settings','{areanav}']), sLPage.close()"></div>

@@ -28,6 +28,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                 if ($resEventTime['max_eventtime'] !== null) {
                         $maxEventTime = $resEventTime['max_eventtime'];
                         $maxEventTimeIso = (new DateTime('today'))->format('Y-m-d\TH:i:s.u\Z');
+                        //$maxEventTimeIso = (new DateTime('today'))->modify('-30 days')->format('Y-m-d\TH:i:s.u\Z');
                 } else {
                         $maxEventTime = $rescompanies['eventstart'];
                         $maxEventTimeIso = date('Y-m-d\TH:i:s.u\Z', $maxEventTime);
@@ -122,32 +123,122 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 '" . $rescompanies['company_id'] . "'
                                                                 )", 0, null, __FILE__, __LINE__);
                                                 }
-                                                
+
                                                 if ($order['documentType'] == 'Order') {
                                                         $sqlanalysis = $this->sheel->db->query("
-                                                                SELECT analysisid
-                                                                FROM " . DB_PREFIX . "analysis
-                                                                WHERE analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
-                                                                LIMIT 1
-                                                                "); 
-                                                                
+                                                                        SELECT analysisid
+                                                                        FROM " . DB_PREFIX . "analysis
+                                                                        WHERE analysisreference = '" . $order['no'] . "'
+                                                                        LIMIT 1
+                                                                        ");
                                                         if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
-                                                                $this->sheel->db->query("
-                                                                        INSERT INTO " . DB_PREFIX . "analysis
-                                                                        (systemid, createdtime, modifiedtime, analysisfor, analysisidentifier, entityid, analysisreference, topic, isfinished, isarchived, companyid)
-                                                                        VALUES(
-                                                                        '" . $this->sheel->db->escape_string($order['systemId']) . "',
-                                                                        " . strtotime($order['systemCreatedAt']) . ",
-                                                                        " . strtotime($order['systemModifiedAt']) . ",
-                                                                        'customer',
-                                                                        '" . ($order['icSourceNo'] != '' ? $order['icSourceNo'] : $order['sellToCustomerNo']) . "',
-                                                                        '" . $entityid . "',
-                                                                        '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "',
-                                                                        '" . $order['documentType'] . "',
-                                                                        '0',
-                                                                        '0',
-                                                                        '" . $entityid . "'
-                                                                        )", 0, null, __FILE__, __LINE__);
+                                                                if ($order['icCustomerSONo'] == '') {
+                                                                        $this->sheel->db->query("
+                                                                                INSERT INTO " . DB_PREFIX . "analysis
+                                                                                (systemid, createdtime, modifiedtime, analysisfor, analysisidentifier, entityid, analysisreference, topic, isfinished, isarchived, companyid)
+                                                                                VALUES(
+                                                                                '" . $this->sheel->db->escape_string($order['systemId']) . "',
+                                                                                " . strtotime($order['systemCreatedAt']) . ",
+                                                                                " . strtotime($order['systemModifiedAt']) . ",
+                                                                                'customer',
+                                                                                '" . $order['sellToCustomerNo'] . "',
+                                                                                '" . $entityid . "',
+                                                                                '" . $order['no'] . "',
+                                                                                '" . $order['documentType'] . "',
+                                                                                '0',
+                                                                                '0',
+                                                                                '" . $entityid . "'
+                                                                                )", 0, null, __FILE__, __LINE__);
+                                                                        $sqlentity = $this->sheel->db->query("
+                                                                                SELECT bc_code,name
+                                                                                FROM " . DB_PREFIX . "companies
+                                                                                WHERE status = 'active' and company_id = '" . $entityid . "'
+                                                                                ");
+                                                                        $resentity = $this->sheel->db->fetch_array($sqlentity, DB_ASSOC);
+                                                                        if (!$this->sheel->dynamics->init_dynamics('erSalesLines', $resentity['bc_code'])) {
+                                                                                $cronlog .= 'Inactive Dynamics API erSalesLines for company ' . $resentity['name'] . ', ';
+                                                                        }
+                                                                        $searchcondition = '$filter=documentNo eq \'' . $order['no'] . '\'';
+                                                                        $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
+                                                                        if ($apiResponse->isSuccess()) {
+                                                                                $lines = $apiResponse->getData();
+                                                                                foreach ($lines as $line) {
+                                                                                        $sqlanalysisline = $this->sheel->db->query("
+                                                                                                SELECT analysislineid
+                                                                                                FROM " . DB_PREFIX . "analysis_lines
+                                                                                                WHERE systemid = '" . $line['systemId'] . "'
+                                                                                                LIMIT 1
+                                                                                                ");
+                                                                                        if ($this->sheel->db->num_rows($sqlanalysisline) == 0) {
+                                                                                                $this->sheel->db->query("
+                                                                                                        INSERT INTO " . DB_PREFIX . "analysis_lines
+                                                                                                        (systemid, lineno,  lineidentifier, linereference, createdtime, itemno, allocationtype, allocationcode, entityid, companyid)
+                                                                                                        VALUES(
+                                                                                                        '" . $this->sheel->db->escape_string($line['systemId']) . "',
+                                                                                                        '" . $line['lineNo'] . "',
+                                                                                                        '" . $line['documentNo'] . "',
+                                                                                                        '" . $line['assemblyNo'] . "',
+                                                                                                        " . strtotime($order['systemCreatedAt']) . ",
+                                                                                                        '" . $line['no'] . "',
+                                                                                                        '" . $line['allocationType'] . "',
+                                                                                                        '" . $line['allocationCode'] . "',
+                                                                                                        '" . $entityid . "',
+                                                                                                        '" . $entityid . "'
+                                                                                                )", 0, null, __FILE__, __LINE__);
+                                                                                        }
+
+                                                                                }
+                                                                        } else {
+                                                                                $cronlog .= $apiResponse->getErrorMessage() . ', ';
+                                                                        }
+                                                                } else {
+                                                                        $sqlanalysis = $this->sheel->db->query("
+                                                                                SELECT analysisid
+                                                                                FROM " . DB_PREFIX . "analysis
+                                                                                WHERE analysisreference = '" . $order['icCustomerSONo'] . "'
+                                                                                LIMIT 1
+                                                                                ");
+                                                                        if ($this->sheel->db->num_rows($sqlanalysis) > 0) {
+                                                                                if (!$this->sheel->dynamics->init_dynamics('erSalesLines', $rescompanies['bc_code'])) {
+                                                                                        $cronlog .= 'Inactive Dynamics API erSalesLines for company ' . $rescompanies['name'] . ', ';
+                                                                                }
+                                                                                $searchcondition = '$filter=documentNo eq \'' . $order['no'] . '\'';
+                                                                                $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
+
+                                                                                if ($apiResponse->isSuccess()) {
+                                                                                        $lines = $apiResponse->getData();
+                                                                                }
+
+                                                                                foreach ($lines as $line) {
+                                                                                        $sqlanalysisline = $this->sheel->db->query("
+                                                                                                SELECT analysislineid
+                                                                                                FROM " . DB_PREFIX . "analysis_lines
+                                                                                                WHERE systemid = '" . $line['systemId'] . "'
+                                                                                                LIMIT 1
+                                                                                                ");
+                                                                                        if ($this->sheel->db->num_rows($sqlanalysisline) == 0) {
+                                                                                                $this->sheel->db->query("
+                                                                                                        INSERT INTO " . DB_PREFIX . "analysis_lines
+                                                                                                        (systemid, lineno,  lineidentifier, linereference, createdtime, itemno, allocationtype, allocationcode, entityid, companyid)
+                                                                                                        VALUES(
+                                                                                                        '" . $this->sheel->db->escape_string($line['systemId']) . "',
+                                                                                                        '" . $line['lineNo'] . "',
+                                                                                                        '" . $order['no'] . "',
+                                                                                                        '" . $line['assemblyNo'] . "',
+                                                                                                        " . strtotime($order['systemCreatedAt']) . ",
+                                                                                                        '" . $line['no'] . "',
+                                                                                                        '" . $line['allocationType'] . "',
+                                                                                                        '" . $line['allocationCode'] . "',
+                                                                                                        '" . $entityid . "',
+                                                                                                        '" . $entityid . "'
+                                                                                                )", 0, null, __FILE__, __LINE__);
+                                                                                        }
+
+                                                                                }
+                                                                        }
+
+
+                                                                }
                                                         }
                                                 }
                                         } else {
@@ -185,7 +276,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                 FROM " . DB_PREFIX . "analysis
                                                                 WHERE analysisreference = '" . ($order['icCustomerSONo'] != '' ? $order['icCustomerSONo'] : $order['no']) . "'
                                                                 LIMIT 1
-                                                                "); 
+                                                                ");
                                                         if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
                                                                 $this->sheel->db->query("
                                                                         INSERT INTO " . DB_PREFIX . "analysis

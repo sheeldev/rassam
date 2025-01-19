@@ -9,6 +9,7 @@ $this->sheel->timer->start();
 $sqlanalysis = $this->sheel->db->query("
                 SELECT *
                 FROM " . DB_PREFIX . "analysis
+                WHERE isfinished = '0' AND isarchived = '0'
         ");
 $ordersizebrackets = explode("|", $this->sheel->config['ordermagnitude']);
 while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
@@ -122,6 +123,7 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                                 '" . $assembly['entityid'] . "',
                                 '" . $assembly['companyid'] . "'
                         )", 0, null, __FILE__, __LINE__);
+
                 } else {
                         $sqlanalysisrecordupdate = $this->sheel->db->query("
                                 SELECT analysisrecordid

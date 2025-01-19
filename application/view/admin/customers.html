@@ -394,7 +394,8 @@
                                     <thead>
                                     <tr>
                                         <th width="10%"><label>Code</label> </th>
-                                        <th width="100%"><label>Name</label></th> 
+                                        <th width="100%"><label>Name</label></th>
+                                        <th><label>Orders</label></th> 
                                         
                                     </tr>
                                     </thead>
@@ -403,6 +404,7 @@
                                         <tr valign="top">
                                             <td width="10%" nowrap="nowrap">{departmentCode}</td>
                                             <td width="100%" align="left">{departmentName}</td> 
+                                            <td >{orders}</td>
                                         </tr>
                                     </loop name="departments"> 
                                     </tbody>
@@ -431,6 +433,7 @@
                                         <th width="10%"><label>Code</label></th>
                                         <th width="15%"><label>Name</label></th> 
                                         <th width="85%"><label>Department</label></th>
+                                        <th><label>Orders</label></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -439,6 +442,7 @@
                                             <td width="10%" nowrap="nowrap">{positionCode}</td>
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="85%" align="left">{departmentName}</td> 
+                                            <td>{orders}</td>
                                         </tr>
                                     </loop name="positions"> 
                                     </tbody>
@@ -472,6 +476,7 @@
                                         <th width="15%"><label>Gender</label></th> 
                                         <th width="15%"><label>Position</label></th>
                                         <th width="100%"><label>Department</label></th>
+                                        <th><label>Orders</label></th>
                                         <th><label>Mandatory Measurements</label></th>
                                         <th><label>Mandatory Sizes</label></th>
                                     </tr>
@@ -484,6 +489,7 @@
                                             <td width="15%" align="left">{gender}</td> 
                                             <td width="15%" align="left">{positionName}</td> 
                                             <td width="100%" align="left">{departmentName}</td> 
+                                            <td >{orders}</td>
                                             <td >{meetmeasurements}</td>
                                             <td >{meetsizes}</td>
                                         </tr>
