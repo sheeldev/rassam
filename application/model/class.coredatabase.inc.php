@@ -161,10 +161,9 @@ class sheel_database
 				");
 			}
 		}
-		//$this->sheel->admincp->print_action_failed('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))), HTTPS_SERVER_ADMIN . 'settings/membership/');
-		//exit();
-		echo ('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))));
+		$this->sheel->admincp->print_action_failed('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))), $_SERVER['HTTP_REFERER']);
 		exit();
+
 	}
 	/**
 	 * Function to determine if a field within a table exists

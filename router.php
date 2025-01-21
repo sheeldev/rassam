@@ -109,7 +109,7 @@ $router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[update|delete|dele
 $router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[sizesystem|deletetype|types|deletecategory|categories:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingtypes');
 $router->map('GET|POST', '/admin/settings/openai/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai');
 $router->map('GET|POST', '/admin/settings/[openai:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_add');
-$router->map('GET|POST', '/admin/settings/[openai:cmd]/[update|delete|deleteline:subcmd]/[*:code]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_delete');
+$router->map('GET|POST', '/admin/settings/[openai:cmd]/[update|delete|deleteline:subcmd]/[*:id]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_delete');
 $router->map('GET|POST', '/admin/settings/[openai:cmd]/[config:subcmd]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_config');
 
 

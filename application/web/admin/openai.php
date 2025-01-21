@@ -29,150 +29,136 @@ $sheel->template->meta['cssinclude'] = array(
 
 
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
-    $sheel->template->meta['jsinclude']['header'][] = 'vendor/upclick';
-    $sheel->template->meta['jsinclude']['footer'][] = 'admin_sizingrules';
+    $sheel->template->meta['jsinclude']['footer'][] = 'admin_openai';
     if (($sidenav = $sheel->cache->fetch("sidenav_settings")) === false) {
         $sidenav = $sheel->admincp_nav->print('settings');
         $sheel->cache->store("sidenav_settings", $sidenav);
     }
     if (isset($sheel->GPC['subcmd']) && $sheel->GPC['subcmd'] == 'delete') {
         $query = "
-            DELETE FROM " . DB_PREFIX . "size_rules
-            WHERE code = ? AND gender = ?
+            DELETE FROM " . DB_PREFIX . "prompts
+            WHERE id = ?
         ";
 
         $stmt = $sheel->db->prepare($query);
-        $stmt->bind_param("ss", $sheel->GPC['code'], $sheel->GPC['gender']);
+        $stmt->bind_param("i", $sheel->GPC['id']);
 
         $stmt->execute();
 
-        $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizerule}';
-
-        die(json_encode([
-            'response' => '1',
-            'message' => $sheel->template->parse_template_phrases('message')
-        ]));
-    }
-    if (isset($sheel->GPC['subcmd']) && $sheel->GPC['subcmd'] == 'deleteline') {
-        $query = "
-        DELETE FROM " . DB_PREFIX . "size_rules
-        WHERE id = ?
-        LIMIT 1
-        ";
-
-        $stmt = $sheel->db->prepare($query);
-        $stmt->bind_param("s", $sheel->GPC['xid']);
-
-        $stmt->execute();
-
-        $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizerule}';
+        $sheel->template->templateregistry['message'] = '{_successfully_deleted_prompt}';
 
         die(json_encode([
             'response' => '1',
             'message' => $sheel->template->parse_template_phrases('message')
         ]));
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
-        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Rules - Update</div>';
-        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Update';
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Prompts - Update</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Prompts - Update';
         $areanav = 'settings_openai';
-        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/">Sizing System</a> / </span>' . $sheel->GPC['code'];
+        if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
+            $varname = $sheel->GPC['varname'];
+            $description = $sheel->GPC['description'];
+            $prompt_text = $sheel->GPC['prompt_text'];
+            $prompt_context = $sheel->GPC['prompt_context'];
+            $response_schema = $sheel->GPC['response_schema'];
+            $prompt_parameters = $sheel->GPC['prompt_parameters'];
+            $adminonly = $sheel->GPC['adminonly'];
+            $type = $sheel->GPC['type'];
+            $group = $sheel->GPC['group'];
+            $sheel->db->query("
+                UPDATE " . DB_PREFIX . "prompts
+                SET varname = '" . $varname . "',
+                description = '" . $description . "',
+                prompt_text = '" . $prompt_text . "',
+                prompt_parameters = '" . $prompt_parameters . "',
+                prompt_context = '" . $prompt_context . "',
+                response_schema = '" . $response_schema . "',
+                adminonly = '" . $adminonly . "',
+                type = '" . $type . "',
+                `group` = '" . $group . "'
+                WHERE id = '" . $sheel->GPC['id'] . "'
+            ");
+            $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'prompt updated', 'A prompt was updated to the portal');
+            refresh(HTTPS_SERVER_ADMIN . 'settings/openai/');
+        }
 
-        if (isset($sheel->GPC['gender']) and isset($sheel->GPC['impact']) and $sheel->GPC['gender'] != '' and $sheel->GPC['impact'] != '') {
-
+        if (isset($sheel->GPC['id']) and $sheel->GPC['id'] != '') {
             $query = "
                 SELECT *
-                FROM " . DB_PREFIX . "size_rules
-                WHERE code = ? AND gender = ?
-                ORDER BY type, mvaluelow
+                FROM " . DB_PREFIX . "prompts
+                WHERE varname = ?
             ";
-
             $stmt = $sheel->db->prepare($query);
-            $stmt->bind_param("ss", $sheel->GPC['code'], $sheel->GPC['gender']);
-
+            $stmt->bind_param("s", $sheel->GPC['id']);
             $stmt->execute();
             $result = $stmt->get_result();
-
-            $count = 0;
-            $impact = $sheel->GPC['impact'];
-            $impactvaluearray = $sheel->common_sizingrule->construct_impactvalue_pulldown($impact, 'form[impactvalue]', '', false, false, 'draw-select', true);
-
-            while ($row = $result->fetch_assoc()) {
-                $count++;
-                $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/update/' . $row['code'] . '/?gender=' . $row['gender'] . '">{_update}</a>';
-                $extra = 'class="draw-select" onchange="update_rule_line(\'form[impactvalue_' . $count . ']\',\'impactvalue\',' . $row['id'] . ')"';
-                $row['impactvaluefinal'] = $sheel->construct_pulldown('form[impactvalue_' . $count . ']', 'form[impactvalue_' . $count . ']', $impactvaluearray, $row['impactvalue'], $extra);
-                $row['rulenumber'] = $count;
-                $row['action'] = '<ul class="segmented"><li><a href="javascript:;" data-bind-event-click="acp_confirm(\'deleteline\', \'Delete selected rule line?\', \'Are you sure you want to delete the selected rule line? This action cannot be reversed and therefore cannot be undone.\', \'' . $row['id'] . '\', 1, \'\', \'{https_server_admin}settings/sizingsystem/deleteline/' . $row['code'] . '/\')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a></li></ul>';
-                $rules_rows[] = $row;
+            if ($row = $result->fetch_assoc()) {
+                $form = [];
+                $form['id'] = $row['id'];
+                $form['varname'] = htmlspecialchars($row['varname']);
+                $form['description'] = htmlspecialchars($row['description']);
+                $form['prompt_text'] = htmlspecialchars($row['prompt_text']);
+                $form['prompt_parameters'] = htmlspecialchars($row['prompt_parameters']);
+                $form['prompt_context'] = htmlspecialchars($row['prompt_context']);
+                $form['response_schema'] = htmlspecialchars($row['response_schema']);
+                $form['adminonlyno'] = $row['adminonly'] == '0' ? ' checked="checked"' : '';
+                $form['adminonlyyes'] = $row['adminonly'] == '1' ? ' checked="checked"' : '';
+                $form['groupsizing'] = $row['group'] == 'sizing' ? ' checked="checked"' : '';
+                $form['groupglobal'] = $row['group'] == 'global' ? ' checked="checked"' : '';
+                $form['typeprompt'] = $row['type'] == 'prompt' ? ' checked="checked"' : '';
+                $form['typeother'] = $row['type'] == 'other' ? ' checked="checked"' : '';
+                $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/">OpenAI</a> / </span>' . $form['varname'];
+            } else {
+                $sheel->template->templateregistry['message'] = '{_prompt_not_found}';
+                $sheel->template->assign('message', $sheel->template->parse_template_phrases('message'));
             }
         } else {
-
+            $sheel->template->templateregistry['message'] = '{_please_select_prompt}';
+            $sheel->template->assign('message', $sheel->template->parse_template_phrases('message'));
         }
-
-
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
+            $varname = $sheel->GPC['varname'];
+            $description = $sheel->GPC['description'];
+            $prompt_text = $sheel->GPC['prompt_text'];
+            $prompt_context = $sheel->GPC['prompt_context'];
+            $response_schema = $sheel->GPC['response_schema'];
+            $prompt_parameters = $sheel->GPC['prompt_parameters'];
+            $adminonly = $sheel->GPC['adminonly'];
             $type = $sheel->GPC['type'];
-            $rulescount = $sheel->GPC['active_rules'];
-            if (is_array($type)) {
-                foreach ($type as $key => $value) {
-                    for ($x = 1; $x <= $rulescount; $x++) {
-                        $sheel->db->query("
-                            INSERT INTO " . DB_PREFIX . "size_rules
-                            (id, code, iscalculated, mcformula, mccode, mcname, mvaluelow, mvaluehigh, uom, gender, type, impact, impactvalue, rulerank, priority, active)
-                            VALUES
-                            (NULL,
-                            '" . $sheel->db->escape_string($sheel->GPC['code']) . "',
-                            '" . $sheel->GPC['isformula'] . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['mformula'] != '' ? $sheel->GPC['mformula'] : '0') . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['mcode']) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['mname']) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['valuelow_' . $x]) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['valuehigh_' . $x]) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['form']['uom_' . $x]) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['form']['gender']) . "',
-                            '" . $sheel->db->escape_string($value) . "',
-                            '" . $sheel->db->escape_string($rulescount > 1 ? $sheel->GPC['impactdisabled'] : $sheel->GPC['form']['impact']) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['form']['impactvalue_' . $x]) . "',
-                            '" . $sheel->db->escape_string($sheel->GPC['rank_' . $x]) . "',
-                            '" . intval($sheel->GPC['priority']) . "',
-                            '1')
-                        ");
-                        $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'New size rule line added', 'A new size rule line was added to the portal');
-
-                    }
-                }
-            } else {
-
-            }
-            refresh(HTTPS_SERVER_ADMIN . 'settings/sizingsystem/');
+            $group = $sheel->GPC['group'];
+            $sheel->db->query("
+                INSERT INTO " . DB_PREFIX . "prompts
+                (varname, description, prompt_text, prompt_parameters, prompt_context, response_schema, adminonly, type, `group`)
+                VALUES
+                ('" . $varname . "',
+                '" . $description . "',
+                '" . $prompt_text . "',
+                '" . $prompt_context . "',
+                '" . $response_schema . "',
+                '" . $prompt_parameters . "',
+                '" . $adminonly . "',
+                '" . $type . "',
+                '" . $group . "')
+            ");
+            $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'New prompt added', 'A new prompt was added to the portal');
+            refresh(HTTPS_SERVER_ADMIN . 'settings/openai/');
         }
-        $gender = array('Male' => '{_male}', 'Female' => '{_female}');
-        $form['gender'] = $sheel->common_sizingrule->construct_gender_pulldown('Male', 'form[gender]', false, 'draw-select', 'type[]', 'type-wrapper', false);
-        $form['type'] = $sheel->common_sizingrule->construct_type_checkbox('Male', true);
-        $form['impact'] = $sheel->common_sizingrule->construct_impact_pulldown('', 'form[impact]', false, 'draw-select', 'form[impactvalue_1]', 'value-wrapper', false);
-        $form['impactvalue'] = $sheel->common_sizingrule->construct_impactvalue_pulldown('Fit', 'form[impactvalue_1]', '', false, false, 'draw-select');
-        $form['uom'] = $sheel->common_sizingrule->construct_uom_pulldown('form[uom_1]', 'CM', false, false, 'draw-select');
-        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Sizing Rules - Add</div>';
-        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Add';
+        $form = [];
+        $form['varname'] = '';
+        $form['description'] = '';
+        $form['prompt_text'] = '';
+        $form['prompt_parameters'] = '';
+        $form['response_schema'] = '';
+        $form['prompt_context'] = '';
+        $form['adminonly'] = 1;
+        $form['group'] = 'global';
+        $form['type'] = 'prompt';
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Prompts - Add</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Prompts - Add';
         $areanav = 'settings_openai';
-        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/">Sizing System</a> / </span> {_add}';
-    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'deletetype') {
-        $sheel->db->query("
-        DELETE FROM " . DB_PREFIX . "size_types
-        WHERE id = '" . $sheel->GPC['xid'] . "'
-        LIMIT 1
-        ");
-        $sheel->template->templateregistry['message'] = '{_successfully_deleted_sizetype}';
-        die(
-            json_encode(
-                array(
-                    'response' => '1',
-                    'message' => $sheel->template->parse_template_phrases('message')
-                )
-            )
-        );
-    }  else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'config') {
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/">OpenAI</a> / </span> {_add}';
+    } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'config') {
         $buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_cancel}</button></a></p>';
         $settings = $sheel->admincp->construct_admin_input('openai', HTTPS_SERVER_ADMIN . 'settings/openai/config/', '', $buttons);
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Open AI Configuration</div>';
@@ -205,10 +191,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Open AI';
         $areanav = 'settings_openai';
         $currentarea = 'Open AI';
+        $prompts = [];
+        $count = 0;
+        $where = "type = 'prompt'";
         if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'prompts') {
             $where = "type = 'prompt'";
-        } else if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == '') {
-            
+        } else if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'others') {
+            $where = "type = 'other'";
+        }
+        $sql = $sheel->db->query("
+                SELECT id, varname, description, prompt_text, prompt_parameters, prompt_context, adminonly, type, `group`
+                FROM " . DB_PREFIX . "prompts
+                WHERE $where
+                ORDER BY id ASC
+            ");
+        $count = $sheel->db->num_rows($sql);
+        if ($sheel->db->num_rows($sql) > 0) {
+            while ($row = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                $row['adminonly'] = ($row['adminonly'] == 1 ? '<img src="' . $sheel->config['imgcdn'] . 'v5/ico_checkmark.png" border="0" alt="" />' : '<img src="' . $sheel->config['imgcdn'] . 'v5/ico_dot_red.gif" border="0" alt="" />');
+                $prompts[] = $row;
+            }
         }
     }
 
@@ -219,16 +221,16 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $vars['sidenav'] = $sidenav;
     $vars['url'] = $_SERVER['REQUEST_URI'];
     $sheel->template->fetch('main', 'settings_openai.html', 1);
-
-    $sheel->template->parse_loop(
-        'main',
-        array(
-            
-        )
-    );
     $sheel->template->parse_hash(
         'main',
         array(
+            'form' => (isset($form) ? $form : array())
+        )
+    );
+    $sheel->template->parse_loop(
+        'main',
+        array(
+            'prompts' => $prompts
         )
     );
     $sheel->template->pprint('main', $vars);

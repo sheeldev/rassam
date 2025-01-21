@@ -76,26 +76,20 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Sizing Rules - Update';
         $areanav = 'settings_sizingrules';
         $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/">Sizing System</a> / </span>' . $sheel->GPC['code'];
-
         if (isset($sheel->GPC['gender']) and isset($sheel->GPC['impact']) and $sheel->GPC['gender'] != '' and $sheel->GPC['impact'] != '') {
-
             $query = "
                 SELECT *
                 FROM " . DB_PREFIX . "size_rules
                 WHERE code = ? AND gender = ?
                 ORDER BY type, mvaluelow
             ";
-
             $stmt = $sheel->db->prepare($query);
             $stmt->bind_param("ss", $sheel->GPC['code'], $sheel->GPC['gender']);
-
             $stmt->execute();
             $result = $stmt->get_result();
-
             $count = 0;
             $impact = $sheel->GPC['impact'];
             $impactvaluearray = $sheel->common_sizingrule->construct_impactvalue_pulldown($impact, 'form[impactvalue]', '', false, false, 'draw-select', true);
-
             while ($row = $result->fetch_assoc()) {
                 $count++;
                 $row['access'] = ' <a href="' . HTTPS_SERVER_ADMIN . 'settings/sizingsystem/update/' . $row['code'] . '/?gender=' . $row['gender'] . '">{_update}</a>';
@@ -106,10 +100,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $rules_rows[] = $row;
             }
         } else {
-
         }
-
-
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'add') {
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
             $type = $sheel->GPC['type'];

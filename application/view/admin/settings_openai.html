@@ -20,212 +20,140 @@
             <div class="layout-content">
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
-                        <h1>Sizing Rules</h1>
-                        <p>A sizing rule defines specific criterias to auto suggest sizes from measurements.</p>
-                        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')"><p><a href="{https_server_admin}settings/openai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a></p><else /><p><a href="{https_server_admin}settings/sizingsystem/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Add Rule</button></a></p><p><a href="{https_server_admin}settings/openai/config/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Configurations</button></a></p></if>
+                        <h1>Prompts</h1>
+                        <p>Open AI Prompts defines prompts structure and parameters.</p>
+                        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')"><p><a href="{https_server_admin}settings/openai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a></p><else /><p><a href="{https_server_admin}settings/openai/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Add Prompt</button></a></p><p><a href="{https_server_admin}settings/openai/config/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Configurations</button></a></p></if>
                     </div>
                 </div>
                 
                 <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
                     <div class="layout-content__main">
-                        <form autocomplete="off" action="{https_server_admin}settings/sizingsystem/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_sizingrule_form()">
+                        <form autocomplete="off" action="{https_server_admin}settings/openai/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_openai_form()">
                             <input type="hidden" name="subcmd" value="add" />
                             <input type="hidden" name="do" value="save" />
-                            <input type="hidden" name="impactdisabled" id="impactdisabled" value="" />
-                            <div class="draw-card" id="newsizingrule">
-                                <div class="draw-card__section">
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                            <label>{_code}</label>
-                                            <input class="draw-input with-add-on" size="30" type="text" name="code" id="code"  placeholder="">
+                            <div data-modal-context-ref-for="preview_modal"></div>
+                            <div class="ui-layout">
+                                <div class="ui-layout__sections">
+                                    <div class="ui-layout__section ui-layout__section--primary">
+                                        <div class="ui-layout__item">
+                                            <div class="draw-card">
+                                                <section class="draw-card__section">
+                                                   
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="title">{_name}</label>
+                                                        <loop name="languages">
+                                                        <div class="sb"><input class="draw-input with-add-on" size="30" type="text" value="" name="varname" id="varname"></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                                <section class="draw-card__section">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="subject">{_description}</label>
+                                                        <loop name="languages">
+                                                        <div class="sb"><noparse><input class="draw-input with-add-on" size="255" type="text" value="" name="description" id="description"  ></noparse></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                                <section class="draw-card__section">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="body">{_prompt}</label>
+                                                        <loop name="languages">
+                                                       <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="prompt_text" id="prompt_text" style="height: 550px;" ></textarea></noparse></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                                <section class="draw-card__section">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="body_html">{_context} / {_system_prompt}</label>
+                                                        <loop name="languages">
+                                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="prompt_context" id="prompt_context" style="height: 550px;" ></textarea></noparse></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label>{_gender}</label>
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[gender]}
+                                    <div class="ui-layout__section ui-layout__section--secondary">
+                                        <div class="ui-layout__item">
+                                            <div class="draw-card draw-card--aside">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Prompt variables</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">You can use prompt {{variables}} to input different information within the prompts. </p>
+                                                    <ul class="type--half-margin">
+                                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="prompt_parameters" id="prompt_parameters" style="height: 150px;" ></textarea></noparse></div>
+                                                    </ul>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label>{_type}</label>
-                                                <div  id="type-wrapper">
-                                                    {form[type]}
+                                            <div class="draw-card draw-card--aside">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Response Schema</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">This is the json schema that will be returned after the prompt.</p>
+                                                    <ul class="type--half-margin">
+                                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="response_schema" id="response_schema" style="height: 250px;" ></textarea></noparse></div>
+                                                    </ul>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label>{_measurement} {_code}</label>
-                                                <input class="draw-input with-add-on" size="30" type="text" name="mcode" id="mcode"  placeholder=""> 
-                                            </div>
-                                        </div>
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label>{_measurement} {_name}</label>
-                                                <input class="draw-input with-add-on" size="30" type="text" name="mname" id="mname"  placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" name="isformula" id="isformula" class="draw-checkbox" value="1"> {_isformula} <span class="draw-checkbox--styled"></span></div>
-                                                <input class="draw-input with-add-on" size="50" type="text" name="mformula" id="mformula"  placeholder="Enter Formula">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label>{_impact}</label>
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[impact]}
+                                            <div class="draw-card draw-card--aside" id="groupdiv">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Prompt Group</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">Prompt Groups allow you to define the group related to that prompt.</p>
+                                                    <div class="type--half-margin">
+                                                        <div style="padding-bottom:6px">
+                                                            <label for="everyone"><input type="radio" value="sizing" name="group" id="group"> <span class="badge badge--subdued">Sizing</span></label>
+                                                        </div>
+                                                        <div>
+                                                            <label for="global"><input type="radio" value="global" name="group" id="group"> <span class="badge badge--subdued">Global</span></label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="draw-grid draw-grid--no-outside-padding">
-                                        <div class="draw-grid__cell">
-                                            <div class="draw-input-wrapper">
-                                                <label>{_priority}</label>
-                                                <input class="draw-input with-add-on" min="0" max="20" value="0" type="number" name="priority" id="priority">
+                                            <div class="draw-card draw-card--aside" id="typediv">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Prompt Type</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">Prompt Types allow you to define the type related to that prompt.</p>
+                                                    <div class="type--half-margin">
+                                                        <div style="padding-bottom:6px">
+                                                            <label for="everyone"><input type="radio" value="prompt" name="type" id="type"> <span class="badge badge--subdued">Prompt</span></label>
+                                                        </div>
+                                                        <div>
+                                                            <label for="other"><input type="radio" value="other" name="type" id="type"> <span class="badge badge--subdued">Other</span></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="draw-card draw-card--aside" id="adminonlydiv">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Admin Only</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">Flag to only allow admin roles to execute the prompt.</p>
+                                                    <div class="type--half-margin">
+                                                        <div style="padding-bottom:6px">
+                                                            <label for="everyone"><input type="radio" value="1" name="adminonly" id="adminonly"> <span class="badge badge--subdued">Yes</span></label>
+                                                        </div>
+                                                        <div>
+                                                            <label for="other"><input type="radio" value="0" name="adminonly" id="adminonly"> <span class="badge badge--subdued">No</span></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="hr-20-0-20-0"></div>
-                            
-                                    <input type="hidden" id="active_rules" name="active_rules" value="1" />
-                                    <div id="rule-1">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc">Rule #1:</span></legend>
-                                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                                    <div class="draw-grid__cell">
-                                                        <div class="draw-input-wrapper">
-                                                            <label>{_rank}</label>
-                                                            <input class="draw-input with-add-on" size="2" type="text" value="0" name="rank_1" id="rank_1"  placeholder="">
-                                                        </div>
-                                                    </div>
-                                                    <div class="draw-grid__cell">
-                                                        <label>{_impact} {_value}</label>
-                                                        <div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
-                                                            <div  id="value-wrapper">
-                                                                {form[impactvalue]}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="draw-grid__cell">
-                                                        <div class="draw-input-wrapper">
-                                                            <label>{_value_low}</label>
-                                                            <input class="draw-input with-add-on" size="50" type="text" value="0" name="valuelow_1" id="valuelow_1"  placeholder="">
-                                                        </div>
-                                                    </div>
-                                                    <div class="draw-grid__cell">
-                                                        <div class="draw-input-wrapper">
-                                                            <label>{_value_high}</label>
-                                                            <input class="draw-input with-add-on" size="50" type="text" value="0" name="valuehigh_1" id="valuehigh_1"  placeholder="">
-                                                        </div>
-                                                    </div>
-                                                    <div class="draw-grid__cell">
-                                                        <label>{_uom}</label>
-                                                        <div class="draw-select__wrapper draw-input--has-content" id="value-wraper">
-                                                            <div>
-                                                                {form[uom]}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-2" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-3" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-4" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-5" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-6" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-7" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-8" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-9" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-10" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-11" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-12" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-13" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-14" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div id="rule-15" class="hide">
-                                        <fieldset class="mb-20">
-                                            <legend><span class="smaller litegray left prl-6 pt-12 uc"><img src="{imgcdn}v5/ico_working.gif" width="13" height="13" alt="{_loading}" /></span></legend>
-                                        </fieldset>
-                                    </div>
-                                    <div><button type="button" class="btn btn-primary" onclick="add_rule('form[impact]')"><span>{_add_rule}</span></button>&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="remove_rule('form[impact]')" class="btn btn-secondary btn-small">{_remove_rule}</a></div>
-
                                 </div>
-                                <div class="draw-grid draw-grid--right-aligned">
-                                    <div class="draw-grid__cell draw-grid__cell--no-flex">
-                                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                            </div>
+                            <div class="ui-page-actions">
+                                <div class="ui-page-actions__primary">
+                                    <div class="button-group button-group--right-aligned">
+                                       <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
                                     </div>
                                 </div>
                             </div>
@@ -234,60 +162,144 @@
                 <else />
                 <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'update'">
                     <div class="layout-content__main">
-                        <div class="draw-card" id="newsizingrule">
-                            <div class="draw-card__section">
-                                <div class="table-wrapper">
-                                    <table class="expanded">
-                                    <thead>
-                                        <tr>
-                                            <th width="3%"><label>#</label></th>
-                                            <th width="8%"><label>{_type}</label></th>
-                                            <th width="5%"><label>{_gender}</label></th>
-                                            <th width="7%"><label>{_measurement}</label></th>
-                                            <th width="10%"><label>{_value_low}</label></th>
-                                            <th width="10%"><label>{_value_high}</label></th>
-                                            <th width="5%"><label>{_unit}</label></th>
-                                            <th width="5%"><label>{_impact}</label></th>
-                                            <th width="20%"><label>{_impact} {_value}</label></th>
-                                            <th width="10%"><label>{_rank}</label></th>
-                                            <th width="100%"></th> 
-                                            <th><span class="bold">{_action}</span></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <loop name="rules_rows">
-                                        <tr valign="top">
-                                            <td>{rulenumber}</td>
-                                            <td>{type}</td>
-                                            <td>{gender}</td>
-                                            <td>{mccode}</td>
-                                            <td nowrap="nowrap"><input class="draw-input with-add-on" size="50" type="text" value="{mvaluelow}" name="valuelow_{rulenumber}" id="valuelow_{rulenumber}"  onfocus="focus_field('valuelow_{rulenumber}')" onchange="update_rule_line('valuelow_{rulenumber}','mvaluelow',{id})"></td>
-                                            <td><input class="draw-input with-add-on" size="50" type="text" value="{mvaluehigh}" name="valuehigh_{rulenumber}" id="valuehigh_{rulenumber}" onfocus="focus_field('valuehigh_{rulenumber}')" onchange="update_rule_line('valuehigh_{rulenumber}','mvaluehigh',{id})"></td>
-                                            <td>{uom}</td>
-                                            <td>{impact}</td>
-                                            <td><div class="draw-select__wrapper draw-input--has-content w-300" id="value-wraper">
-                                                    {impactvaluefinal}
-                                            </div></td>
-                                            <td><input class="draw-input with-add-on" size="2" type="number" value="{rulerank}" name="rank_{rulenumber}" id="rank_{rulenumber}" onfocus="focus_field('rank_{rulenumber}')" onchange="update_rule_line('rank_{rulenumber}','rank',{id})"></td>
-                                            <td width="100%"></td> 
-                                            <td>{action}</td>
-                                        </tr>
-                                        </loop name="rules_rows">
-                                    </tbody>
-                                    </table>
-
+                        <form autocomplete="off" action="{https_server_admin}settings/openai/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_openai_form()">
+                            <input type="hidden" name="subcmd" value="update" />
+                            <input type="hidden" name="do" value="save" />
+                            <input type="hidden" name="id" value="{form[id]}" />
+                            <div data-modal-context-ref-for="preview_modal"></div>
+                            <div class="ui-layout">
+                                <div class="ui-layout__sections">
+                                    <div class="ui-layout__section ui-layout__section--primary">
+                                        <div class="ui-layout__item">
+                                            <div class="draw-card">
+                                                <section class="draw-card__section">
+                                                   
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="title">{_name}</label>
+                                                        <loop name="languages">
+                                                        <div class="sb"><input class="draw-input with-add-on" size="30" type="text" value="{form[varname]}" name="varname" id="varname"></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                                <section class="draw-card__section">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="subject">{_description}</label>
+                                                        <loop name="languages">
+                                                        <div class="sb"><noparse><input class="draw-input with-add-on" size="255" type="text" value="{form[description]}" name="description" id="description"  ></noparse></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                                <section class="draw-card__section">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="body">{_prompt}</label>
+                                                        <loop name="languages">
+                                                       <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="prompt_text" id="prompt_text" style="height: 550px; overflow-y: auto;" >{form[prompt_text]}</textarea></noparse></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                                <section class="draw-card__section">
+                                                    <div class="draw-input-wrapper">
+                                                        <label class="draw-label" for="body_html">{_context} / {_system_prompt}</label>
+                                                        <loop name="languages">
+                                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="prompt_context" id="prompt_context" style="height: 550px; overflow-y: auto;" >{form[prompt_context]}</textarea></noparse></div>
+                                                        </loop name="languages">
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ui-layout__section ui-layout__section--secondary">
+                                        <div class="ui-layout__item">
+                                            <div class="draw-card draw-card--aside">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Prompt variables</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">You can use prompt {{variables}} to input different information within the prompts. </p>
+                                                    <ul class="type--half-margin">
+                                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="prompt_parameters" id="prompt_parameters" style="height: 150px; overflow-y: auto;" >{form[prompt_parameters]}</textarea></noparse></div>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="draw-card draw-card--aside">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Response Schema</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">This is the json schema that will be returned after the prompt.</p>
+                                                    <ul class="type--half-margin">
+                                                        <div style="padding-bottom:6px"><noparse><textarea expanding="true" class="draw-textarea draw-textarea--expanding" name="response_schema" id="response_schema" style="height: 250px; overflow-y: auto;" >{form[response_schema]}</textarea></noparse></div>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="draw-card draw-card--aside" id="groupdiv">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Prompt Group</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">Prompt Groups allow you to define the group related to that prompt.</p>
+                                                    <div class="type--half-margin">
+                                                        <div style="padding-bottom:6px">
+                                                            <label for="sizing"><input type="radio" value="sizing" name="group"{form[groupsizing]} id="group"> <span class="badge badge--subdued">Sizing</span></label>
+                                                        </div>
+                                                        <div>
+                                                            <label for="global"><input type="radio" value="global" name="group"{form[groupglobal]} id="group"> <span class="badge badge--subdued">Global</span></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="draw-card draw-card--aside" id="typediv">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Prompt Type</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">Prompt Types allow you to define the type related to that prompt.</p>
+                                                    <div class="type--half-margin">
+                                                        <div style="padding-bottom:6px">
+                                                            <label for="prompt"><input type="radio" value="prompt" name="type"{form[typeprompt]} id="type"> <span class="badge badge--subdued">Prompt</span></label>
+                                                        </div>
+                                                        <div>
+                                                            <label for="other"><input type="radio" value="other" name="type"{form[typeother]} id="type"> <span class="badge badge--subdued">Other</span></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="draw-card draw-card--aside" id="adminonlydiv">
+                                                <div class="draw-card__header">
+                                                    <h2 class="draw-heading">Admin Only</h2>
+                                                </div>
+                                                <div class="draw-card__section">
+                                                    <p class="type--half-margin">Flag to only allow admin roles to execute the prompt.</p>
+                                                    <div class="type--half-margin">
+                                                        <div style="padding-bottom:6px">
+                                                            <label for="yes"><input type="radio" value="1" name="adminonly"{form[adminonlyyes]} id="adminonly"> <span class="badge badge--subdued">Yes</span></label>
+                                                        </div>
+                                                        <div>
+                                                            <label for="no"><input type="radio" value="0" name="adminonly"{form[adminonlyno]} id="adminonly"> <span class="badge badge--subdued">No</span></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
-
                             </div>
-                        </div>
+                            <div class="ui-page-actions">
+                                <div class="ui-page-actions__primary">
+                                    <div class="button-group button-group--right-aligned">
+                                       <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                
                 <else />
                     <div class="layout-content__main">
                         <div>
                             <ul class="draw-tab__list" role="tablist">
-                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/sizingsystem/">{_male}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
-                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/sizingsystem/?view=female">{_female} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'female'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/openai/">{_prompts}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'others'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/openai/?view=others">{_others} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'others'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
                                 <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
                                     <div class="dropdown">
                                         <ul class="draw-tab__list--vertical" role="tablist"></ul>
@@ -302,39 +314,31 @@
                                         <table class="expanded">
                                             <thead>
                                                 <tr>
-                                                    <th><label>{_code}</label></th>
-                                                    <th><label>{_measurement} {_details}</label></th>
-                                                    <th>&nbsp;</th>
+                                                    <th>Name</th>
+                                                    <th class="no-wrap">Description</th>
+                                                    <th class="no-wrap">Group</th>
+                                                    <th>Admin Only</th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <loop name="rules_rows">
-                                                <tr valign="top">
-                                                    <td width="20%"><a href="{https_server_admin}settings/sizingsystem/update/{code}/?gender={gender}&impact={impact}">{code}</a><div class="type--subdued">{totalrules} rule lines, {totaltypes} types</div></td>
-                                                    <td>{mcname} ({mccode})
-                                                    <div class="type--subdued">{_rules}: {access}</div>
-                                                    <div class="type--subdued">{_gender}: {gender}</div>
-                                                    <div class="type--subdued">{_impact}: {impact}</div>
-                                                    <div class="type--subdued">{_isformula}: {iscalculated}</div>
-                                                    <div class="type--subdued">{_formula}: {mcformula}</div>
-                                                    <div><label>{_priority}: {priority}</label></div></td>
+                                                <loop name="prompts">
+                                                <tr>
+                                                    <td><a href="{https_server_admin}settings/openai/update/{varname}/">{varname}</a> </td>
+                                                    <td>{description}</td>
+                                                    <td>{group} </td>
+                                                    <td>{adminonly}</td>
                                                     <td class="tr">
-                                                    <ul class="segmented">
+                                                        <ul class="segmented">
                                                         <li>
-                                                            <a href="{https_server_admin}settings/sizingsystem/update/{code}/?gender={gender}&impact={impact}" class="btn btn-slim btn--icon" title="Configure permissions for this sizingrule.">
-                                                            <span class="ico-16-svg halflings halflings-cog draw-icon" aria-hidden="true"></span>
-                                                            </a>
+                                                            <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected prompt?', 'Are you sure you want to delete the selected prompt?', '{id}', 1, '', '{https_server_admin}settings/openai/delete/{id}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                                         </li>
-                                                    <li>
-                                                        <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected sizingrule?', 'Are you sure you want to delete the selected sizing rule?', '{code}', 1, '', '{https_server_admin}settings/sizingsystem/delete/{code}/?gender={gender}')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
-                                                    </li>
-                                                    </ul>
+                                                        </ul>
                                                     </td>
                                                 </tr>
-                                                </loop name="rules_rows">
+                                                </loop name="prompts">
                                             </tbody>
                                         </table>
-
                                     </div>
                                 </div>
                             </div>
