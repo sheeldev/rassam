@@ -105,8 +105,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $form['adminonlyyes'] = $row['adminonly'] == '1' ? ' checked="checked"' : '';
                 $form['groupsizing'] = $row['group'] == 'sizing' ? ' checked="checked"' : '';
                 $form['groupglobal'] = $row['group'] == 'global' ? ' checked="checked"' : '';
-                $form['typeprompt'] = $row['type'] == 'prompt' ? ' checked="checked"' : '';
-                $form['typeother'] = $row['type'] == 'other' ? ' checked="checked"' : '';
+                $form['typechat'] = $row['type'] == 'chat' ? ' checked="checked"' : '';
+                $form['typeimage'] = $row['type'] == 'image' ? ' checked="checked"' : '';
                 $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/">OpenAI</a> / </span>' . $form['varname'];
             } else {
                 $sheel->template->templateregistry['message'] = '{_prompt_not_found}';
@@ -193,11 +193,11 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $currentarea = 'Open AI';
         $prompts = [];
         $count = 0;
-        $where = "type = 'prompt'";
-        if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'prompts') {
-            $where = "type = 'prompt'";
-        } else if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'others') {
-            $where = "type = 'other'";
+        $where = "type = 'chat'";
+        if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'chats') {
+            $where = "type = 'chat'";
+        } else if (isset($sheel->GPC['view']) and $sheel->GPC['view'] == 'images') {
+            $where = "type = 'image'";
         }
         $sql = $sheel->db->query("
                 SELECT id, varname, description, prompt_text, prompt_parameters, prompt_context, adminonly, type, `group`
@@ -213,8 +213,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             }
         }
     }
-
-
     $form['count'] = $count;
     $vars['areanav'] = $areanav;
     $vars['currentarea'] = $currentarea;

@@ -105,7 +105,7 @@
                                                     <p class="type--half-margin">Prompt Groups allow you to define the group related to that prompt.</p>
                                                     <div class="type--half-margin">
                                                         <div style="padding-bottom:6px">
-                                                            <label for="everyone"><input type="radio" value="sizing" name="group" id="group"> <span class="badge badge--subdued">Sizing</span></label>
+                                                            <label for="sizing"><input type="radio" value="sizing" name="group" id="group"> <span class="badge badge--subdued">Sizing</span></label>
                                                         </div>
                                                         <div>
                                                             <label for="global"><input type="radio" value="global" name="group" id="group"> <span class="badge badge--subdued">Global</span></label>
@@ -121,10 +121,10 @@
                                                     <p class="type--half-margin">Prompt Types allow you to define the type related to that prompt.</p>
                                                     <div class="type--half-margin">
                                                         <div style="padding-bottom:6px">
-                                                            <label for="everyone"><input type="radio" value="prompt" name="type" id="type"> <span class="badge badge--subdued">Prompt</span></label>
+                                                            <label for="chat"><input type="radio" value="chat" name="type" id="type"> <span class="badge badge--subdued">Chat</span></label>
                                                         </div>
                                                         <div>
-                                                            <label for="other"><input type="radio" value="other" name="type" id="type"> <span class="badge badge--subdued">Other</span></label>
+                                                            <label for="image"><input type="radio" value="image" name="type" id="type"> <span class="badge badge--subdued">Image</span></label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -137,10 +137,10 @@
                                                     <p class="type--half-margin">Flag to only allow admin roles to execute the prompt.</p>
                                                     <div class="type--half-margin">
                                                         <div style="padding-bottom:6px">
-                                                            <label for="everyone"><input type="radio" value="1" name="adminonly" id="adminonly"> <span class="badge badge--subdued">Yes</span></label>
+                                                            <label for="yes"><input type="radio" value="1" name="adminonly" id="adminonly"> <span class="badge badge--subdued">Yes</span></label>
                                                         </div>
                                                         <div>
-                                                            <label for="other"><input type="radio" value="0" name="adminonly" id="adminonly"> <span class="badge badge--subdued">No</span></label>
+                                                            <label for="no"><input type="radio" value="0" name="adminonly" id="adminonly"> <span class="badge badge--subdued">No</span></label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -256,10 +256,10 @@
                                                     <p class="type--half-margin">Prompt Types allow you to define the type related to that prompt.</p>
                                                     <div class="type--half-margin">
                                                         <div style="padding-bottom:6px">
-                                                            <label for="prompt"><input type="radio" value="prompt" name="type"{form[typeprompt]} id="type"> <span class="badge badge--subdued">Prompt</span></label>
+                                                            <label for="chat"><input type="radio" value="chat" name="type"{form[typechat]} id="type"> <span class="badge badge--subdued">Chat</span></label>
                                                         </div>
                                                         <div>
-                                                            <label for="other"><input type="radio" value="other" name="type"{form[typeother]} id="type"> <span class="badge badge--subdued">Other</span></label>
+                                                            <label for="image"><input type="radio" value="image" name="type"{form[typeimage]} id="type"> <span class="badge badge--subdued">Image</span></label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -298,8 +298,8 @@
                     <div class="layout-content__main">
                         <div>
                             <ul class="draw-tab__list" role="tablist">
-                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/openai/">{_prompts}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
-                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'others'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/openai/?view=others">{_others} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'others'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/openai/">{_chat_prompts}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'images'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/openai/?view=images">{_image_prompts} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'images'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
                                 <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
                                     <div class="dropdown">
                                         <ul class="draw-tab__list--vertical" role="tablist"></ul>

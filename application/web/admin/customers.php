@@ -1,6 +1,6 @@
 <?php
 define('LOCATION', 'admin');
-require_once(DIR_CLASSES . '/vendor/office/autoload.php');
+require_once DIR_CLASSES . '/vendor/office/autoload.php';
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 if (isset($match['params'])) {

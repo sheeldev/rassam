@@ -313,7 +313,8 @@ class dynamics
               )
             )
           ),
-          array(), $this->config['tokenEndPoint'],
+          array(),
+          $this->config['tokenEndPoint'],
           "fetch_token"
         );
       }
@@ -363,8 +364,7 @@ class dynamics
           WHERE name = '" . $this->config["name"] . "' AND active ='1'
           LIMIT 1
           ", 0, null, __FILE__, __LINE__);
-      }
-      else {
+      } else {
         $this->sheel->db->query("
           UPDATE " . DB_PREFIX . "dynamics_api
           SET failed = failed+1
@@ -372,7 +372,7 @@ class dynamics
           LIMIT 1
           ", 0, null, __FILE__, __LINE__);
       }
-      return new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
+      return $dynamicresponse;
     } catch (Exception $e) {
       return false;
     }

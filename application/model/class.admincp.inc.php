@@ -866,7 +866,7 @@ class admincp
          */
         function print_roleusertype_pulldown($selected = '', $textonly = false)
         {
-                $roleusertypes = array('customer' => '{_customer}', 'staff' => '{_staff}');
+                $roleusertypes = array('customer' => '{_customer}', 'staff' => '{_staff}', 'admin' => '{_admin}');
                 if ($textonly) {
                         return $roleusertypes["$selected"];
                 } else {
