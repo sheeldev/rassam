@@ -107,10 +107,10 @@ $router->map('GET|POST', '/admin/settings/sizingsystem/', __DIR__ . '/applicatio
 $router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_add');
 $router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[update|delete|deleteline:subcmd]/[*:code]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingrules_delete');
 $router->map('GET|POST', '/admin/settings/[sizingsystem:cmd]/[sizesystem|deletetype|types|deletecategory|categories:subcmd]/', __DIR__ . '/application/web/admin/sizingrules.php', 'admin_sizingtypes');
-$router->map('GET|POST', '/admin/settings/openai/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai');
-$router->map('GET|POST', '/admin/settings/[openai:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_add');
-$router->map('GET|POST', '/admin/settings/[openai:cmd]/[update|delete|deleteline:subcmd]/[*:id]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_delete');
-$router->map('GET|POST', '/admin/settings/[openai:cmd]/[config:subcmd]/', __DIR__ . '/application/web/admin/openai.php', 'admin_openai_config');
+$router->map('GET|POST', '/admin/settings/genai/', __DIR__ . '/application/web/admin/genai.php', 'admin_genai');
+$router->map('GET|POST', '/admin/settings/[genai:cmd]/[add:subcmd]/', __DIR__ . '/application/web/admin/genai.php', 'admin_genai_add');
+$router->map('GET|POST', '/admin/settings/[genai:cmd]/[update|delete|deleteline:subcmd]/[*:id]/', __DIR__ . '/application/web/admin/genai.php', 'admin_genai_delete');
+$router->map('GET|POST', '/admin/settings/[genai:cmd]/[config:subcmd]/', __DIR__ . '/application/web/admin/genai.php', 'admin_genai_config');
 
 
 $router->map('GET|POST', '/admin/settings/bc/', __DIR__ . '/application/web/admin/bc.php', 'admin_bc');

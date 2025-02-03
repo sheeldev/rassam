@@ -29,7 +29,7 @@ $sheel->template->meta['cssinclude'] = array(
 
 
 if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata']['user']['userid'] > 0 and $_SESSION['sheeldata']['user']['isadmin'] == '1') {
-    $sheel->template->meta['jsinclude']['footer'][] = 'admin_openai';
+    $sheel->template->meta['jsinclude']['footer'][] = 'admin_genai';
     if (($sidenav = $sheel->cache->fetch("sidenav_settings")) === false) {
         $sidenav = $sheel->admincp_nav->print('settings');
         $sheel->cache->store("sidenav_settings", $sidenav);
@@ -54,7 +54,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'update') {
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Prompts - Update</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Prompts - Update';
-        $areanav = 'settings_openai';
+        $areanav = 'settings_genai';
         if (isset($sheel->GPC['do']) and $sheel->GPC['do'] == 'save') {
             $varname = $sheel->GPC['varname'];
             $description = $sheel->GPC['description'];
@@ -79,7 +79,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 WHERE id = '" . $sheel->GPC['id'] . "'
             ");
             $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'prompt updated', 'A prompt was updated to the portal');
-            refresh(HTTPS_SERVER_ADMIN . 'settings/openai/');
+            refresh(HTTPS_SERVER_ADMIN . 'settings/genai/');
         }
 
         if (isset($sheel->GPC['id']) and $sheel->GPC['id'] != '') {
@@ -107,7 +107,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $form['groupglobal'] = $row['group'] == 'global' ? ' checked="checked"' : '';
                 $form['typechat'] = $row['type'] == 'chat' ? ' checked="checked"' : '';
                 $form['typeimage'] = $row['type'] == 'image' ? ' checked="checked"' : '';
-                $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/">OpenAI</a> / </span>' . $form['varname'];
+                $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/genai/">Generative AI</a> / </span>' . $form['varname'];
             } else {
                 $sheel->template->templateregistry['message'] = '{_prompt_not_found}';
                 $sheel->template->assign('message', $sheel->template->parse_template_phrases('message'));
@@ -142,7 +142,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 '" . $group . "')
             ");
             $sheel->log_event($_SESSION['sheeldata']['user']['userid'], basename(__FILE__), 'success' . "\n" . $sheel->array2string($sheel->GPC), 'New prompt added', 'A new prompt was added to the portal');
-            refresh(HTTPS_SERVER_ADMIN . 'settings/openai/');
+            refresh(HTTPS_SERVER_ADMIN . 'settings/genai/');
         }
         $form = [];
         $form['varname'] = '';
@@ -156,21 +156,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $form['type'] = 'prompt';
         $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Prompts - Add</div>';
         $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | Prompts - Add';
-        $areanav = 'settings_openai';
-        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/">OpenAI</a> / </span> {_add}';
+        $areanav = 'settings_genai';
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/genai/">Generative AI</a> / </span> {_add}';
     } else if (isset($sheel->GPC['subcmd']) and $sheel->GPC['subcmd'] == 'config') {
-        $buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_cancel}</button></a></p>';
-        $settings = $sheel->admincp->construct_admin_input('openai', HTTPS_SERVER_ADMIN . 'settings/openai/config/', '', $buttons);
-        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Open AI Configuration</div>';
-        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Open AI Configuration';
-        $areanav = 'settings_openai';
-        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/openai/">Open AI</a> / </span> {_configuration}';
+        $buttons = '<p><a href="' . HTTPS_SERVER_ADMIN . 'settings/genai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn" id="" aria-expanded="false" aria-controls="">{_cancel}</button></a></p>';
+        $settings = $sheel->admincp->construct_admin_input('genai', HTTPS_SERVER_ADMIN . 'settings/genai/config/', '', $buttons);
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Generative AI Configuration</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Generative AI Configuration';
+        $areanav = 'settings_genai';
+        $currentarea = '<span class="breadcrumb"><a href="' . HTTPS_SERVER_ADMIN . 'settings/genai/">Generative AI</a> / </span> {_configuration}';
         $vars['areanav'] = $areanav;
         $vars['currentarea'] = $currentarea;
         $vars['sidenav'] = $sidenav;
         $vars['settings'] = $settings;
         $vars['url'] = $_SERVER['REQUEST_URI'];
-        $sheel->template->fetch('main', 'settings_openai_config.html', 1);
+        $sheel->template->fetch('main', 'settings_genai_config.html', 1);
 
         $sheel->template->parse_loop(
             'main',
@@ -187,10 +187,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $sheel->template->pprint('main', $vars);
         exit();
     } else {
-        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Open AI</div>';
-        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Open AI';
-        $areanav = 'settings_openai';
-        $currentarea = 'Open AI';
+        $sheel->template->meta['areatitle'] = 'Admin CP | <div class="type--subdued">Generative AI</div>';
+        $sheel->template->meta['pagetitle'] = SITE_NAME . ' - Admin CP | - Generative AI';
+        $areanav = 'settings_genai';
+        $currentarea = 'Generative AI';
         $prompts = [];
         $count = 0;
         $where = "type = 'chat'";
@@ -218,7 +218,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $vars['currentarea'] = $currentarea;
     $vars['sidenav'] = $sidenav;
     $vars['url'] = $_SERVER['REQUEST_URI'];
-    $sheel->template->fetch('main', 'settings_openai.html', 1);
+    $sheel->template->fetch('main', 'settings_genai.html', 1);
     $sheel->template->parse_hash(
         'main',
         array(

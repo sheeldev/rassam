@@ -40,6 +40,7 @@ $methods = array(
 	'getdefaultuom' => array('skipsession' => true),
 	'addmeasurement' => array('skipsession' => true),
 	'addsize' => array('skipsession' => true),
+	'getaiprompt' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -866,6 +867,12 @@ if (isset($sheel->GPC['do'])) {
 		}
 		$error = ((!empty($sheel->template->parse_template_phrases('error'))) ? $sheel->template->parse_template_phrases('error') : '');
 		die(json_encode(array('response' => $response, 'value' => $value, 'error' => $error)));
+	} else if ($sheel->GPC['do'] == 'getaiprompt') {
+		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['prompt']) and !empty($sheel->GPC['prompt']) and isset($sheel->GPC['companycode']) and !empty($sheel->GPC['companycode'])) {
+			$html = $sheel->common_prompt->get_prompt_result($sheel->GPC['staffcode'], $sheel->GPC['prompt'], $sheel->GPC['companycode']);
+			$sheel->template->templateregistry['promptresult'] = $html;
+			echo $sheel->template->parse_template_phrases('promptresult');
+		}
 	} else if ($sheel->GPC['do'] == 'build') {
 		die('001');
 	} else if ($sheel->GPC['do'] == 'version') {

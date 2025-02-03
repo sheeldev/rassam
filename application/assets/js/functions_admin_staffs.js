@@ -18,7 +18,7 @@ function add_staff_measurement(staffcode, company, customer, position, departmen
 	}
 	else {
 		jQuery('#mvalue').removeClass('error');
-		var querystring = "&customer=" + customer + "&position=" + position + "&department=" + department + "&company=" + company + "&staffcode=" + staffcode + "&mcategory=" + fetch_js_object('mcategories').value + "&uom=" + fetch_js_object('uoms').value + "&mvalue=" + fetch_js_object('mvalue').value + "&token=" + iL['TOKEN'];
+		var querystring = "&customer=" + customer + "&position=" + encodeURIComponent(position) + "&department=" + encodeURIComponent(department) + "&company=" + company + "&staffcode=" + staffcode + "&mcategory=" + fetch_js_object('mcategories').value + "&uom=" + fetch_js_object('uoms').value + "&mvalue=" + fetch_js_object('mvalue').value + "&token=" + iL['TOKEN'];
 		try {
 			ajaxRequest = new XMLHttpRequest();
 		}
@@ -68,7 +68,7 @@ function add_staff_size(staffcode, gender, company, customer, position, departme
 	var cut = fetch_js_object('cuts').value;
 	var bind = (fetch_js_object('bind').checked) ? '1' : '0';
 
-	var querystring = "&customer=" + customer + "&position=" + position + "&department=" + department + "&company=" + company + "&staffcode=" + staffcode +  "&gender=" + gender + "&itemtype=" + encodeURIComponent(itemtype) + "&size=" + size + "&fit=" + fit + "&cut=" + cut + "&bind=" + bind + "&token=" + iL['TOKEN'];
+	var querystring = "&customer=" + customer + "&position=" + encodeURIComponent(position) + "&department=" + encodeURIComponent(department) + "&company=" + company + "&staffcode=" + staffcode +  "&gender=" + gender + "&itemtype=" + encodeURIComponent(itemtype) + "&size=" + size + "&fit=" + fit + "&cut=" + cut + "&bind=" + bind + "&token=" + iL['TOKEN'];
 	try {
 		ajaxRequest = new XMLHttpRequest();
 	}

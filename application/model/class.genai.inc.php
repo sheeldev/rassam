@@ -2,7 +2,7 @@
 require_once DIR_CLASSES . '/vendor/jsonschema/autoload.php';
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
-class openairesponse
+class genairesponse
 {
 
   private $schema = '';
@@ -94,7 +94,7 @@ class openairesponse
     }
   }
 }
-class openai
+class genai
 {
   private $prompt = null;
   protected $sheel;
@@ -129,13 +129,13 @@ class openai
       $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
       $this->config['name'] = $res['varname'];
       if ($res['type'] == 'chat') {
-        $this->config['url'] = $this->sheel->config['openaichaturl'];
+        $this->config['url'] = $this->sheel->config['genaichaturl'];
       } else if ($res['type'] == 'images') {
-        $this->config['url'] = $this->sheel->config['openaiimageurl'];
+        $this->config['url'] = $this->sheel->config['genaiimageurl'];
       } else {
-        $this->config['url'] = $this->sheel->config['openaichaturl'];
+        $this->config['url'] = $this->sheel->config['genaichaturl'];
       }
-      $this->config['key'] = $this->sheel->config['openaikey'];
+      $this->config['key'] = $this->sheel->config['genaikey'];
       $this->config['prompt_text'] = $res['prompt_text'];
       $this->config['prompt_parameters'] = $res['prompt_parameters'];
       $this->config['prompt_context'] = $res['prompt_context'];
@@ -162,14 +162,30 @@ class openai
   }
   public function set($toconvert = []) {
     if (isset($toconvert) and is_array($toconvert)) {
-      foreach ($toconvert as $search => $replace) {
-        if (!empty($search)) {
-          $this->config['prompt_text'] = str_replace("$search", $replace, $this->config['prompt_text']);
+        $promptParameters = explode(',', $this->config['prompt_parameters']);
+        $toconvertKeys = array_map(function($key) {
+            return trim($key, '{}');
+        }, array_keys($toconvert));
+        $allElementsSet = true;
+        foreach ($promptParameters as $param) {
+            if (!in_array($param, $toconvertKeys)) {
+                $allElementsSet = false;
+                break;
+            }
         }
-      }
-      $this->config['prompt_text'] = strip_tags($this->config['prompt_text']);
+        if ($allElementsSet) {
+            foreach ($toconvert as $search => $replace) {
+                if (!empty($search)) {
+                    $this->config['prompt_text'] = str_replace("$search", $replace, $this->config['prompt_text']);
+                }
+            }
+            $this->config['prompt_text'] = strip_tags($this->config['prompt_text']);
+            return true;
+        } else {
+            return false;
+        }
     }
-  }
+}
   public function chat()
   {
     try {
@@ -209,8 +225,8 @@ class openai
       $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
       $responseHeaders = substr($rawResponse, 0, $headerSize);
       $responseBody = substr($rawResponse, $headerSize);
-      $openairesponse = new openairesponse($responseBody, $responseHeaders, $this->config['response_schema'], $rawResponse);
-      return $openairesponse;
+      $genairesponse = new genairesponse($responseBody, $responseHeaders, $this->config['response_schema'], $rawResponse);
+      return $genairesponse;
 
     } catch (Exception $e) {
       return false;

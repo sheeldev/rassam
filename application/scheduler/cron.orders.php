@@ -131,8 +131,9 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
                                                                         WHERE analysisreference = '" . $order['no'] . "'
                                                                         LIMIT 1
                                                                         ");
+                                                                        
                                                         if ($this->sheel->db->num_rows($sqlanalysis) == 0) {
-                                                                if ($order['icCustomerSONo'] == '') {
+                                                                if (trim($order['icCustomerSONo']) == '' || $order['icCustomerSONo'] == null) {
                                                                         $this->sheel->db->query("
                                                                                 INSERT INTO " . DB_PREFIX . "analysis
                                                                                 (systemid, createdtime, modifiedtime, analysisfor, analysisidentifier, entityid, analysisreference, topic, isfinished, isarchived, companyid)

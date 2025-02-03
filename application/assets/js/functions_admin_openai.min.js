@@ -1,4 +1,4 @@
-function submit_openai_form() {
+function submit_genai_form() {
 	haserror = false;
 	jQuery('#varname').removeClass('error');
 	jQuery('#description').removeClass('error');

@@ -24,7 +24,9 @@
             <div class="layout-content__sidebar layout-content__first">
                 <div class="section-summary">
                     <h1>Staff details</h1>
-                    <p> Details for {staff[code]}. </div>
+                    <p> Details for {staff[code]}. </p>
+                    <p><button name="button" onclick="check_ai('{staff[code]}', 'measurements_validation', '{form[companycode]}')" data-accordion-toggler-for="" class="btn"><img src="{imgcdn}v5/chatgpt.png" width="25" height="25" title="{_let_ai_confirm}" /></button></p>
+                </div>
             </div>
             <div class="layout-content__main">
                 <form autocomplete="off" id="update_staff" action="{https_server_admin}customers/org/{staff[customer_id]}/staffs/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
@@ -118,7 +120,7 @@
                                     <table class="expanded">
                                     <thead>
                                     <tr>
-                                        <th width="15%"><label>Measurement Category</label></th> 
+                                        <th width="15%"><label>Measurement Category</label> <div class="chatgpt-icon"></div></th> 
                                         <th width="15%"><label>Value</label></th> 
                                         <th width="15%"><label>UOM</label></th> 
                                         <th width="100%"></th> 
@@ -328,5 +330,22 @@
     </div>
     <div define="iLNav.setPage(['customers','customers_customers']), sLPage.close()"></div>
 </section>
+<div id="ai_details" class="bulk-actions-widget">
+    <div>
+        <span class=">right  bold"><a href="javascript:;" onclick="closeaidetails()" class="close">{_close}</a></span><br>
+            <div id="ai_status" >
+            </div>
+        <div class="clear"></div>
+        <br>
 
+    </div>
+</div>
+</span>
+<div id="spinnerai" class="hide">
+    <div class="spinnerai">
+    </div>
+</div>
+<div id="popupshow" class="hide">
+    <div class="popup"></div>
+</div>
 

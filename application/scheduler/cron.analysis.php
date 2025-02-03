@@ -9,7 +9,7 @@ $this->sheel->timer->start();
 $sqlanalysis = $this->sheel->db->query("
                 SELECT *
                 FROM " . DB_PREFIX . "analysis
-                WHERE isfinished = '0' AND isarchived = '0'
+                WHERE isfinished = '0' OR isarchived = '0'
         ");
 $ordersizebrackets = explode("|", $this->sheel->config['ordermagnitude']);
 while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
@@ -178,7 +178,6 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and e.entityid = cs.fromid
                 WHERE e.topic='Order' AND e.reference = '" . $resanalysis['analysisreference'] . "' and  cs.isarchive = '1'
                 ORDER BY eventtime DESC, eventid DESC LIMIT 1");
-
         if ($this->sheel->db->num_rows($sqlLastEvent) == 1) {
                 $this->sheel->db->query("
                         UPDATE " . DB_PREFIX . "analysis

@@ -384,6 +384,7 @@ class admincp_customers extends admincp
                         }
                     }
                     $result = eval ("return $formula;");
+                    $result = round($result, 2);
                     $sqlinterval = $this->sheel->db->query("
                         SELECT id
                         FROM " . DB_PREFIX . "size_rules
@@ -441,6 +442,7 @@ class admincp_customers extends admincp
                     }
                 }
                 $result = eval ("return $formula;");
+                $result = round($result, 2);
                 if ($result >= $res['mvaluelow'] and $result <= $res['mvaluehigh']) {
                     $temparray['rulecode'] = $res['code'];
                     $temparray['mccode'] = $res['mccode'];

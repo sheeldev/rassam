@@ -21,14 +21,14 @@
                 <div class="layout-content__sidebar layout-content__first">
                     <div class="section-summary">
                         <h1>Prompts</h1>
-                        <p>Open AI Prompts defines prompts structure and parameters.</p>
-                        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')"><p><a href="{https_server_admin}settings/openai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a></p><else /><p><a href="{https_server_admin}settings/openai/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Add Prompt</button></a></p><p><a href="{https_server_admin}settings/openai/config/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Configurations</button></a></p></if>
+                        <p>Gen AI Prompts defines prompts structure and parameters.</p>
+                        <if condition="isset($sheel->GPC['subcmd']) AND ($sheel->GPC['subcmd'] == 'add' OR $sheel->GPC['subcmd'] == 'update')"><p><a href="{https_server_admin}settings/genai/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">{_cancel}</button></a></p><else /><p><a href="{https_server_admin}settings/genai/add/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Add Prompt</button></a></p><p><a href="{https_server_admin}settings/genai/config/"><button name="button" type="button" data-accordion-toggler-for="" class="btn">Configurations</button></a></p></if>
                     </div>
                 </div>
                 
                 <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'add'">
                     <div class="layout-content__main">
-                        <form autocomplete="off" action="{https_server_admin}settings/openai/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_openai_form()">
+                        <form autocomplete="off" action="{https_server_admin}settings/genai/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_genai_form()">
                             <input type="hidden" name="subcmd" value="add" />
                             <input type="hidden" name="do" value="save" />
                             <div data-modal-context-ref-for="preview_modal"></div>
@@ -162,7 +162,7 @@
                 <else />
                 <if condition="isset($sheel->GPC['subcmd']) AND $sheel->GPC['subcmd'] == 'update'">
                     <div class="layout-content__main">
-                        <form autocomplete="off" action="{https_server_admin}settings/openai/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_openai_form()">
+                        <form autocomplete="off" action="{https_server_admin}settings/genai/" accept-charset="UTF-8" method="post" enctype="multipart/form-data" onsubmit="return submit_genai_form()">
                             <input type="hidden" name="subcmd" value="update" />
                             <input type="hidden" name="do" value="save" />
                             <input type="hidden" name="id" value="{form[id]}" />
@@ -298,8 +298,8 @@
                     <div class="layout-content__main">
                         <div>
                             <ul class="draw-tab__list" role="tablist">
-                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/openai/">{_chat_prompts}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
-                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'images'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/openai/?view=images">{_image_prompts} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'images'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="!isset($sheel->GPC['view'])"> draw-tab--is-active</if>" tabindex="0" aria-controls="NextTabPanel1" aria-selected="true" href="settings/genai/">{_chat_prompts}<if condition="empty($sheel->GPC['view'])"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
+                                <li role="presentation"><a class="draw-tab<if condition="isset($sheel->GPC['view']) AND $sheel->GPC['view'] == 'images'"> draw-tab--is-active</if>" tabindex="-1" aria-controls="NextTabPanel3" aria-selected="false" href="settings/genai/?view=images">{_image_prompts} <if condition="!empty($sheel->GPC['view']) AND $sheel->GPC['view'] == 'images'"> &nbsp;<span class="cbadge lineitems cbadge-notification">{form[count]}</span></if></a></li>
                                 <li class="draw-tab__list__disclosure-item dropdown-container"><span class="draw-tab draw-tab--disclosure" tabindex="-1" data-dropdown="~ .dropdown" aria-selected="true"><i class="ico ico-16-svg ico-chevron-down-blue"></i></span>
                                     <div class="dropdown">
                                         <ul class="draw-tab__list--vertical" role="tablist"></ul>
@@ -324,14 +324,14 @@
                                             <tbody>
                                                 <loop name="prompts">
                                                 <tr>
-                                                    <td><a href="{https_server_admin}settings/openai/update/{varname}/">{varname}</a> </td>
+                                                    <td><a href="{https_server_admin}settings/genai/update/{varname}/">{varname}</a> </td>
                                                     <td>{description}</td>
                                                     <td>{group} </td>
                                                     <td>{adminonly}</td>
                                                     <td class="tr">
                                                         <ul class="segmented">
                                                         <li>
-                                                            <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected prompt?', 'Are you sure you want to delete the selected prompt?', '{id}', 1, '', '{https_server_admin}settings/openai/delete/{id}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                            <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected prompt?', 'Are you sure you want to delete the selected prompt?', '{id}', 1, '', '{https_server_admin}settings/genai/delete/{id}/')" class="btn btn-slim btn--icon" title="{_delete}"><span class="ico-16-svg halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                                         </li>
                                                         </ul>
                                                     </td>
@@ -351,5 +351,5 @@
     </div>
     </section>
     
-    <div define="iLNav.setPage(['settings','settings_openai']), sLPage.close()"></div>
+    <div define="iLNav.setPage(['settings','settings_genai']), sLPage.close()"></div>
     

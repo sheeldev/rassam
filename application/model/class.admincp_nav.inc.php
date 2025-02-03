@@ -333,9 +333,9 @@ class admincp_nav extends admincp
                                 '
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_sizingrules" bind-event-click="" allow-default="1" href="settings/sizingsystem/">Sizing System</a> </li>
                                 ':'').
-                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_openai', false) ?
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_genai', false) ?
                                 '
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_openai" bind-event-click="" allow-default="1" href="settings/openai/">Open AI</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_genai" bind-event-click="" allow-default="1" href="settings/genai/">Gen AI</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 ':'').
                                 ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_bc', false) ?

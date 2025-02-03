@@ -525,6 +525,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         exit();
     } else if (isset($sheel->GPC['cmd']) and $sheel->GPC['cmd'] == 'org' and isset($sheel->GPC['sub']) and $sheel->GPC['sub'] == 'staffs') {
         $sheel->template->meta['jsinclude']['footer'][] = 'admin_staffs';
+        $sheel->template->meta['jsinclude']['footer'][] = 'admin_prompts';
         $customer = array();
         $sql = $sheel->db->query("
         SELECT customer_id, customer_ref, company_id
@@ -973,10 +974,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $measurement['etag'] = htmlspecialchars($measurement['@odata.etag']);
                 $extra = 'class="draw-select" onchange="update_staff_details(\'uom_' . $measurement['systemId'] . '\',\'uom\',\'' . $measurement['systemId'] . '\',\'' . $companycode . '\',\'0\')"';
                 $measurement['uomCode'] = $sheel->construct_pulldown('uom_' . $measurement['systemId'], 'uom_' . $measurement['systemId'], $uom, $measurement['uomCode'], $extra);
-
             }
-
-
             if (!$sheel->dynamics->init_dynamics('erStaffSizes', $companycode)) {
                 $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                 exit();
