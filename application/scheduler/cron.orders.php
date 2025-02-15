@@ -126,7 +126,7 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
 
                                                 if ($order['documentType'] == 'Order') {
                                                         $sqlanalysis = $this->sheel->db->query("
-                                                                        SELECT analysisid
+                                                                        SELECT analysisid, isfinished, isarchived
                                                                         FROM " . DB_PREFIX . "analysis
                                                                         WHERE analysisreference = '" . $order['no'] . "'
                                                                         LIMIT 1
@@ -237,8 +237,45 @@ if ($this->sheel->db->num_rows($sqlcompany) > 0) {
 
                                                                                 }
                                                                         }
+                                                                }
+                                                        } else {
+                                                                $resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC);
+                                                                if ($resanalysis['isfinished'] == '0' || $resanalysis['isarchived'] == '0') {
+                                                                        if (!$this->sheel->dynamics->init_dynamics('erSalesLines', $rescompanies['bc_code'])) {
+                                                                                $cronlog .= 'Inactive Dynamics API erSalesLines for company ' . $rescompanies['name'] . ', ';
+                                                                        }
+                                                                        $searchcondition = '$filter=documentNo eq \'' . $order['no'] . '\'';
+                                                                        $apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
 
+                                                                        if ($apiResponse->isSuccess()) {
+                                                                                $lines = $apiResponse->getData();
+                                                                        }
+                                                                        foreach ($lines as $line) {
+                                                                                $sqlanalysisline = $this->sheel->db->query("
+                                                                                        SELECT analysislineid
+                                                                                        FROM " . DB_PREFIX . "analysis_lines
+                                                                                        WHERE systemid = '" . $line['systemId'] . "'
+                                                                                        LIMIT 1
+                                                                                        ");
+                                                                                if ($this->sheel->db->num_rows($sqlanalysisline) == 0) {
+                                                                                        $this->sheel->db->query("
+                                                                                                INSERT INTO " . DB_PREFIX . "analysis_lines
+                                                                                                (systemid, lineno,  lineidentifier, linereference, createdtime, itemno, allocationtype, allocationcode, entityid, companyid)
+                                                                                                VALUES(
+                                                                                                '" . $this->sheel->db->escape_string($line['systemId']) . "',
+                                                                                                '" . $line['lineNo'] . "',
+                                                                                                '" . $order['no'] . "',
+                                                                                                '" . $line['assemblyNo'] . "',
+                                                                                                " . strtotime($order['systemCreatedAt']) . ",
+                                                                                                '" . $line['no'] . "',
+                                                                                                '" . $line['allocationType'] . "',
+                                                                                                '" . $line['allocationCode'] . "',
+                                                                                                '" . $entityid . "',
+                                                                                                '" . $entityid . "'
+                                                                                        )", 0, null, __FILE__, __LINE__);
+                                                                                }
 
+                                                                        }
                                                                 }
                                                         }
                                                 }

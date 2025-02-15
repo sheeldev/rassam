@@ -580,10 +580,7 @@ class admincp_stats extends admincp
 						$res['percent'] = '0.0';
 						$analysisx[] = $res;
 					}
-				} else {
-					$this->sheel->show['analysis'] = true;
-					$analysisx[] = array('analysis' => 'closed', 'count' => 0);
-				}
+				} 
 
 				foreach ($analysisx as $key => $value) {
 					if ($value['count'] > 0) {

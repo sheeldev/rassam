@@ -14,6 +14,7 @@ class common_prompt extends common
 			$staff = [];
 			$staffmeasurements = [];
 			$iserror = false;
+			$html = '';
 			$errors = [];
 			$errorMessage = '';
 			if (!$this->sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
@@ -69,7 +70,7 @@ class common_prompt extends common
 						$errors = $chat->getErrors();
 						foreach ($errors as $error) {
 							if (isset($error['message'])) {
-								$html .= $error['message'] . "<br>";
+								$errorMessage .= $error['message'] . "<br>";
 							}
 						}
 					}
@@ -79,7 +80,6 @@ class common_prompt extends common
 					$errorMessage = 'Wrong parameters';
 				}	
 			}
-			$html .= $errorMessage;
 		}
 		else {
 
@@ -88,33 +88,48 @@ class common_prompt extends common
 		$html .= '<div class="hr-20-0-20-0"></div>';
 		$html .= '</div>';
 		$html .= '<div id="assmeblies_status">';
+		$html .= '<div class="ui-layout">';
+		$html .= '<div class="ui-layout__sections">';
+		$html .= '<div class="ui-layout__section ui-layout__section--primary">';
+		$html .= '<div class="ui-layout__item">';
+		$html .= '<div class="draw-card">';
 		$html .= '<div class="draw-card__section">';
-		$html .= '<div class="table-wrapper bulk-action-div" style="">';
-		$html .= '<table>';
-		$html .= '<thead>';
-		$html .= '<tr>';
-		$html .= '<th width="8%"> <span><label>{_code}</label></span> </th>';
-		$html .= '<th width="8%"> <span><label>{_range}</label></span> </th>';
-		$html .= '<th width="8%"> <span><label>{_value}</label></span></th>';
-		$html .= '<th width="50%"> <span><label>{_interpretation}</label></span></th>';
-		$html .= '<th width="15%"> <span><label>{_alert}</label></span></th>';
-		$html .= '</tr>';
-		$html .= '</thead>';
-		$html .= '<tbody>';
-
-		foreach ($airesponse as $ai) {
-			$html .= '<tr valign="top">';
-			$html .= '<td class="no-wrap">' . $ai['code'] . '</td>';
-			$html .= '<td class="no-wrap"> <span>' . $ai['acceptable_ranges'] . '</span></td>';
-			$html .= '<td class="no-wrap"> <span>' . $ai['value'] . '</span></td>';
-			$html .= '<td class="wrap">' . $ai['interpretation'] . '</td>';
-			$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($ai['alert']=='Abnormal' ? 'darkred' : 'green') . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $ai['alert'] . '</span></span></td>';
+		if (!$iserror) {
+			$html .= '<div class="table-wrapper bulk-action-div" style="">';
+			$html .= '<table>';
+			$html .= '<thead>';
+			$html .= '<tr>';
+			$html .= '<th width="5%"> <span><label>{_code}</label></span> </th>';
+			$html .= '<th width="5%"> <span><label>{_range}</label></span> </th>';
+			$html .= '<th width="5%"> <span><label>{_value}</label></span></th>';
+			$html .= '<th width="50%"> <span><label>{_interpretation}</label></span></th>';
+			$html .= '<th width="20%"> <span><label>{_alert}</label></span></th>';
 			$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '<tbody>';
+	
+			foreach ($airesponse as $ai) {
+				$html .= '<tr valign="top">';
+				$html .= '<td class="no-wrap">' . $ai['code'] . '</td>';
+				$html .= '<td class="no-wrap"> <span>' . $ai['acceptable_ranges'] . '</span></td>';
+				$html .= '<td class="no-wrap"> <span>' . $ai['value'] . '</span></td>';
+				$html .= '<td class="wrap">' . $ai['interpretation'] . '</td>';
+				$html .= '<td class="status no-wrap"><span class="draw-status__badge ' . ($ai['alert']=='Abnormal' ? 'darkred' : 'green') . ' draw-status__badge--adjacent-chevron"><span class="draw-status__badge-content">' . $ai['alert'] . '</span></span></td>';
+				$html .= '</tr>';
+			}
+			$html .= '</tbody>';
+			$html .= '</table>';
+			$html .= '</div>';
+		} else {
+			$html .= '<div class="alert alert-danger">' . $errorMessage . '</div>';
 		}
-		$html .= '</tbody>';
-		$html .= '</table>';
-		$html .= '</div>';
+
 		$html .= '<div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
 		$html .= '</div>';
 		$html .= '</div>';
 		return $html;

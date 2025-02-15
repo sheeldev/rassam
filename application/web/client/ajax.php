@@ -41,6 +41,7 @@ $methods = array(
 	'addmeasurement' => array('skipsession' => true),
 	'addsize' => array('skipsession' => true),
 	'getaiprompt' => array('skipsession' => true),
+	'geteventsanalysis' => array('skipsession' => true),
 	'build' => array('skipsession' => true),
 	'version' => array('skipsession' => true),
 	'bulkmailer' => array('skipsession' => true),
@@ -870,6 +871,12 @@ if (isset($sheel->GPC['do'])) {
 	} else if ($sheel->GPC['do'] == 'getaiprompt') {
 		if (isset($sheel->GPC['staffcode']) and !empty($sheel->GPC['staffcode']) and isset($sheel->GPC['prompt']) and !empty($sheel->GPC['prompt']) and isset($sheel->GPC['companycode']) and !empty($sheel->GPC['companycode'])) {
 			$html = $sheel->common_prompt->get_prompt_result($sheel->GPC['staffcode'], $sheel->GPC['prompt'], $sheel->GPC['companycode']);
+			$sheel->template->templateregistry['promptresult'] = $html;
+			echo $sheel->template->parse_template_phrases('promptresult');
+		}
+	} else if ($sheel->GPC['do'] == 'geteventsanalysis') {
+		if (isset($sheel->GPC['category']) and !empty($sheel->GPC['category']) and isset($sheel->GPC['periodcode']) and !empty($sheel->GPC['periodcode']) ) {
+			$html = $sheel->common_order->get_events_analysis($sheel->GPC['category'], $sheel->GPC['periodcode'], $sheel->GPC['periodname']);
 			$sheel->template->templateregistry['promptresult'] = $html;
 			echo $sheel->template->parse_template_phrases('promptresult');
 		}

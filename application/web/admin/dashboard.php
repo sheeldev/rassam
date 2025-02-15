@@ -106,6 +106,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $vars = array(
         'sidenav' => $sidenav,
         'period' => $period,
+        'periodcode' => $sheel->GPC['period'],
         'periodpulldown' => $periodpulldown,
         'orders1' => $orders['label'],
         'orders2' => $orders['series']

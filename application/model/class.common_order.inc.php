@@ -120,8 +120,8 @@ class common_order extends common
 		while ($resAssemblies = $this->sheel->db->fetch_array($sqlAssemblies, DB_ASSOC)) {
 			static $processedAssemblies = array();
 			$resAssemblyData = json_decode($resAssemblies['eventdata'], true);
-			$resAssemblies['allocationtype']= '-';
-			$resAssemblies['allocationcode']= '-';
+			$resAssemblies['allocationtype'] = '-';
+			$resAssemblies['allocationcode'] = '-';
 			$sqlallocation = $this->sheel->db->query("
 					SELECT  allocationtype, allocationcode
 					FROM " . DB_PREFIX . "analysis_lines
@@ -277,6 +277,65 @@ class common_order extends common
 		$html .= '</div>';
 		$html .= '</div>';
 		return $html;
+	}
+	function get_events_analysis($category, $periodcode, $periodname)
+	{
+		$sqlassemblytotal = $this->sheel->db->query("
+			SELECT SUM(totalquantity) AS totalquantity
+			FROM " . DB_PREFIX . "analysis_records
+			WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->sheel->admincp_stats->period_to_sql('`createdtime`', $periodcode, '', true) . ") 
+			AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
+		");
+		$ressum = $this->sheel->db->fetch_array($sqlassemblytotal, DB_ASSOC);
+		$sumassemblies = $ressum['totalquantity'];
+
+		$html = '';
+		$html .= '<header class="draw-card__header">';
+		$html .= '<div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">';
+		$html .= '<div class="draw-grid__cell">';
+		$html .= '<h2 class="draw-heading" id="eventanalysisheader">{_events_analysis} - ' . $category . '</h2>';
+		$html .= '</div>';
+		$html .= '<div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">' . $periodname . '</div>';
+		$html .= '</div>';
+		$html .= '</header>';
+		$html .= '<section class="draw-card__section">';
+		$html .= '<div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">';
+		$html .= '<table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">';
+		$html .= '<tbody>';
+		$sql = $this->sheel->db->query("
+			SELECT ar.lastcheckpoint, SUM(ar.totalquantity) AS count, c.message as name
+			FROM " . DB_PREFIX . "analysis_records ar
+			LEFT JOIN " . DB_PREFIX . "checkpoints c ON ar.lastcheckpoint = c.checkpointid
+			LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and ar.companyid = cs.fromid
+			WHERE ar.recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->sheel->admincp_stats->period_to_sql('`createdtime`', $periodcode, '', true) . ")
+			AND ar.category = '" . $category . "'
+			AND ar.lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
+			GROUP BY ar.lastcheckpoint
+			ORDER BY cs.sequence ASC
+			LIMIT 15
+		");
+		if ($this->sheel->db->num_rows($sql) > 0) {
+			$this->sheel->show['assembliesevents'] = true;
+			while ($res = $this->sheel->db->fetch_array($sql, DB_ASSOC)) {
+				$percent = sprintf("%01.1f", ($res['count'] / $sumassemblies) * 100);
+				$html .= '<tr>';
+				$html .= '<td class="dashboard-source-list__title"> <span title="Direct">' . $res['name'] . '</span></td>';
+				$html .= '<td class="dashboard-source-list__number">' . $percent . '% </td>';
+				$html .= '<td class="channel-stat__desc type--right dashboard-source-list__number">' . $res['count'] . '</td>';
+				$html .= '</tr>';
+			}
+
+			$html .= '            </tbody>';
+			$html .= '        </table>';
+		} else {
+			$html .= '            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>';
+		}
+		$html .= '    </div>';
+		$html .= '</section>';
+
+
+		return $html;
+
 	}
 }
 ?>

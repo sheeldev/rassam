@@ -294,35 +294,38 @@
             </div>
         </div>
         <div class="draw-grid__cell draw-grid__cell--third">
-            <div class="draw-card">
-                <header class="draw-card__header">
-                    <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
-                        <div class="draw-grid__cell">
-                            <h2 class="draw-heading">{_events_analysis}</h2>
+            <div class="draw-card" id="eventanaysis">
+               
+                    <header class="draw-card__header">
+                        <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                            <div class="draw-grid__cell">
+                                <h2 class="draw-heading" id="eventanalysisheader">{_events_analysis}</h2>
+                            </div>
+                            <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
                         </div>
-                        <div class="draw-grid__cell draw-grid__cell--no-flex type--subdued">{period}</div>
-                    </div>
-                </header>
-                <section class="draw-card__section">
-                    <div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">
-                        <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
-                            <tbody>
-                                <loop name="assembliesevents">
-                                    <tr>
-                                        <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
-                                        </td>
-                                        <td class="dashboard-source-list__number"> {percent}% </td>
-                                        <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
-                                    </tr>
-                                </loop name="assembliesevents">
-                            </tbody>
-                        </table>
-                        <if condition="isset($sheel->show['assembliesevents']) AND $sheel->show['assembliesevents'] == false">
-                            <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
-                        </if>
-                    </div>
-                </section>
+                    </header>
+                    <section class="draw-card__section">
+                        <div id="DashboardOnlineOrderAnalysis" class="dashboard-widget">
+                            <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
+                                <tbody>
+                                    <loop name="assembliesevents">
+                                        <tr>
+                                            <td class="dashboard-source-list__title"> <span title="Direct">{title}</span>
+                                            </td>
+                                            <td class="dashboard-source-list__number"> {percent}% </td>
+                                            <td class="channel-stat__desc type--right dashboard-source-list__number">
+                                                {count} </td>
+                                        </tr>
+                                    </loop name="assembliesevents">
+                                </tbody>
+                            </table>
+                            <if condition="isset($sheel->show['assembliesevents']) AND $sheel->show['assembliesevents'] == false">
+                                <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
+                            </if>
+                        </div>
+                    </section>
+                
+                
             </div>
         </div>
         <div class="draw-grid__cell draw-grid__cell--third">
@@ -341,7 +344,7 @@
                             <tbody>
                                 <loop name="assembliescategories">
                                     <tr>
-                                        <td class="dashboard-source-list__title"> {title}</td>
+                                        <td class="dashboard-source-list__title"><a href="javascript:;" title="{title}" onclick="get_events_analysis('{title}','{periodcode}','{period}')">{title}</a></td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
                                             {count} </td>
