@@ -182,6 +182,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     FROM " . DB_PREFIX . "analysis
                     WHERE deliveryweek = '" . $sheel->GPC['week'] . "' AND deliveryyear = '" . $sheel->GPC['year'] . "' AND (isfinished = '0' AND isarchived = '0')
                 ";
+            } else if ($sheel->GPC['analysis'] == 'topdestinations') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE countrycode = '" . $sheel->GPC['code'] . "' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'topentities') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE companyid = '" . $sheel->GPC['code'] . "' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
+            } else if ($sheel->GPC['analysis'] == 'topcustomers') {
+                $sql = "
+                    SELECT analysisreference
+                    FROM " . DB_PREFIX . "analysis
+                    WHERE analysisidentifier = '" . $sheel->GPC['code'] . "' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                ";
             } else if ($sheel->GPC['analysis'] == 'allocations') {
                 if (isset($sheel->GPC['completed']) and $sheel->GPC['completed'] == '1') {
                     $sql = "

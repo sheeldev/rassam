@@ -1,5 +1,5 @@
 <if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updatesuccess'"><script>jQuery.growl.notice({ title: '{_success}', message: 'A Staff Member has been successfully Updated.' });</script></if>
-<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updateerror'"><script>jQuery.growl.error({ title: '{_error}', message: 'This Staff Member could not be updated.' });</script></if>
+<if condition="isset($sheel->GPC['note']) AND $sheel->GPC['note'] == 'updateerror'"><script>jQuery.growl.error({ title: '{_error}', message: '{errorMessage}' });</script></if>
     
 <section>
     <script type="text/javascript">
@@ -33,6 +33,12 @@
                     <input type="hidden" name="subcmd" value="update" />
                     <input type="hidden" name="do" value="save" />
                     <input type="hidden" name="staffid" value="{staff[systemId]}" />
+                    <input type="hidden" name="validateaction" id="validateaction" value="0" />
+                    <if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">
+                        <input type="hidden" name="isrevoke" value="1" />
+                    <else />
+                        <input type="hidden" name="isrevoke" value="0" />
+                    </if>
                     <input type="hidden" name="staffno" value="{staff[code]}" />
                     <input type="hidden" name="staffetag" value="{form[staffetag]}" />
                     <input type="hidden" name="company_id" value="{form[company]}">
@@ -45,7 +51,7 @@
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-grid__cell">
                                     <label>{_code}</label> 
-                                    <span>{staff[code]}</span> 
+                                    <span>{staff[code]}{staff[validatedflag]}</span> 
                                 </div>
                                 <div class="draw-grid__cell">
                                     <label>{_customer}</label> 
@@ -88,11 +94,62 @@
                             </div>
                             <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
                                 <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label>{_particularity_1}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            {form[particularity1]}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label>{_particularity_2}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            {form[particularity2]}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <div class="draw-input-wrapper">
+                                        <label>{_particularity_3}</label>
+                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                            {form[particularity3]}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="draw-grid__cell">
+
+                                </div>
+                                
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label>{_validated_by}</label> 
+                                    <span>{staff[validatedBy]}</span> 
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label>{_mandatory_measurements}</label> 
+                                    <span>{staff[meetmeasurements]}</span> 
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
+                                    <label>{_mandatory_sizes}</label> 
+                                    <span>{staff[meetsizes]}</span> 
+                                </div>
+                            </div>
+                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                <div class="draw-grid__cell">
                                     
                                 </div>
                                 <div class="draw-grid__cell">
                                     <div align= "right">
-                                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary">{_save}</button>
+                                        <button type="submit"  onclick="submit_validation()" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->show['validatebutton']) AND $sheel->show['validatebutton'] != '1'">btn-disabled</if>" title="<if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">{_revoke_validation}<else />{_validate}</if>"><if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">{_revoke} <else /> {_validate}</if></button>
+                                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" >{_save}</button>
                                     </div>
                                 </div>
                             </div>

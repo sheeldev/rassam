@@ -256,10 +256,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
             if ($addResponse->isSuccess()) {
                 $sheel->GPC['note'] = 'addsuccess';
-                // $contactsResponse->getGuidCreated(); - Get the GUID of the created entity
             } else {
                 $sheel->GPC['note'] = 'adderror';
-                // $contactsResponse->getErrorMessage(); - Get the error message as string
             }
         }
         $areanav = 'customers_bc';
@@ -407,10 +405,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 
             if ($addResponse->isSuccess()) {
                 $sheel->GPC['note'] = 'addsuccess';
-                // $contactsResponse->getGuidCreated(); - Get the GUID of the created entity
             } else {
                 $sheel->GPC['note'] = 'adderror';
-                // $contactsResponse->getErrorMessage(); - Get the error message as string
             }
         }
         $areanav = 'customers_bc';
@@ -829,23 +825,38 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
                     exit();
                 }
-                //die ($sheel->GPC['staffid'].'|'.$sheel->GPC['staffname'].'|'.$sheel->GPC['form']['gender'].'|'.$sheel->GPC['positions'].'|'.$sheel->GPC['departments'].'|');
-                $updateResponse = $sheel->dynamics->update(
-                    $sheel->GPC['staffid'],
-                    array(
-                        "@odata.etag" => $sheel->GPC['staffetag'],
-                        "name" => $sheel->GPC['staffname'],
-                        "gender" => $sheel->GPC['form']['gender'],
-                        "positionCode" => $sheel->GPC['positions'],
-                        "departmentCode" => $sheel->GPC['departments']
-                    )
-                );
+                if ($sheel->GPC['validateaction'] == '1') {
+                    $updateResponse = $sheel->dynamics->update(
+                        $sheel->GPC['staffid'],
+                        array(
+                            "@odata.etag" => $sheel->GPC['staffetag'],
+                            "name" => $sheel->GPC['staffname'],
+                            "gender" => $sheel->GPC['form']['gender'],
+                            "validated" => $sheel->GPC['isrevoke'] == '1' ? false : true,
+                            "validatedBy" => $sheel->GPC['isrevoke'] == '1' ? '' : 'Portal: ' . $_SESSION['sheeldata']['user']['firstname'] . ' ' . $_SESSION['sheeldata']['user']['lastname']
+                        )
+                    );
+                } else {
+                    $updateResponse = $sheel->dynamics->update(
+                        $sheel->GPC['staffid'],
+                        array(
+                            "@odata.etag" => $sheel->GPC['staffetag'],
+                            "name" => $sheel->GPC['staffname'],
+                            "gender" => $sheel->GPC['form']['gender'],
+                            "positionCode" => $sheel->GPC['positions'],
+                            "departmentCode" => $sheel->GPC['departments'],
+                            "particularity1" => $sheel->GPC['particularity1'],
+                            "particularity2" => $sheel->GPC['particularity2'],
+                            "particularity3" => $sheel->GPC['particularity3']
+                        )
+                    );
+                }
+
                 if ($updateResponse->isSuccess()) {
                     $sheel->GPC['note'] = 'updatesuccess';
-                    // $contactsResponse->getGuidCreated(); - Get the GUID of the created entity
                 } else {
                     $sheel->GPC['note'] = 'updateerror';
-                    // $contactsResponse->getErrorMessage(); - Get the error message as string
+                    $vars['errorMessage'] = $updateResponse->getErrorMessage();
                 }
             }
             $staff = array();
@@ -867,7 +878,18 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
             }
+
             $staff['customer_id'] = $sheel->admincp_customers->get_customer_id($staff['customerNo']);
+            if ($staff['validated'] == '1') {
+                $sheel->show['isvalid'] = true;
+                $staff['validatedflag'] = '<span class="fr"><img src="/application/assets/images/v5/ico_dot_green.gif" border="0" alt="active" title="{_valid}" /></span>';
+            } else {
+                $sheel->show['isvalid'] = false;
+                $staff['validatedflag'] = '<span class="fr"><img src="/application/assets/images/v5/ico_dot_red.gif" border="0" alt="active" title="{_invalid}" /></span>';
+            }
+            if ($staff['validatedBy'] == '') {
+                $staff['validatedBy'] = '--';
+            }
             $gender = array('Male' => '{_male}', 'Female' => '{_female}');
             $entities = [
                 'erCustomerDepartments' => 'departments',
@@ -877,7 +899,8 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 'erFits' => 'fits',
                 'erCuts' => 'cuts',
                 'erItemTypes' => 'itemtypes',
-                'erMeasurementCategories' => 'mcategory'
+                'erMeasurementCategories' => 'mcategory',
+                'erStaffParticularities' => 'particularities'
             ];
             $data = [];
             foreach ($entities as $entity => $key) {
@@ -919,6 +942,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $custpositions[$value['positionCode']] = $value['positionCode'] . ' > ' . $value['positionName'];
             }
             $uom = array_column($data['uom'], 'name', 'code');
+            $particularities = array_column($data['particularities'], 'name', 'code');
             $sizes = array_column($data['sizes'], 'code', 'code');
             $fits = array_column($data['fits'], 'code', 'code');
             $cuts = array_column($data['cuts'], 'code', 'code');
@@ -930,7 +954,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 WHERE (gender = '" . substr($staff['gender'], 0, 1) . "'  or gender='U') AND needsize = '1'
             ");
             while ($rowtype1 = $sheel->db->fetch_array($sqltype1, DB_ASSOC)) {
-                $itemtypesdb [] = $rowtype1['code'];
+                $itemtypesdb[] = $rowtype1['code'];
             }
             foreach ($data['itemtypes'] as $value) {
                 foreach ($itemtypesdb as $rowtype1) {
@@ -954,6 +978,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $form['size'] = $sheel->construct_pulldown('sizes', 'sizes', $sizes, '', 'class="draw-select"');
             $form['fit'] = $sheel->construct_pulldown('fits', 'fits', $fits, '', 'class="draw-select"');
             $form['cut'] = $sheel->construct_pulldown('cuts', 'cuts', $cuts, '', 'class="draw-select"');
+            $form['particularity1'] = $sheel->construct_pulldown_withempty('particularity1', 'particularity1', $particularities, $staff['particularity1'], 'class="draw-select"');
+            $form['particularity2'] = $sheel->construct_pulldown_withempty('particularity2', 'particularity2', $particularities, $staff['particularity2'], 'class="draw-select"');
+            $form['particularity3'] = $sheel->construct_pulldown_withempty('particularity3', 'particularity3', $particularities, $staff['particularity3'], 'class="draw-select"');
+
             $form['itemtype'] = $sheel->construct_pulldown('itemtypes', 'itemtypes', $itemtypes, '', 'class="draw-select"');
             $staffmeasurements = [];
             $staffsizes = [];
@@ -969,6 +997,26 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
                 $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
                 exit();
+            }
+            $mandatorymeasurements = explode(',', $sheel->config['mandatorymeasurements']);
+            $allmeasurementsmet = true;
+            foreach ($mandatorymeasurements as $mandatory) {
+                $measurementfound = false;
+                foreach ($staffmeasurements as $measurement) {
+                    if ($measurement['measurementCode'] == $mandatory) {
+                        $measurementfound = true;
+                        break;
+                    }
+                }
+                if (!$measurementfound) {
+                    $allmeasurementsmet = false;
+                    break;
+                }
+            }
+            if ($allmeasurementsmet) {
+                $staff['meetmeasurements'] = '<span class="badge badge--success">{_available}</span>';
+            } else {
+                $staff['meetmeasurements'] = '<span class="badge badge--critical">{_not_met}</span>';
             }
             foreach ($staffmeasurements as &$measurement) {
                 $measurement['etag'] = htmlspecialchars($measurement['@odata.etag']);
@@ -1004,7 +1052,35 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     }
                 }
             }
-
+            $allsizesmet = true;
+            $sql = $sheel->db->query("
+                SELECT code
+                FROM " . DB_PREFIX . "size_types 
+                WHERE  (gender = '" . substr($staff['gender'], 0, 1) . "' OR gender='U') AND needsize = '1'
+                ");
+            while ($res = $sheel->db->fetch_array($sql, DB_ASSOC)) {
+                
+                $sizefound = false;
+                foreach ($staffsizes as $staffsize) {
+                    if ($staffsize['sizeType'] == $res['code']) {
+                        $sizefound = true;
+                        break;
+                    }
+                }
+                if (!$sizefound) {
+                    $allsizesmet = false;
+                    break;
+                }
+            }
+            if ($allsizesmet) {
+                $staff['meetsizes'] = '<span class="badge badge--success">{_available}</span>';
+            } else {
+                $staff['meetsizes'] = '<span class="badge badge--critical">{_not_met}</span>';
+            }
+            $sheel->show['validatebutton'] = '0';
+            if ($allmeasurementsmet and $allsizesmet) {
+                $sheel->show['validatebutton'] = '1';
+            }
             foreach ($staffsizes as &$staffsize) {
                 $staffsize['etag'] = htmlspecialchars($staffsize['@odata.etag']);
                 $sqltype = $sheel->db->query("
@@ -1054,7 +1130,6 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $cat['catfitCode'] = $sheel->construct_pulldown('catfitCode_' . $cat['id'], 'catfitCode_' . $cat['id'], $fits, $staffsize['fitCode'], $extra);
                         $extra = 'class="draw-select" onchange="update_staff_sizes(\'catcutCode_' . $cat['id'] . '\',\'' . $cat['code'] . '\', \'cutCode\' ,\'' . $companycode . '\')"';
                         $cat['catcutCode'] = $sheel->construct_pulldown('catcutCode_' . $cat['id'], 'catcutCode_' . $cat['id'], $cuts, $staffsize['cutCode'], $extra);
-
                     }
                 }
                 $cat['systemids'] = substr($systemids, 0, -1);
@@ -1063,14 +1138,9 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 'catarray' => $catarray,
                 'staffmeasurements' => $staffmeasurements,
             ];
-
             foreach ($finalarray as $key => $value) {
                 $parseArray[$key] = $value;
             }
-
-
-
-
             $areanav = 'customers_customers';
             $vars['areanav'] = $areanav;
             $currentarea = $sheel->GPC['staffno'];
@@ -1247,6 +1317,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
             exit();
         }
+        $particularities = [];
+        $tempparticularities = [];
+        if (!$sheel->dynamics->init_dynamics('erStaffParticularities', $companycode)) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $tempparticularities = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+        foreach ($tempparticularities as $tempparticularity) {
+            $particularities[$tempparticularity['code']] = $tempparticularity['name'];
+        }
         $currentStaff = '';
         $lastKey = array_key_last($tempss);
         foreach ($tempss as $key => $value) {
@@ -1261,10 +1349,34 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $ss1 += [$value['sizeType'] => $value['sizeCode']];
             $currentStaff = $value['staffCode'];
         }
-
         $mandatorymeasurements = explode(',', $sheel->config['mandatorymeasurements']);
-
         foreach ($custstaffs as $keystaff => $valuestaff) {
+            if ($custstaffs[$keystaff]['validated'] == '1') {
+                $custstaffs[$keystaff]['validated'] = '<span class="badge badge--success">{_yes}</span>';
+            } else {
+                $custstaffs[$keystaff]['validated'] = '<span class="badge badge--attention">{_no}</span>';
+            }
+            if ($custstaffs[$keystaff]['validatedBy'] == '') {
+                $custstaffs[$keystaff]['validatedBy'] = '--';
+            }
+            if ($custstaffs[$keystaff]['particularity1'] != '') {
+                $custstaffs[$keystaff]['particularity1'] = '<span class="badge badge--critical">' . $valuestaff['particularity1'] . '</span>';
+                $custstaffs[$keystaff]['particularity1desc'] = $particularities[$valuestaff['particularity1']];
+            } else {
+                $custstaffs[$keystaff]['particularity1desc'] = '';
+            }
+            if ($custstaffs[$keystaff]['particularity2'] != '') {
+                $custstaffs[$keystaff]['particularity2'] = '<span class="badge badge--critical">' . $valuestaff['particularity2'] . '</span>';
+                $custstaffs[$keystaff]['particularity2desc'] = $particularities[$valuestaff['particularity2']];
+            } else {
+                $custstaffs[$keystaff]['particularity2desc'] = '';
+            }
+            if ($custstaffs[$keystaff]['particularity3'] != '') {
+                $custstaffs[$keystaff]['particularity3'] = '<span class="badge badge--critical">' . $valuestaff['particularity3'] . '</span>';
+                $custstaffs[$keystaff]['particularity3desc'] = $particularities[$valuestaff['particularity3']];
+            } else {
+                $custstaffs[$keystaff]['particularity3desc'] = '';
+            }
             $staffmeasures = $sm[$valuestaff['code']];
             foreach ($mandatorymeasurements as $manvalues) {
                 if ($staffmeasures[$manvalues] == '' or $staffmeasures[$manvalues] == '0') {
@@ -3065,10 +3177,10 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 } else {
                     while ($resorderanalysis = $sheel->db->fetch_array($sqlorderanalysis, DB_ASSOC)) {
                         if ($resorderanalysis['isfinished'] == '0' and $resorderanalysis['isarchived'] == '0') {
-                            $positions[$keyposition]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--success" >{_active}</span></a>';
+                            $positions[$keyposition]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="' . $resorderanalysis['allocationcode'] . '"><span class="badge badge--success" >{_active}</span></a>';
                             break;
                         } else {
-                            $positions[$keyposition]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?completed=1&analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--warning">{_completed}</span></a>';
+                            $positions[$keyposition]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?completed=1&analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="' . $resorderanalysis['allocationcode'] . '"><span class="badge badge--warning">{_completed}</span></a>';
                         }
                     }
                 }
@@ -3139,8 +3251,24 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             $ss1 += [$value['sizeType'] => $value['sizeCode']];
             $currentStaff = $value['staffCode'];
         }
-
-
+        $particularities = [];
+        $tempparticularities = [];
+        if (!$sheel->dynamics->init_dynamics('erStaffParticularities', $companycode)) {
+            $sheel->admincp->print_action_failed('{_inactive_dynamics_api}', $sheel->GPC['returnurl']);
+            exit();
+        }
+        $searchcondition = '';
+        $apiResponse = $sheel->dynamics->select('?' . $searchcondition);
+        if ($apiResponse->isSuccess()) {
+            $tempparticularities = $apiResponse->getData();
+        } else {
+            $sheel->template->templateregistry['message'] = $apiResponse->getErrorMessage();
+            $sheel->admincp->print_action_failed($sheel->template->parse_template_phrases('message'), $sheel->GPC['returnurl']);
+            exit();
+        }
+        foreach ($tempparticularities as $tempparticularity) {
+            $particularities[$tempparticularity['code']] = $tempparticularity['name'];
+        }
         $staff = array();
         $mandatorymeasurements = explode(',', $sheel->config['mandatorymeasurements']);
         if (!$sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
@@ -3158,16 +3286,45 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         LEFT JOIN " . DB_PREFIX . "analysis_lines al ON a.analysisreference = al.lineidentifier
                         WHERE a.analysisidentifier = '" . $valuestaff['customerNo'] . "' AND al.allocationtype = 'Staff' AND al.allocationcode = '" . $valuestaff['code'] . "'
                     ");
+                if ($staff[$keystaff]['validated'] == '1') {
+                    $staff[$keystaff]['validated'] = '<span class="badge badge--success">{_yes}</span>';
+                } else {
+                    $staff[$keystaff]['validated'] = '<span class="badge badge--attention">{_no}</span>';
+                }
+                if ($staff[$keystaff]['validatedBy'] == '') {
+                    $staff[$keystaff]['validatedBy'] = '--';
+                }
+                if ($staff[$keystaff]['particularity1'] != '') {
+                    $staff[$keystaff]['particularity1'] = '<span class="badge badge--critical">' . $valuestaff['particularity1'] . '</span>';
+                    $staff[$keystaff]['particularity1desc'] = $particularities[$valuestaff['particularity1']];
+                } else {
+                    $staff[$keystaff]['particularity1desc'] = '';
+                }
+                if ($staff[$keystaff]['particularity2'] != '') {
+                    $staff[$keystaff]['particularity2'] = '<span class="badge badge--critical">' . $valuestaff['particularity2'] . '</span>';
+                    $staff[$keystaff]['particularity2desc'] = $particularities[$valuestaff['particularity2']];
+                } else {
+                    $staff[$keystaff]['particularity2desc'] = '';
+                }
+                if ($staff[$keystaff]['particularity3'] != '') {
+                    $staff[$keystaff]['particularity3'] = '<span class="badge badge--critical">' . $valuestaff['particularity3'] . '</span>';
+                    $staff[$keystaff]['particularity3desc'] = $particularities[$valuestaff['particularity3']];
+                } else {
+                    $staff[$keystaff]['particularity3desc'] = '';
+                }
+
+
+
                 if ($sheel->db->num_rows($sqlorderanalysis) == 0) {
                     $staff[$keystaff]['orders'] = '<span class="badge badge--attention">{_no_orders}</span>';
                 } else {
                     while ($resorderanalysis = $sheel->db->fetch_array($sqlorderanalysis, DB_ASSOC)) {
                         if ($resorderanalysis['isfinished'] == '0' and $resorderanalysis['isarchived'] == '0') {
 
-                            $staff[$keystaff]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--success" >{_active}</span></a>';
+                            $staff[$keystaff]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="' . $resorderanalysis['allocationcode'] . '"><span class="badge badge--success" >{_active}</span></a>';
                             break;
                         } else {
-                            $staff[$keystaff]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?completed=1&analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="'.$resorderanalysis['allocationcode'].'"><span class="badge badge--warning">{_completed}</span></a>';
+                            $staff[$keystaff]['orders'] = '<a href="' . HTTPS_SERVER_ADMIN . 'customers/orders/-1/?completed=1&analysis=allocations&customer=' . $resorderanalysis['analysisidentifier'] . '&allocationtype=' . $resorderanalysis['allocationtype'] . '&allocationcode=' . $resorderanalysis['allocationcode'] . '" title="' . $resorderanalysis['allocationcode'] . '"><span class="badge badge--warning">{_completed}</span></a>';
                         }
                     }
                 }

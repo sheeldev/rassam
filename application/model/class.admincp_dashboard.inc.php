@@ -22,50 +22,50 @@ class admincp_dashboard extends admincp
 		return $dashboard;
 	}
 
-	function stats($what = '', $period = 'today')
+	function stats($what = '', $period = 'today', $company='', $country)
 	{
 		if ($what == 'home') {
 			$stats = array(
 
 				'visitors' => array(
-					'visitors' => $this->sheel->admincp_stats->fetch($what, $period, 'visitors'),
-					'uniquevisitors' => $this->sheel->admincp_stats->fetch($what, $period, 'uniquevisitors'),
-					'label' => $this->sheel->admincp_stats->fetch($what, $period, 'visitorlabel'),
-					'series' => $this->sheel->admincp_stats->fetch($what, $period, 'visitorseries'),
-					'pageviews' => $this->sheel->admincp_stats->fetch($what, $period, 'pageviews'),
-					'mostactive' => $this->sheel->admincp_stats->fetch($what, $period, 'mostactive'),
+					'visitors' => $this->sheel->admincp_stats->fetch($what, $period, 'visitors', '', ''),
+					'uniquevisitors' => $this->sheel->admincp_stats->fetch($what, $period, 'uniquevisitors', '', ''),
+					'label' => $this->sheel->admincp_stats->fetch($what, $period, 'visitorlabel', '', ''),
+					'series' => $this->sheel->admincp_stats->fetch($what, $period, 'visitorseries', '', ''),
+					'pageviews' => $this->sheel->admincp_stats->fetch($what, $period, 'pageviews', '', ''),
+					'mostactive' => $this->sheel->admincp_stats->fetch($what, $period, 'mostactive', '', ''),
 				),
 				'stats' => array(
-					'topcountries' => $this->sheel->admincp_stats->fetch($what, $period, 'topcountries'),
-					'topdevices' => $this->sheel->admincp_stats->fetch($what, $period, 'topdevices'),
-					'topbrowsers' => $this->sheel->admincp_stats->fetch($what, $period, 'topbrowsers'),
-					'trafficsources' => $this->sheel->admincp_stats->fetch($what, $period, 'trafficsources'),
-					'toplandingpages' => $this->sheel->admincp_stats->fetch($what, $period, 'toplandingpages')
+					'topcountries' => $this->sheel->admincp_stats->fetch($what, $period, 'topcountries', '', ''),
+					'topdevices' => $this->sheel->admincp_stats->fetch($what, $period, 'topdevices', '', ''),
+					'topbrowsers' => $this->sheel->admincp_stats->fetch($what, $period, 'topbrowsers', '', ''),
+					'trafficsources' => $this->sheel->admincp_stats->fetch($what, $period, 'trafficsources', '', ''),
+					'toplandingpages' => $this->sheel->admincp_stats->fetch($what, $period, 'toplandingpages', '', '')
 				)
 			);
 		}
 		if ($what == 'dashboard') {
 			$stats = array(
 				'orders' => array(
-					'totalorders' => $this->sheel->admincp_stats->fetch($what, $period, 'totalorders'),
-					'totalquantity' => $this->sheel->admincp_stats->fetch($what, $period, 'totalquantity'),
-					'invoiced' => $this->sheel->admincp_stats->fetch($what, $period, 'invoiced'),
-					'archived' => $this->sheel->admincp_stats->fetch($what, $period, 'archived'),
-					'smallorders' => $this->sheel->admincp_stats->fetch($what, $period, 'smallorders'),
-					'mediumorders' => $this->sheel->admincp_stats->fetch($what, $period, 'mediumorders'),
-					'largeorders' => $this->sheel->admincp_stats->fetch($what, $period, 'largeorders'),
-					'label' => $this->sheel->admincp_stats->fetch($what, $period, 'orderlabel'),
-					'series' => $this->sheel->admincp_stats->fetch($what, $period, 'orderseries')
+					'totalorders' => $this->sheel->admincp_stats->fetch($what, $period, 'totalorders', $company, $country),
+					'totalquantity' => $this->sheel->admincp_stats->fetch($what, $period, 'totalquantity', $company, $country),
+					'invoiced' => $this->sheel->admincp_stats->fetch($what, $period, 'invoiced', $company, $country),
+					'archived' => $this->sheel->admincp_stats->fetch($what, $period, 'archived', $company, $country),
+					'smallorders' => $this->sheel->admincp_stats->fetch($what, $period, 'smallorders', $company, $country),
+					'mediumorders' => $this->sheel->admincp_stats->fetch($what, $period, 'mediumorders', $company, $country),
+					'largeorders' => $this->sheel->admincp_stats->fetch($what, $period, 'largeorders', $company, $country),
+					'label' => $this->sheel->admincp_stats->fetch($what, $period, 'orderlabel', $company, $country),
+					'series' => $this->sheel->admincp_stats->fetch($what, $period, 'orderseries', $company, $country)
 				),
 				'stats' => array(
-					'assembliescategories' => $this->sheel->admincp_stats->fetch($what, $period, 'assembliescategories'),
-					'assembliesevents' => $this->sheel->admincp_stats->fetch($what, $period, 'assembliesevents'),
-					'topdestinations' => $this->sheel->admincp_stats->fetch($what, $period, 'topdestinations'),
-					'deliveries' => $this->sheel->admincp_stats->fetch($what, $period, 'deliveries'),
-					'topcustomers' => $this->sheel->admincp_stats->fetch($what, $period, 'topcustomers'),
-					'topentities' => $this->sheel->admincp_stats->fetch($what, $period, 'topentities'),
-					'ordersizes' => $this->sheel->admincp_stats->fetch($what, $period, 'ordersizes'),
-					'analysis' => $this->sheel->admincp_stats->fetch($what, $period, 'analysis'),
+					'assembliescategories' => $this->sheel->admincp_stats->fetch($what, $period, 'assembliescategories', $company, $country),
+					'assembliesevents' => $this->sheel->admincp_stats->fetch($what, $period, 'assembliesevents', $company, $country),
+					'topdestinations' => $this->sheel->admincp_stats->fetch($what, $period, 'topdestinations', $company, $country),
+					'deliveries' => $this->sheel->admincp_stats->fetch($what, $period, 'deliveries', $company, $country),
+					'topcustomers' => $this->sheel->admincp_stats->fetch($what, $period, 'topcustomers', $company, $country),
+					'topentities' => $this->sheel->admincp_stats->fetch($what, $period, 'topentities', $company, $country),
+					'ordersizes' => $this->sheel->admincp_stats->fetch($what, $period, 'ordersizes', $company, $country),
+					'analysis' => $this->sheel->admincp_stats->fetch($what, $period, 'analysis', $company, $country),
 				)
 			);
 		}

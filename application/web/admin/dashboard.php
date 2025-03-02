@@ -78,7 +78,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $period = $periods[$sheel->GPC['period']]['title'];
     }
 
-    $stats = $sheel->admincp_dashboard->stats('dashboard', $sheel->GPC['period']);
+    $stats = $sheel->admincp_dashboard->stats('dashboard', $sheel->GPC['period'], '', '');
 
 	$orders['totalorders'] = $stats['orders']['totalorders'];
     $orders['totalquantity'] = $stats['orders']['totalquantity'];

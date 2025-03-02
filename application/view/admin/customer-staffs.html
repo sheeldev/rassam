@@ -236,9 +236,14 @@
                                         </th>
                                         <th width="10%"><label>Code</label> </th>
                                         <th width="15%"><label>Name</label></th> 
-                                        <th width="15%"><label>Gender</label></th> 
-                                        <th width="15%"><label>Position</label></th> 
-                                        <th width="100%"><label>Department</label></th>
+                                        <th width="10%"><label>Gender</label></th> 
+                                        <th width="10%"><label>Position</label></th> 
+                                        <th width="10%"><label>Department</label></th>
+                                        <th width="7%" nowrap="nowrap"><label>Particularity 1</label></th>
+                                        <th width="7%" nowrap="nowrap"><label>Particularity 2</label></th>
+                                        <th width="7%" nowrap="nowrap"><label>Particularity 3</label></th>
+                                        <th width="5%"><label>Validated?</label></th>
+                                        <th width="100%"><label>By</label></th>
                                         <th><label>Mandatory Measurements</label></th>
                                         <th><label>Mandatory Sizes</label></th> 
                                         <th>{_action}</span></th>
@@ -251,9 +256,14 @@
                                 
                                             <td width="10%" nowrap="nowrap"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?subcmd=update&staffno={code}&company_id={customercard[company_id]}" title="{code}">{code}</a></td>
                                             <td width="15%" align="left">{name}</td> 
-                                            <td width="15%" align="left">{gender}</td> 
-                                            <td width="15%" align="left">{positionName}</td> 
-                                            <td width="100%" align="left">{departmentName}</td> 
+                                            <td width="10%" align="left">{gender}</td> 
+                                            <td width="10%" align="left">{positionName}</td> 
+                                            <td width="10%" align="left">{departmentName}</td> 
+                                            <td width="7%" align="left" title="{particularity1desc}">{particularity1}</td> 
+                                            <td width="7%" align="left" title="{particularity2desc}">{particularity2}</td> 
+                                            <td width="7%" align="left" title="{particularity3desc}">{particularity3}</td> 
+                                            <td width="5%" align="left">{validated}</td> 
+                                            <td width="100%" align="left">{validatedBy}</td> 
                                             <td >{meetmeasurements}</td>
                                             <td >{meetsizes}</td>
                                             <td >

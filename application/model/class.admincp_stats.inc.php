@@ -8,7 +8,7 @@
  */
 class admincp_stats extends admincp
 {
-	function fetch($what = '', $period = 'last7days', $do = '')
+	function fetch($what = '', $period = 'last7days', $do = '', $company = '', $country = '')
 	{
 		if ($what == 'home') {
 			if ($do == 'visitors' or $do == 'uniquevisitors' or $do == 'pageviews') {
@@ -56,7 +56,7 @@ class admincp_stats extends admincp
 					FROM " . DB_PREFIX . "visits v
 					LEFT JOIN " . DB_PREFIX . "locations l ON (v.country LIKE CONCAT('%', l.location_" . $_SESSION['sheeldata']['user']['slng'] . ", '%'))
 					WHERE " . $this->period_to_sql('`date`', $period) . "
-						AND v.country != ''
+					AND v.country != ''
 					GROUP BY v.country
 					ORDER BY count DESC
 					LIMIT 5
@@ -114,7 +114,7 @@ class admincp_stats extends admincp
 					SELECT browser, COUNT(DISTINCT ipaddress) AS count
 					FROM " . DB_PREFIX . "visits
 					WHERE " . $this->period_to_sql('`date`', $period) . "
-						AND browser NOT LIKE '%bot%'
+					AND browser NOT LIKE '%bot%'
 					GROUP BY browser
 					ORDER BY count DESC
 					LIMIT 5
@@ -177,7 +177,7 @@ class admincp_stats extends admincp
 					SELECT landingpage, COUNT(DISTINCT ipaddress) AS count
 					FROM " . DB_PREFIX . "visits
 					WHERE " . $this->period_to_sql('`date`', $period) . "
-						AND landingpage != ''
+					AND landingpage != ''
 					GROUP BY landingpage
 					ORDER BY count DESC
 					LIMIT 5
@@ -207,15 +207,18 @@ class admincp_stats extends admincp
 							SELECT DISTINCT analysisreference
 							FROM " . DB_PREFIX . "analysis a
 							LEFT JOIN " . DB_PREFIX . "customers c ON a.analysisidentifier = c.customer_ref
-							WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
+							WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+				$this->field_to_sql($company, $country) . "
 						");
+
 			$sum = $this->sheel->db->num_rows($sqltotal);
 			$sqlassemblytotal = $this->sheel->db->query("
 				SELECT SUM(totalquantity) AS totalquantity
 				FROM " . DB_PREFIX . "analysis_records
-				WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . ") 
+				WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . $this->field_to_sql($company, $country) . ") 
 				AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 			");
+
 			$ressum = $this->sheel->db->fetch_array($sqlassemblytotal, DB_ASSOC);
 			$sumassemblies = $ressum['totalquantity'];
 
@@ -223,7 +226,8 @@ class admincp_stats extends admincp
 				$sql = $this->sheel->db->query("
 							SELECT COUNT(analysisreference) AS totalorders , SUM(totalquantity) AS totalquantity,  SUM(isfinished) AS invoiced, SUM(isarchived) AS archived, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 							FROM " . DB_PREFIX . "analysis
-							WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
+							WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+					$this->field_to_sql($company, $country) . "
 						");
 				$res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 				if ($do == 'totalorders') {
@@ -252,7 +256,8 @@ class admincp_stats extends admincp
 					SELECT a.countrycode, l.cc, l.locationid, l.location_" . $_SESSION['sheeldata']['user']['slng'] . ", COUNT(countrycode) AS count
 					FROM " . DB_PREFIX . "analysis a
 					LEFT JOIN " . DB_PREFIX . "locations l ON (a.countrycode = l.cc)
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+					$this->field_to_sql($company, $country) . "
 					GROUP BY a.countrycode
 					ORDER BY count DESC
 					LIMIT 5
@@ -265,11 +270,18 @@ class admincp_stats extends admincp
 						$res['percent'] = '0.0';
 						$topdestinationsx[] = $res;
 					}
-					// $sum = 30
 					foreach ($topdestinationsx as $key => $array) {
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$topdestinations[$key]['icon'] = $this->sheel->common_location->print_country_flag($array['locationid']);
 						$topdestinations[$key]['title'] = $array['location_' . $_SESSION['sheeldata']['user']['slng']];
+						$topdestinations[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=topdestinations&code=' . $array['countrycode'] . '&period=' . $period;
+						if (!empty($company)) {
+							$topdestinations[$key]['url'] .= '&company=' . $company;
+						}
+
+						if (!empty($country)) {
+							$topdestinations[$key]['url'] .= '&country=' . $country;
+						}
 						$topdestinations[$key]['percent'] = $percent;
 						$topdestinations[$key]['count'] = $array['count'];
 					}
@@ -285,6 +297,7 @@ class admincp_stats extends admincp
 					SELECT deliveryweek, deliveryyear, COUNT(analysisreference) AS count, sum(totalquantity) as totalquantity
 					FROM " . DB_PREFIX . "analysis
 					WHERE deliveryweek >= '" . $week . "' AND deliveryyear >= '" . $year . "' AND (isfinished = '0' AND isarchived = '0')
+					" . $this->field_to_sql($company, $country) . "
 					GROUP BY deliveryweek, deliveryyear
 					ORDER BY deliveryweek, deliveryyear asc
 					LIMIT 15
@@ -299,7 +312,14 @@ class admincp_stats extends admincp
 						$deliveries[$key]['title'] = $array['deliveryweek'] . '-' . $array['deliveryyear'];
 						$deliveries[$key]['count'] = $array['count'];
 						$deliveries[$key]['totalquantity'] = $array['totalquantity'];
-						$deliveries[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=deliveries&week=' .  $array['deliveryweek'] . '&year=' . $array['deliveryyear'];
+						$deliveries[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=deliveries&week=' . $array['deliveryweek'] . '&year=' . $array['deliveryyear'];
+						if (!empty($company)) {
+							$deliveries[$key]['url'] .= '&company=' . $company;
+						}
+
+						if (!empty($country)) {
+							$deliveries[$key]['url'] .= '&country=' . $country;
+						}
 					}
 				}
 				return $deliveries;
@@ -310,7 +330,8 @@ class admincp_stats extends admincp
 					SELECT a.analysisidentifier, c.customername, c.logo, COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis a
 					LEFT JOIN " . DB_PREFIX . "customers c ON a.analysisidentifier = c.customer_ref
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+					$this->field_to_sql($company, $country) . "
 					GROUP BY a.analysisidentifier
 					ORDER BY count DESC
 					LIMIT 5
@@ -326,6 +347,14 @@ class admincp_stats extends admincp
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$topcustomers[$key]['icon'] = $this->sheel->admincp_customers->print_customer_logo($array['logo']);
 						$topcustomers[$key]['title'] = $array['customername'] . ' (' . $array['analysisidentifier'] . ')';
+						$topcustomers[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=topcustomers&code=' . $array['analysisidentifier'] . '&period=' . $period;
+						if (!empty($company)) {
+							$topcustomers[$key]['url'] .= '&company=' . $company;
+						}
+
+						if (!empty($country)) {
+							$topcustomers[$key]['url'] .= '&country=' . $country;
+						}
 						$topcustomers[$key]['percent'] = $percent;
 						$topcustomers[$key]['count'] = $array['count'];
 					}
@@ -338,7 +367,8 @@ class admincp_stats extends admincp
 					SELECT a.entityid, c.name, COUNT(DISTINCT analysisid) AS count
 					FROM " . DB_PREFIX . "analysis a
 					LEFT JOIN " . DB_PREFIX . "companies c ON a.entityid = c.company_id
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+					$this->field_to_sql($company, $country) . "
 					GROUP BY a.entityid
 					ORDER BY count DESC
 					LIMIT 5
@@ -353,6 +383,14 @@ class admincp_stats extends admincp
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$topentities[$key]['icon'] = $this->sheel->common->fetch_company_logo();
 						$topentities[$key]['title'] = $array['name'];
+						$topentities[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=topentities&code=' . $array['entityid'] . '&period=' . $period;
+						if (!empty($company)) {
+							$topentities[$key]['url'] .= '&company=' . $company;
+						}
+
+						if (!empty($country)) {
+							$topentities[$key]['url'] .= '&country=' . $country;
+						}
 						$topentities[$key]['percent'] = $percent;
 						$topentities[$key]['count'] = $array['count'];
 					}
@@ -364,7 +402,7 @@ class admincp_stats extends admincp
 				$sql = $this->sheel->db->query("
 					SELECT category as name, SUM(totalquantity) AS count
 					FROM " . DB_PREFIX . "analysis_records
-					WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . ")
+					WHERE recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . $this->field_to_sql($company, $country) . ")
 					AND lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 					GROUP BY category
 					ORDER BY count DESC
@@ -393,7 +431,7 @@ class admincp_stats extends admincp
 					FROM " . DB_PREFIX . "analysis_records ar
 					LEFT JOIN " . DB_PREFIX . "checkpoints c ON ar.lastcheckpoint = c.checkpointid
 					LEFT JOIN " . DB_PREFIX . "checkpoints_sequence cs ON c.checkpointid = cs.checkpointid and ar.companyid = cs.fromid
-					WHERE ar.recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . ")
+					WHERE ar.recordidentifier in (SELECT analysisreference FROM " . DB_PREFIX . "analysis where " . $this->period_to_sql('`createdtime`', $period, '', true) . $this->field_to_sql($company, $country) . ")
 					AND ar.lastcheckpoint NOT IN (SELECT checkpointid FROM " . DB_PREFIX . "checkpoints WHERE type = 'Assembly' and triggeredon='0-Out')
 					GROUP BY ar.lastcheckpoint
 					ORDER BY cs.sequence ASC
@@ -426,7 +464,8 @@ class admincp_stats extends admincp
 					END AS sizes,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . "
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+					$this->field_to_sql($company, $country) . "
 					GROUP BY sizes
 					ORDER BY count DESC
 				");
@@ -443,6 +482,13 @@ class admincp_stats extends admincp
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$ordersizes[$key]['title'] = '{_' . $array['sizes'] . '}';
 						$ordersizes[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=' . $array['sizes'] . '&period=' . $period;
+						if (!empty($company)) {
+							$ordersizes[$key]['url'] .= '&company=' . $company;
+						}
+
+						if (!empty($country)) {
+							$ordersizes[$key]['url'] .= '&country=' . $country;
+						}
 						$ordersizes[$key]['percent'] = $percent;
 						$ordersizes[$key]['count'] = $array['count'];
 					}
@@ -459,7 +505,8 @@ class admincp_stats extends admincp
 					END AS analysis,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " 
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) .
+					$this->field_to_sql($company, $country) . "
 					GROUP BY analysis
 					ORDER BY count DESC
 				");
@@ -480,6 +527,7 @@ class admincp_stats extends admincp
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
 					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " and hasquote='0'
+					" . $this->field_to_sql($company, $country) . "
 					GROUP BY analysis
 					ORDER BY count DESC
 				");
@@ -502,7 +550,8 @@ class admincp_stats extends admincp
 					END AS analysis,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '0'
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '0'"
+					. $this->field_to_sql($company, $country) . "
 					GROUP BY analysis
 					ORDER BY count DESC
 				");
@@ -524,7 +573,8 @@ class admincp_stats extends admincp
 					END AS analysis,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '0' AND isarchived = '1'
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '0' AND isarchived = '1'"
+					. $this->field_to_sql($company, $country) . "
 					GROUP BY analysis
 					ORDER BY count DESC
 				");
@@ -547,7 +597,8 @@ class admincp_stats extends admincp
 					END AS analysis,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '1'
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '1'"
+					. $this->field_to_sql($company, $country) . "
 					GROUP BY analysis
 					ORDER BY count DESC
 				");
@@ -570,7 +621,8 @@ class admincp_stats extends admincp
 					END AS analysis,
 					COUNT(DISTINCT analysisreference) AS count
 					FROM " . DB_PREFIX . "analysis
-					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '1'
+					WHERE " . $this->period_to_sql('`createdtime`', $period, '', true) . " AND isfinished = '1' AND isarchived = '1'"
+					. $this->field_to_sql($company, $country) . "
 					GROUP BY analysis
 					ORDER BY count DESC
 				");
@@ -580,7 +632,7 @@ class admincp_stats extends admincp
 						$res['percent'] = '0.0';
 						$analysisx[] = $res;
 					}
-				} 
+				}
 
 				foreach ($analysisx as $key => $value) {
 					if ($value['count'] > 0) {
@@ -590,6 +642,13 @@ class admincp_stats extends admincp
 					}
 					$analysis[$key]['title'] = '{_' . $value['analysis'] . '}';
 					$analysis[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=' . $value['analysis'] . '&period=' . $period;
+					if (!empty($company)) {
+						$analysis[$key]['url'] .= '&company=' . $company;
+					}
+
+					if (!empty($country)) {
+						$analysis[$key]['url'] .= '&country=' . $country;
+					}
 					$analysis[$key]['percent'] = $percent;
 					$analysis[$key]['count'] = $value['count'];
 				}
@@ -1134,6 +1193,18 @@ class admincp_stats extends admincp
 					return "DATE(" . $this->sheel->db->escape_string($column) . ") != ''";
 				}
 			}
+		}
+	}
+	public function field_to_sql($company = '', $country = '')
+	{
+		if (!empty($company) && !empty($country)) {
+			return " AND (companyid = '" . $this->sheel->db->escape_string($company) . "' AND countrycode = '" . $this->sheel->db->escape_string($country) . "')";
+		} else if (!empty($company)) {
+			return " AND companyid = '" . $this->sheel->db->escape_string($company) . "'";
+		} else if (!empty($country)) {
+			return " AND countrycode = '" . $this->sheel->db->escape_string($country) . "'";
+		} else {
+			return '';
 		}
 	}
 }

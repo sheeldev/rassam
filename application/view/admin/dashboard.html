@@ -324,8 +324,6 @@
                             </if>
                         </div>
                     </section>
-                
-                
             </div>
         </div>
         <div class="draw-grid__cell draw-grid__cell--third">
@@ -359,7 +357,6 @@
                 </section>
             </div>
         </div>
-
     </div>
 
     <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
@@ -385,7 +382,7 @@
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
+                                            <a href="{url}" title="{title}">{count}</a> </td>
                                     </tr>
                                 </loop name="topdestinations">
                             </tbody>
@@ -419,7 +416,7 @@
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
+                                            <a href="{url}" title="{title}">{count}</a> </td>
                                     </tr>
                                 </loop name="topcustomers">
                             </tbody>
@@ -452,7 +449,7 @@
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
-                                            {count} </td>
+                                            <a href="{url}" title="{title}">{count}</a> </td>
                                     </tr>
                                 </loop name="topentities">
                             </tbody>

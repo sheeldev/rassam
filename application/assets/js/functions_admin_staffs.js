@@ -7,7 +7,9 @@ function toggle_section(section) {
 	}
 
 }
-
+function submit_validation() {
+	fetch_js_object("validateaction").value = "1";	
+}
 function add_staff_measurement(staffcode, company, customer, position, department, endpoint) {
 	fetch_js_object("savingstatus").innerHTML = "Saving..."
 	open_backdrop();

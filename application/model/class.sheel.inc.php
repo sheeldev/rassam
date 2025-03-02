@@ -1916,6 +1916,35 @@ class sheel
         return $html;
     }
 
+    function construct_pulldown_withempty($id = '', $name = '', $values = array(), $default = '', $extra = '', $wrapperstart = '', $wrapperend = '', $attr = array())
+    {
+        $html = $wrapperstart . '<select id="' . $id . '" name="' . $name . '" ' . $extra . '>';
+        $html .= '<option value="">{_none}</option>';
+        foreach ($values as $key => $value) {
+            if (strtolower($key) == "optgroupstart") {
+                $html .= '<optgroup label="' . $value . '">';
+            } else if (strtolower($key) == "optgroupend") {
+                $html .= '</optgroup>';
+            } else {
+                $attrs = '';
+                if (isset($attr[$key]) and count($attr[$key]) > 0) {
+                    foreach ($attr[$key] as $key2 => $value2) {
+                        $attrs .= $key2 . '="' . $value2 . '" ';
+                    }
+                }
+                if ($default != '' and $this->is_serialized($default)) { // multiple selection
+                    $defaultx = unserialize($default);
+                    $sel = ((in_array($key, $defaultx)) ? ' selected="selected"' : ''); // todo!!
+                } else { // single
+                    $sel = ($key == $default) ? ' selected="selected"' : '';
+                }
+                $html .= '<option ' . $attrs . ' value="' . $key . '"' . $sel . '>' . $value . '</option>';
+            }
+        }
+        $html .= '</select>' . $wrapperend;
+        return $html;
+    }
+
     function pagelinks($location = 'footer', $lis = false)
     {
         $html = '';
