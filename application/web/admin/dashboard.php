@@ -78,9 +78,13 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         $period = $periods[$sheel->GPC['period']]['title'];
     }
 
-    $stats = $sheel->admincp_dashboard->stats('dashboard', $sheel->GPC['period'], '', '');
+    if (isset($sheel->GPC['country']) OR isset($sheel->GPC['company'])) {
+        $sheel->show['criteria'] = true;
+        $criteria = isset($sheel->GPC['country']) ? $sheel->GPC['country'] : $sheel->GPC['companyname'];
+    }
+    $stats = $sheel->admincp_dashboard->stats('dashboard', $sheel->GPC['period'], isset($sheel->GPC['company']) ? $sheel->GPC['company'] : '', isset($sheel->GPC['country']) ? $sheel->GPC['country'] : '');
 
-	$orders['totalorders'] = $stats['orders']['totalorders'];
+    $orders['totalorders'] = $stats['orders']['totalorders'];
     $orders['totalquantity'] = $stats['orders']['totalquantity'];
     $orders['invoiced'] = $stats['orders']['invoiced'];
     $orders['archived'] = $stats['orders']['archived'];
@@ -88,19 +92,19 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     $orders['mediumorders'] = $stats['orders']['mediumorders'];
     $orders['largeorders'] = $stats['orders']['largeorders'];
 
-	$orders['label'] = $stats['orders']['label'];
-	$orders['series'] = $stats['orders']['series'];
+    $orders['label'] = $stats['orders']['label'];
+    $orders['series'] = $stats['orders']['series'];
 
-	$loops = array(
+    $loops = array(
         'topdestinations' => $stats['stats']['topdestinations'],
         'deliveries' => $stats['stats']['deliveries'],
         'assembliescategories' => $stats['stats']['assembliescategories'],
         'assembliesevents' => $stats['stats']['assembliesevents'],
-		'topcustomers' => $stats['stats']['topcustomers'],
-		'topentities' => $stats['stats']['topentities'],
-		'ordersizes' => $stats['stats']['ordersizes'],
+        'topcustomers' => $stats['stats']['topcustomers'],
+        'topentities' => $stats['stats']['topentities'],
+        'ordersizes' => $stats['stats']['ordersizes'],
         'analysis' => $stats['stats']['analysis'],
-	);
+    );
 
 
     $vars = array(
@@ -109,11 +113,12 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
         'periodcode' => $sheel->GPC['period'],
         'periodpulldown' => $periodpulldown,
         'orders1' => $orders['label'],
-        'orders2' => $orders['series']
+        'orders2' => $orders['series'],
+        'criteria' => $criteria,
     );
-    
+
     $sheel->template->fetch('main', 'dashboard.html', 1);
-    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'orders' => $orders,  'statistics' => $statistics));
+    $sheel->template->parse_hash('main', array('slpage' => $sheel->slpage, 'orders' => $orders, 'statistics' => $statistics));
 
     $sheel->template->parse_loop('main', $loops, false);
     $sheel->template->pprint('main', $vars);

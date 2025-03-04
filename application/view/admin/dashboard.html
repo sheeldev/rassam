@@ -8,7 +8,7 @@
                 <h1 class="header__main">
 
                     <span class="glyphicons glyphicons-dashboard draw-icon" aria-hidden="true"></span>
-                    <span class="breadcrumb"><a href="{https_server_admin}">{_dashboard}</a> </span>
+                    <span class="breadcrumb"><a href="{https_server_admin}dashboard/">{_dashboard}</a></span> <if condition="isset($sheel->show['criteria']) AND $sheel->show['criteria'] == true">/ {criteria}</if> 
 
                 </h1>
                 <div class="header__primary-actions">
@@ -372,13 +372,13 @@
                     </div>
                 </header>
                 <div class="draw-card__section">
-                    <div id="DashboardOnlineToDestinations" class="dashboard-widget">
+                    <div id="DashboardOnlineTopDestinations" class="dashboard-widget">
                         <table class="draw-table__row--no-border table--no-side-padding dashboard-source-list">
                             <tbody>
                                 <loop name="topdestinations">
                                     <tr>
                                         <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
-                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
+                                        <td class="dashboard-source-list__title"> <a href="{https_server_admin}dashboard/?country={code}"><span title="{title}">{title}</a></span>
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">
@@ -445,7 +445,7 @@
                                 <loop name="topentities">
                                     <tr>
                                         <td class="dashboard-source-list__icon"> <span>{icon}</span> </td>
-                                        <td class="dashboard-source-list__title"> <span title="{title}">{title}</span>
+                                        <td class="dashboard-source-list__title"> <a href="{https_server_admin}dashboard/?company={code}&companyname={name}"><span title="{title}">{title}</a></span>
                                         </td>
                                         <td class="dashboard-source-list__number"> {percent}% </td>
                                         <td class="channel-stat__desc type--right dashboard-source-list__number">

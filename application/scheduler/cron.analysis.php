@@ -55,7 +55,7 @@ while ($resanalysis = $this->sheel->db->fetch_array($sqlanalysis, DB_ASSOC)) {
                 if ($resEvents['checkpointcode'] == 'AVO') {
                         $activeorder = 1;
                 }
-                if (isset($resData['sellToCountryRegionCode']) and $resData['sellToCountryRegionCode'] != '') {
+                if (isset($resData['sellToCountryRegionCode']) and $resData['sellToCountryRegionCode'] != '' and $resData['icSourceNo'] == '') {
                         $country = $resData['sellToCountryRegionCode'];
                 }
         }

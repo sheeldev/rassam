@@ -110,95 +110,117 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
     } else if ($sheel->GPC['no'] == '-1') {
         $currentarea = '<a href="' . HTTPS_SERVER_ADMIN . 'dashboard/">{_dashboard}</a> / </span>Orders / {_' . $sheel->GPC['analysis'] . '}';
         if (isset($sheel->GPC['analysis'])) {
+            $addition='';
+            if (isset($sheel->GPC['company']) and !empty($sheel->GPC['company'])) {
+                $addition .= " AND companyid = '" . $sheel->GPC['company'] . "'";
+            }
+            if (isset($sheel->GPC['country']) and !empty($sheel->GPC['country'])) {
+                $addition .= " AND countrycode = '" . $sheel->GPC['country'] . "'";
+            }
             if ($sheel->GPC['analysis'] == 'small') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE issmall = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'medium') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE ismedium = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'large') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE islarge = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'ontime') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isfinished = '1' AND isarchived = '1' AND isontime = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'notontime') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isfinished = '1' AND isarchived = '1' AND isontime = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'closed') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isfinished = '1' AND isarchived = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'deleted') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isfinished = '0' AND isarchived = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'invoicednotarchived') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isfinished = '1' AND isarchived = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'noquote') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE hasquote='0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'inactive') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isactive = '0' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'active') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE isactive = '1' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'deliveries') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE deliveryweek = '" . $sheel->GPC['week'] . "' AND deliveryyear = '" . $sheel->GPC['year'] . "' AND (isfinished = '0' AND isarchived = '0')
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'topdestinations') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE countrycode = '" . $sheel->GPC['code'] . "' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'topentities') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE companyid = '" . $sheel->GPC['code'] . "' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'topcustomers') {
                 $sql = "
                     SELECT analysisreference
                     FROM " . DB_PREFIX . "analysis
                     WHERE analysisidentifier = '" . $sheel->GPC['code'] . "' AND " . $sheel->admincp_stats->period_to_sql('createdtime', $sheel->GPC['period'], '', true) . "
+                    $addition
                 ";
             } else if ($sheel->GPC['analysis'] == 'allocations') {
                 if (isset($sheel->GPC['completed']) and $sheel->GPC['completed'] == '1') {

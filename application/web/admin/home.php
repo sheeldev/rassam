@@ -77,11 +77,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 	if (isset($sheel->GPC['period']) and isset($periods[$sheel->GPC['period']]['title'])) {
 		$period = $periods[$sheel->GPC['period']]['title'];
 	}
-	
 	$stats = $sheel->admincp_dashboard->stats('home', $sheel->GPC['period']);
-	
-
-
 	$visitors['visitors'] = $stats['visitors']['visitors'];
 	$visitors['uniquevisitors'] = $stats['visitors']['uniquevisitors'];
 	$visitors['label'] = $stats['visitors']['label'];

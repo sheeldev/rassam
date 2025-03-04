@@ -248,7 +248,7 @@ class admincp_stats extends admincp
 			} else if ($do == 'orderlabel') {
 				return $this->period_to_label($period);
 			} else if ($do == 'orderseries') {
-				return $this->period_to_series('orders', $period);
+				return $this->period_to_series('orders', $period, $company, $country);
 			} else if ($do == 'topdestinations') {
 				$this->sheel->show['topdestinations'] = false;
 				$topdestinations = array();
@@ -260,7 +260,7 @@ class admincp_stats extends admincp
 					$this->field_to_sql($company, $country) . "
 					GROUP BY a.countrycode
 					ORDER BY count DESC
-					LIMIT 5
+					LIMIT 7
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topdestinations'] = true;
@@ -274,6 +274,7 @@ class admincp_stats extends admincp
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$topdestinations[$key]['icon'] = $this->sheel->common_location->print_country_flag($array['locationid']);
 						$topdestinations[$key]['title'] = $array['location_' . $_SESSION['sheeldata']['user']['slng']];
+						$topdestinations[$key]['code'] = $array['countrycode'];
 						$topdestinations[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=topdestinations&code=' . $array['countrycode'] . '&period=' . $period;
 						if (!empty($company)) {
 							$topdestinations[$key]['url'] .= '&company=' . $company;
@@ -334,7 +335,7 @@ class admincp_stats extends admincp
 					$this->field_to_sql($company, $country) . "
 					GROUP BY a.analysisidentifier
 					ORDER BY count DESC
-					LIMIT 5
+					LIMIT 7
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topcustomers'] = true;
@@ -371,7 +372,7 @@ class admincp_stats extends admincp
 					$this->field_to_sql($company, $country) . "
 					GROUP BY a.entityid
 					ORDER BY count DESC
-					LIMIT 5
+					LIMIT 7
 				");
 				if ($this->sheel->db->num_rows($sql) > 0) {
 					$this->sheel->show['topentities'] = true;
@@ -382,6 +383,8 @@ class admincp_stats extends admincp
 					foreach ($topentitiesx as $key => $array) {
 						$percent = sprintf("%01.1f", ($array['count'] / $sum) * 100);
 						$topentities[$key]['icon'] = $this->sheel->common->fetch_company_logo();
+						$topentities[$key]['code'] = $array['entityid'];
+						$topentities[$key]['name'] = $array['name'];
 						$topentities[$key]['title'] = $array['name'];
 						$topentities[$key]['url'] = HTTPS_SERVER_ADMIN . 'customers/orders/-1/?analysis=topentities&code=' . $array['entityid'] . '&period=' . $period;
 						if (!empty($company)) {
@@ -755,7 +758,7 @@ class admincp_stats extends admincp
 		}
 		return $return;
 	}
-	private function period_to_series($what = '', $period = '')
+	private function period_to_series($what = '', $period = '', $company = '', $country = '')
 	{
 		$return = '';
 		if ($what == 'visitors') {
@@ -942,6 +945,13 @@ class admincp_stats extends admincp
 			$seriesb .= ']';
 			$return = $seriesa . $seriesb;
 		} else if ($what == 'orders') {
+			$addition='';
+			if (isset($company) and !empty($company)) {
+                $addition .= " AND companyid = '" . $company . "'";
+            }
+            if (isset($country) and !empty($country)) {
+                $addition .= " AND countrycode = '" . $country . "'";
+            }
 			switch ($period) {
 				case 'today':
 				case 'yesterday': {
@@ -968,6 +978,7 @@ class admincp_stats extends admincp
 						END AS hour, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 						FROM " . DB_PREFIX . "analysis
 						WHERE " . $this->period_to_sql('createdtime', $period, '', true) . "
+						$addition
 						GROUP BY hour
 						HAVING hour IS NOT NULL
 						ORDER BY HOUR(FROM_UNIXTIME(createdtime)) ASC
@@ -988,6 +999,7 @@ class admincp_stats extends admincp
 						SELECT DAY(FROM_UNIXTIME(createdtime)) AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 						FROM " . DB_PREFIX . "analysis
 						WHERE " . $this->period_to_sql('createdtime', $period, '', true) . "
+						$addition
 						GROUP BY day
 						ORDER BY createdtime ASC
 					");
@@ -1016,6 +1028,7 @@ class admincp_stats extends admincp
 						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 						FROM " . DB_PREFIX . "analysis
 						WHERE " . $this->period_to_sql('createdtime', $period, '35', true) . "
+						$addition
 						GROUP BY day
 						HAVING day IS NOT NULL
 						ORDER BY createdtime ASC
@@ -1045,6 +1058,7 @@ class admincp_stats extends admincp
 						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 						FROM " . DB_PREFIX . "analysis
 						WHERE " . $this->period_to_sql('createdtime', $period, '65', true) . "
+						$addition
 						GROUP BY day
 						HAVING day IS NOT NULL
 						ORDER BY createdtime ASC
@@ -1075,6 +1089,7 @@ class admincp_stats extends admincp
 						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 						FROM " . DB_PREFIX . "analysis
 						WHERE " . $this->period_to_sql('createdtime', $period, '95', true) . "
+						$addition
 						GROUP BY day
 						HAVING day IS NOT NULL
 						ORDER BY createdtime ASC
@@ -1104,6 +1119,7 @@ class admincp_stats extends admincp
 						END AS day, SUM(issmall) AS smallorders, SUM(ismedium) AS mediumorders, SUM(islarge) AS largeorders
 						FROM " . DB_PREFIX . "analysis
 						WHERE " . $this->period_to_sql('createdtime', $period, '375', true) . "
+						$addition
 						GROUP BY day
 						HAVING day IS NOT NULL
 						ORDER BY createdtime ASC
