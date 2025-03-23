@@ -1,0 +1,100 @@
+<section>
+    <script type="text/javascript">
+        Page();
+    </script>
+    <div id="customers-index" class="page has-contextual-help customers-page">
+        <div class="header-row">
+            <header id="customers-index-header" class="header">
+                <h1 class="header__main">
+                    <span class="glyphicons glyphicons-vcard draw-icon" aria-hidden="true"></span>
+                    <span class="breadcrumb"><a href="{https_server_admin}customers/">{_customers}</a> / </span><span class="breadcrumb"><a href="{https_server_admin}customers/view/{customercard[customer_id]}/">{customercard[customer_ref]}</a> / </span>{currentarea}
+                </h1>
+                <div class="header__secondary-actions">
+                    <div id="header-action-pagination" class="header-action" refresh-always=""> </div>
+                    <ul class="segmented"> </ul>
+                </div>
+            </header>
+        </div>
+    <div class="section overview">
+    <div class="section section--no-border tags">
+            <div class="layout-content">
+                <div class="layout-content__main">
+                    <div class="draw-card">
+                        <div class="has-bulk-actions">
+                            <div context="filterer">
+                                <div class="draw-card__section draw-card__section--no-bottom-spacing">
+                                    <div class="obj-filter hide-when-printing table-filter-container  show-saved-search-actions">
+                                        <div class="draw-input-wrapper">
+                                            <form class="draw-form draw-form--full-width" action="{https_server_admin}customers/sizesview/{customercard[customer_id]}/" id="formsearch" accept-charset="UTF-8" method="get">
+                                            <div class="draw-field__connected-wrapper">
+
+                                                <div class="draw-field--connected--no-flex">
+                                                    
+                                                    <div class="draw-select__wrapper">
+                                                        {form[filter_pulldown]}
+                                                    </div>
+                                                </div>
+                                                    <label class="draw-label helper--visually-hidden">{_keywords}</label>
+                                                    <div class="draw-input--stylized draw-field--connected">
+                                                        <span class="draw-input__add-on draw-input__add-on--before"><span class="glyphicons glyphicons-search" aria-hidden="true"></span></span>
+                                                        <input type="text" name="q" id="query" value="{form[q]}" placeholder="{_keywords}.."  class="draw-input draw-input--invisible">
+                                                        <a href="{https_server_admin}customers/sizesview/{customercard[customer_id]}/" title="{_clear}"><span class="draw-input__add-on draw-input__add-on--after"><span class=" halflings halflings-remove draw-icon" aria-hidden="true"></span></span></a>
+                                                    </div>
+                                                    <div class="right"> 
+                                                        {prevnext}
+                                                    </div>
+
+                                            </div>
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        <div class="draw-card__section">
+                            
+                                <div class="table-wrapper">
+                                    <table class="table-hover expanded">
+                                        <thead>
+                                        <tr>
+                                            <th width="10%"><label>Staff Code</label></th>
+                                            <th width="15%"><label>Staff Name</label></th>
+                                            <th width="15%"><label>Gender</label></th>
+                                            <th width="15%"><label>Position</label></th> 
+                                            <th width="15%"><label>Department</label></th> 
+                                            <th width="10%"><label>Size</label></th>
+                                            <th width="5%"><label>Fit</label></th> 
+                                            <th width="5%"><label>Cut</label></th>  
+                                            <th width="100%"><label>Type</label></th> 
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <loop name="staffsizes">
+                                            <tr id="tr_selected_{systemId}" valign="top">
+                                                <td width="10%" nowrap="nowrap">{staffCode}</td>
+                                                <td width="15%" align="left">{staffName}</td> 
+                                                <td width="15%" align="left">{gender}</td>
+                                                <td width="15%" align="left">{positionName}</td> 
+                                                <td width="15%" align="left">{departmentName}</td> 
+                                                <td width="10%" align="left">{sizeCode}</td> 
+                                                <td width="5%" align="left">{fitCode}</td> 
+                                                <td width="5%" align="left">{cutCode}</td> 
+                                                <td width="100%" align="left">{sizeType}</td> 
+                                            </tr>
+                                        </loop name="staffsizes"> 
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div define="iLNav.setPage(['customers','customers_customers']), sLPage.close()"></div>
+    <div id="refreshloading" class="hide">
+        <div class="loading">{_loading}&#8230;</div>
+    </div>
+</section>

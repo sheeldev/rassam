@@ -382,7 +382,11 @@
                     <div class="section-summary">
                         <h1>Customer Departments</h1>
                         <p>Departments List for this Customer.</p>
-                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/departments/">Manage Departments</a></p>
+                        <p> 
+                            <if condition="isset($sheel->show['hasorgaccess']) AND $sheel->show['hasorgaccess'] == true">
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/departments/">Manage Departments</a>
+                            </if>
+                        </p>
                     </div>
                 </div>
                 <div class="layout-content__main">
@@ -419,7 +423,11 @@
                     <div class="section-summary">
                         <h1>Customer Positions</h1>
                         <p>Positions List for this Customer.</p>
-                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/positions/">Manage Positions</a></p>
+                        <p> 
+                            <if condition="isset($sheel->show['hasorgaccess']) AND $sheel->show['hasorgaccess'] == true">
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/positions/">Manage Positions</a>
+                            </if>
+                        </p>
                     </div>
                 </div>
                 <div class="layout-content__main">
@@ -458,9 +466,26 @@
                     <div class="section-summary">
                         <h1>Customer Staffs</h1>
                         <p>Staff List for this Customer.</p>
-                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/">Manage Staff</a></p>
-                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/">Measurements</a></p>
-                        <p> <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/">Sizes</a></p>
+                        <p> 
+                            <if condition="isset($sheel->show['hasorgaccess']) AND $sheel->show['hasorgaccess'] == true">
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/">Manage Staff</a>
+                            </if>
+                        </p>
+                        <p> 
+                            <if condition="isset($sheel->show['hasorgaccess']) AND $sheel->show['hasorgaccess'] == true">
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/">Measurements</a>
+                            <else />
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/measurementsview/{customercard[customer_id]}/">View Measurements</a>
+                            </if>
+                            
+                        </p>
+                        <p> 
+                            <if condition="isset($sheel->show['hasorgaccess']) AND $sheel->show['hasorgaccess'] == true">
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/org/{customercard[customer_id]}/sizes/">Sizes</a>
+                            <else />
+                                <a class="btn js-btn-primary js-btn-loadable has-loading" href="{https_server_admin}customers/sizesview/{customercard[customer_id]}/">View Sizes</a>
+                            </if>
+                        </p>
                     </div>
                 </div>
                 <div class="layout-content__main">
@@ -489,7 +514,14 @@
                                     <tbody>
                                     <loop name="staff">
                                         <tr valign="top">
-                                            <td width="10%" nowrap="nowrap"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?subcmd=update&staffno={code}&company_id={customercard[company_id]}">{code}</a></td>
+                                            <td width="10%" nowrap="nowrap">
+                                                <if condition="isset($sheel->show['hasorgaccess']) AND $sheel->show['hasorgaccess'] == true">
+                                                    <a href="{https_server_admin}customers/org/{customercard[customer_id]}/staffs/?subcmd=update&staffno={code}&company_id={customercard[company_id]}">{code}</a>
+                                                <else />
+                                                    {code}
+                                                </if>
+                                                
+                                            </td>
                                             <td width="15%" align="left">{name}</td> 
                                             <td width="10%" align="left">{gender}</td> 
                                             <td width="10%" align="left">{positionName}</td> 

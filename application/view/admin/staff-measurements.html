@@ -263,11 +263,12 @@
                                     <th width="10%"><label>Staff Code</label></th>
                                     <th width="10%"><label>Staff Name</label></th>
                                     <th width="5%"><label>Gender</label></th>
-                                    <th width="15%"><label>Measurement Category</label></th> 
+                                    <th width="10%"><label>Measurement Category</label></th> 
                                     <th width="15%"><label>Position</label></th> 
                                     <th width="15%"><label>Department</label></th>
-                                    <th width="15%"><label>Value</label></th> 
-                                    <th width="100%"><label>UOM</label></th>  
+                                    <th width="5%"><label>Value</label></th> 
+                                    <th width="5%"><label>UOM</label></th>  
+                                    <th width="20%"><label>Created At</label></th> 
                                     <th>{_action}</span></th>
                                 </tr>
                                 </thead>
@@ -279,11 +280,12 @@
                                         <td width="10%" nowrap="nowrap">{staffCode}</td>
                                         <td width="10%">{staffName}</td>
                                         <td width="5%">{gender}</td>
-                                        <td width="15%" align="left"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?subcmd=update&systemId={systemId}&company_id={customercard[company_id]}" title="{measurementCode}">{measurementCode}</a></td> 
+                                        <td width="10%" align="left"><a href="{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?subcmd=update&systemId={systemId}&company_id={customercard[company_id]}" title="{measurementCode}">{measurementCode}</a></td> 
                                         <td width="15%" align="left">{positionName}</td> 
                                         <td width="15%" align="left">{departmentName}</td> 
-                                        <td width="15%" align="left">{value}</td> 
-                                        <td width="100%" align="left">{uomCode}</td> 
+                                        <td width="5%" align="left">{value}</td> 
+                                        <td width="5%" align="left">{uomCode}</td> 
+                                        <td width="20%" align="left">{createdAt}</td> 
                                         <td >
                                             <a href="javascript:;" data-bind-event-click="acp_confirm('delete', 'Delete selected staff measurement?', 'Are you sure you want to delete the selected staff measurement?', '{systemId}', 1, '', '{https_server_admin}customers/org/{customercard[customer_id]}/measurements/?systemid={systemId}')" class="btn btn-slim btn--icon" title="{_delete}"><span class=" halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                         </td>

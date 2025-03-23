@@ -1494,12 +1494,12 @@ class admincp
                 $url1 = (($page <= 1) ? 'javascript:;' : $scriptpage . ((strrchr($scriptpage, '?') == false) ? '?' : '&') . $custompagename . '=' . ($page - 1) . '&amp;pp=' . $rowlimit);
                 $url2 = (($page > 1 and $totalpages == $page) ? 'javascript:;' : $scriptpage . ((strrchr($scriptpage, '?') == false) ? '?' : '&') . $custompagename . '=' . ($page + 1) . '&amp;pp=' . $rowlimit);
                 if ($showpage == 1) {
-                        $html .= '<li>
+                        $html .= '<div class="onlydesktop"><li>
                                         <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page <= 1) ? ' disabled' : '') . '" href="' . $urlfirstpage . '">
                                         <span class="tooltip-container"></span>
                                         <span class="page-down"></span>
                                         </a>
-                                </li>';
+                                </li></div>';
                 }
                 $html .= '<li>
                                 <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page <= 1) ? ' disabled' : '') . '" href="' . $url1 . '">
@@ -1519,12 +1519,12 @@ class admincp
                         </a>
                     </li>';
                 if ($showpage == 1) {
-                        $html .= '<li>
+                        $html .= '<div class="onlydesktop"><li>
                                         <a class="btn tooltip tooltip-bottom js-prev-btn' . (($page > 1 and $totalpages == $page) ? ' disabled' : '') . '" href="' . $urllastpage . '">
                                         <span class="tooltip-container"></span>
                                         <span class="page-up"></span>
                                         </a>
-                                </li>';
+                                </li></div>';
                 }
                 $html .= '</ul>';
                 return $html;
