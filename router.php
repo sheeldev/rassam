@@ -113,7 +113,7 @@ $router->map('GET|POST', '/admin/settings/[genai:cmd]/[update|delete|deleteline:
 $router->map('GET|POST', '/admin/settings/[genai:cmd]/[config:subcmd]/', __DIR__ . '/application/web/admin/genai.php', 'admin_genai_config');
 
 
-$router->map('GET|POST', '/admin/settings/bc/', __DIR__ . '/application/web/admin/bc.php', 'admin_bc');
+$router->map('GET|POST', '/admin/settings/eapi/', __DIR__ . '/application/web/admin/eapi.php', 'admin_eapi');
 $router->map('GET|POST', '/admin/settings/api/', __DIR__ . '/application/web/admin/api.php', 'admin_api');
 $router->map('GET|POST', '/admin/settings/automation/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation');
 $router->map('GET|POST', '/admin/settings/[automation:cmd]/[add:subcmd]/task/', __DIR__ . '/application/web/admin/automation.php', 'admin_automation_add');

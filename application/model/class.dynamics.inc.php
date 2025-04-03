@@ -209,13 +209,13 @@ class dynamics
   {
     $sql = $this->sheel->db->query("
 				SELECT id, apigroup, name, value, tokenendpoint, authendpoint, clientid, clientsecret, params, provides
-				FROM " . DB_PREFIX . "dynamics_api
+				FROM " . DB_PREFIX . "external_api
 				WHERE name = '" . $name . "' AND active ='1'
 				LIMIT 1
         ", 0, null, __FILE__, __LINE__);
     if ($this->sheel->db->num_rows($sql) > 0) {
       $this->sheel->db->query("
-        UPDATE " . DB_PREFIX . "dynamics_api
+        UPDATE " . DB_PREFIX . "external_api
         SET hits = hits+1
         WHERE name = '" . $name . "' AND active ='1'
         LIMIT 1
@@ -359,14 +359,14 @@ class dynamics
       $dynamicresponse = new dynamicsresponse($responseBody, $responseHeaders, $endpoint, $originMethod, $rawResponse);
       if ($dynamicresponse->isSuccess()) {
         $this->sheel->db->query("
-          UPDATE " . DB_PREFIX . "dynamics_api
+          UPDATE " . DB_PREFIX . "external_api
           SET success = success+1
           WHERE name = '" . $this->config["name"] . "' AND active ='1'
           LIMIT 1
           ", 0, null, __FILE__, __LINE__);
       } else {
         $this->sheel->db->query("
-          UPDATE " . DB_PREFIX . "dynamics_api
+          UPDATE " . DB_PREFIX . "external_api
           SET failed = failed+1
           WHERE name = '" . $this->config["name"] . "' AND active ='1'
           LIMIT 1

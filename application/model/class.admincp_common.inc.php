@@ -130,7 +130,7 @@ class admincp_common extends admincp
 	private function disablebcapi($itemid = 0)
 	{
 		$this->sheel->db->query("
-			UPDATE " . DB_PREFIX . "dynamics_api
+			UPDATE " . DB_PREFIX . "external_api
 			SET active = '0'
 			WHERE id = '" . intval($itemid) . "'
 			LIMIT 1
@@ -140,7 +140,7 @@ class admincp_common extends admincp
 	private function enablebcapi($itemid = 0)
 	{
 		$this->sheel->db->query("
-			UPDATE " . DB_PREFIX . "dynamics_api
+			UPDATE " . DB_PREFIX . "external_api
 			SET active = '1'
 			WHERE id = '" . intval($itemid) . "'
 			LIMIT 1

@@ -19,7 +19,7 @@ class common_prompt extends common
 			$errorMessage = '';
 			if (!$this->sheel->dynamics->init_dynamics('erCustomerStaffs', $companycode)) {
 				$iserror = true;
-				$errorMessage = '{_inactive_dynamics_api}' . ': erCustomerStaffs';
+				$errorMessage = '{_inactive_external_api}' . ': erCustomerStaffs';
 			}
 			$searchcondition = '$filter=code eq \'' . $staffno . '\'';
 			$apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);
@@ -36,7 +36,7 @@ class common_prompt extends common
 	
 			if (!$this->sheel->dynamics->init_dynamics('erStaffMeasurements', $companycode)) {
 				$iserror = true;
-				$errorMessage = '{_inactive_dynamics_api}' . ': erStaffMeasurements';
+				$errorMessage = '{_inactive_external_api}' . ': erStaffMeasurements';
 			}
 			$searchcondition = '$filter=staffCode eq \'' . $staff['code'] . '\'';
 			$apiResponse = $this->sheel->dynamics->select('?' . $searchcondition);

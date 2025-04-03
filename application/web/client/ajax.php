@@ -597,7 +597,7 @@ if (isset($sheel->GPC['do'])) {
 				case 'mValue': {
 					if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $sheel->GPC['company'])) {
 						$response = '1';
-						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+						$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 					}
 
 					$updateResponse = $sheel->dynamics->update(
@@ -628,7 +628,7 @@ if (isset($sheel->GPC['do'])) {
 				case 'uom': {
 					if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $sheel->GPC['company'])) {
 						$response = '1';
-						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+						$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 					}
 
 					$updateResponse = $sheel->dynamics->update(
@@ -658,7 +658,7 @@ if (isset($sheel->GPC['do'])) {
 				case 'sizeCode': {
 					if (!$sheel->dynamics->init_dynamics('erStaffSizes', $sheel->GPC['company'])) {
 						$response = '1';
-						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+						$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 					}
 
 					$updateResponse = $sheel->dynamics->update(
@@ -688,7 +688,7 @@ if (isset($sheel->GPC['do'])) {
 				case 'fitCode': {
 					if (!$sheel->dynamics->init_dynamics('erStaffSizes', $sheel->GPC['company'])) {
 						$response = '1';
-						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+						$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 					}
 
 					$updateResponse = $sheel->dynamics->update(
@@ -718,7 +718,7 @@ if (isset($sheel->GPC['do'])) {
 				case 'cutCode': {
 					if (!$sheel->dynamics->init_dynamics('erStaffSizes', $sheel->GPC['company'])) {
 						$response = '1';
-						$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+						$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 					}
 
 					$updateResponse = $sheel->dynamics->update(
@@ -757,7 +757,7 @@ if (isset($sheel->GPC['do'])) {
 			$sheel->template->templateregistry['error'] = '';
 			if (!$sheel->dynamics->init_dynamics('erStaffMeasurements', $sheel->GPC['company'])) {
 				$response = '1';
-				$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+				$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 			}
 			$addResponse = $sheel->dynamics->insert(
 				array(
@@ -787,7 +787,7 @@ if (isset($sheel->GPC['do'])) {
 			$sheel->template->templateregistry['error'] = '';
 			if (!$sheel->dynamics->init_dynamics('erStaffSizes', $sheel->GPC['company'])) {
 				$response = '1';
-				$sheel->template->templateregistry['error'] = '{_inactive_dynamics_api}';
+				$sheel->template->templateregistry['error'] = '{_inactive_external_api}';
 			}
 			if ($sheel->GPC['bind'] == '1') {
 				$sqltype = $sheel->db->query("

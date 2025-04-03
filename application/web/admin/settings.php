@@ -255,7 +255,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
 				", 0, null, __FILE__, __LINE__);
 				if ($sheel->db->num_rows($sql) > 0)
 				{
-					$sheel->admincp->print_action_failed('Business Central Code already exist. Please choose a different Code.', HTTPS_SERVER_ADMIN . 'settings/companies/add/');
+					$sheel->admincp->print_action_failed('Company Code already exist. Please choose a different Code.', HTTPS_SERVER_ADMIN . 'settings/companies/add/');
 					exit();	
 				}
 				$sheel->db->query("

@@ -28,137 +28,140 @@
                     <p><button name="button" onclick="check_ai('{staff[code]}', 'measurements_validation', '{form[companycode]}')" data-accordion-toggler-for="" class="btn"><img src="{imgcdn}v5/chatgpt.png" width="25" height="25" title="{_let_ai_confirm}" /></button></p>
                 </div>
             </div>
-            <div class="layout-content__main">
-                <form autocomplete="off" id="update_staff" action="{https_server_admin}customers/org/{staff[customer_id]}/staffs/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
-                    <input type="hidden" name="subcmd" value="update" />
-                    <input type="hidden" name="do" value="save" />
-                    <input type="hidden" name="staffid" value="{staff[systemId]}" />
-                    <input type="hidden" name="validateaction" id="validateaction" value="0" />
-                    <if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">
-                        <input type="hidden" name="isrevoke" value="1" />
-                    <else />
-                        <input type="hidden" name="isrevoke" value="0" />
-                    </if>
-                    <input type="hidden" name="staffno" value="{staff[code]}" />
-                    <input type="hidden" name="staffetag" value="{form[staffetag]}" />
-                    <input type="hidden" name="company_id" value="{form[company]}">
-                    <input type="hidden" name="company_code" value="{form[companycode]}">
-                    <input type="hidden" name="customerNo" value="{staff[customerNo]}">
-                <div class="draw-card">
-                    <div class="section-content">
-                        <div class="draw-card__section">
-                        
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <label>{_code}</label> 
-                                    <span>{staff[code]}{staff[validatedflag]}</span> 
+            <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+                <div class="draw-grid__cell draw-grid__cell--full">
+                    <form autocomplete="off" id="update_staff" action="{https_server_admin}customers/org/{staff[customer_id]}/staffs/" accept-charset="UTF-8" enctype="multipart/form-data" method="post">
+                        <input type="hidden" name="subcmd" value="update" />
+                        <input type="hidden" name="do" value="save" />
+                        <input type="hidden" name="staffid" value="{staff[systemId]}" />
+                        <input type="hidden" name="validateaction" id="validateaction" value="0" />
+                        <if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">
+                            <input type="hidden" name="isrevoke" value="1" />
+                        <else />
+                            <input type="hidden" name="isrevoke" value="0" />
+                        </if>
+                        <input type="hidden" name="staffno" value="{staff[code]}" />
+                        <input type="hidden" name="staffetag" value="{form[staffetag]}" />
+                        <input type="hidden" name="company_id" value="{form[company]}">
+                        <input type="hidden" name="company_code" value="{form[companycode]}">
+                        <input type="hidden" name="customerNo" value="{staff[customerNo]}">
+                    <div class="draw-card">
+                        <div class="section-content">
+                            <div class="draw-card__section">
+                            
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <label>{_code}</label> 
+                                        <span>{staff[code]}{staff[validatedflag]}</span> 
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <label>{_customer}</label> 
+                                        <span >{staff[customerNo]}</span>
+                                    </div>
+    
                                 </div>
-                                <div class="draw-grid__cell">
-                                    <label>{_customer}</label> 
-                                    <span >{staff[customerNo]} </span>
-                                </div>
-
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <label>{_name}</label> 
-                                    <span ><input name="staffname" id="staffname" value="{staff[name]}" class="draw-input" /></span> 
-                                </div>
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label>{_gender}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
-                                            {form[gender]}
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <label>{_name}</label> 
+                                        <span ><input name="staffname" id="staffname" value="{staff[name]}" class="draw-input" /></span> 
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_gender}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[gender]}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label>{_position}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
-                                            {form[position_pulldown]}
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_position}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[position_pulldown]}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label>{_department}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
-                                            {form[department_pulldown]}
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_department}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[department_pulldown]}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label>{_particularity_1}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
-                                            {form[particularity1]}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label>{_particularity_2}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
-                                            {form[particularity2]}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <div class="draw-input-wrapper">
-                                        <label>{_particularity_3}</label>
-                                        <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
-                                            {form[particularity3]}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="draw-grid__cell">
-
-                                </div>
-                                
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <label>{_validated_by}</label> 
-                                    <span>{staff[validatedBy]}</span> 
-                                </div>
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <label>{_mandatory_measurements}</label> 
-                                    <span>{staff[meetmeasurements]}</span> 
-                                </div>
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
-                                    <label>{_mandatory_sizes}</label> 
-                                    <span>{staff[meetsizes]}</span> 
-                                </div>
-                            </div>
-                            <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
-                                <div class="draw-grid__cell">
                                     
                                 </div>
-                                <div class="draw-grid__cell">
-                                    <div align= "right">
-                                        <button type="submit"  onclick="submit_validation()" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->show['validatebutton']) AND $sheel->show['validatebutton'] != '1'">btn-disabled</if>" title="<if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">{_revoke_validation}<else />{_validate}</if>"><if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">{_revoke} <else /> {_validate}</if></button>
-                                        <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" >{_save}</button>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_particularity_1}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[particularity1]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_particularity_2}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[particularity2]}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <div class="draw-input-wrapper">
+                                            <label>{_particularity_3}</label>
+                                            <div class="draw-select__wrapper draw-input--has-content" id="status-wrapper">
+                                                {form[particularity3]}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="draw-grid__cell">
+    
+                                    </div>
+                                    
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <label>{_validated_by}</label> 
+                                        <span>{staff[validatedBy]}</span> 
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <label>{_mandatory_measurements}</label> 
+                                        <span>{staff[meetmeasurements]}</span> 
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        <label>{_mandatory_sizes}</label> 
+                                        <span>{staff[meetsizes]}</span> 
+                                    </div>
+                                </div>
+                                <div class="draw-grid draw-grid--no-outside-padding draw-grid--inner-grid">
+                                    <div class="draw-grid__cell">
+                                        
+                                    </div>
+                                    <div class="draw-grid__cell">
+                                        <div align= "right">
+                                            <button type="submit"  onclick="submit_validation()" class="btn js-btn-primary js-btn-loadable has-loading btn-primary <if condition="isset($sheel->show['validatebutton']) AND $sheel->show['validatebutton'] != '1'">btn-disabled</if>" title="<if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">{_revoke_validation}<else />{_validate}</if>"><if condition="isset($sheel->show['isvalid']) AND $sheel->show['isvalid'] == '1'">{_revoke} <else /> {_validate}</if></button>
+                                            <button type="submit" class="btn js-btn-primary js-btn-loadable has-loading btn-primary" >{_save}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
-                            
                         </div>
                     </div>
+                </form>
                 </div>
-            </form>
             </div>
+
         </div>
         
         <div class="layout-content">
@@ -170,16 +173,17 @@
             
                 </div>
             </div>
-            <div class="layout-content__main">
-                <div class="draw-card">
+            <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+                <div class="draw-grid__cell draw-grid__cell--half">
+                    <div class="draw-card">
                         <div class="draw-card__section">
                             <div class="table-wrapper">
                                     <table class="expanded">
                                     <thead>
                                     <tr>
                                         <th width="15%"><label>Measurement Category</label> <div class="chatgpt-icon"></div></th> 
-                                        <th width="15%"><label>Value</label></th> 
-                                        <th width="15%"><label>UOM</label></th> 
+                                        <th width="30%"><label>Value</label></th> 
+                                        <th width="30%"><label>UOM</label></th> 
                                         <th width="100%"></th> 
                                         <th>{_action}</span></th>
                                     </tr>
@@ -191,8 +195,8 @@
                                                     {form[mcategory]}
                                                 </div>
                                             </td>
-                                            <td width="15%" align="left"><input class="draw-input with-add-on" size="50" type="text" value="" name="mvalue" id="mvalue" ></td>
-                                            <td width="15%" align="left">
+                                            <td width="30%" align="left"><input class="draw-input with-add-on" size="50" type="text" value="" name="mvalue" id="mvalue" ></td>
+                                            <td width="30%" align="left">
                                                 <div class="draw-select__wrapper draw-input--has-content  minw-110" id="uom-wraper">
                                                     {form[uom]}
                                                 </div>
@@ -230,7 +234,28 @@
                                     </table>
                             </div>
                         </div>
-                    
+                    </div>
+                </div>
+                <div class="draw-grid__cell draw-grid__cell--half">
+                    <div class="draw-card">
+                        <header class="draw-card__header">
+                            <div class="draw-grid draw-grid--no-padding draw-grid--vertically-centered">
+                                <div class="draw-grid__cell">
+                                    <h2 class="draw-heading">{_model}</h2>
+                                </div>
+                                <div class="draw-grid__cell draw-grid__cell--no-flex"> <span
+                                        class="type--subdued">{_refresh}</span> </div>
+                            </div>
+                        </header>
+                        <div class="draw-card__section">
+                            <div id="smplxmodel" class="model__image-container">
+                                <!-- <img src="{staff[model]}" alt="Sample Large Image" class="model__image" /> -->
+                                <if condition="isset($sheel->show['topcustomers']) AND $sheel->show['topcustomers'] == false">
+                                    <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
+                                </if>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -243,145 +268,148 @@
                 </div>
 
             </div>
-            <div class="layout-content__main">
-                <div class="draw-card">
-                    <div class="draw-card__section">
-                        <div id="addsize" class="hide">
-                            <fieldset class="mb-20">
-                                <legend><span class="left prl-6 pt-12">{_add}</span></legend>
-                                <div class="table-wrapper">
-                                    <table class="expanded">
-                                    <thead>
-                                    <tr>
-                                        <th width="15%"><label>Type</label></th> 
-                                        <th width="25%"><label>Size</label></th>
-                                        <th width="15%"><label>Fit</label></th> 
-                                        <th width="15%"><label>Cut</label></th> 
-                                        <th width="5%"><label>Bind</label></th>
-                                        <th width="100%"></th> 
-                                        <th>{_action}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr valign="top">
-                                            <td width="25%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[itemtype]}
-                                                </div>
-                                                
-                                            </td>
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[size]}
-                                                </div>
-                                            </td>
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[fit]}
-                                                </div>
-                                            </td>
-                                            <td width="15%" align="left">
-                                                <div class="draw-select__wrapper draw-input--has-content">
-                                                    {form[cut]}
-                                                </div>
-                                            </td>
-                                            <td width="5%" align="left" valign="middle">
-                                                <div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" class="draw-checkbox" name="bind" id="bind"><span class="draw-checkbox--styled"></span></div>
-                                            </td>
-                                            <td width="100%">
-                                                
-                                            </td> 
-                                            <td>
-                                                <ul class="segmented">
-                                                    <li>
-                                                        <a href="javascript:;"  onclick="add_staff_size('{staff[code]}','{staff[gender]}','{form[companycode]}','{staff[customerNo]}', '{staff[positionCode]}' , '{staff[departmentCode]}' , '{https_server_admin}customers/org/{staff[customer_id]}/staffs/?subcmd=update&staffno={staff[code]}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_save}">
-                                                        <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
+            <div class="draw-grid draw-grid--equal-height-cells draw-grid--channel-grid">
+                <div class="draw-grid__cell draw-grid__cell--full">
+                    <div class="draw-card">
+                        <div class="draw-card__section">
+                            <div id="addsize" class="hide">
+                                <fieldset class="mb-20">
+                                    <legend><span class="left prl-6 pt-12">{_add}</span></legend>
+                                    <div class="table-wrapper">
+                                        <table class="expanded">
+                                        <thead>
+                                        <tr>
+                                            <th width="15%"><label>Type</label></th> 
+                                            <th width="25%"><label>Size</label></th>
+                                            <th width="15%"><label>Fit</label></th> 
+                                            <th width="15%"><label>Cut</label></th> 
+                                            <th width="5%"><label>Bind</label></th>
+                                            <th width="100%"></th> 
+                                            <th>{_action}</th>
                                         </tr>
-                                    </tbody>
-                                    </table>
-                                </div>    
-                            </fieldset>
-                        </div>
-                        <loop name="catarray">
-                            <if condition="isset($sheel->GPC['cat_{id}']) AND $sheel->GPC['cat_{id}'] == 'Y'">
-                                <div id="{id}">
-                                    <fieldset class="mb-20">
-                                        <legend><span class="left prl-6 pt-12">{name}</span></legend>
-                                        <div class="table-wrapper" id="sizecat_{code}">
-                                            <table class="expanded">
-                                            <thead>
-                                            <tr>
-                                                <td width="25%"></th> 
-                                                <th width="25%"><label>Size</label></th>
-                                                <th width="15%"><label>Fit</label></th> 
-                                                <th width="15%"><label>Cut</label></th> 
-                                                <th width="100%"></th> 
-                                                <th>{_action}</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr valign="top">
+                                                <td width="25%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[itemtype]}
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[size]}
+                                                    </div>
+                                                </td>
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[fit]}
+                                                    </div>
+                                                </td>
+                                                <td width="15%" align="left">
+                                                    <div class="draw-select__wrapper draw-input--has-content">
+                                                        {form[cut]}
+                                                    </div>
+                                                </td>
+                                                <td width="5%" align="left" valign="middle">
+                                                    <div class="draw-input-wrapper draw-input-wrapper--inline"><input type="checkbox" class="draw-checkbox" name="bind" id="bind"><span class="draw-checkbox--styled"></span></div>
+                                                </td>
+                                                <td width="100%">
+                                                    
+                                                </td> 
+                                                <td>
+                                                    <ul class="segmented">
+                                                        <li>
+                                                            <a href="javascript:;"  onclick="add_staff_size('{staff[code]}','{staff[gender]}','{form[companycode]}','{staff[customerNo]}', '{staff[positionCode]}' , '{staff[departmentCode]}' , '{https_server_admin}customers/org/{staff[customer_id]}/staffs/?subcmd=update&staffno={staff[code]}&company_id={form[company]}')" class="btn btn-slim btn--icon" title="{_save}">
+                                                            <span class="halflings halflings-check draw-icon" aria-hidden="true"></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                                <div>
-                                                    <tr valign="top">
-                                                        <input type="hidden" name="systemids_{code}" id = "systemids_{code}" value="{systemids}" />
-                                                        <td width="25%" align="left"><button class="btn btn--icon" onclick="toggle_section('sizecatdetails_{code}')"><svg class="draw-icon draw-icon--16 draw-icon--blue" aria-labelledby="draw-menu-16-title" role="img"><title>{_details}</title><use xlink:href="#draw-menu-16" /></svg></button></td> 
-                                                        <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-110">{catsizeCode}</div></td> 
-                                                        <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{catfitCode}</div></td> 
-                                                        <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{catcutCode}</div></td> 
-                                                        <td width="100%"></td> 
-                                                        <td >
-                                                            <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete staff sizes for {name}?', 'Are you sure you want to delete all staff sizes for {name}?', '{systemids}', 1, 'deletesizes', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
-                                                        </td>
-                                                    </tr>
-                                                </div>
-                                             
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="table-wrapper hide" id="sizecatdetails_{code}">
-                                            <div class="hr-20-0-20-0"></div>
-                                            <table class="expanded">
-                                            <thead>
-                                            <tr>
-                                                <th width="25%"><label>Type</label></th> 
-                                                <th width="25%"></th>
-                                                <th width="15%"></th> 
-                                                <th width="15%"></th> 
-                                                <th width="100%"></th> 
-                                                <th>{_action}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                                <div>
-                                                    <loop name="{id}">
+                                        </tbody>
+                                        </table>
+                                    </div>    
+                                </fieldset>
+                            </div>
+                            <loop name="catarray">
+                                <if condition="isset($sheel->GPC['cat_{id}']) AND $sheel->GPC['cat_{id}'] == 'Y'">
+                                    <div id="{id}">
+                                        <fieldset class="mb-20">
+                                            <legend><span class="left prl-6 pt-12">{name}</span></legend>
+                                            <div class="table-wrapper" id="sizecat_{code}">
+                                                <table class="expanded">
+                                                <thead>
+                                                <tr>
+                                                    <td width="25%"></th> 
+                                                    <th width="25%"><label>Size</label></th>
+                                                    <th width="15%"><label>Fit</label></th> 
+                                                    <th width="15%"><label>Cut</label></th> 
+                                                    <th width="100%"></th> 
+                                                    <th>{_action}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <div>
                                                         <tr valign="top">
-                                                            <input type="hidden" name="etag_{systemId}" id = "etag_{systemId}" value="{etag}" />
-                                                            <td width="25%" align="left">{sizeType}{isdefaulticon}</td> 
-                                                            <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-110">{sizeCode_type}</div></td> 
-                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{fitCode_type}</div></td> 
-                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{cutCode_type}</div></td> 
+                                                            <input type="hidden" name="systemids_{code}" id = "systemids_{code}" value="{systemids}" />
+                                                            <td width="25%" align="left"><button class="btn btn--icon" onclick="toggle_section('sizecatdetails_{code}')"><svg class="draw-icon draw-icon--16 draw-icon--blue" aria-labelledby="draw-menu-16-title" role="img"><title>{_details}</title><use xlink:href="#draw-menu-16" /></svg></button></td> 
+                                                            <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-110">{catsizeCode}</div></td> 
+                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{catfitCode}</div></td> 
+                                                            <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{catcutCode}</div></td> 
                                                             <td width="100%"></td> 
                                                             <td >
-                                                                <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete selected staff size?', 'Are you sure you want to delete the selected staff size?', '{systemId}', 1, 'deletesize', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                                <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete staff sizes for {name}?', 'Are you sure you want to delete all staff sizes for {name}?', '{systemids}', 1, 'deletesizes', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
                                                             </td>
                                                         </tr>
-                                                    </loop name="{id}">
-                                                </div>
-                                             
-                                            </tbody>
-                                            </table>
-                                        </div>    
-                                    </fieldset>
-                                </div>
-                            </if>
+                                                    </div>
+                                                 
+                                                </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="table-wrapper hide" id="sizecatdetails_{code}">
+                                                <div class="hr-20-0-20-0"></div>
+                                                <table class="expanded">
+                                                <thead>
+                                                <tr>
+                                                    <th width="25%"><label>Type</label></th> 
+                                                    <th width="25%"></th>
+                                                    <th width="15%"></th> 
+                                                    <th width="15%"></th> 
+                                                    <th width="100%"></th> 
+                                                    <th>{_action}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <div>
+                                                        <loop name="{id}">
+                                                            <tr valign="top">
+                                                                <input type="hidden" name="etag_{systemId}" id = "etag_{systemId}" value="{etag}" />
+                                                                <td width="25%" align="left">{sizeType}{isdefaulticon}</td> 
+                                                                <td width="25%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-110">{sizeCode_type}</div></td> 
+                                                                <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{fitCode_type}</div></td> 
+                                                                <td width="15%" align="left"><div class="draw-select__wrapper draw-input--has-content minw-60">{cutCode_type}</div></td> 
+                                                                <td width="100%"></td> 
+                                                                <td >
+                                                                    <a href="javascript:;" data-bind-event-click="acp_confirm('update', 'Delete selected staff size?', 'Are you sure you want to delete the selected staff size?', '{systemId}', 1, 'deletesize', '')" class="btn btn-slim btn--icon" title="{_delete}"><span class="halflings halflings-trash draw-icon" aria-hidden="true"></span></a>
+                                                                </td>
+                                                            </tr>
+                                                        </loop name="{id}">
+                                                    </div>
+                                                 
+                                                </tbody>
+                                                </table>
+                                            </div>    
+                                        </fieldset>
+                                    </div>
+                                </if>
+                                
+                            </loop name="catarray">
                             
-                        </loop name="catarray">
-                        
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

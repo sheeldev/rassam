@@ -338,9 +338,9 @@ class admincp_nav extends admincp
                                 <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_genai" bind-event-click="" allow-default="1" href="settings/genai/">Gen AI</a> </li>
                                 <li class="draw-nav__item--spacer"></li>
                                 ':'').
-                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_bc', false) ?
+                                ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_eapi', false) ?
                                 '
-                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_bc" bind-event-click="" allow-default="1" href="settings/bc/">Business Central</a> </li>
+                                <li class="draw-nav__item"> <a class="draw-nav__link" data-nav-sub-item="settings_eapi" bind-event-click="" allow-default="1" href="settings/eapi/">External API</a> </li>
                                 ':'').
                                 ($this->sheel->access->display_menu($_SESSION['sheeldata']['user']['userid'], 'admin_api', false) ?
                                 '

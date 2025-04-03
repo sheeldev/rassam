@@ -46,6 +46,7 @@ define('DIR_TMP', __DIR__ . '/uploads/cache/');
 define('DIR_TMP_JS', __DIR__ . '/uploads/cache/js/');
 define('DIR_TMP_CSS', __DIR__ . '/uploads/cache/css/');
 define('DIR_TMP_XLSX', __DIR__ . '/uploads/cache/xlsx/');
+define('DIR_TMP_MODEL', __DIR__ . '/uploads/cache/staffmodels/');
 define('HTTP_ATTACHMENTS', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/" . 'application/uploads/attachments/');
 define('HTTP_TMP', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/" . 'application/uploads/cache/');
 define('HTTP_TMP_CSS', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/" . 'application/uploads/cache/css/');

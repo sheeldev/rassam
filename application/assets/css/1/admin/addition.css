@@ -1098,3 +1098,17 @@ fieldset legend {
 .blue {
     color: #479ccf
 }
+
+.model__image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+}
+
+.model__image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
