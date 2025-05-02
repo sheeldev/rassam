@@ -13,8 +13,11 @@
 
 function display_error_message(id) {
 	var message = "" + jQuery('#uploaderrormessage_'+ id).val();
-	if (message=='[Auto Suggest]') {
-		jQuery.growl.warning({title: phrase['_notice'], message: message});
+	if (message =='[Auto Suggest]') {
+		jQuery.growl.notice({title: phrase['_success'], message: message});
+	}
+	else if (message.includes('[Auto Suggest]')) {
+		jQuery.growl.warning({title: phrase['_warning'], message: message});
 	}
 	else {
 		jQuery.growl.error({title: phrase['_error'], message: message});

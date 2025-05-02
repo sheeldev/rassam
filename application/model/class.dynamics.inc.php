@@ -210,14 +210,14 @@ class dynamics
     $sql = $this->sheel->db->query("
 				SELECT id, apigroup, name, value, tokenendpoint, authendpoint, clientid, clientsecret, params, provides
 				FROM " . DB_PREFIX . "external_api
-				WHERE name = '" . $name . "' AND active ='1'
+				WHERE name = '" . $name . "' AND active ='1' AND apigroup='dynamics'
 				LIMIT 1
         ", 0, null, __FILE__, __LINE__);
     if ($this->sheel->db->num_rows($sql) > 0) {
       $this->sheel->db->query("
         UPDATE " . DB_PREFIX . "external_api
         SET hits = hits+1
-        WHERE name = '" . $name . "' AND active ='1'
+        WHERE name = '" . $name . "' AND active ='1' AND apigroup='dynamics'
         LIMIT 1
         ", 0, null, __FILE__, __LINE__);
       $res = $this->sheel->db->fetch_array($sql, DB_ASSOC);
@@ -361,14 +361,14 @@ class dynamics
         $this->sheel->db->query("
           UPDATE " . DB_PREFIX . "external_api
           SET success = success+1
-          WHERE name = '" . $this->config["name"] . "' AND active ='1'
+          WHERE name = '" . $this->config["name"] . "' AND active ='1'  AND apigroup='dynamics'
           LIMIT 1
           ", 0, null, __FILE__, __LINE__);
       } else {
         $this->sheel->db->query("
           UPDATE " . DB_PREFIX . "external_api
           SET failed = failed+1
-          WHERE name = '" . $this->config["name"] . "' AND active ='1'
+          WHERE name = '" . $this->config["name"] . "' AND active ='1'  AND apigroup='dynamics'
           LIMIT 1
           ", 0, null, __FILE__, __LINE__);
       }

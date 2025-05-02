@@ -249,9 +249,11 @@
                         </header>
                         <div class="draw-card__section">
                             <div id="smplxmodel" class="model__image-container">
-                                <!-- <img src="{staff[model]}" alt="Sample Large Image" class="model__image" /> -->
-                                <if condition="isset($sheel->show['topcustomers']) AND $sheel->show['topcustomers'] == false">
-                                    <h3 class="dashboard__empty__desc">{_there_were_no_orders_during_this_period}</h3>
+                                
+                                <if condition="isset($sheel->show['noimage']) AND $sheel->show['noimage'] == true">
+                                    <h3 class="dashboard__empty__desc">{noimagemessage}</h3>
+                                <else />
+                                    <img src="{staff[model]}" alt="Sample Large Image" class="model__image" />
                                 </if>
                             </div>
                         </div>

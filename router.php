@@ -15,7 +15,7 @@ require_once(__DIR__ . '/application/model/class.router.inc.php');
 $router = new router();
 $router->setBasePath(''); // <-- SUB_FOLDER
 
-$router->map('GET|POST', '/rpc/', __DIR__ . '/application/web/client/rpc.php', 'rpc');
+$router->map('GET|POST', '/api/[*]/[*]/', __DIR__ . '/application/web/client/api.php', 'api');
 $router->map('GET', '/', __DIR__ . '/application/web/client/main.php', 'main');
 $router->map('GET', '/javascript/', __DIR__ . '/application/web/client/javascript.php', 'javascript');
 $router->map('GET|POST', '/signin/', __DIR__ . '/application/web/client/login.php', 'login');

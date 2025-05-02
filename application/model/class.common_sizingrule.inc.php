@@ -240,5 +240,16 @@ class common_sizingrule extends common
 		}
 		return $uom;
 	}
+	function get_smplx_measurement($measurement = '')
+	{
+		$smplx = '';
+		$defaultuoms = json_decode($this->sheel->config['smplxmeasurements'], true);
+		foreach ($defaultuoms as $key => $value) {
+			if ($key == $measurement) {
+				$smplx = $value;
+			}
+		}
+		return $smplx;
+	}
 }
 ?>

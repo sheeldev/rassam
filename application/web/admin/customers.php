@@ -1019,6 +1019,7 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
             } else {
                 $staff['meetmeasurements'] = '<span class="badge badge--critical">{_not_met}</span>';
             }
+
             foreach ($staffmeasurements as &$measurement) {
                 $measurement['etag'] = htmlspecialchars($measurement['@odata.etag']);
                 $extra = 'class="draw-select" onchange="update_staff_details(\'uom_' . $measurement['systemId'] . '\',\'uom\',\'' . $measurement['systemId'] . '\',\'' . $companycode . '\',\'0\')"';
@@ -1135,35 +1136,56 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                 }
                 $cat['systemids'] = substr($systemids, 0, -1);
             }
-            if (!$sheel->smplx->init_smplx('generateModel')) {
-                $sheel->admincp->print_action_failed('{_inactive_external_api}', $sheel->GPC['returnurl']);
-                exit();
-            }
-            $requestData = [
-                "height" => 171,
-                "chest" => 95,
-                "waist" => 80,
-                "hips" => 85,
-                "sleeve_length" => 61,
-                "trouser_length" => 97,
-                "gender" => "female",
-                "pose_description" => "superman",
-                "output_type" => "png"
-            ];
-            $apiResponse = $sheel->smplx->get($requestData);
-            if ($apiResponse->isSuccess()) {
-                $apiResponse = $apiResponse->getData();
-                $imageData = base64_decode($apiResponse);
-                $image_file_name = DIR_TMP_MODEL . $staff['code'] . '_Model.png';
-                if (file_put_contents($image_file_name, $imageData)) {
-                   $staff['model'] = '/application/uploads/cache/staffmodels/' . $staff['code'] . '_Model.png';
-                } else {
-                   
-                }
+
+            $image_file_name = DIR_TMP_MODEL . $staff['code'] . '_Model.png';
+            if (file_exists($image_file_name)) {
+                $staff['model'] = '/application/uploads/cache/staffmodels/' . $staff['code'] . '_Model.png';
             } else {
-                $sheel->admincp->print_action_failed($apiResponse->getErrorMessage() . ': ' . $apiResponse->getErrorDetails(), $sheel->GPC['returnurl']);
-                exit();
+                if (!$sheel->smplx->init_smplx('generateModel')) {
+                    $sheel->admincp->print_action_failed('{_inactive_external_api}', $sheel->GPC['returnurl']);
+                    exit();
+                }
+                $processedMeasurements = [];
+                $smplxMeasurementsConfig = json_decode($sheel->config['smplxmeasurements'], true);
+                foreach ($staffmeasurements as &$measurement) {
+                    $measurementValue = $sheel->common_sizingrule->get_smplx_measurement($measurement['measurementCode']);
+                    if ($measurementValue != '') {
+                        $processedMeasurements[$measurement['measurementCode']] = $measurementValue;
+                        $requestData[$measurementValue] = $measurement['value'];
+                    }
+                }
+                $requestData['gender'] = strtolower($staff['gender']);
+                $requestData['pose_description'] = 'superman';
+                $requestData['output_type'] = 'png';
+                $apiResponse = $sheel->smplx->get($requestData);
+                if ($apiResponse->isSuccess()) {
+                    $apiResponse = $apiResponse->getData();
+                    $imageData = base64_decode($apiResponse);
+                    file_put_contents($image_file_name, $imageData);
+                } else {
+                    $sheel->show['noimage'] = true;
+                    $vars['noimagemessage'] = $apiResponse->getErrorMessage() . ': ' . $apiResponse->getErrorDetails();
+                }
             }
+            $sortOrder = [
+                'NECK' => 1,
+                'CHST' => 2,
+                'UWST' => 3,
+                'LWST' => 4,
+                'HIPS' => 5,
+                'JKTL' => 6,
+                'SLVL' => 7,
+                'TRSL' => 8,
+                'HEI' => 9,
+                'WEI' => 10
+            ];
+
+            // Sort the staffmeasurements array based on the sort order
+            usort($staffmeasurements, function ($a, $b) use ($sortOrder) {
+                $aOrder = $sortOrder[$a['measurementCode']] ?? PHP_INT_MAX; // Default to max if not found
+                $bOrder = $sortOrder[$b['measurementCode']] ?? PHP_INT_MAX; // Default to max if not found
+                return $aOrder - $bOrder;
+            });
             $parseArray = [
                 'catarray' => $catarray,
                 'staffmeasurements' => $staffmeasurements,
@@ -2229,18 +2251,20 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                         $res['departmentcode'] = $valuecust['departmentCode'];
                         $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
                         $autosizearray = array();
-                        if ($ismavailable == '0') {
-                            $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
-                            $res['fit'] = $autosizearray['Fit'];
-                            $res['cut'] = $autosizearray['Cut'];
-                            $res['size'] = $autosizearray['Size'];
+
+                        $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
+                        $res['fit'] = $autosizearray['Fit'];
+                        $res['cut'] = $autosizearray['Cut'];
+                        $res['size'] = $autosizearray['Size'];
+                        if ($res['fit'] != '' and $res['cut'] != '' and $res['size'] != '') {
                             $res['error'] = '[Auto Suggest]';
-                        } else {
-                            $res['fit'] = '';
-                            $res['cut'] = '';
-                            $res['size'] = '';
+                        }
+                        if (count($ismavailable) != 0) {
                             foreach ($ismavailable as $element) {
-                                $res['error'] .= print_r($element, true) . "\n";
+                                if ($res['error'] == '') {
+                                    $res['error'] .= "<br>";
+                                }
+                                $res['error'] .= print_r($element, true) . "<br>";
                             }
                         }
                         $res['type'] = $res['code'];
@@ -2351,20 +2375,21 @@ if (!empty($_SESSION['sheeldata']['user']['userid']) and $_SESSION['sheeldata'][
                     $res['departmentcode'] = $valuecust['departmentCode'];
                     $ismavailable = $sheel->admincp_customers->is_staff_measurements_available($companycode, $customer['customer_ref'], $res['staffcode'], $sm, $valuecust['gender'], $res['code']);
                     $autosizearray = array();
-                    if (count($ismavailable) == 0) {
-                        $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
-                        $res['fit'] = $autosizearray['Fit'];
-                        $res['cut'] = $autosizearray['Cut'];
-                        $res['size'] = $autosizearray['Size'];
-                        $res['error'] = '[Auto Suggest]';
-                    } else {
-                        $res['fit'] = '';
-                        $res['cut'] = '';
-                        $res['size'] = '';
-                        foreach ($ismavailable as $element) {
-                            $res['error'] .= print_r($element, true) . "\n";
-                        }
 
+                    $autosizearray = $sheel->admincp_customers->calculate_staff_size($sm, $valuecust['gender'], $res['code']);
+                    $res['fit'] = $autosizearray['Fit'];
+                    $res['cut'] = $autosizearray['Cut'];
+                    $res['size'] = $autosizearray['Size'];
+                    if ($res['fit'] != '' and $res['cut'] != '' and $res['size'] != '') {
+                        $res['error'] = '[Auto Suggest]';
+                    }
+                    if (count($ismavailable) != 0) {
+                        foreach ($ismavailable as $element) {
+                            if ($res['error'] != '') {
+                                $res['error'] .= "<br>";
+                            }
+                            $res['error'] .= print_r($element, true) . "<br>";
+                        }
                     }
 
                     $res['type'] = $res['code'];

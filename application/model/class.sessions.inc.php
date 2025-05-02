@@ -194,15 +194,16 @@ class sessions
 				lastclick = '" . $this->sheel->db->escape_string($lastclick) . "',
 				ipaddress = '" . $this->sheel->db->escape_string(IPADDRESS) . "',
 				firstclick = '" . $this->sheel->db->escape_string($firstclick) . "',
-				browser ='" . ($session['sheeldata']['user']['ismobile'] == '1' ? $session['sheeldata']['user']['devicetoken'] : $this->sheel->db->escape_string($this->sheel->common->fetch_browser_name())) . "',
-				token = '" . $this->sheel->db->escape_string(TOKEN) . "',
+				browser ='" . ($session['sheeldata']['user']['ismobile'] == '1' || $session['sheeldata']['user']['ismobile'] == '2' ? 'api' : $this->sheel->db->escape_string($this->sheel->common->fetch_browser_name())) . "',
+				token = '" . $this->sheel->db->escape_string($session['sheeldata']['user']['csrf']) . "',
+				sesskeyapi = '" . $this->sheel->db->escape_string($session['sheeldata']['user']['sesskeyapi']) . "',
 				siteid = '" . $this->sheel->db->escape_string(SITE_ID) . "'
 				WHERE sesskey = '" . $this->sheel->db->escape_string($sessionkey) . "'
 			", 0, null, __FILE__, __LINE__);
 		} else {
 			$this->sheel->db->query("
 				REPLACE " . DB_PREFIX . "sessions
-				(sesskey, expiry, value, userid, isuser, isadmin, isrobot, iserror,  languageid, styleid, agent, lastclick, ipaddress, url, title, firstclick, browser, token, siteid)
+				(sesskey, expiry, value, userid, isuser, isadmin, isrobot, iserror,  languageid, styleid, agent, lastclick, ipaddress, url, title, firstclick, browser, token, sesskeyapi, siteid)
 				VALUES(
 				'" . $this->sheel->db->escape_string($sessionkey) . "',
 				$expiry
@@ -221,7 +222,8 @@ class sessions
 				'" . $this->sheel->db->escape_string($session['sheeldata']['user']['area_title']) . "',
 				'" . $this->sheel->db->escape_string($firstclick) . "',
 				'" . ($session['sheeldata']['user']['ismobile'] == '1' || $session['sheeldata']['user']['ismobile'] == '2' ? $session['sheeldata']['user']['devicetoken'] : $this->sheel->db->escape_string($this->sheel->common->fetch_browser_name())) . "',
-				'" . $this->sheel->db->escape_string(TOKEN) . "',
+				'" . $this->sheel->db->escape_string($session['sheeldata']['user']['csrf']) . "',
+				'" . $this->sheel->db->escape_string($session['sheeldata']['user']['sesskeyapi']) . "',
 				'" . $this->sheel->db->escape_string(SITE_ID) . "')
 			", 0, null, __FILE__, __LINE__);
 		}
@@ -353,7 +355,7 @@ class sessions
 		}
 	}
 
-	function build_user_session($userinfo = array(), $returnonlyarray = false, $returnonlycsrf = false, $forcebuildsession = false, $rememberuser = false, $ismobile = false, $devicetoken = '0')
+	function build_user_session($userinfo = array(), $returnonlyarray = false, $returnonlycsrf = false, $forcebuildsession = false, $rememberuser = false, $ismobile = false, $sesskeyapi = '0')
 	{
 		// #### empty inline cookie ############################################
 		set_cookie('inlineproduct', '', false);
@@ -364,7 +366,7 @@ class sessions
 			'user' => array(
 
 				'ismobile' => $ismobile ? $rememberuser ? '2' : '1' : '0',
-				'devicetoken' => $ismobile ? $devicetoken : '0',
+				'sesskeyapi' => $sesskeyapi,
 				'isadmin' => $userinfo['isadmin'],
 				'status' => $userinfo['status'],
 				'userid' => $userinfo['user_id'],
@@ -418,7 +420,7 @@ class sessions
 				'currencyname' => o(stripslashes($userinfo['currency_name'])),
 				'currencysymbol' => (isset($userinfo['currencyid']) and !empty($userinfo['currencyid'])) ? $this->sheel->currency->currencies[$userinfo['currencyid']]['symbol_left'] : '$',
 				'currencyabbrev' => o(mb_strtoupper($userinfo['currency_abbrev'])),
-				'token' => TOKEN,
+				'token' => $csrf,
 				'siteid' => SITE_ID,
 				'csrf' => $csrf
 			)
