@@ -1,9 +1,74 @@
 <?php
-
 class RestApiServer
 {
-
+	protected $sheel;
 	private $routes = [];
+	public function __construct($sheel)
+	{
+		$this->sheel = $sheel;
+	}
+	public function get_all_endpoints()
+	{
+		$endpoints = [];
+		foreach ($this->routes as $route) {
+			$endpoints[] = [
+				'method' => $route['method'],
+				'path' => $route['path'],
+				'handler' => is_array($route['handler']) ? $route['handler'][1] : $route['handler']
+			];
+		}
+		return $endpoints;
+	}
+	private function validate_request($method, $input, $schema = null, $fieldPath = '')
+	{
+		$schemas = RestApiSchemas::$schemas;
+		if ($schema === null) {
+			if (!isset($schemas[$method])) {
+				return "Schema not defined for method: $method";
+			}
+			$schema = $schemas[$method];
+		}
+		if (isset($schema['required'])) {
+			foreach ($schema['required'] as $field) {
+				if (!isset($input[$field])) {
+					return "Missing required field: " . ($fieldPath ? "$fieldPath.$field" : $field);
+				}
+			}
+		}
+		if (isset($schema['properties'])) {
+			foreach ($schema['properties'] as $field => $rules) {
+				if (isset($input[$field])) {
+					$value = $input[$field];
+					if (isset($rules['type'])) {
+						if ($rules['type'] === 'array') {
+							if (!is_array($value)) {
+								return "Invalid type for field: " . ($fieldPath ? "$fieldPath.$field" : $field) . ". Expected array.";
+							}
+							if (isset($rules['items'])) {
+								foreach ($value as $index => $item) {
+									$itemValidation = $this->validate_request($method, $item, $rules['items'], ($fieldPath ? "$fieldPath.$field" : $field) . "[$index]");
+									if ($itemValidation !== true) {
+										return $itemValidation;
+									}
+								}
+							}
+						} elseif (gettype($value) !== $rules['type']) {
+							return "Invalid type for field: " . ($fieldPath ? "$fieldPath.$field" : $field) . ". Expected " . $rules['type'];
+						}
+					}
+					if (isset($rules['enum']) && !in_array($value, $rules['enum'])) {
+						return "Invalid value for field: " . ($fieldPath ? "$fieldPath.$field" : $field) . ". Allowed values are: " . implode(', ', $rules['enum']);
+					}
+					if (isset($rules['pattern']) && !preg_match('/' . $rules['pattern'] . '/', $value)) {
+						return isset($rules['errorMessage'])
+							? $rules['errorMessage']
+							: "Invalid format for field: " . ($fieldPath ? "$fieldPath.$field" : $field);
+					}
+				}
+			}
+		}
+		return true;
+	}
 	public function register_route($method, $path, $handler)
 	{
 		$this->routes[] = [
@@ -16,42 +81,71 @@ class RestApiServer
 	{
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-		$rawInput = file_get_contents('php://input');
-		$input = json_decode($rawInput, true);
-		// Check if the request is for system_connect
-		if ($requestMethod === 'POST' && $requestUri === '/api/system/connect/') {
-			foreach ($this->routes as $route) {
-				if ($route['method'] === $requestMethod && $route['path'] === $requestUri) {
-					try {
-						$response = call_user_func($route['handler'], $input);
-						$this->send_response($response, 200);
-					} catch (Exception $e) {
-						$this->send_response(['error' => $e->getMessage()], 500);
-					}
-					return;
-				}
+		$input = [];
+		if ($requestMethod === 'GET') {
+			$input = $_GET;
+		} else {
+			$rawInput = file_get_contents('php://input');
+			$input = json_decode($rawInput, true);
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				$this->send_response(['status' => 'error', 'message' => 'Invalid JSON payload: ' . json_last_error_msg(), 'code' => '400']);
+				return;
 			}
 		}
-		// Match the route and handle the request
 		foreach ($this->routes as $route) {
 			if ($route['method'] === $requestMethod && $route['path'] === $requestUri) {
+				if ($route['path'] !== '/api/system/connect/') {
+					$validtoken = $this->validate_token();
+					if (!$validtoken) {
+						$this->send_response(['status' => 'error', 'message' => 'Unauthorized: Invalid or expired token', 'code' => '401']);
+						return;
+					}
+				}
+				$validation = $this->validate_request($route['handler'][1], $input);
+				if ($validation !== true) {
+					$this->send_response(['status' => 'error', 'message' => $validation, 'code' => '422']);
+					return;
+				}
 				try {
 					$response = call_user_func($route['handler'], $input);
 					$this->send_response($response, 200);
 				} catch (Exception $e) {
-					$this->send_response(['error' => $e->getMessage()], 500);
+					$this->send_response(['status' => 'error', 'message' => $e->getMessage(), 'code' => '500']);
 				}
 				return;
 			}
 		}
-		$this->send_response(['error' => 'Route not found'], 404);
+		$this->send_response(['status' => 'error', 'message' => 'Route not found', 'code' => '404']);
 	}
 	private function send_response($response, $statusCode = 200)
 	{
+		die(json_encode($response));
 		http_response_code($statusCode);
 		header('Content-Type: application/json');
 		echo json_encode($response);
 		exit();
+	}
+	private function validate_token()
+	{
+		$headers = getallheaders();
+		$authHeader = $headers['Authorization'] ?? null;
+
+		if (empty($authHeader) || !is_string($authHeader) || strpos($authHeader, 'Bearer ') !== 0) {
+			return false; // Return false if the header is missing or invalid
+		}
+		$token = substr($authHeader, 7);
+
+		$sql = $this->sheel->db->query("
+			SELECT sesskey, expiry, token, value
+			FROM " . DB_PREFIX . "sessions
+			WHERE token = '" . $this->sheel->db->escape_string($token) . "'
+			AND expiry > UNIX_TIMESTAMP()
+			LIMIT 1
+		", 1);
+		if ($this->sheel->db->num_rows($sql) === 0) {
+			return false;
+		}
+		return true;
 	}
 }
 
@@ -59,13 +153,30 @@ class SheelRestApiServer
 {
 	protected $sheel;
 	private $restApiServer;
-
+	private $endpoints = [];
+	private $mysqlErrorCodes = [
+		1062 => ['message' => 'Duplicate entry detected', 'status' => 409], // Conflict
+		1452 => ['message' => 'Foreign key constraint violation', 'status' => 422], // Unprocessable Entity
+		1048 => ['message' => 'A required field is missing', 'status' => 400], // Bad Request
+		1146 => ['message' => 'Table does not exist', 'status' => 500], // Internal Server Error
+		1054 => ['message' => 'Unknown column in the query', 'status' => 400], // Bad Request
+		1064 => ['message' => 'Syntax error in the SQL query', 'status' => 400], // Bad Request
+		1364 => ['message' => 'Field does not have a default value', 'status' => 400], // Bad Request
+		1049 => ['message' => 'Unknown database', 'status' => 500], // Internal Server Error
+		2006 => ['message' => 'MySQL server has gone away', 'status' => 500], // Internal Server Error
+		2013 => ['message' => 'Lost connection to MySQL server during query', 'status' => 500], // Internal Server Error
+	];
 	public function __construct($sheel)
 	{
 		$this->sheel = $sheel;
-		$this->restApiServer = new RestApiServer();
+		$this->restApiServer = new RestApiServer($sheel);
+
+		$this->restApiServer->register_route('GET', '/api/system/endpoints/', [$this, 'list_endpoints']);
 		$this->restApiServer->register_route('POST', '/api/system/connect/', [$this, 'system_connect']);
 		$this->restApiServer->register_route('GET', '/api/system/officialtime/', [$this, 'system_getofficialtime']);
+		$this->restApiServer->register_route('GET', '/api/core/scan/', [$this, 'core_scan_get']);
+		$this->restApiServer->register_route('POST', '/api/core/scan/', [$this, 'core_scan_post']);
+		$this->endpoints = $this->restApiServer->get_all_endpoints();
 	}
 	public function handle_request()
 	{
@@ -73,43 +184,32 @@ class SheelRestApiServer
 	}
 	private function success_response($data = [], $message = 'Success')
 	{
-		return [
+		return json_encode([
 			'status' => 'success',
 			'message' => $message,
 			'data' => $data
-		];
+		]);
 	}
 	private function error_response($message, $code = 400)
 	{
-		return [
+		return json_encode([
 			'status' => 'error',
 			'message' => $message,
 			'code' => $code
-		];
+		]);
 	}
 	public function system_connect($input)
 	{ // retrieves a session id & csrf token for subsequent connections
 		$hascredentials = false;
-		$this->sheel->db->query("
-				UPDATE " . DB_PREFIX . "api
-				SET hits = hits + 1
-				WHERE name = '" . $this->sheel->db->escape_string('system.connect') . "'
-				LIMIT 1
-			");
+		$this->api_hit('system.connect');
 		if ($input['grant_type'] == 'client_credentials') {
 			$sql = $this->sheel->db->query("
 				SELECT status
 				FROM " . DB_PREFIX . "users 
 				WHERE (username = '" . $this->sheel->db->escape_string($input['user_id']) . "' OR email = '" . $this->sheel->db->escape_string($input['user_id']) . "')
+				" . ((!empty($input['apikey'])) ? " AND apikey = '" . $this->sheel->db->escape_string($input['apikey']) . "' AND useapi = '1'" : "") . "
 				LIMIT 1
-			");
-		} else if ($input['grant_type'] == 'api_key') {
-			$sql = $this->sheel->db->query("
-				SELECT status
-				FROM " . DB_PREFIX . "users 
-				WHERE apikey = '" . $this->sheel->db->escape_string($input['apikey']) . "' AND useapi = '1'
-				LIMIT 1
-			");
+			", 1);
 		} else {
 			return $this->error_response('Invalid grant type', 422);
 		}
@@ -127,9 +227,16 @@ class SheelRestApiServer
 		}
 		if ($hascredentials) {
 			if ($this->authenticate($input['user_id'], $input['user_secret'], $input['apikey'])) {
-				$csrftoken = $this->login($input['user_id'], $input['user_secret'], $input['apikey'], true, true, true, $input['apikey']);
+				$result = $this->validate_session($input['user_id'], $input['user_secret'], $input['apikey']);
+				$token = '';
+				if ($result['status']) {
+					$token = $result['token'];
+				} else {
+					$this->sheel->sessions->start();
+					$token = $this->login($input['user_id'], $input['user_secret'], $input['apikey'], true, true, true, $input['apikey']);
+				}
 				$this->api_success('system.connect');
-				return $this->success_response(array('token' => $csrftoken), 'Connected.');
+				return $this->success_response(array('token' => $token), 'Connected.');
 			} else {
 				$this->api_failed('system.connect');
 				return $this->error_response($this->getmessage('_you_have_provided_incorrect_login_credentials', $_SESSION['sheeldata']['user']['languageid']), 422);
@@ -138,43 +245,166 @@ class SheelRestApiServer
 			return $this->error_response($this->getmessage('_you_have_provided_incorrect_login_credentials', $_SESSION['sheeldata']['user']['languageid']), 422);
 		}
 	}
+	public function list_endpoints()
+	{
+		return $this->success_response($this->restApiServer->get_all_endpoints(), 'List of all API endpoints');
+	}
 	public function system_getofficialtime($input)
 	{
 		$data = ['datetime' => date('Y-m-d H:i:s')];
 		return $this->success_response($data, 'System time retrieved successfully');
 	}
-	private function validate_token()
+
+	public function core_scan_get($input)
 	{
-		// Get the Authorization header
-		$headers = getallheaders();
-		$authHeader = $headers['Authorization'] ?? null;
-
-		if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-			$this->error_response(['error' => 'Unauthorized: Missing or invalid Authorization header'], 401);
-			exit();
+		// Parse and validate the filter parameter
+		$filter = $input['filter'];
+		$filterSql = $this->parse_filter($filter);
+		if ($filterSql === false) {
+			return $this->error_response('Invalid filter format', 400);
 		}
-
-		// Extract the token
-		$token = substr($authHeader, 7); // Remove "Bearer " prefix
-
-		// Validate the token in the database
-		$sql = $this->sheel->db->query("
-			SELECT userid, username, token_expiry
-			FROM " . DB_PREFIX . "api_users
-			WHERE token = '" . $this->sheel->db->escape_string($token) . "'
-			AND token_expiry > NOW()
-			AND is_active = 1
-			LIMIT 1
-		");
-
-		if ($this->sheel->db->num_rows($sql) === 0) {
-			$this->error_response(['error' => 'Unauthorized: Invalid or expired token'], 401);
-			exit();
+		$orderbySql = '';
+		if (!empty($input['orderby'])) {
+			$orderby = $input['orderby'];
+			$orderbySql = $this->parse_orderby($orderby);
+			if ($orderbySql === false) {
+				return $this->error_response('Invalid orderby format', 400);
+			}
 		}
+		// Construct the SQL query
+		$sql = "
+			SELECT *
+			FROM " . DB_PREFIX . "scan_activities
+			WHERE $filterSql
+		";
+		if (!empty($orderbySql)) {
+			$sql .= " ORDER BY $orderbySql";
+		}
+		// Execute the query
+		$result = $this->sheel->db->query($sql, 1);
+		$data = [];
+		while ($row = $this->sheel->db->fetch_array($result, DB_ASSOC)) {
+			$data[] = $row;
+		}
+		if (empty($data)) {
+			return $this->success_response([], 'No records found');
+		}
+		return $this->success_response($data, 'Data retrieved successfully');
+	}
 
-		// Fetch user details and store them in the session or class property
-		$user = $this->sheel->db->fetch_array($sql, DB_ASSOC);
-		$_SESSION['api_user'] = $user; // Store user details in the session
+	public function core_scan_post($input)
+	{
+		if (!isset($input['data']) || !is_array($input['data'])) {
+			return $this->error_response('Invalid input format. Expected "data" to be an array of records.', 400);
+		}
+		$records = $input['data'];
+		$this->sheel->db->beginTransaction();
+
+		foreach ($records as $index => $record) {
+			try {
+				$this->sheel->db->query("
+					INSERT INTO " . DB_PREFIX . "scan_activities (
+						sales_line_unit_id,
+						sales_line_id,
+						assembly_no,
+						mo_no,
+						item_code,
+						design_code,
+						variant_code,
+						so_no,
+						activity_code,
+						activity_name,
+						activity_remark,
+						activity_type,
+						activity_date,
+						activity_time
+					) VALUES (
+						'" . $this->sheel->db->escape_string($record['sales_line_unit_id']) . "',
+						'" . $this->sheel->db->escape_string($record['sales_line_id']) . "',
+						'" . $this->sheel->db->escape_string($record['assembly_no']) . "',
+						'" . $this->sheel->db->escape_string($record['mo_no']) . "',
+						'" . $this->sheel->db->escape_string($record['item_code']) . "',
+						'" . $this->sheel->db->escape_string($record['design_code']) . "',
+						'" . $this->sheel->db->escape_string($record['variant_code']) . "',
+						'" . $this->sheel->db->escape_string($record['so_no']) . "',
+						'" . $this->sheel->db->escape_string($record['activity_code']) . "',
+						'" . $this->sheel->db->escape_string($record['activity_name']) . "',
+						" . (isset($record['activity_remark']) ? "'" . $this->sheel->db->escape_string($record['activity_remark']) . "'" : 'NULL') . ",
+						'" . $this->sheel->db->escape_string($record['activity_type']) . "',
+						'" . $this->sheel->db->escape_string($record['activity_date']) . "',
+						" . (int) $record['activity_time'] . "
+					)
+				", 1);
+			} catch (Exception $e) {
+				$this->sheel->db->rollback();
+				return $this->error_response('Transaction failed: ' . $this->mysqlErrorCodes[$e->getMessage()]['message'] . ' On: ' . $record['sales_line_unit_id'] . '|' . $record['activity_code'] . '|' . $record['activity_type'], $this->mysqlErrorCodes[$e->getMessage()]['status']);
+			}
+			$this->sheel->db->commit();
+			return $this->success_response([], 'All records inserted successfully');
+
+		}
+	}
+
+	private function parse_filter($filter)
+	{
+		$conditions = preg_split('/\s+(AND|OR)\s+/i', $filter, -1, PREG_SPLIT_DELIM_CAPTURE);
+		if (!$conditions || count($conditions) === 0) {
+			return false;
+		}
+		$parsedConditions = [];
+		$logicalOperator = null;
+		foreach ($conditions as $condition) {
+			$condition = trim($condition);
+			if (strtoupper($condition) === 'AND' || strtoupper($condition) === 'OR') {
+				$logicalOperator = strtoupper($condition);
+				$parsedConditions[] = $logicalOperator;
+				continue;
+			}
+			if (!preg_match('/^([a-zA-Z0-9_]+) (eq|like|between) (.+)$/', $condition, $matches)) {
+				return false;
+			}
+			$column = $matches[1];
+			$operator = $matches[2];
+			$value = $matches[3];
+			$operatorMap = [
+				'eq' => '=',
+				'like' => 'LIKE',
+				'between' => 'BETWEEN'
+			];
+			if (!isset($operatorMap[$operator])) {
+				return false;
+			}
+			$sqlOperator = $operatorMap[$operator];
+			if ($operator === 'between') {
+				$values = explode(' and ', strtolower($value));
+				if (count($values) !== 2) {
+					return false;
+				}
+				$value = "'" . $this->sheel->db->escape_string(trim($values[0], "'")) . "' AND '" . $this->sheel->db->escape_string(trim($values[1], "'")) . "'";
+			} else {
+				$value = trim($value, "'");
+				$value = "'" . $this->sheel->db->escape_string($value) . "'";
+			}
+			$parsedConditions[] = "$column $sqlOperator $value";
+		}
+		return implode(' ', $parsedConditions);
+	}
+
+	private function parse_orderby($orderby)
+	{
+		$columns = explode(',', $orderby);
+		$parsedColumns = [];
+		foreach ($columns as $column) {
+			$column = trim($column);
+			if (!preg_match('/^([a-zA-Z0-9_]+) (asc|desc)$/i', $column, $matches)) {
+				return false;
+			}
+			$columnName = $matches[1];
+			$direction = strtoupper($matches[2]);
+
+			$parsedColumns[] = "$columnName $direction";
+		}
+		return implode(', ', $parsedColumns);
 	}
 	private function getmessage($var, $lng)
 	{
@@ -200,6 +430,17 @@ class SheelRestApiServer
 
 		}
 		return $finalmessage;
+	}
+	private function api_hit($method)
+	{
+		if (!empty($method)) {
+			$this->sheel->db->query("
+				UPDATE " . DB_PREFIX . "api
+				SET hits = hits + 1
+				WHERE name = '" . $this->sheel->db->escape_string($method) . "'
+				LIMIT 1
+			");
+		}
 	}
 	private function api_failed($method)
 	{
@@ -314,5 +555,30 @@ class SheelRestApiServer
 			}
 		}
 		return 0;
+	}
+	private function validate_session($userid = '', $usersecret = '', $apikey = '')
+	{
+		if (empty($apikey) || empty($userid) || empty($usersecret)) {
+			return ['status' => false, 'token' => null];
+		}
+		$sql = $this->sheel->db->query("
+			SELECT sesskey, expiry, token, value
+			FROM " . DB_PREFIX . "sessions
+			WHERE sesskeyapi = '" . $this->sheel->db->escape_string($apikey) . "'
+		");
+		if ($this->sheel->db->num_rows($sql) > 0) {
+			$session = $this->sheel->db->fetch_array($sql, DB_ASSOC);
+			$expiry = $session['expiry'];
+			$currentTime = time();
+
+			if ($expiry > $currentTime) {
+				$this->sheel->GPC['sessid'] = $session['sesskey'];
+				$this->sheel->sessions->start();
+				$this->login($userid, $usersecret, $apikey, true, true, true, $apikey);
+				$this->sheel->sessions->session_write($session['sesskey'], $session['value']);
+				return ['status' => true, 'token' => $session['token']];
+			}
+		}
+		return ['status' => false, 'token' => null];
 	}
 }

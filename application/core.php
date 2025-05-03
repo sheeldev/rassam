@@ -88,7 +88,12 @@ for ($i = 0; $i < 32; ++$i) {
 set_cookie('token', $token);
 define('TOKEN', $token);
 // token end
-$sheel->sessions->start();
+if ($match['name'] != 'api') {
+    $sheel->sessions->start();
+}
+else {
+    
+}
 require_once(__DIR__ . '/model/class.language.inc.php');
 $sheel->language = new language($sheel);
 require_once(__DIR__ . '/model/class.styles.inc.php');

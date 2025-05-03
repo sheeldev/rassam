@@ -124,7 +124,6 @@ class sessions
 		if (empty($_COOKIE[COOKIE_PREFIX . 'lastvisit'])) { // if we've never been here before, we'll create a "last visit" cookie to remember the user
 			set_cookie('lastvisit', DATETIME24H);
 		}
-		
 		// we will continue to update our last activity cookie on each page hit
 		set_cookie('lastactivity', DATETIME24H);
 		

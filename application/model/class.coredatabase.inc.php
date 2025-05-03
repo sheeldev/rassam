@@ -120,7 +120,7 @@ class sheel_database
 	 * Function to perform database error handling
 	 *
 	 */
-	function dberror($string = '')
+	function dberror($string = '', $returnerroronly = false)
 	{
 		if (!defined('SQLVERSION')) {
 			define('SQLVERSION', 'Unknown');
@@ -136,7 +136,8 @@ class sheel_database
 			$_SERVER['REQUEST_URI'] = ((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : '');
 			$message = $messageemail = '';
 
-			$messageemail = 'MySQL error      : ' . $this->error() . 'Error number     : ' . $this->errno();
+			$messageemail = 'Database error: ' . $this->error() . 'Error number     : ' . $this->errno();
+			$errorno = $this->errno();
 			$subject = 'Database error on ' . vdate('M d, Y, H:i:s');
 			if ($this->email_reporting and defined('SITE_EMAIL')) {
 				$this->sheel->email->toqueue = false;
@@ -161,8 +162,13 @@ class sheel_database
 				");
 			}
 		}
-		$this->sheel->admincp->print_action_failed('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))), $_SERVER['HTTP_REFERER']);
-		exit();
+		if (!$returnerroronly) {
+			$this->sheel->admincp->print_action_failed('MySQL error      : ' . stripslashes($this->sheel->db->escape_string(trim($messageemail))), $_SERVER['HTTP_REFERER']);
+			exit();
+		}
+		else {
+			throw new Exception($errorno);
+		}
 
 	}
 	/**

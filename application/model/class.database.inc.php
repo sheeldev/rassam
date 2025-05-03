@@ -120,6 +120,26 @@ class database extends sheel_database
 		$stmt = $this->functions['prepare']($this->connection_link, $string);
 		return $stmt;
 	}
+	public function beginTransaction()
+    {
+        $this->query("START TRANSACTION");
+    }
+
+    /**
+     * Commits the current database transaction.
+     */
+    public function commit()
+    {
+        $this->query("COMMIT");
+    }
+
+    /**
+     * Rolls back the current database transaction.
+     */
+    public function rollback()
+    {
+        $this->query("ROLLBACK");
+    }
 	/**
 	 * Function to perform a database specific query
 	 *
@@ -149,7 +169,7 @@ class database extends sheel_database
 			if (!$hideerrors or $hideerrors == 0) {
 				$this->dberror($string);
 			} else {
-				return false;
+				$this->dberror($string, true);
 			}
 		}
 		$qtime = $this->stop();

@@ -10,7 +10,7 @@ if (!file_exists(__DIR__ . '/application/config.php')) {
 if (!file_exists(__DIR__ . '/application/model/class.router.inc.php')) {
 	die('<b>Maintenance:</b> We\'ll be right back.. performing some maintenance to make your experience fast as possible.');
 }
-require_once(__DIR__ . '/application/config.php');
+
 require_once(__DIR__ . '/application/model/class.router.inc.php');
 $router = new router();
 $router->setBasePath(''); // <-- SUB_FOLDER
@@ -128,7 +128,10 @@ if (file_exists(__DIR__ . '/router_custom.php')) {
 
 // router match
 $match = $router->match();
+require_once(__DIR__ . '/application/config.php');
+
 if (($match and is_callable($match['target'])) or ($match and stristr($match['target'], '.php'))) { // run function if we need to
+	
 	if (!is_callable($match['target']) and stristr($match['target'], '.php')) {
 		if (file_exists($match['target'] . 'x')) { // duplicate .php -> .phpx for custom changes with automatic updates on
 			require $match['target'] . 'x';
