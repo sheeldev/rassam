@@ -147,55 +147,6 @@
         </div>
     </div>
     </div>
-    
-    
-    <div class="draw-grid draw-grid--outer-grid">
-        <div class="draw-grid__cell">
-            <div class="draw-card">
-    
-                <div class="draw-card__section">
-                    <h2>XML-RPC PHP 7 Code example</h2>
-                    <p class="type--subdued st">You can get the API key from the client side: My Account > <a href="{https_server}preferences/apikey/" target="_blank">Api Key</a>.</p>
-                </div>
-                <div class="draw-card__section">
-                    <div class="code"><!-- HTML generated using hilite.me --><div style="overflow:auto;width:auto;border:0;padding:.2em .6em;">
-                      <pre style="margin: 0; line-height: 129%"><span style="color: #BC7A00">&lt;?php</span>
-    <span style="color: #408080; font-style: italic">// sheel_xmlrpc_itemupdate.php</span>
-    <span style="color: #408080; font-style: italic">// This code uses the method item.update as an example for updating item details remotely.</span>
-    <span style="color: #19177C">$cookiefile</span> <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;cookies.txt&quot;</span>;
-    <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #666666">!</span><span style="color: #008000">file_exists</span>(<span style="color: #19177C">$cookiefile</span>)) {<span style="color: #19177C">$fh</span> <span style="color: #666666">=</span> <span style="color: #008000">fopen</span>(<span style="color: #19177C">$cookiefile</span>, <span style="color: #BA2121">&quot;w&quot;</span>);<span style="color: #008000">fwrite</span>(<span style="color: #19177C">$fh</span>, <span style="color: #BA2121">&quot;&quot;</span>);<span style="color: #008000">fclose</span>(<span style="color: #19177C">$fh</span>);}
-    <span style="color: #19177C">$params</span> <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">array</span>(
-        <span style="color: #BA2121">&#39;itemid&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #666666">93950958</span>,
-        <span style="color: #BA2121">&#39;sku&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;&#39;</span>,
-        <span style="color: #BA2121">&#39;price&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;25.50&#39;</span>,
-        <span style="color: #BA2121">&#39;qty&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;22&#39;</span>,
-        <span style="color: #BA2121">&#39;username&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;xxxxxx&#39;</span>,
-        <span style="color: #BA2121">&#39;password&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;xxxxxx&#39;</span>,
-        <span style="color: #BA2121">&#39;apikey&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;xxxxxx&#39;</span>,
-        <span style="color: #BA2121">&#39;csrftoken&#39;</span> <span style="color: #666666">=&gt;</span> <span style="color: #BA2121">&#39;&#39;</span>
-    );
-    <span style="color: #19177C">$request</span> <span style="color: #666666">=</span> <span style="color: #008000">xmlrpc_encode_request</span>(<span style="color: #BA2121">&#39;item.update&#39;</span>, <span style="color: #19177C">$params</span>);
-    <span style="color: #19177C">$ch</span> <span style="color: #666666">=</span> <span style="color: #008000">curl_init</span>();
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_URL, <span style="color: #BA2121">&#39;{https_server}rpc/&#39;</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_USERAGENT, <span style="color: #BA2121">&#39;Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13&#39;</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_POSTFIELDS, <span style="color: #19177C">$request</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_RETURNTRANSFER, <span style="color: #666666">1</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_TIMEOUT, <span style="color: #666666">30</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_HEADER, <span style="color: #666666">0</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_COOKIEFILE, <span style="color: #19177C">$cookiefile</span>);
-    <span style="color: #008000">curl_setopt</span>(<span style="color: #19177C">$ch</span>, CURLOPT_COOKIEJAR, <span style="color: #19177C">$cookiefile</span>);
-    <span style="color: #19177C">$results</span> <span style="color: #666666">=</span> <span style="color: #008000">curl_exec</span>(<span style="color: #19177C">$ch</span>);
-    <span style="color: #19177C">$results</span> <span style="color: #666666">=</span> <span style="color: #008000">xmlrpc_decode</span>(<span style="color: #19177C">$results</span>);
-    <span style="color: #008000">curl_close</span>(<span style="color: #19177C">$ch</span>);
-    <span style="color: #008000">print_r</span>(<span style="color: #19177C">$results</span>);
-    <span style="color: #BC7A00">?&gt;</span>
-    </pre></div></div>
-                </div>
-    
-            </div>
-        </div>
-    </div>
-    
     </div>
     
     </section>

@@ -94,13 +94,22 @@ class RestApiServer
 		}
 		foreach ($this->routes as $route) {
 			if ($route['method'] === $requestMethod && $route['path'] === $requestUri) {
+				$token='';
 				if ($route['path'] !== '/api/system/connect/') {
-					$validtoken = $this->validate_token();
+					$headers = getallheaders();
+					$authHeader = $headers['Authorization'] ?? null;
+					if (empty($authHeader) || !is_string($authHeader) || strpos($authHeader, 'Bearer ') !== 0) {
+						return false;
+					}
+					$token = substr($authHeader, 7);
+					$validtoken = $this->validate_token($token);
 					if (!$validtoken) {
 						$this->send_response(['status' => 'error', 'message' => 'Unauthorized: Invalid or expired token', 'code' => '401']);
 						return;
 					}
+					$this->update_session($token, $route['path']);
 				}
+				$this->sheel->template->meta['areatitle'] = 'REST API - /api/system/connect/';
 				$validation = $this->validate_request($route['handler'][1], $input);
 				if ($validation !== true) {
 					$this->send_response(['status' => 'error', 'message' => $validation, 'code' => '422']);
@@ -119,22 +128,13 @@ class RestApiServer
 	}
 	private function send_response($response, $statusCode = 200)
 	{
-		die(json_encode($response));
 		http_response_code($statusCode);
 		header('Content-Type: application/json');
-		echo json_encode($response);
+		echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 		exit();
 	}
-	private function validate_token()
+	private function validate_token($token)
 	{
-		$headers = getallheaders();
-		$authHeader = $headers['Authorization'] ?? null;
-
-		if (empty($authHeader) || !is_string($authHeader) || strpos($authHeader, 'Bearer ') !== 0) {
-			return false; // Return false if the header is missing or invalid
-		}
-		$token = substr($authHeader, 7);
-
 		$sql = $this->sheel->db->query("
 			SELECT sesskey, expiry, token, value
 			FROM " . DB_PREFIX . "sessions
@@ -147,6 +147,18 @@ class RestApiServer
 		}
 		return true;
 	}
+	private function update_session($token = '', $url)
+	{
+		if (!empty($token)) {
+			$sql = $this->sheel->db->query("
+				UPDATE " . DB_PREFIX . "sessions
+				SET url = '" . $url . "',
+				title = 'REST API - " . $url . "'
+				WHERE token = '" . $token . "'
+				LIMIT 1
+			");
+		}
+	}
 }
 
 class SheelRestApiServer
@@ -155,23 +167,23 @@ class SheelRestApiServer
 	private $restApiServer;
 	private $endpoints = [];
 	private $mysqlErrorCodes = [
-		1062 => ['message' => 'Duplicate entry detected', 'status' => 409], // Conflict
-		1452 => ['message' => 'Foreign key constraint violation', 'status' => 422], // Unprocessable Entity
-		1048 => ['message' => 'A required field is missing', 'status' => 400], // Bad Request
-		1146 => ['message' => 'Table does not exist', 'status' => 500], // Internal Server Error
-		1054 => ['message' => 'Unknown column in the query', 'status' => 400], // Bad Request
-		1064 => ['message' => 'Syntax error in the SQL query', 'status' => 400], // Bad Request
-		1364 => ['message' => 'Field does not have a default value', 'status' => 400], // Bad Request
-		1049 => ['message' => 'Unknown database', 'status' => 500], // Internal Server Error
-		2006 => ['message' => 'MySQL server has gone away', 'status' => 500], // Internal Server Error
-		2013 => ['message' => 'Lost connection to MySQL server during query', 'status' => 500], // Internal Server Error
+		1062 => ['message' => 'Duplicate entry detected', 'status' => 409], 
+		1452 => ['message' => 'Foreign key constraint violation', 'status' => 422], 
+		1048 => ['message' => 'A required field is missing', 'status' => 400], 
+		1146 => ['message' => 'Table does not exist', 'status' => 500], 
+		1054 => ['message' => 'Unknown column in the query', 'status' => 400], 
+		1064 => ['message' => 'Syntax error in the SQL query', 'status' => 400], 
+		1364 => ['message' => 'Field does not have a default value', 'status' => 400],
+		1049 => ['message' => 'Unknown database', 'status' => 500], 
+		2006 => ['message' => 'MySQL server has gone away', 'status' => 500], 
+		2013 => ['message' => 'Lost connection to MySQL server during query', 'status' => 500],
 	];
 	public function __construct($sheel)
 	{
 		$this->sheel = $sheel;
 		$this->restApiServer = new RestApiServer($sheel);
 
-		$this->restApiServer->register_route('GET', '/api/system/endpoints/', [$this, 'list_endpoints']);
+		$this->restApiServer->register_route('GET', '/api/system/endpoints/', [$this, 'system_list_endpoints']);
 		$this->restApiServer->register_route('POST', '/api/system/connect/', [$this, 'system_connect']);
 		$this->restApiServer->register_route('GET', '/api/system/officialtime/', [$this, 'system_getofficialtime']);
 		$this->restApiServer->register_route('GET', '/api/core/scan/', [$this, 'core_scan_get']);
@@ -188,7 +200,7 @@ class SheelRestApiServer
 			'status' => 'success',
 			'message' => $message,
 			'data' => $data
-		]);
+		], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 	}
 	private function error_response($message, $code = 400)
 	{
@@ -196,12 +208,12 @@ class SheelRestApiServer
 			'status' => 'error',
 			'message' => $message,
 			'code' => $code
-		]);
+		], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 	}
 	public function system_connect($input)
-	{ // retrieves a session id & csrf token for subsequent connections
+	{
 		$hascredentials = false;
-		$this->api_hit('system.connect');
+		$this->api_hit('system_connect');
 		if ($input['grant_type'] == 'client_credentials') {
 			$sql = $this->sheel->db->query("
 				SELECT status
@@ -217,11 +229,11 @@ class SheelRestApiServer
 			$hascredentials = true;
 			$userinfo = $this->sheel->db->fetch_array($sql, DB_ASSOC);
 			if ($userinfo['status'] == 'unverified') {
-				$this->api_failed('system.connect');
+				$this->api_failed('system_connect');
 				return $this->error_response($this->getmessage('_you_have_not_activated_your_account_via_email', $_SESSION['sheeldata']['user']['languageid']), 422);
 			}
 			if ($userinfo['status'] == 'banned') {
-				$this->api_failed('system.connect');
+				$this->api_failed('system_connect');
 				return $this->error_response($this->getmessage('_this_account_has_been_banned', $_SESSION['sheeldata']['user']['languageid']), 422);
 			}
 		}
@@ -235,32 +247,49 @@ class SheelRestApiServer
 					$this->sheel->sessions->start();
 					$token = $this->login($input['user_id'], $input['user_secret'], $input['apikey'], true, true, true, $input['apikey']);
 				}
-				$this->api_success('system.connect');
+				$this->api_success('system_connect');
 				return $this->success_response(array('token' => $token), 'Connected.');
 			} else {
-				$this->api_failed('system.connect');
+				$this->api_failed('system_connect');
 				return $this->error_response($this->getmessage('_you_have_provided_incorrect_login_credentials', $_SESSION['sheeldata']['user']['languageid']), 422);
 			}
 		} else {
 			return $this->error_response($this->getmessage('_you_have_provided_incorrect_login_credentials', $_SESSION['sheeldata']['user']['languageid']), 422);
 		}
 	}
-	public function list_endpoints()
+	public function system_list_endpoints()
 	{
-		return $this->success_response($this->restApiServer->get_all_endpoints(), 'List of all API endpoints');
+		$this->api_hit('system_list_endpoints');
+	
+		$endpoints = [];
+		foreach ($this->restApiServer->get_all_endpoints() as $route) {
+			$handler = $route['handler'];
+			$schema = RestApiSchemas::$schemas[$handler] ?? null;
+	
+			$endpoints[] = [
+				'method' => $route['method'],
+				'path' => $route['path'],
+				'description' => $schema['description'] ?? 'No description available.',
+				'schema' => $schema
+			];
+		}
+	
+		return $this->success_response($endpoints, 'List of all API endpoints with details');
 	}
 	public function system_getofficialtime($input)
 	{
+		$this->api_hit('system_getofficialtime');
 		$data = ['datetime' => date('Y-m-d H:i:s')];
 		return $this->success_response($data, 'System time retrieved successfully');
 	}
 
 	public function core_scan_get($input)
 	{
-		// Parse and validate the filter parameter
+		$this->api_hit('core_scan_get');
 		$filter = $input['filter'];
 		$filterSql = $this->parse_filter($filter);
 		if ($filterSql === false) {
+			$this->api_failed('core_scan_get');
 			return $this->error_response('Invalid filter format', 400);
 		}
 		$orderbySql = '';
@@ -268,10 +297,10 @@ class SheelRestApiServer
 			$orderby = $input['orderby'];
 			$orderbySql = $this->parse_orderby($orderby);
 			if ($orderbySql === false) {
+				$this->api_failed('core_scan_get');
 				return $this->error_response('Invalid orderby format', 400);
 			}
 		}
-		// Construct the SQL query
 		$sql = "
 			SELECT *
 			FROM " . DB_PREFIX . "scan_activities
@@ -280,7 +309,7 @@ class SheelRestApiServer
 		if (!empty($orderbySql)) {
 			$sql .= " ORDER BY $orderbySql";
 		}
-		// Execute the query
+		$sql .= " LIMIT 1000";
 		$result = $this->sheel->db->query($sql, 1);
 		$data = [];
 		while ($row = $this->sheel->db->fetch_array($result, DB_ASSOC)) {
@@ -289,11 +318,13 @@ class SheelRestApiServer
 		if (empty($data)) {
 			return $this->success_response([], 'No records found');
 		}
+		$this->api_success('core_scan_get');
 		return $this->success_response($data, 'Data retrieved successfully');
 	}
 
 	public function core_scan_post($input)
 	{
+		$this->api_hit('core_scan_post');
 		if (!isset($input['data']) || !is_array($input['data'])) {
 			return $this->error_response('Invalid input format. Expected "data" to be an array of records.', 400);
 		}
@@ -337,12 +368,13 @@ class SheelRestApiServer
 				", 1);
 			} catch (Exception $e) {
 				$this->sheel->db->rollback();
+				$this->api_failed('core_scan_post');
 				return $this->error_response('Transaction failed: ' . $this->mysqlErrorCodes[$e->getMessage()]['message'] . ' On: ' . $record['sales_line_unit_id'] . '|' . $record['activity_code'] . '|' . $record['activity_type'], $this->mysqlErrorCodes[$e->getMessage()]['status']);
 			}
-			$this->sheel->db->commit();
-			return $this->success_response([], 'All records inserted successfully');
-
 		}
+		$this->sheel->db->commit();
+		$this->api_success('core_scan_post');
+		return $this->success_response([], 'All records inserted successfully');
 	}
 
 	private function parse_filter($filter)
@@ -408,8 +440,11 @@ class SheelRestApiServer
 	}
 	private function getmessage($var, $lng)
 	{
-		$finalmessage = '';
-		$sqllang = $this->sheel->db->query("
+		if ($lng == '') {
+			$slng = 'eng';
+		}
+		else {
+			$sqllang = $this->sheel->db->query("
 			SELECT languagecode
 			FROM " . DB_PREFIX . "language
 			where languageid ='" . $lng . "'
@@ -418,6 +453,8 @@ class SheelRestApiServer
 			$reslang = $this->sheel->db->fetch_array($sqllang, DB_ASSOC);
 			$slng = substr($reslang['languagecode'], 0, 3);
 		}
+		}
+		$finalmessage = '';
 		$sql = $this->sheel->db->query("
 			SELECT text_$slng AS text
 			FROM " . DB_PREFIX . "language_phrases
